@@ -150,3 +150,19 @@ def test_only_providers_with_keys_are_used(monkeypatch: pytest.MonkeyPatch) -> N
 def test_custom_factories_see_every_provider() -> None:
     router, _ = router_with({}, config("a"))
     assert [s.model for s in router.specs("fast")] == ["a"]
+
+
+def test_render_split_separates_the_cacheable_prefix() -> None:
+    prompt = Prompt(name="t", version=1, template="Rules for $lang.\n=== per call ===\nTurn: $turn\n")
+    assert prompt.render_split(lang="fr", turn="Bonjour") == ("Rules for fr.", "Turn: Bonjour")
+    assert PROMPT.render_split(name="x") == ("hi x", "")
+
+
+def test_assessor_prompt_keeps_the_turn_out_of_the_cached_prefix() -> None:
+    prompt = PromptRegistry(ROOT / "prompts").get("utterance_assessor")
+    prefix, per_call = prompt.render_split(
+        exam="E", language_name="L", learner_band=6, scale_name="S", npc_name="N", last_npc_line="NPC-LINE",
+        transcript="TRANSCRIPT", targets="T", dimensions="D", scale_desc="SD", candidate_nodes="NODES",
+    )  # fmt: skip
+    assert "NODES" in prefix and "TRANSCRIPT" not in prefix and "NPC-LINE" not in prefix
+    assert "TRANSCRIPT" in per_call

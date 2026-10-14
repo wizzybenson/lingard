@@ -112,7 +112,7 @@ class UtteranceAssessor:
     ) -> UtteranceAssessment:
         pack_id = LANGUAGE_PACK[language]
         speaking = next(s for s in pack.sections if s.skill.value == "speaking")
-        system = self._prompt.render(
+        system, turn = self._prompt.render_split(
             exam=EXAM_NAMES[pack_id],
             language_name=LANGUAGE_NAME[language],
             learner_band=learner_band,
@@ -129,7 +129,7 @@ class UtteranceAssessor:
             "mid",
             self._prompt,
             AssessorOutput,
-            self._router.messages("mid", system, "Assess this turn."),
+            self._router.messages("mid", system, turn or "Assess this turn."),
             trace_id=trace_id,
         )
         tags = []

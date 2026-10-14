@@ -52,10 +52,7 @@ def shade(colour: str, factor: float) -> str:
 
 
 def svg(body: str, defs: str = "") -> str:
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}">'
-        f"<defs>{defs}</defs>{body}</svg>\n"
-    )
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}"><defs>{defs}</defs>{body}</svg>\n'
 
 
 def rect(x: float, y: float, w: float, h: float, fill: str, extra: str = "") -> str:

@@ -41,7 +41,8 @@ def oracle(messages: list[BaseMessage]) -> str:
     """Scripted LLM for every prompt the graphs use; the assessor reads the learner's markers."""
     system = message_text(messages[0])
     if "silent, rigorous examiner" in system:
-        transcript = re.search(r'Learner turn \(speech transcript, punctuation may be missing\): "(.*)"', system)
+        whole = "\n".join(message_text(m) for m in messages)  # the turn itself follows the cached prefix
+        transcript = re.search(r'Learner turn \(speech transcript, punctuation may be missing\): "(.*)"', whole)
         text = transcript.group(1) if transcript else ""
         evidence, errors = [], []
         for match in MARKER.finditer(text):

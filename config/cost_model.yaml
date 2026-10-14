@@ -1,0 +1,39 @@
+# Cost per active hour (SPEC §25 Phase 5 gate: ≤ 1 USD). LLM token sizes are MEASURED from the real prompts by the
+# `cost` eval suite; the activity numbers below are PLANNING ASSUMPTIONS until live play replaces them (SPEC §22).
+activity:
+  status: assumption
+  as_of: "2026-10-14"
+  scenes_per_hour: 5               # a scene is capped at 14 turns; ~10–12 minutes each with reading and thinking time
+  learner_turns_per_scene: 12
+  learner_speech_seconds_per_turn: 5
+  npc_chars_per_turn: 140          # one or two short spoken sentences
+  history_tokens_per_turn: 45      # learner + NPC line added to the actor's context each turn
+  actor_cached_share: 0.8          # persona/contract prefix served from the prompt cache after the first turn
+  sessions_per_hour: 1             # day planning, night consolidation and lesson building are charged once per hour
+# Speech prices, USD. Per minute of learner audio (STT) or per 1,000 characters of NPC speech (TTS).
+speech:
+  stt:
+    deepgram: {per_minute: 0.0052, model: nova-3 multilingual, source_url: "https://deepgram.com/pricing", as_of: "2026-10-14"}
+    openai: {per_minute: 0.006, model: gpt-4o-transcribe, source_url: "https://developers.openai.com/api/docs/pricing", as_of: "2026-10-14"}
+    elevenlabs: {per_minute: 0.0037, model: scribe_v2, source_url: "https://elevenlabs.io/pricing/api", as_of: "2026-10-14"}
+    voicebox: {per_minute: 0, model: self-hosted, source_url: "local", as_of: "2026-10-14"}
+  tts:
+    elevenlabs: {per_1k_chars: 0.04, model: eleven_flash_v2_5, source_url: "https://elevenlabs.io/pricing/api", as_of: "2026-10-14"}
+    # gpt-4o-mini-tts bills ~12 USD per 1M audio tokens; at ~15 chars per second of speech that is about 0.015/min.
+    openai: {per_1k_chars: 0.017, model: gpt-4o-mini-tts, source_url: "https://developers.openai.com/api/docs/pricing", as_of: "2026-10-14"}
+    voicebox: {per_1k_chars: 0, model: self-hosted, source_url: "local", as_of: "2026-10-14"}
+# Real replies are longer than the scripted ones the offline run sees; each prompt costs at least this many output
+# tokens (assumption, from the response schemas: e.g. the assessor returns scores, errors and evidence as JSON).
+output_floor_tokens:
+  npc_actor: 45
+  utterance_assessor: 180
+  correction_check: 40
+  scene_compiler: 700
+  story_beats: 150
+  narrative_keeper: 250
+  coach_notebook: 350
+  lesson_builder: 600
+# Share of each prompt's input served from the prompt cache. utterance_assessor@v2 keeps everything except the turn
+# itself (NPC line, transcript, targets: ~5% of the prompt) above its cache breakpoint.
+cached_share:
+  utterance_assessor: 0.95

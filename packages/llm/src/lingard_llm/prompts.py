@@ -10,6 +10,10 @@ from string import Template
 _VERSION_FILE = re.compile(r"^v(\d+)\.md$")
 
 
+PER_CALL = "=== per call ==="
+"""Marker line between a prompt's cacheable prefix and its per-call part."""
+
+
 @dataclass(frozen=True)
 class Prompt:
     name: str
@@ -23,6 +27,14 @@ class Prompt:
     def render(self, **values: object) -> str:
         """``$name`` placeholders; a missing value is an error, never a silent blank."""
         return Template(self.template).substitute({k: str(v) for k, v in values.items()})
+
+    def render_split(self, **values: object) -> tuple[str, str]:
+        """(stable prefix, per-call part) around a ``=== per call ===`` line, so the prefix can be prompt-cached.
+
+        Values that change every call belong below the marker; a template without it is all prefix.
+        """
+        prefix, _, per_call = self.render(**values).partition(f"\n{PER_CALL}\n")
+        return prefix.rstrip(), per_call.strip()
 
 
 class PromptRegistry:

@@ -1,0 +1,357 @@
+{
+  "suite": "cost",
+  "mode": "offline",
+  "metrics": {
+    "default_llm_mid": 0.1665,
+    "default_llm_frontier": 0.1023,
+    "default_llm_fast": 0.0029,
+    "default_stt": 0.026,
+    "default_tts": 0.336,
+    "default_total": 0.6337,
+    "llm_only_anthropic": 0.2717,
+    "llm_only_openai": 0.4251,
+    "llm_only_google": 0.1348,
+    "cheapest_total": 0.1348
+  },
+  "gates": [
+    {
+      "metric": "default_total",
+      "op": "<=",
+      "threshold": 1.0
+    }
+  ],
+  "notes": [
+    "default stack anthropic+deepgram+elevenlabs; cheapest google+voicebox+voicebox",
+    "activity assumptions as_of 2026-10-14 (assumption)",
+    "per-call tokens: coach_notebook 487→12, correction_check 183→10, narrative_keeper 741→11, scene_compiler 1167→163, story_beats 233→12, utterance_assessor 2599→108",
+    "actor prompt ≈ 667 tokens before history"
+  ],
+  "samples": [
+    {
+      "stack": "google+voicebox+voicebox",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0,
+      "tts": 0.0,
+      "total": 0.1348
+    },
+    {
+      "stack": "google+elevenlabs+voicebox",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0185,
+      "tts": 0.0,
+      "total": 0.1533
+    },
+    {
+      "stack": "google+deepgram+voicebox",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.026,
+      "tts": 0.0,
+      "total": 0.1608
+    },
+    {
+      "stack": "google+openai+voicebox",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.03,
+      "tts": 0.0,
+      "total": 0.1648
+    },
+    {
+      "stack": "anthropic+voicebox+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.0,
+      "total": 0.2717
+    },
+    {
+      "stack": "google+voicebox+openai",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0,
+      "tts": 0.1428,
+      "total": 0.2776
+    },
+    {
+      "stack": "anthropic+elevenlabs+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.0,
+      "total": 0.2902
+    },
+    {
+      "stack": "google+elevenlabs+openai",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0185,
+      "tts": 0.1428,
+      "total": 0.2961
+    },
+    {
+      "stack": "anthropic+deepgram+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.0,
+      "total": 0.2977
+    },
+    {
+      "stack": "anthropic+openai+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.0,
+      "total": 0.3017
+    },
+    {
+      "stack": "google+deepgram+openai",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.026,
+      "tts": 0.1428,
+      "total": 0.3036
+    },
+    {
+      "stack": "google+openai+openai",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.03,
+      "tts": 0.1428,
+      "total": 0.3076
+    },
+    {
+      "stack": "anthropic+voicebox+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.1428,
+      "total": 0.4145
+    },
+    {
+      "stack": "openai+voicebox+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.0,
+      "total": 0.4251
+    },
+    {
+      "stack": "anthropic+elevenlabs+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.1428,
+      "total": 0.433
+    },
+    {
+      "stack": "anthropic+deepgram+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.1428,
+      "total": 0.4405
+    },
+    {
+      "stack": "openai+elevenlabs+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.0,
+      "total": 0.4436
+    },
+    {
+      "stack": "anthropic+openai+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.1428,
+      "total": 0.4445
+    },
+    {
+      "stack": "openai+deepgram+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.0,
+      "total": 0.4511
+    },
+    {
+      "stack": "openai+openai+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.0,
+      "total": 0.4551
+    },
+    {
+      "stack": "google+voicebox+elevenlabs",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0,
+      "tts": 0.336,
+      "total": 0.4708
+    },
+    {
+      "stack": "google+elevenlabs+elevenlabs",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.0185,
+      "tts": 0.336,
+      "total": 0.4893
+    },
+    {
+      "stack": "google+deepgram+elevenlabs",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.026,
+      "tts": 0.336,
+      "total": 0.4968
+    },
+    {
+      "stack": "google+openai+elevenlabs",
+      "llm_mid": 0.068,
+      "llm_frontier": 0.0588,
+      "llm_fast": 0.008,
+      "stt": 0.03,
+      "tts": 0.336,
+      "total": 0.5008
+    },
+    {
+      "stack": "openai+voicebox+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.1428,
+      "total": 0.5679
+    },
+    {
+      "stack": "openai+elevenlabs+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.1428,
+      "total": 0.5864
+    },
+    {
+      "stack": "openai+deepgram+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.1428,
+      "total": 0.5939
+    },
+    {
+      "stack": "openai+openai+openai",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.1428,
+      "total": 0.5979
+    },
+    {
+      "stack": "anthropic+voicebox+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.336,
+      "total": 0.6077
+    },
+    {
+      "stack": "anthropic+elevenlabs+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.336,
+      "total": 0.6262
+    },
+    {
+      "stack": "anthropic+deepgram+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.336,
+      "total": 0.6337
+    },
+    {
+      "stack": "anthropic+openai+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.1023,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.336,
+      "total": 0.6377
+    },
+    {
+      "stack": "openai+voicebox+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0,
+      "tts": 0.336,
+      "total": 0.7611
+    },
+    {
+      "stack": "openai+elevenlabs+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.336,
+      "total": 0.7796
+    },
+    {
+      "stack": "openai+deepgram+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.336,
+      "total": 0.7871
+    },
+    {
+      "stack": "openai+openai+elevenlabs",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.2557,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.336,
+      "total": 0.7911
+    }
+  ],
+  "ran_at": "2026-10-14T19:23:03+00:00",
+  "status": "PASS"
+}
