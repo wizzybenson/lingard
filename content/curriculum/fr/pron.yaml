@@ -1,0 +1,22 @@
+# Pronunciation targets. functional_load (0-1) drives intelligibility weighting (SPEC §13);
+# l1_difficulty gives prior difficulty for Arabic/Darija speakers and a generic fallback.
+defaults:
+  kind: pron
+  language: fr
+  skill: speaking
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+  as_of: "2012"
+nodes:
+  - {key: fr.pron.nasal_vowels, band: 4, title: "Voyelles nasales /ɑ̃/ /ɔ̃/ /ɛ̃/", payload: {phonemes: ["ɑ̃", "ɔ̃", "ɛ̃"], minimal_pairs: [[vent, vont], [lent, long], [bain, banc]], functional_load: 0.8, l1_difficulty: {ar: 0.8, generic: 0.6}}}
+  - {key: fr.pron.u_vs_ou, band: 4, title: "/y/ et /u/ (rue / roue)", payload: {phonemes: ["y", "u"], minimal_pairs: [[rue, roue], [dessus, dessous], [tu, tout]], functional_load: 0.9, l1_difficulty: {ar: 0.9, generic: 0.6}}}
+  - {key: fr.pron.uvular_r, band: 4, title: "R uvulaire /ʁ/", payload: {phonemes: ["ʁ"], minimal_pairs: [[rat, la]], functional_load: 0.3, l1_difficulty: {ar: 0.2, generic: 0.6}}}
+  - {key: fr.pron.silent_final_consonants, band: 4, title: "Consonnes finales muettes", payload: {examples: [petit, grand, "ils parlent"], functional_load: 0.5, l1_difficulty: {ar: 0.6, generic: 0.5}}}
+  - {key: fr.pron.front_rounded_eu, band: 5, title: "/ø/ et /œ/ (deux, heure)", payload: {phonemes: ["ø", "œ"], minimal_pairs: [[deux, des], [peur, père]], functional_load: 0.6, l1_difficulty: {ar: 0.85, generic: 0.6}}}
+  - {key: fr.pron.liaison, band: 5, title: "Liaison obligatoire", payload: {examples: ["les‿amis", "vous‿avez", "un‿enfant"], functional_load: 0.4, l1_difficulty: {ar: 0.6, generic: 0.5}}}
+  - {key: fr.pron.final_stress_rhythm, band: 5, title: "Accent de groupe et rythme syllabique", payload: {functional_load: 0.5, l1_difficulty: {ar: 0.7, generic: 0.5}}}
+  - {key: fr.pron.question_intonation, band: 5, title: "Intonation montante des questions", payload: {functional_load: 0.6, l1_difficulty: {ar: 0.4, generic: 0.4}}}
+  - {key: fr.pron.enchainement, band: 6, title: "Enchaînement consonantique et vocalique", payload: {examples: ["il‿arrive", "elle‿habite"], functional_load: 0.3, l1_difficulty: {ar: 0.5, generic: 0.5}}}
+  - {key: fr.pron.e_muet, band: 6, title: "E caduc (e muet)", payload: {examples: ["samedi → sam'di", "je ne sais pas → j'sais pas"], functional_load: 0.3, l1_difficulty: {ar: 0.6, generic: 0.5}}}
+  - {key: fr.pron.open_closed_e, band: 7, title: "/e/ et /ɛ/ (été / était)", payload: {phonemes: ["e", "ɛ"], minimal_pairs: [[été, était], [fée, fait]], functional_load: 0.5, l1_difficulty: {ar: 0.7, generic: 0.5}}}
+  - {key: fr.pron.p_vs_b, band: 4, title: "/p/ et /b/ (pain / bain)", payload: {phonemes: ["p", "b"], minimal_pairs: [[pain, bain], [poire, boire]], functional_load: 0.8, l1_difficulty: {ar: 0.9, generic: 0.2}}}
+  - {key: fr.pron.v_vs_f, band: 4, title: "/v/ et /f/ (vous / fou)", payload: {phonemes: ["v", "f"], minimal_pairs: [[vous, fou], [vin, fin]], functional_load: 0.7, l1_difficulty: {ar: 0.6, generic: 0.2}}}

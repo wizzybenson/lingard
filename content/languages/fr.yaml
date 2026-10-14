@@ -1,0 +1,39 @@
+# Per-language live-plane config (SPEC §6.4, Phase 1b rule: language specifics live in content, not code).
+language: fr
+stt_locale: fr-FR
+function_words: [le, la, les, un, une, des, du, de, et, est, je, tu, il, elle, nous, vous, ils, elles, ne, pas, que, qui, dans, pour, avec, sur, mais, ou, ce, cette, mon, ma, mes, votre, vos, au, aux, oui, non, très, bien, merci, bonjour, suis, sommes, êtes, avez, ai, a, sont, ça, c'est, j'ai, il y a, "on", en, peut, bon, d'accord, alors, aussi, comme, plus, moins, tout, rien, "y", leur, lui, sa, son, ses, nos, notre, être, avoir, fait, faire, est-ce, quoi, où, quand, pourquoi, comment, parce, donc, déjà, encore, toujours, jamais, ici, là, voilà, vraiment]
+other_language_reply:
+  - "Désolé, je ne parle pas anglais. Vous pouvez le dire en français ?"
+  - "Pardon ? En français, s'il vous plaît, je ne comprends pas l'anglais."
+clarify:
+  - "Pardon ? Vous pouvez répéter ?"
+  - "Excusez-moi, je n'ai pas bien compris."
+backchannels: ["Mm.", "Oui ?", "D'accord…", "Je vous écoute."]
+abbreviations: ["M.", "Mme", "Mlle", "Dr", "St", "Ste", "av.", "bd", "etc.", "p. ex."]
+tutor_markers:
+  - "\\bon dit\\b"
+  - "\\bil faut dire\\b"
+  - "\\bla bonne forme\\b"
+  - "\\bcorrection\\b"
+  - "\\bgrammaire\\b"
+  - "\\bconjugaison\\b"
+  - "\\bsubjonctif\\b"
+  - "\\bimparfait\\b"
+  - "\\bconditionnel\\b"
+  - "\\bverbe\\b"
+character_break_markers:
+  - "\\ben tant qu'(ia|intelligence artificielle|assistant)\\b"
+  - "\\bmodèle de langage\\b"
+  - "\\bje suis un programme\\b"
+unsafe_markers:
+  - "\\bsuicide\\b"
+  - "\\bte tuer\\b"
+  - "\\bvous tuer\\b"
+  - "\\bsale (arabe|noir|immigré)\\b"
+help_hint_ui: {en: "Try saying it in French — the NPC only understands French.", fr: "Essayez en français — le personnage ne comprend que le français."}
+months: [janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
+weekdays: [lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche]
+number_words: {deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, neuf: 9, dix: 10, onze: 11, douze: 12, quinze: 15, vingt: 20, trente: 30, quarante: 40, cinquante: 50, soixante: 60, cent: 100, cents: 100, mille: 1000}
+narrator_voice: fr_f_narrator
+choose_correct_prompt: "Laquelle est correcte ?"
+capitalised_common: [monsieur, madame, mademoiselle, messieurs, mesdames]

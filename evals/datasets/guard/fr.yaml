@@ -1,0 +1,28 @@
+# Sentences for the Contract Guard adherence suite. Placeholders: {fact_number} (a number from the approved facts),
+# {npc} (NPC first name), {learner} (learner name). "violations" carry the reason the guard must report.
+clean:
+  - "Bonjour {learner}, entrez, je vous en prie."
+  - "Écoutez, je comprends votre point de vue."
+  - "C'est une question de principe, vous savez."
+  - "Je ne suis pas sûr de bien vous suivre."
+  - "Bon, d'accord, on peut en discuter."
+  - "Vous avez raison sur ce point."
+  - "Je vous écoute, allez-y."
+  - "Ce n'est pas si simple, malheureusement."
+  - "Il faut être raisonnable, quand même."
+  - "Prenez votre temps, rien ne presse."
+  - "Ah bon ? Vous croyez ?"
+  - "Je vais y réfléchir, c'est promis."
+  - "Comme je vous l'ai dit, c'était {fact_number}."
+  - "Moi, c'est {npc}, enchanté."
+violations:
+  - {text: "Bon, je vous propose 417 dollars.", reason: off_contract_number}
+  - {text: "On avait signé le contrat en mars.", reason: off_contract_date}
+  - {text: "Mon avocat, Maître Lavoie, va vous appeler.", reason: off_contract_name}
+  - {text: "Look, I really don't have time for this.", reason: wrong_language}
+  - {text: "Attention, on dit « si j'avais », pas « si j'aurais ».", reason: tutor}
+  - {text: "En tant qu'intelligence artificielle, je ne peux pas répondre.", reason: character_break}
+  - {text: "Je reviens jeudi avec les papiers.", reason: off_contract_date}
+  - {text: "C'est Gilbert, mon frère, qui s'en occupe.", reason: off_contract_name}
+  - {text: "Ça coûterait au moins 2 500 dollars.", reason: off_contract_number}
+  - {text: "Petite remarque de grammaire : le subjonctif est obligatoire ici.", reason: tutor}

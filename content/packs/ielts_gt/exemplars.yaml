@@ -1,0 +1,9 @@
+# Original exemplar responses written for Lingard, with the level a trained rater would likely give.
+# They anchor the scorer; they are not official samples.
+task1_letter:
+  prompt: "Your neighbour's dog barks late at night. Write a letter to your neighbour. In your letter: describe the problem, explain how it affects you, suggest a solution."
+  responses:
+    - band: 5
+      text: "Dear neighbour, I am writing about your dog. Every night your dog is barking very much, sometimes until 1am. I can't sleep and I am very tired in my work. Also my baby wake up. Please you can keep the dog inside the house in the night? I hope you understand me. Thank you. Best regards, Sam"
+    - band: 7
+      text: "Dear Mr Harris, I hope you are well. I'm writing about something that has been bothering me for a few weeks. Your dog tends to bark for long periods late in the evening, often until well after midnight. As I start work at six, this has left me exhausted, and my young daughter has been waking up frequently. I wonder whether it might be possible to bring him indoors after ten o'clock, or perhaps leave a light on, as I've read this can calm dogs. I'd be happy to talk it over whenever is convenient. Kind regards, Sam Ali"

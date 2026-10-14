@@ -1,0 +1,48 @@
+id: ielts_gt
+name: IELTS General Training
+language: en
+scale: {type: band, min: 0, max: 9, step: 0.5}
+clb_conversion: content/crs/ielts_gt_to_clb.yaml
+overall: mean_of_four_rounded_to_half   # IELTS rounds the mean to the nearest half band (.25 up, .75 up)
+skills: {listening: listening, reading: reading, writing: writing, speaking: speaking}
+sections:
+  - id: listening
+    skill: listening
+    minutes: 30
+    transfer_minutes: {paper: 10, computer: 2}
+    parts: 4
+    items: 40
+    order: 1
+  - id: reading
+    skill: reading
+    minutes: 60
+    parts: 3
+    items: 40
+    order: 2
+    text_types: [notices, advertisements, timetables, workplace_documents, general_interest_article]
+  - id: writing
+    skill: writing
+    minutes: 60
+    order: 3
+    tasks:
+      - {id: task1_letter, kind: letter, min_words: 150, suggested_minutes: 20, weight: 1,
+         rubric: [task_achievement, coherence_cohesion, lexical_resource, grammatical_range_accuracy]}
+      - {id: task2_essay, kind: essay, min_words: 250, suggested_minutes: 40, weight: 2,
+         rubric: [task_response, coherence_cohesion, lexical_resource, grammatical_range_accuracy]}
+  - id: speaking
+    skill: speaking
+    minutes: [11, 14]
+    order: 4
+    parts:
+      - {id: interview, minutes: [4, 5]}
+      - {id: long_turn, minutes: [3, 4], prep_minutes: 1, talk_minutes: [1, 2]}
+      - {id: discussion, minutes: [4, 5]}
+    rubric: [fluency_coherence, lexical_resource, grammatical_range_accuracy, pronunciation]
+scale_description: "IELTS bands 0–9 in half bands"
+scene_alignment: {default: ielts_gt.speaking.interview, persuasive: ielts_gt.speaking.discussion}
+sources:
+  - {source_url: "https://www.britishcouncil.es/en/exam/ielts/general", as_of: "2026-10-14"}
+  - {source_url: "https://www.idp.com/malaysia/ielts/test-format/", as_of: "2026-10-14"}
+  - {source_url: "https://takeielts.britishcouncil.org/sites/default/files/ielts_guide_for_teachers.pdf", as_of: "2026-10-14"}
+source_url: https://www.britishcouncil.es/en/exam/ielts/general
+as_of: "2026-10-14"

@@ -1,0 +1,25 @@
+# Verb data for the conjugation engine. Simple-tense forms listed; compound tenses are derived.
+# Order of persons: je, tu, il/elle/on, nous, vous, ils/elles.
+source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+as_of: "2012"
+tenses: [present, passe_compose, imparfait, plus_que_parfait, futur_simple, conditionnel_present, conditionnel_passe, subjonctif_present]
+tense_bands: {present: 4, passe_compose: 5, imparfait: 5, futur_simple: 6, conditionnel_present: 6, plus_que_parfait: 7, subjonctif_present: 7, conditionnel_passe: 8}
+verbs:
+  etre:     {infinitive: être, aux: avoir, participle: été, present: [suis, es, est, sommes, êtes, sont], futur_stem: ser, imparfait_stem: ét, subjonctif: [sois, sois, soit, soyons, soyez, soient]}
+  avoir:    {infinitive: avoir, aux: avoir, participle: eu, present: [ai, as, a, avons, avez, ont], futur_stem: aur, subjonctif: [aie, aies, ait, ayons, ayez, aient]}
+  aller:    {infinitive: aller, aux: être, participle: allé, present: [vais, vas, va, allons, allez, vont], futur_stem: ir, subjonctif: [aille, ailles, aille, allions, alliez, aillent]}
+  faire:    {infinitive: faire, aux: avoir, participle: fait, present: [fais, fais, fait, faisons, faites, font], futur_stem: fer, subjonctif: [fasse, fasses, fasse, fassions, fassiez, fassent]}
+  pouvoir:  {infinitive: pouvoir, aux: avoir, participle: pu, present: [peux, peux, peut, pouvons, pouvez, peuvent], futur_stem: pourr, subjonctif: [puisse, puisses, puisse, puissions, puissiez, puissent]}
+  vouloir:  {infinitive: vouloir, aux: avoir, participle: voulu, present: [veux, veux, veut, voulons, voulez, veulent], futur_stem: voudr, subjonctif: [veuille, veuilles, veuille, voulions, vouliez, veuillent]}
+  devoir:   {infinitive: devoir, aux: avoir, participle: dû, present: [dois, dois, doit, devons, devez, doivent], futur_stem: devr, subjonctif: [doive, doives, doive, devions, deviez, doivent]}
+  venir:    {infinitive: venir, aux: être, participle: venu, present: [viens, viens, vient, venons, venez, viennent], futur_stem: viendr, subjonctif: [vienne, viennes, vienne, venions, veniez, viennent]}
+  prendre:  {infinitive: prendre, aux: avoir, participle: pris, present: [prends, prends, prend, prenons, prenez, prennent], futur_stem: prendr, subjonctif: [prenne, prennes, prenne, prenions, preniez, prennent]}
+  savoir:   {infinitive: savoir, aux: avoir, participle: su, present: [sais, sais, sait, savons, savez, savent], futur_stem: saur, subjonctif: [sache, saches, sache, sachions, sachiez, sachent]}
+  dire:     {infinitive: dire, aux: avoir, participle: dit, present: [dis, dis, dit, disons, dites, disent], futur_stem: dir, subjonctif: [dise, dises, dise, disions, disiez, disent]}
+  mettre:   {infinitive: mettre, aux: avoir, participle: mis, present: [mets, mets, met, mettons, mettez, mettent], futur_stem: mettr, subjonctif: [mette, mettes, mette, mettions, mettiez, mettent]}
+  partir:   {infinitive: partir, aux: être, participle: parti, present: [pars, pars, part, partons, partez, partent], futur_stem: partir, subjonctif: [parte, partes, parte, partions, partiez, partent]}
+  voir:     {infinitive: voir, aux: avoir, participle: vu, present: [vois, vois, voit, voyons, voyez, voient], futur_stem: verr, subjonctif: [voie, voies, voie, voyions, voyiez, voient]}
+  parler:   {infinitive: parler, aux: avoir, participle: parlé, present: [parle, parles, parle, parlons, parlez, parlent], futur_stem: parler, subjonctif: [parle, parles, parle, parlions, parliez, parlent]}
+  finir:    {infinitive: finir, aux: avoir, participle: fini, present: [finis, finis, finit, finissons, finissez, finissent], futur_stem: finir, subjonctif: [finisse, finisses, finisse, finissions, finissiez, finissent]}
+  payer:    {infinitive: payer, aux: avoir, participle: payé, present: [paie, paies, paie, payons, payez, paient], futur_stem: paier, subjonctif: [paie, paies, paie, payions, payiez, paient]}
+  arriver:  {infinitive: arriver, aux: être, participle: arrivé, present: [arrive, arrives, arrive, arrivons, arrivez, arrivent], futur_stem: arriver, subjonctif: [arrive, arrives, arrive, arrivions, arriviez, arrivent]}

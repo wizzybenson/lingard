@@ -1,0 +1,46 @@
+id: tef_canada
+name: TEF Canada
+language: fr
+scale: {type: points, per_module_max: {reading: 300, listening: 360, writing: 450, speaking: 450}}
+nclc_conversion: content/crs/tef_canada_to_nclc.yaml
+overall: per_module   # TEF reports each module separately; no overall
+skills: {comprehension_ecrite: reading, comprehension_orale: listening, expression_ecrite: writing, expression_orale: speaking}
+sections:
+  - id: comprehension_ecrite
+    skill: reading
+    minutes: 60
+    items: 40
+    order: 1
+    scoring: one_point_per_correct
+  - id: comprehension_orale
+    skill: listening
+    minutes: 40
+    items: 40
+    order: 2
+    scoring: one_point_per_correct
+  - id: expression_ecrite
+    skill: writing
+    minutes: 60
+    order: 3
+    tasks:
+      - {id: section_a, kind: continue_news_item, min_words: 80, suggested_minutes: 25, weight: 1,
+         rubric: [task_fulfilment, coherence_cohesion, lexical_resource, grammatical_control]}
+      - {id: section_b, kind: argue_point_of_view, min_words: 200, suggested_minutes: 35, weight: 1,
+         rubric: [task_fulfilment, argumentation, coherence_cohesion, lexical_resource, grammatical_control]}
+  - id: expression_orale
+    skill: speaking
+    minutes: 15
+    order: 4
+    parts:
+      - {id: section_a, kind: obtain_information, minutes: 5}
+      - {id: section_b, kind: persuade, minutes: 10}
+    rubric: [task_fulfilment, interaction, fluency, lexical_resource, grammatical_control, pronunciation]
+scale_description: "NCLC levels 1–12"
+scene_alignment: {default: tef_canada.eo.section_a, persuasive: tef_canada.eo.section_b}
+sources:
+  - {source_url: "https://www.lefrancaisdesaffaires.fr/tests-diplomes/test-evaluation-francais-tef/tef-canada/", as_of: "2026-10-14"}
+  - {source_url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html", as_of: "2026-06-22"}
+source_url: https://www.lefrancaisdesaffaires.fr/tests-diplomes/test-evaluation-francais-tef/tef-canada/
+as_of: "2026-10-14"
+notes:
+  - Rubric dimension names for TEF expression tasks are Lingard's internal labels (the publisher does not publish a public analytic rubric); they are mapped to NCLC descriptors.

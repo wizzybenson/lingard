@@ -1,0 +1,18 @@
+# Provider latency profiles for offline benchmarking. Lognormal(median_ms, sigma) per stage.
+# These are PLANNING ASSUMPTIONS, not measurements; replace each with measured numbers (SPEC §22) and record as_of.
+assumed_cloud:
+  status: assumption
+  as_of: "2026-10-14"
+  stt_ms: {median: 280, sigma: 0.35}          # batch transcription of a 2–4 s turn
+  llm_first_token_ms: {median: 380, sigma: 0.3}  # fast tier, cached actor prefix
+  llm_token_ms: {median: 12, sigma: 0.2}
+  tts_first_chunk_ms: {median: 170, sigma: 0.3}
+  network_ms: {median: 45, sigma: 0.25}       # one way, learner ↔ server
+assumed_4g:
+  status: assumption
+  as_of: "2026-10-14"
+  stt_ms: {median: 280, sigma: 0.35}
+  llm_first_token_ms: {median: 380, sigma: 0.3}
+  llm_token_ms: {median: 12, sigma: 0.2}
+  tts_first_chunk_ms: {median: 170, sigma: 0.3}
+  network_ms: {median: 90, sigma: 0.4}        # SPEC §4.2 4G: 150 ms RTT ±30 ms jitter

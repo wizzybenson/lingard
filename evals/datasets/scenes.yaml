@@ -1,0 +1,39 @@
+# Scene templates for live-plane evals. Each expands into variants by substituting {n} (a varying amount).
+rivemont:
+  - location_key: rivemont.vieux_port.apartment_3b
+    npc_key: landlord_martin
+    goal: "Récupérer votre dépôt de garantie"
+    facts: ["Le dépôt était de {n} dollars", "Le mur du salon a une petite fissure", "Le bail a pris fin le 30 septembre"]
+    targets: {functions: [fr.func.negotiate], grammar: [fr.grammar.si_imparfait], lexset: [fr.lex.housing.deposit_repairs]}
+    band: 6
+  - location_key: rivemont.vieux_port.cafe_quai
+    npc_key: cafe_chloe
+    goal: "Commander et demander un renseignement sur le quartier"
+    facts: ["Le menu du jour coûte {n} dollars", "La boulangerie d'à côté ferme à midi", "Il y a un marché le samedi"]
+    targets: {functions: [fr.func.ask_information, fr.func.make_request], grammar: [fr.grammar.questions], lexset: [fr.lex.food_shopping]}
+    band: 4
+  - location_key: rivemont.vieux_port.banque
+    npc_key: bank_karim
+    goal: "Ouvrir un compte bancaire"
+    facts: ["Les frais de carte sont de {n} dollars par an", "Il manque un justificatif d'adresse", "La carte arrive par la poste"]
+    targets: {functions: [fr.func.ask_clarification, fr.func.make_request], grammar: [fr.grammar.conditionnel_present], lexset: [fr.lex.banking]}
+    band: 5
+ashford:
+  - location_key: ashford.station_quarter.flat_2a
+    npc_key: landlord_graham
+    goal: "Get the damp in your flat fixed"
+    facts: ["The deposit was {n} pounds", "There is damp in the bathroom", "The tenancy started on 1 October"]
+    targets: {functions: [en.func.complain_politely], grammar: [en.grammar.second_conditional], lexset: [en.lex.housing.deposit_repairs]}
+    band: 7
+  - location_key: ashford.station_quarter.copper_kettle
+    npc_key: cafe_siobhan
+    goal: "Order and ask about the area"
+    facts: ["A flat white costs {n} pounds", "The bakery next door shuts at noon", "There is a market on Saturdays"]
+    targets: {functions: [en.func.ask_information, en.func.make_request], grammar: [en.grammar.questions], lexset: [en.lex.food_shopping]}
+    band: 4
+  - location_key: ashford.station_quarter.bank
+    npc_key: bank_daniel
+    goal: "Open a bank account"
+    facts: ["The card fee is {n} pounds a year", "You still need proof of address", "The card arrives by post"]
+    targets: {functions: [en.func.ask_clarification, en.func.make_request], grammar: [en.grammar.modals_obligation], lexset: [en.lex.banking]}
+    band: 5

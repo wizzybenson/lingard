@@ -1,0 +1,62 @@
+# TEF Canada expression criteria are Lingard's internal labels (the publisher does not release an analytic rubric).
+# Levels are paraphrased from NCLC descriptors and expressed on the NCLC scale; scores convert to TEF points via
+# content/crs/tef_canada_to_nclc.yaml (lowest point value of the level).
+source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+as_of: "2012"
+writing:
+  task_fulfilment:
+    10: "Répond à toutes les exigences avec pertinence et une argumentation riche et maîtrisée."
+    8: "Répond complètement à la consigne ; idées développées et organisées ; registre approprié."
+    6: "Répond à l'essentiel de la consigne ; développement limité ; registre parfois inadapté."
+    4: "Répond partiellement ; idées très simples ou hors sujet par moments."
+  argumentation:
+    10: "Argumentation nuancée, concessions et réfutations précises, exemples pertinents."
+    8: "Point de vue clair, arguments étayés, quelques nuances."
+    6: "Point de vue identifiable mais arguments peu développés ou répétitifs."
+    4: "Opinion énoncée sans véritable justification."
+  coherence_cohesion:
+    10: "Texte fluide ; articulation logique fine ; connecteurs variés et naturels."
+    8: "Progression claire ; connecteurs variés avec quelques maladresses."
+    6: "Organisation simple ; connecteurs basiques ou répétitifs."
+    4: "Enchaînement difficile à suivre ; liens logiques rares."
+  lexical_resource:
+    10: "Lexique étendu, précis et idiomatique."
+    8: "Lexique varié permettant de nuancer ; erreurs occasionnelles."
+    6: "Lexique suffisant pour les sujets courants ; imprécisions fréquentes."
+    4: "Lexique limité et répétitif ; erreurs gênantes."
+  grammatical_control:
+    10: "Grande variété de structures complexes, très peu d'erreurs."
+    8: "Bonne maîtrise des structures complexes ; erreurs rares qui ne gênent pas."
+    6: "Structures simples correctes ; erreurs fréquentes sur les structures complexes."
+    4: "Erreurs systématiques, même sur les structures de base."
+speaking:
+  task_fulfilment:
+    10: "Atteint pleinement l'objectif (s'informer / convaincre) avec aisance et stratégie."
+    8: "Atteint l'objectif ; questions ou arguments pertinents et variés."
+    6: "Atteint partiellement l'objectif ; échanges limités."
+    4: "Peine à atteindre l'objectif ; échanges très courts."
+  interaction:
+    10: "Interagit naturellement, relance, reformule, gère les imprévus."
+    8: "Interagit efficacement ; quelques hésitations dans les relances."
+    6: "Interagit sur des points prévisibles ; dépend de l'interlocuteur."
+    4: "Interaction très limitée ; réponses minimales."
+  fluency:
+    10: "Discours fluide et spontané ; pauses naturelles."
+    8: "Débit régulier ; quelques recherches de mots."
+    6: "Débit irrégulier ; pauses fréquentes mais compréhensible."
+    4: "Pauses longues et fréquentes ; discours fragmenté."
+  lexical_resource:
+    10: "Lexique riche et précis, expressions idiomatiques."
+    8: "Lexique varié adapté au sujet."
+    6: "Lexique courant suffisant ; périphrases fréquentes."
+    4: "Lexique très limité."
+  grammatical_control:
+    10: "Structures complexes maîtrisées."
+    8: "Bonne maîtrise ; erreurs ponctuelles."
+    6: "Structures simples correctes ; erreurs sur les complexes."
+    4: "Erreurs fréquentes même simples."
+  pronunciation:
+    10: "Prononciation claire, intonation naturelle ; accent sans effet sur la compréhension."
+    8: "Facile à comprendre ; quelques écarts sans gêne."
+    6: "Compréhensible avec un effort occasionnel."
+    4: "Erreurs de prononciation qui gênent souvent la compréhension."

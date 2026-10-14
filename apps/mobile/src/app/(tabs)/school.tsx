@@ -1,0 +1,28 @@
+import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
+
+import type { LessonRow } from "@/api/types";
+import { useApi } from "@/state/auth";
+import { useResource } from "@/state/resource";
+import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
+
+export default function School() {
+  const { t } = useTranslation();
+  const api = useApi();
+  const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"));
+  return (
+    <Screen>
+      <Title>{t("school.title")}</Title>
+      {lessons.loading && <Loading />}
+      <ErrorText message={lessons.error} />
+      {lessons.data?.length === 0 && <Body muted>{t("school.noLessons")}</Body>}
+      {lessons.data?.map((lesson) => (
+        <Card key={lesson.id}>
+          <Title>{lesson.content.title}</Title>
+          <Body muted>{lesson.content.minutes} min</Body>
+          <Button label={t("school.start")} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: lesson.id } })} />
+        </Card>
+      ))}
+    </Screen>
+  );
+}

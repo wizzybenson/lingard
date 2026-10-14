@@ -1,0 +1,19 @@
+defaults:
+  kind: pron
+  language: en
+  skill: speaking
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
+  as_of: "2012"
+nodes:
+  - {key: en.pron.th_sounds, band: 4, title: "/θ/ and /ð/ (think, this)", payload: {phonemes: ["θ", "ð"], minimal_pairs: [[think, sink], [three, tree], [they, day]], functional_load: 0.4, l1_difficulty: {ar: 0.3, generic: 0.7}}}
+  - {key: en.pron.p_vs_b, band: 4, title: "/p/ and /b/ (pen, Ben)", payload: {phonemes: ["p", "b"], minimal_pairs: [[pen, ben], [pack, back], [pill, bill]], functional_load: 0.9, l1_difficulty: {ar: 0.9, generic: 0.2}}}
+  - {key: en.pron.short_long_vowels, band: 4, title: "Short and long vowels (ship/sheep, full/fool)", payload: {phonemes: ["ɪ", "iː", "ʊ", "uː"], minimal_pairs: [[ship, sheep], [live, leave], [full, fool]], functional_load: 0.9, l1_difficulty: {ar: 0.7, generic: 0.6}}}
+  - {key: en.pron.v_vs_f, band: 4, title: "/v/ and /f/ (van, fan)", payload: {phonemes: ["v", "f"], minimal_pairs: [[van, fan], [very, ferry]], functional_load: 0.6, l1_difficulty: {ar: 0.6, generic: 0.2}}}
+  - {key: en.pron.word_stress, band: 5, title: "Word stress", payload: {examples: ["PHOtograph / phoTOgraphy", "reCEIPT", "deVElopment"], functional_load: 0.8, l1_difficulty: {ar: 0.6, generic: 0.6}}}
+  - {key: en.pron.ed_endings, band: 5, title: "-ed endings /t/ /d/ /ɪd/", payload: {examples: ["walked /t/", "moved /d/", "wanted /ɪd/"], functional_load: 0.5, l1_difficulty: {ar: 0.7, generic: 0.5}}}
+  - {key: en.pron.consonant_clusters, band: 5, title: "Consonant clusters (street, months)", payload: {examples: [street, months, "asked", "splash"], functional_load: 0.6, l1_difficulty: {ar: 0.8, generic: 0.5}}}
+  - {key: en.pron.schwa, band: 6, title: "Schwa and weak forms", payload: {phonemes: ["ə"], examples: ["a cup of tea", "to the shop", "can you"], functional_load: 0.5, l1_difficulty: {ar: 0.7, generic: 0.6}}}
+  - {key: en.pron.sentence_stress, band: 6, title: "Sentence stress and rhythm", payload: {functional_load: 0.6, l1_difficulty: {ar: 0.6, generic: 0.6}}}
+  - {key: en.pron.intonation, band: 6, title: "Intonation for questions, lists and attitude", payload: {functional_load: 0.5, l1_difficulty: {ar: 0.5, generic: 0.5}}}
+  - {key: en.pron.connected_speech, band: 7, title: "Connected speech (linking, elision)", payload: {examples: ["turn_off", "next_door → nex' door", "want to → wanna"], functional_load: 0.4, l1_difficulty: {ar: 0.6, generic: 0.6}}}
+  - {key: en.pron.non_rhotic_r, band: 7, title: "Non-rhotic /r/ in Southern British English", payload: {examples: ["car /kɑː/", "water /ˈwɔːtə/"], functional_load: 0.2, l1_difficulty: {ar: 0.8, generic: 0.5}}}

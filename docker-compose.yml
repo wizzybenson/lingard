@@ -1,0 +1,84 @@
+# Local stack (SPEC §24). App services are added under the "app" profile; infra starts by default.
+name: lingard
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: lingard
+      POSTGRES_PASSWORD: lingard
+      POSTGRES_DB: lingard
+    ports: ["55432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lingard"]
+      interval: 2s
+      retries: 30
+
+  redis:
+    image: valkey/valkey:8.1-alpine   # BSD-3; Redis 7.4+ is RSALv2/SSPL (decision 0007)
+    ports: ["56379:6379"]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 2s
+      retries: 30
+
+  objects:
+    # S3-compatible object storage. MinIO images are no longer pullable (docs/decisions/CHALLENGE-object-storage.md);
+    # SeaweedFS (Apache-2.0) serves the same S3 API locally. Any S3 provider works in staging/prod.
+    image: chrislusf/seaweedfs:3.80
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
+    ports: ["59000:8333"]
+    volumes: [objectdata:/data, ./infra/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro]
+
+  livekit:
+    image: livekit/livekit-server:v1.9.0
+    # node-ip/ports must match what clients can reach: ICE candidates carry them verbatim.
+    command: --dev --bind 0.0.0.0 --node-ip 127.0.0.1
+    ports: ["57880:7880", "7881:7881", "7882:7882/udp"]
+
+  langfuse:
+    image: langfuse/langfuse:2
+    profiles: ["observability"]
+    depends_on: [postgres]
+    environment:
+      DATABASE_URL: postgresql://lingard:lingard@postgres:5432/langfuse
+      NEXTAUTH_SECRET: local-only-secret
+      NEXTAUTH_URL: http://localhost:53000
+      SALT: local-only-salt
+    ports: ["53000:3000"]
+
+  api:
+    profiles: ["app"]
+    build: {context: ., dockerfile: infra/docker/python.Dockerfile, args: {SERVICE: api}}
+    command: uvicorn lingard_api.main:app --host 0.0.0.0 --port 8000
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://lingard:lingard@postgres:5432/lingard
+      REDIS_URL: redis://redis:6379/0
+    depends_on: {postgres: {condition: service_healthy}, redis: {condition: service_healthy}}
+    ports: ["58000:8000"]
+
+  live:
+    profiles: ["app"]
+    build: {context: ., dockerfile: infra/docker/python.Dockerfile, args: {SERVICE: live}}
+    command: python -m lingard_live.worker
+    env_file: [.env]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      LIVEKIT_URL: ws://livekit:7880
+    depends_on: [redis, livekit]
+
+  graphs:
+    profiles: ["app"]
+    build: {context: ., dockerfile: infra/docker/python.Dockerfile, args: {SERVICE: graphs}}
+    command: python -m lingard_graphs.worker
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://lingard:lingard@postgres:5432/lingard
+      REDIS_URL: redis://redis:6379/0
+    depends_on: {postgres: {condition: service_healthy}, redis: {condition: service_healthy}}
+
+volumes:
+  pgdata:
+  objectdata:

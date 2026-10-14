@@ -1,0 +1,38 @@
+# Can-do statements per skill × NCLC band, paraphrased in Lingard's own words from the NCLC descriptors.
+# auto_requires: each can-do requires the reviewed function/grammar/lexset nodes of the same band
+# that serve its skill (speaking/writing: functions+grammar+lexsets; listening/reading: functions+lexsets).
+defaults:
+  kind: cando
+  language: fr
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+  as_of: "2012"
+auto_requires: same_band
+nodes:
+  - {key: fr.cando.listening.nclc4, band: 4, skill: listening, title: "Comprendre des échanges courts et simples sur des sujets familiers, débit lent, avec répétitions."}
+  - {key: fr.cando.listening.nclc5, band: 5, skill: listening, title: "Suivre une conversation courante et des consignes en plusieurs étapes sur des sujets prévisibles."}
+  - {key: fr.cando.listening.nclc6, band: 6, skill: listening, title: "Saisir l'essentiel et des détails d'annonces, de messages et de conversations à débit normal."}
+  - {key: fr.cando.listening.nclc7, band: 7, skill: listening, title: "Comprendre des échanges plus longs, identifier opinions et attitudes, suivre un exposé clair."}
+  - {key: fr.cando.listening.nclc8, band: 8, skill: listening, title: "Suivre des discussions et des reportages complexes, dégager l'implicite simple et le ton."}
+  - {key: fr.cando.listening.nclc9, band: 9, skill: listening, title: "Comprendre des débats et des émissions avec accents variés, saisir nuances et sous-entendus."}
+  - {key: fr.cando.listening.nclc10, band: 10, skill: listening, title: "Comprendre sans effort un discours spécialisé ou rapide, y compris l'humour et l'ironie."}
+  - {key: fr.cando.reading.nclc4, band: 4, skill: reading, title: "Lire des textes courts et prévisibles : avis, horaires, messages simples."}
+  - {key: fr.cando.reading.nclc5, band: 5, skill: reading, title: "Repérer l'information utile dans des documents courants : annonces, formulaires, courriels."}
+  - {key: fr.cando.reading.nclc6, band: 6, skill: reading, title: "Comprendre l'idée principale et les détails de textes informatifs d'une page."}
+  - {key: fr.cando.reading.nclc7, band: 7, skill: reading, title: "Lire des articles et des lettres en distinguant faits, opinions et intention de l'auteur."}
+  - {key: fr.cando.reading.nclc8, band: 8, skill: reading, title: "Comprendre des textes argumentatifs et administratifs denses ; faire des inférences."}
+  - {key: fr.cando.reading.nclc9, band: 9, skill: reading, title: "Analyser des textes longs et complexes, évaluer l'argumentation et le registre."}
+  - {key: fr.cando.reading.nclc10, band: 10, skill: reading, title: "Lire aisément des textes spécialisés ou littéraires et en saisir les subtilités."}
+  - {key: fr.cando.writing.nclc4, band: 4, skill: writing, title: "Écrire de courts messages et remplir des formulaires simples sur des sujets familiers."}
+  - {key: fr.cando.writing.nclc5, band: 5, skill: writing, title: "Rédiger un courriel ou une note qui relate un événement en ordre chronologique."}
+  - {key: fr.cando.writing.nclc6, band: 6, skill: writing, title: "Écrire un message structuré pour demander, expliquer ou se plaindre, avec des connecteurs simples."}
+  - {key: fr.cando.writing.nclc7, band: 7, skill: writing, title: "Rédiger un texte cohérent qui exprime et justifie une opinion, registre adapté."}
+  - {key: fr.cando.writing.nclc8, band: 8, skill: writing, title: "Écrire un texte argumenté et nuancé avec une structure claire et un lexique précis."}
+  - {key: fr.cando.writing.nclc9, band: 9, skill: writing, title: "Produire des écrits complexes, persuasifs et bien articulés, avec peu d'erreurs."}
+  - {key: fr.cando.writing.nclc10, band: 10, skill: writing, title: "Rédiger avec aisance et précision dans tous les registres, style maîtrisé."}
+  - {key: fr.cando.speaking.nclc4, band: 4, skill: speaking, title: "Participer à de brefs échanges routiniers, se présenter, demander des renseignements simples."}
+  - {key: fr.cando.speaking.nclc5, band: 5, skill: speaking, title: "Raconter et décrire des expériences, interagir dans des situations courantes prévisibles."}
+  - {key: fr.cando.speaking.nclc6, band: 6, skill: speaking, title: "Exprimer une opinion, comparer, se plaindre poliment et gérer des imprévus simples."}
+  - {key: fr.cando.speaking.nclc7, band: 7, skill: speaking, title: "Négocier, formuler des hypothèses et soutenir une discussion avec aisance relative."}
+  - {key: fr.cando.speaking.nclc8, band: 8, skill: speaking, title: "Argumenter et convaincre de façon structurée, s'adapter à l'interlocuteur et au registre."}
+  - {key: fr.cando.speaking.nclc9, band: 9, skill: speaking, title: "Débattre de sujets complexes avec nuance, concéder et réfuter avec précision."}
+  - {key: fr.cando.speaking.nclc10, band: 10, skill: speaking, title: "S'exprimer spontanément et avec finesse dans toutes les situations, y compris formelles."}

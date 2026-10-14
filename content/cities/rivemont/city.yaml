@@ -1,0 +1,50 @@
+# Rivemont: a fictional francophone city in Canada. All names, places and stories are original.
+key: rivemont
+name: Rivemont
+language: fr
+locale: fr-FR
+country: Canada
+school: École du Vieux-Port
+districts:
+  - key: rivemont.vieux_port
+    name: Le Vieux-Port
+    min_band: 1
+    order: 1
+    description: Le quartier d'arrivée, entre le fleuve et la vieille ville ; on y loue son premier logement.
+    locations:
+      - key: rivemont.vieux_port.apartment_3b
+        name: Appartement 3B, 14 rue des Remparts
+        description: Un deux-pièces lumineux au troisième étage, avec une petite fissure dans le mur du salon.
+        x: 0.22
+        y: 0.38
+        layer_art: [rivemont/vieux_port/apartment_bg.png, rivemont/vieux_port/apartment_mid.png]
+        hotspots:
+          - {key: martin, kind: npc, label: Martin Lefebvre, npc_key: landlord_martin, x: 0.6, y: 0.55}
+          - {key: crack, kind: object, label: La fissure, x: 0.3, y: 0.4, text: "Une fissure fine d'environ vingt centimètres."}
+          - {key: lease, kind: object, label: Le bail, x: 0.75, y: 0.7, text: "Bail du 1er octobre au 30 septembre. Dépôt : 900 $."}
+      - key: rivemont.vieux_port.cafe_quai
+        name: Café du Quai
+        description: Un petit café face au fleuve, tenu par Chloé depuis dix ans.
+        x: 0.55
+        y: 0.62
+        layer_art: [rivemont/vieux_port/cafe_bg.png, rivemont/vieux_port/cafe_mid.png]
+        hotspots:
+          - {key: chloe, kind: npc, label: Chloé Gagnon, npc_key: cafe_chloe, x: 0.45, y: 0.5}
+          - {key: menu, kind: sign, label: Le menu, x: 0.8, y: 0.3, text: "Café 3,25 $ · Croissant 2,75 $ · Soupe du jour 6,50 $"}
+          - {key: notice_board, kind: sign, label: Tableau d'affichage, x: 0.15, y: 0.35, text: "Cherche colocataire, quartier Saint-Roch. Cours de français du soir à l'École du Vieux-Port."}
+      - key: rivemont.vieux_port.banque
+        name: Caisse populaire du Vieux-Port
+        description: Une agence bancaire de quartier où l'on ouvre son premier compte canadien.
+        x: 0.78
+        y: 0.3
+        layer_art: [rivemont/vieux_port/bank_bg.png, rivemont/vieux_port/bank_mid.png]
+        hotspots:
+          - {key: karim, kind: npc, label: Karim Benali, npc_key: bank_karim, x: 0.5, y: 0.52}
+          - {key: brochure, kind: sign, label: Brochure, x: 0.2, y: 0.6, text: "Compte nouvel arrivant : aucuns frais mensuels pendant un an."}
+  - key: rivemont.saint_roch
+    name: Saint-Roch
+    min_band: 6
+    order: 2
+    description: Le quartier des commerces et du travail (contenu en Phase 5).
+    locations:
+      - {key: rivemont.saint_roch.placeholder, name: Rue Saint-Roch, description: "À venir.", x: 0.5, y: 0.5}

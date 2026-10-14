@@ -1,0 +1,32 @@
+# Pedagogy thresholds (SPEC §15). Tuned by the synthetic-learner suite; every value is read from here, never inlined.
+bkt:
+  p_init: 0.15          # prior mastery for a node with no evidence
+  p_transit: 0.08       # chance of learning from one practice opportunity
+  p_slip: 0.10          # knows it but errs
+  p_guess: 0.20         # doesn't know it but gets it right
+  mastered: 0.85        # p_mastery at which a node counts as evidenced-mastered
+tickets:
+  open_after_errors: 2              # errors on a node within the window before a ticket opens
+  window_days: 7
+  close_contexts: 3                 # correct uses in distinct contexts…
+  close_days: 2                     # …spread over at least this many days
+  reopen_priority_boost: 0.25
+  lesson_after_reopens: 2           # second reopen → Teacher lesson
+  max_bands_above: 1                # errors on nodes more than this above the learner's band don't open tickets
+director:
+  ticket_share_min: 0.40
+  ticket_share_max: 0.60
+  targets_per_scene: 4
+  scenes_per_day: 3
+  ticket_ageing_per_day: 0.15       # priority added per idle day, so lower-priority tickets aren't starved
+steering:
+  every_learner_turns: 4
+  max_hint_chars: 160
+corrections:
+  min_confidence: 0.85
+bands:
+  # Evidence weights for the band posterior (SPEC §12.2): observation variance in band² units.
+  observation_variance: {turn: 2.25, writing: 0.64, mock: 0.16, placement: 0.49}
+  prior_variance: 4.0
+  display_interval: 0.80
+  crs_confidence: 0.80              # sim CRS moves only when the posterior is this confident

@@ -1,0 +1,15 @@
+language: en
+officer: {name: "Officer Hale", npc_voice: en_m_50_hale}
+writing:
+  task_id: placement_email
+  min_words: 120
+  prompt: "You have just arrived in Ashford. Write an email (about 120 words) to a letting agent describing the flat you are looking for, your dates and your budget, and ask two questions."
+speaking:
+  - {level: 4, kind: describe, prompt: "Could you introduce yourself and describe your home town?"}
+  - {level: 5, kind: narrate_past, prompt: "Tell me about your journey here. What happened?"}
+  - {level: 6, kind: compare, prompt: "Compare life in your country with what you imagine life here will be like."}
+  - {level: 7, kind: hypothesise, prompt: "If you couldn't find work in your field, what would you do?"}
+  - {level: 8, kind: argue, prompt: "Some people think newcomers should have to take language classes. What's your view? Argue your case."}
+  - {level: 9, kind: argue_nuanced, prompt: "People say remote working is changing towns and cities. Weigh up the pros and cons and give a balanced position."}
+read_aloud:
+  text: "My name is Sam and I've just arrived in Ashford. This morning I took the bus to the station, then walked along the river. It was cold, but the sun was shining. I bought a coffee and a bacon roll, and asked a very kind woman for directions. Tomorrow I'll view two flats and open a bank account."

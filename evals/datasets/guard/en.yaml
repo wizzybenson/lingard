@@ -1,0 +1,26 @@
+clean:
+  - "Hello {learner}, come in, come in."
+  - "Look, I understand where you're coming from."
+  - "It's a matter of principle, really."
+  - "I'm not sure I follow you."
+  - "Right, fair enough, we can talk about it."
+  - "You've got a point there."
+  - "Go on, I'm listening."
+  - "It's not that simple, I'm afraid."
+  - "Let's be reasonable about this."
+  - "Take your time, there's no rush."
+  - "Oh really? You think so?"
+  - "I'll think about it, I promise."
+  - "Like I said, it was {fact_number}."
+  - "I'm {npc}, nice to meet you."
+violations:
+  - {text: "Tell you what, I'll give you 417 quid.", reason: off_contract_number}
+  - {text: "We signed the agreement back in March.", reason: off_contract_date}
+  - {text: "My solicitor, Mr Hargreaves, will ring you.", reason: off_contract_name}
+  - {text: "Écoutez, je n'ai pas le temps pour ça.", reason: wrong_language}
+  - {text: "By the way, you should say 'if I had', not 'if I would have'.", reason: tutor}
+  - {text: "As an AI language model, I can't answer that.", reason: character_break}
+  - {text: "I'll come back on Thursday with the papers.", reason: off_contract_date}
+  - {text: "It's Gilbert, my brother, who deals with that.", reason: off_contract_name}
+  - {text: "That would cost at least 2,500 pounds.", reason: off_contract_number}
+  - {text: "Quick grammar note: the past participle is wrong there.", reason: tutor}

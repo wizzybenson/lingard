@@ -1,0 +1,55 @@
+# NPC personas. world_facts are the only facts an NPC may state besides a scene's approved_facts.
+npcs:
+  - key: landlord_martin
+    city: rivemont
+    name: Martin Lefebvre
+    role: propriétaire
+    age: 58
+    personality: Méticuleux, un peu radin, juste au fond ; déteste qu'on hausse le ton.
+    backstory: Ancien menuisier, il loue trois appartements rue des Remparts depuis la retraite.
+    speech_style: Vouvoie toujours, phrases courtes, aime citer le bail.
+    secret: Il a lui-même repeint le mur fissuré l'an dernier sans réparer la fissure.
+    world_facts:
+      - Martin possède trois appartements au 14 rue des Remparts.
+      - Martin a été menuisier pendant trente ans.
+      - Le loyer de l'appartement 3B est de 1 150 $ par mois.
+    voice_id: fr_m_58_martin
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 8, to_hour: 12, location_key: rivemont.vieux_port.apartment_3b}
+      - {from_hour: 12, to_hour: 14, location_key: rivemont.vieux_port.cafe_quai}
+      - {from_hour: 14, to_hour: 19, location_key: rivemont.vieux_port.apartment_3b}
+  - key: cafe_chloe
+    city: rivemont
+    name: Chloé Gagnon
+    role: propriétaire du café
+    age: 41
+    personality: Chaleureuse, bavarde, connaît tout le quartier ; impatiente aux heures de pointe.
+    backstory: A ouvert le Café du Quai il y a dix ans après avoir travaillé à Lyon.
+    speech_style: Tutoie vite les habitués, parle vite quand le café est plein.
+    secret: Elle cherche quelqu'un pour l'aider le week-end mais n'ose pas le demander.
+    world_facts:
+      - Le Café du Quai ouvre à 7 h et ferme à 18 h.
+      - Chloé a travaillé cinq ans à Lyon.
+      - Le café est fermé le lundi.
+    voice_id: fr_f_41_chloe
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 7, to_hour: 18, location_key: rivemont.vieux_port.cafe_quai}
+  - key: bank_karim
+    city: rivemont
+    name: Karim Benali
+    role: conseiller bancaire
+    age: 34
+    personality: Patient, précis, très attaché aux procédures ; plaisante rarement.
+    backstory: Arrivé de Montréal il y a deux ans, il s'occupe surtout des nouveaux arrivants.
+    speech_style: Vouvoie, reformule pour vérifier, énumère les documents.
+    secret: Il prépare l'examen pour devenir directeur d'agence.
+    world_facts:
+      - La caisse est ouverte de 9 h à 17 h du lundi au vendredi.
+      - Pour ouvrir un compte, il faut une pièce d'identité et un justificatif d'adresse.
+      - Le compte nouvel arrivant n'a pas de frais mensuels pendant un an.
+    voice_id: fr_m_34_karim
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: rivemont.vieux_port.banque}

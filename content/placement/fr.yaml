@@ -1,0 +1,16 @@
+# Quick placement (SPEC §17). Original prompts. In-fiction mode frames them as the border interview at Rivemont.
+language: fr
+officer: {name: "Agente Roy", npc_voice: fr_f_45_roy}
+writing:
+  task_id: placement_email
+  min_words: 120
+  prompt: "Vous venez d'arriver à Rivemont. Écrivez un courriel (environ 120 mots) à une agence de location pour décrire le logement que vous cherchez, vos dates et votre budget, et posez deux questions."
+speaking:  # escalating levels: describe → narrate past → compare → hypothesise → argue
+  - {level: 4, kind: describe, prompt: "Pouvez-vous vous présenter et décrire votre ville d'origine ?"}
+  - {level: 5, kind: narrate_past, prompt: "Racontez-moi votre voyage jusqu'ici : qu'est-ce qui s'est passé ?"}
+  - {level: 6, kind: compare, prompt: "Comparez la vie dans votre pays et ce que vous imaginez de la vie ici."}
+  - {level: 7, kind: hypothesise, prompt: "Si vous ne trouviez pas de travail dans votre domaine, que feriez-vous ?"}
+  - {level: 8, kind: argue, prompt: "Certains pensent que les nouveaux arrivants devraient suivre des cours de langue obligatoires. Qu'en pensez-vous ? Défendez votre point de vue."}
+  - {level: 9, kind: argue_nuanced, prompt: "On dit que le télétravail transforme les villes. Présentez les avantages et les inconvénients, puis donnez une position nuancée."}
+read_aloud:
+  text: "Je m'appelle Sam et je viens d'arriver à Rivemont. Ce matin, j'ai pris le bus jusqu'au Vieux-Port, puis j'ai marché le long du fleuve. Il faisait froid, mais le soleil brillait. J'ai acheté un café et un croissant, et j'ai demandé mon chemin à une passante très gentille. Demain, je visiterai deux appartements et j'ouvrirai un compte à la banque."

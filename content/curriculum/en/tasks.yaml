@@ -1,0 +1,14 @@
+defaults:
+  kind: tasktype
+  language: en
+  band: 4
+  source_url: https://www.britishcouncil.es/en/exam/ielts/general
+  as_of: "2026-10-14"
+nodes:
+  - {key: en.task.ielts_listening, skill: listening, title: "IELTS Listening (4 parts, 40 questions, 30 min)", payload: {pack: ielts_gt, section: listening}, exercises_skill: listening}
+  - {key: en.task.ielts_reading, skill: reading, title: "IELTS GT Reading (3 sections, 40 questions, 60 min)", payload: {pack: ielts_gt, section: reading}, exercises_skill: reading}
+  - {key: en.task.ielts_writing_task1_letter, skill: writing, title: "IELTS GT Writing Task 1: letter (150 words min, ~20 min)", payload: {pack: ielts_gt, section: writing, task: task1_letter}, exercises_skill: writing, assessed_by: [ielts_gt.writing.task_achievement, ielts_gt.writing.coherence_cohesion, ielts_gt.writing.lexical_resource, ielts_gt.writing.grammatical_range_accuracy]}
+  - {key: en.task.ielts_writing_task2_essay, skill: writing, title: "IELTS GT Writing Task 2: essay (250 words min, ~40 min)", payload: {pack: ielts_gt, section: writing, task: task2_essay}, exercises_skill: writing, assessed_by: [ielts_gt.writing.task_response, ielts_gt.writing.coherence_cohesion, ielts_gt.writing.lexical_resource, ielts_gt.writing.grammatical_range_accuracy]}
+  - {key: en.task.ielts_speaking_part1, skill: speaking, title: "IELTS Speaking Part 1: interview (4-5 min)", payload: {pack: ielts_gt, section: speaking, part: interview}, exercises_skill: speaking, assessed_by: [ielts_gt.speaking.fluency_coherence, ielts_gt.speaking.lexical_resource, ielts_gt.speaking.grammatical_range_accuracy, ielts_gt.speaking.pronunciation]}
+  - {key: en.task.ielts_speaking_part2, skill: speaking, title: "IELTS Speaking Part 2: long turn (1 min prep, 1-2 min talk)", payload: {pack: ielts_gt, section: speaking, part: long_turn}, exercises_skill: speaking, assessed_by: [ielts_gt.speaking.fluency_coherence, ielts_gt.speaking.lexical_resource, ielts_gt.speaking.grammatical_range_accuracy, ielts_gt.speaking.pronunciation]}
+  - {key: en.task.ielts_speaking_part3, skill: speaking, title: "IELTS Speaking Part 3: discussion (4-5 min)", payload: {pack: ielts_gt, section: speaking, part: discussion}, exercises_skill: speaking, assessed_by: [ielts_gt.speaking.fluency_coherence, ielts_gt.speaking.lexical_resource, ielts_gt.speaking.grammatical_range_accuracy, ielts_gt.speaking.pronunciation]}

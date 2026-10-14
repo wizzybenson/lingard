@@ -1,0 +1,75 @@
+# Original items in the format of TEF Canada compréhension orale. The stimulus is an audio script (TTS-rendered).
+defaults: {pack: tef_canada, language: fr, skill: listening, section: comprehension_orale, task_type: co_document}
+items:
+  - id: fr-co-001
+    band: 4
+    stimulus: "Bonjour, ici la pharmacie du Port. Votre ordonnance est prête. Vous pouvez passer la chercher aujourd'hui avant dix-neuf heures."
+    question: "Que doit faire la personne ?"
+    options: ["Appeler le médecin", "Aller chercher ses médicaments", "Payer une facture", "Prendre un rendez-vous"]
+    answer: 1
+  - id: fr-co-002
+    band: 4
+    stimulus: "Mesdames et messieurs, le train à destination de Québec partira avec vingt minutes de retard, voie trois."
+    question: "Quel est le problème annoncé ?"
+    options: ["Le train est annulé", "Le train partira en retard", "La voie est fermée", "Les billets sont plus chers"]
+    answer: 1
+  - id: fr-co-003
+    band: 5
+    stimulus: "Coucou, c'est Marc. Finalement, la réunion de demain est déplacée à jeudi, même heure, même salle. Tu peux prévenir Sophie ? Merci !"
+    question: "Qu'est-ce qui change pour la réunion ?"
+    options: ["La salle", "L'heure", "Le jour", "Les participants"]
+    answer: 2
+  - id: fr-co-004
+    band: 5
+    stimulus: "Pour obtenir votre carte de bibliothèque, il suffit d'apporter une pièce d'identité et une preuve d'adresse récente. L'inscription est gratuite pour les résidents."
+    question: "Que faut-il apporter ?"
+    options: ["Une photo et de l'argent", "Une pièce d'identité et une preuve d'adresse", "Un formulaire signé par un voisin", "Rien du tout"]
+    answer: 1
+  - id: fr-co-005
+    band: 6
+    stimulus: "— Vous avez trouvé un appartement ? — Oui, mais il est plus loin du travail que l'ancien. Par contre, le loyer est bien moins cher, et il y a un parc juste à côté."
+    question: "Quel est l'avantage principal du nouvel appartement ?"
+    options: ["Il est plus près du travail", "Il est moins cher", "Il est plus grand", "Il est neuf"]
+    answer: 1
+  - id: fr-co-006
+    band: 6
+    stimulus: "En raison des fortes chutes de neige prévues cette nuit, la ville demande aux résidents de déplacer leur voiture du côté pair de la rue avant vingt-deux heures."
+    question: "Pourquoi faut-il déplacer sa voiture ?"
+    options: ["À cause d'un marché", "Pour permettre le déneigement", "Pour un défilé", "À cause de travaux sur les trottoirs"]
+    answer: 1
+  - id: fr-co-007
+    band: 7
+    stimulus: "Je comprends votre frustration, madame, mais le remboursement ne peut se faire que sur présentation du reçu. En revanche, je peux vous proposer un échange ou un avoir valable un an."
+    question: "Que propose le vendeur ?"
+    options: ["Un remboursement immédiat", "Un échange ou un avoir", "Une réduction sur le prochain achat seulement", "Rien, il refuse tout"]
+    answer: 1
+  - id: fr-co-008
+    band: 7
+    stimulus: "Notre invitée a créé une épicerie solidaire il y a trois ans. Selon elle, le plus difficile n'a pas été de trouver des produits, mais de convaincre les gens qu'ils avaient le droit d'en profiter sans honte."
+    question: "Quelle a été la principale difficulté de l'invitée ?"
+    options: ["Trouver des produits", "Trouver un local", "Faire accepter l'aide sans gêne", "Recruter des bénévoles"]
+    answer: 2
+  - id: fr-co-009
+    band: 8
+    stimulus: "On présente souvent la semaine de quatre jours comme une évidence. Pourtant, les expériences menées montrent des résultats contrastés : si le bien-être progresse, la productivité, elle, dépend fortement du secteur et de l'organisation du travail."
+    question: "Que dit le journaliste à propos de la semaine de quatre jours ?"
+    options: ["Elle améliore partout la productivité", "Ses effets varient selon les secteurs", "Elle réduit le bien-être", "Elle a été abandonnée"]
+    answer: 1
+  - id: fr-co-010
+    band: 8
+    stimulus: "Ce n'est pas tant le manque de logements que leur inadéquation qui pose problème : on construit surtout des studios, alors que les familles cherchent des trois-pièces abordables."
+    question: "Quel est le problème selon l'intervenant ?"
+    options: ["On ne construit pas assez", "Les logements construits ne correspondent pas aux besoins", "Les familles préfèrent les studios", "Les loyers ont baissé"]
+    answer: 1
+  - id: fr-co-011
+    band: 9
+    stimulus: "Il serait réducteur d'imputer la désaffection des centres-villes au seul commerce en ligne ; le coût du stationnement et la disparition des services de proximité y ont, à mon sens, contribué tout autant."
+    question: "Que pense l'intervenante du commerce en ligne ?"
+    options: ["C'est l'unique cause de la désaffection", "C'est une cause parmi d'autres", "Il n'a aucun effet", "Il a sauvé les centres-villes"]
+    answer: 1
+  - id: fr-co-012
+    band: 10
+    stimulus: "Loin de moi l'idée de minimiser les progrès accomplis ; mais se féliciter d'un taux d'emploi record en passant sous silence la précarité des contrats relève, disons, d'un optimisme pour le moins sélectif."
+    question: "Quel est le ton de l'intervenant ?"
+    options: ["Enthousiaste", "Ironique et critique", "Neutre et descriptif", "Inquiet pour sa propre carrière"]
+    answer: 1

@@ -1,0 +1,15 @@
+# IELTS General Training band → CLB, per skill. Minimum band for each CLB level.
+source_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html
+as_of: "2026-06-22"
+verified_at: "2026-10-14"
+pack: ielts_gt
+scale: band
+# clb: {speaking, listening, reading, writing} minimum score
+levels:
+  10: {speaking: 7.5, listening: 8.5, reading: 8.0, writing: 7.5}
+  9:  {speaking: 7.0, listening: 8.0, reading: 7.0, writing: 7.0}
+  8:  {speaking: 6.5, listening: 7.5, reading: 6.5, writing: 6.5}
+  7:  {speaking: 6.0, listening: 6.0, reading: 6.0, writing: 6.0}
+  6:  {speaking: 5.5, listening: 5.5, reading: 5.0, writing: 5.5}
+  5:  {speaking: 5.0, listening: 5.0, reading: 4.0, writing: 5.0}
+  4:  {speaking: 4.0, listening: 4.5, reading: 3.5, writing: 4.0}

@@ -1,0 +1,51 @@
+# Writing and speaking criteria with Lingard's own paraphrased level descriptors (not the official wording).
+# Used to anchor scorer prompts. Scale: IELTS bands, whole and half.
+source_url: https://takeielts.britishcouncil.org/sites/default/files/ielts_guide_for_teachers.pdf
+as_of: "2026-10-14"
+writing:
+  task_achievement:
+    9: "Fully meets every requirement; tone and purpose of the letter are perfectly judged throughout."
+    7: "Covers all bullet points clearly; purpose is clear; tone mostly consistent; some points could be extended."
+    5: "Covers the task only partly or unevenly; purpose may be unclear in places; tone may slip."
+    4: "Attempts the task but misses points or misreads it; purpose and tone are often unclear."
+  task_response:
+    9: "Fully develops a clear position with well-supported, relevant ideas."
+    7: "Addresses all parts; clear position throughout; main ideas extended and supported, sometimes over-generalised."
+    5: "Addresses the task partly; position unclear or repetitive; ideas limited and not well developed."
+    4: "Responds minimally or tangentially; position hard to identify; ideas few and poorly supported."
+  coherence_cohesion:
+    9: "Effortless to follow; cohesion is unnoticeable; paragraphing skilful."
+    7: "Logically organised with clear progression; a range of linking devices, with occasional over- or under-use."
+    5: "Some organisation but lacks overall progression; linking can be mechanical, repetitive or faulty."
+    4: "Information not arranged coherently; basic linking used inaccurately or repetitively."
+  lexical_resource:
+    9: "Wide, precise, natural vocabulary; rare slips only."
+    7: "Enough range for flexibility and some precision; uses less common items with awareness of style; occasional errors."
+    5: "Limited but minimally adequate range; noticeable errors in word choice or spelling that may cause difficulty."
+    4: "Basic, repetitive vocabulary; frequent errors that strain the reader."
+  grammatical_range_accuracy:
+    9: "Wide range of structures used with full flexibility and accuracy."
+    7: "Variety of complex structures; frequent error-free sentences; good control with a few errors."
+    5: "Limited range; attempts complex sentences but these are less accurate; frequent errors."
+    4: "Very limited range; rare subordinate clauses; errors predominate."
+speaking:
+  fluency_coherence:
+    9: "Speaks fluently with only rare, content-related hesitation; fully coherent."
+    7: "Speaks at length without noticeable effort; some hesitation or self-correction; flexible use of connectives."
+    5: "Keeps going but relies on repetition, self-correction or slow speech; overuses certain connectives."
+    4: "Cannot respond without noticeable pauses; may speak slowly with frequent repetition."
+  lexical_resource:
+    9: "Full flexibility and precision; idiomatic language used naturally."
+    7: "Flexible vocabulary for a variety of topics; some less common and idiomatic items; paraphrases effectively."
+    5: "Manages familiar and unfamiliar topics with limited flexibility; attempts paraphrase with mixed success."
+    4: "Sufficient for familiar topics only; frequent errors in word choice; rarely paraphrases."
+  grammatical_range_accuracy:
+    9: "Full range of structures, naturally and accurately."
+    7: "Range of complex structures with some flexibility; frequent error-free sentences."
+    5: "Basic forms reasonably accurate; limited complex structures, usually with errors."
+    4: "Basic sentence forms with frequent errors; subordinate structures rare."
+  pronunciation:
+    9: "Full range of features; effortless to understand; L1 accent has no effect on intelligibility."
+    7: "Shows all positive features of band 6 and some of band 8; generally easy to understand."
+    5: "Shows some features of band 6 but not all; mispronunciations reduce clarity at times."
+    4: "Limited range of features; frequent lapses cause some difficulty for the listener."

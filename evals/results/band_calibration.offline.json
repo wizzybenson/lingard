@@ -1,0 +1,15 @@
+{
+  "suite": "band_calibration",
+  "mode": "offline",
+  "metrics": {
+    "ielts_samples": 0.0,
+    "tef_samples": 0.0
+  },
+  "gates": [],
+  "notes": [
+    "{'ielts_samples': 0, 'tef_samples': 0} human-rated samples; need ≥ 30 per pack and skill (founder input #3)"
+  ],
+  "samples": [],
+  "ran_at": "2026-10-14T08:47:14+00:00",
+  "status": "INCOMPLETE"
+}

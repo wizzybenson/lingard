@@ -1,0 +1,103 @@
+# Express Entry Comprehensive Ranking System. Keys: with_spouse / single.
+source_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html
+as_of: "2026-06-22"
+verified_at: "2026-10-14"
+notes:
+  - Arranged-employment points were removed on 2025-03-25.
+  - Lingard shows this only as a simulated score for motivation; not an official assessment.
+
+age:  # age: [with_spouse, single]; ages not listed score 0
+  18: [90, 99]
+  19: [95, 105]
+  20: [100, 110]
+  21: [100, 110]
+  22: [100, 110]
+  23: [100, 110]
+  24: [100, 110]
+  25: [100, 110]
+  26: [100, 110]
+  27: [100, 110]
+  28: [100, 110]
+  29: [100, 110]
+  30: [95, 105]
+  31: [90, 99]
+  32: [85, 94]
+  33: [80, 88]
+  34: [75, 83]
+  35: [70, 77]
+  36: [65, 72]
+  37: [60, 66]
+  38: [55, 61]
+  39: [50, 55]
+  40: [45, 50]
+  41: [35, 39]
+  42: [25, 28]
+  43: [15, 17]
+  44: [5, 6]
+
+education:  # [with_spouse, single]
+  less_than_secondary: [0, 0]
+  secondary: [28, 30]
+  one_year_post_secondary: [84, 90]
+  two_year_post_secondary: [91, 98]
+  bachelors: [112, 120]
+  two_or_more: [119, 128]
+  masters: [126, 135]
+  phd: [140, 150]
+
+first_language_per_ability:  # min CLB → [with_spouse, single]
+  - {min_clb: 10, points: [32, 34]}
+  - {min_clb: 9, points: [29, 31]}
+  - {min_clb: 8, points: [22, 23]}
+  - {min_clb: 7, points: [16, 17]}
+  - {min_clb: 6, points: [8, 9]}
+  - {min_clb: 4, points: [6, 6]}
+
+second_language_per_ability:
+  - {min_clb: 9, points: [6, 6]}
+  - {min_clb: 7, points: [3, 3]}
+  - {min_clb: 5, points: [1, 1]}
+second_language_cap: [22, 24]
+
+canadian_work_years:  # years → [with_spouse, single]; 5 means 5 or more
+  0: [0, 0]
+  1: [35, 40]
+  2: [46, 53]
+  3: [56, 64]
+  4: [63, 72]
+  5: [70, 80]
+
+spouse:
+  education: {less_than_secondary: 0, secondary: 2, one_year_post_secondary: 6, two_year_post_secondary: 7, bachelors: 8, two_or_more: 9, masters: 10, phd: 10}
+  language_per_ability:
+    - {min_clb: 9, points: 5}
+    - {min_clb: 7, points: 3}
+    - {min_clb: 5, points: 1}
+  canadian_work_years: {0: 0, 1: 5, 2: 7, 3: 8, 4: 9, 5: 10}
+
+transferability:
+  cap: 100
+  education_tier:  # education → tier (0 none, 1 one-year+, 2 two-or-more/masters/phd)
+    less_than_secondary: 0
+    secondary: 0
+    one_year_post_secondary: 1
+    two_year_post_secondary: 1
+    bachelors: 1
+    two_or_more: 2
+    masters: 2
+    phd: 2
+  education_language: {tier1: [13, 25], tier2: [25, 50]}        # [CLB7+ some<9, CLB9+ all]
+  education_canadian_work: {tier1: [13, 25], tier2: [25, 50]}   # [1 yr, 2+ yrs]
+  foreign_work_language: {one_to_two: [13, 25], three_plus: [25, 50]}
+  foreign_work_canadian_work: {one_to_two: [13, 25], three_plus: [25, 50]}
+  certificate_language: {clb5_some_under7: 25, clb7_all: 50}
+  pair_cap: 50
+
+additional:
+  sibling: 15
+  french_nclc7_english_clb4_or_less: 25
+  french_nclc7_english_clb5_plus: 50
+  canadian_education_one_two_years: 15
+  canadian_education_three_plus_years: 30
+  provincial_nomination: 600
+  cap: 600

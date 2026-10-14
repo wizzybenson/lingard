@@ -1,0 +1,8 @@
+# Accent Studio shadowing lines (SPEC §13.4). Each line drills one pronunciation node; every word must be in
+# lexicon_fr.yaml (checked by a test). Original lines for Lingard.
+lines:
+  - {node_key: fr.pron.nasal_vowels, line: "Je voudrais un pain, s'il vous plaît."}
+  - {node_key: fr.pron.u_vs_ou, line: "Une rue, pas une roue."}
+  - {node_key: fr.pron.front_rounded_eu, line: "Deux, merci."}
+  - {node_key: fr.pron.uvular_r, line: "Bonjour, merci."}
+  - {node_key: fr.pron.p_vs_b, line: "Un pain, pas un bain."}

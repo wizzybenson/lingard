@@ -1,0 +1,50 @@
+# Ashford: a fictional town in England (not the real Ashford, Kent). All names, places and stories are original.
+key: ashford
+name: Ashford
+language: en
+locale: en-GB
+country: England
+school: Ashford College
+districts:
+  - key: ashford.station_quarter
+    name: Station Quarter
+    min_band: 1
+    order: 1
+    description: The streets around the railway station where newcomers rent their first flat.
+    locations:
+      - key: ashford.station_quarter.flat_2a
+        name: Flat 2A, 9 Mill Lane
+        description: A one-bedroom flat above a launderette, with a patch of damp in the bathroom.
+        x: 0.25
+        y: 0.4
+        layer_art: [ashford/station_quarter/flat_bg.png, ashford/station_quarter/flat_mid.png]
+        hotspots:
+          - {key: graham, kind: npc, label: Graham Pike, npc_key: landlord_graham, x: 0.6, y: 0.55}
+          - {key: damp, kind: object, label: Damp patch, x: 0.3, y: 0.35, text: "A grey patch of damp about the size of a dinner plate."}
+          - {key: tenancy, kind: object, label: Tenancy agreement, x: 0.75, y: 0.7, text: "Tenancy from 1 October. Deposit: £950, protected with a deposit scheme."}
+      - key: ashford.station_quarter.copper_kettle
+        name: The Copper Kettle
+        description: A busy café opposite the station, run by Siobhan for eight years.
+        x: 0.55
+        y: 0.6
+        layer_art: [ashford/station_quarter/cafe_bg.png, ashford/station_quarter/cafe_mid.png]
+        hotspots:
+          - {key: siobhan, kind: npc, label: Siobhan Kelly, npc_key: cafe_siobhan, x: 0.45, y: 0.5}
+          - {key: menu, kind: sign, label: Menu, x: 0.8, y: 0.3, text: "Flat white £3.10 · Bacon roll £4.20 · Soup of the day £5.50"}
+          - {key: notice_board, kind: sign, label: Noticeboard, x: 0.15, y: 0.35, text: "Room to let, Kingsway. Evening English classes at Ashford College."}
+      - key: ashford.station_quarter.bank
+        name: Northgate Bank, Station Road branch
+        description: A small high-street branch where newcomers open their first UK account.
+        x: 0.8
+        y: 0.32
+        layer_art: [ashford/station_quarter/bank_bg.png, ashford/station_quarter/bank_mid.png]
+        hotspots:
+          - {key: daniel, kind: npc, label: Daniel Osei, npc_key: bank_daniel, x: 0.5, y: 0.52}
+          - {key: leaflet, kind: sign, label: Leaflet, x: 0.2, y: 0.6, text: "Newcomer account: no monthly fee for the first year."}
+  - key: ashford.kingsway
+    name: Kingsway
+    min_band: 6
+    order: 2
+    description: Shops, offices and the job centre (content in Phase 5).
+    locations:
+      - {key: ashford.kingsway.placeholder, name: Kingsway, description: "Coming soon.", x: 0.5, y: 0.5}

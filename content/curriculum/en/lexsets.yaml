@@ -1,0 +1,23 @@
+defaults:
+  kind: lexset
+  language: en
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
+  as_of: "2012"
+nodes:
+  - {key: en.lex.greetings_courtesy, band: 4, title: "Courtesy phrases", payload: {items: [cheers, "thanks a lot", "no worries", "excuse me", "sorry", "see you", "have a good one"]}}
+  - {key: en.lex.transport, band: 4, title: "Transport", payload: {items: [platform, return ticket, "off-peak", delay, "bus stop", timetable, railcard, "change at"]}}
+  - {key: en.lex.food_shopping, band: 4, title: "Food and shopping", payload: {items: [checkout, receipt, "special offer", "best before", aisle, refund, "a loaf of"]}}
+  - {key: en.lex.weather_seasons, band: 4, title: "Weather", payload: {items: [drizzle, chilly, overcast, "pouring down", frost, mild, forecast]}}
+  - {key: en.lex.housing.renting, band: 4, title: "Housing: renting", payload: {items: [flat, rent, tenancy agreement, landlord, tenant, "bills included", furnished, "letting agent"]}}
+  - {key: en.lex.leisure, band: 4, title: "Leisure", payload: {items: [pub quiz, gym membership, "five-a-side", library, cinema, gig]}}
+  - {key: en.lex.health_appointments, band: 5, title: "Health and the GP", payload: {items: [GP, surgery, prescription, pharmacy, "register with", symptoms, "A&E", "walk-in centre"]}}
+  - {key: en.lex.banking, band: 5, title: "Banking", payload: {items: ["current account", "direct debit", "sort code", overdraft, statement, "transfer money"]}}
+  - {key: en.lex.emotions, band: 5, title: "Feelings", payload: {items: [relieved, gutted, annoyed, proud, anxious, "fed up", "looking forward to"]}}
+  - {key: en.lex.housing.deposit_repairs, band: 6, title: "Housing: deposit and repairs", payload: {items: ["deposit protection scheme", inventory, damp, leak, plumber, "wear and tear", deduction, "check-out inspection"]}}
+  - {key: en.lex.work_job_search, band: 6, title: "Work and job search", payload: {items: [CV, "cover letter", interview, vacancy, salary, "probation period", "part-time", shortlist]}}
+  - {key: en.lex.administration, band: 6, title: "Paperwork and services", payload: {items: [form, "proof of address", "National Insurance number", council, appointment, "processing time", application]}}
+  - {key: en.lex.education, band: 7, title: "Education and training", payload: {items: [enrolment, "tuition fees", qualification, apprenticeship, "evening class", scholarship]}}
+  - {key: en.lex.technology, band: 7, title: "Technology", payload: {items: ["personal data", password, app, "remote working", "social media", "online scam"]}}
+  - {key: en.lex.news_current_affairs, band: 8, title: "News and society", payload: {items: [inquiry, "local council", protest, survey, legislation, spokesperson, "according to officials"]}}
+  - {key: en.lex.environment, band: 8, title: "Environment", payload: {items: ["climate change", recycling, "public transport", "carbon footprint", "green spaces", waste]}}
+  - {key: en.lex.abstract_argument, band: 9, title: "Language of argument", payload: {items: [issue, "highlight", "call into question", "in the long run", "by contrast", crucial, "outweigh"]}}

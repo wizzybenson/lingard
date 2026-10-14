@@ -1,0 +1,35 @@
+language: en
+stt_locale: en-GB
+function_words: [the, a, an, and, is, are, i, you, he, she, we, they, not, that, which, in, for, with, "on", but, or, this, my, your, to, of, at, "yes", "no", very, well, thanks, hello, am, was, were, have, has, it's, i'm, there, do, does, what, where, when, why, how, because, so, already, still, always, never, here, really, it, be, been, would, could, should, will, can, just, about, from, me, him, her, us, them, their, our]
+other_language_reply:
+  - "Sorry, I don't speak French. Could you say that in English?"
+  - "Sorry, love, I only speak English. Try again?"
+clarify:
+  - "Sorry? Could you say that again?"
+  - "Sorry, I didn't quite catch that."
+backchannels: ["Mm.", "Yeah?", "Right…", "Go on."]
+abbreviations: ["Mr.", "Mrs.", "Ms.", "Dr.", "St.", "e.g.", "i.e.", "etc.", "approx."]
+tutor_markers:
+  - "\\byou should say\\b"
+  - "\\bthe correct (way|form)\\b"
+  - "\\bgrammar\\b"
+  - "\\btense\\b"
+  - "\\bpast participle\\b"
+  - "\\bconditional\\b"
+  - "\\bverb\\b"
+  - "\\bit's pronounced\\b"
+character_break_markers:
+  - "\\bas an (ai|assistant|language model)\\b"
+  - "\\bi am an ai\\b"
+  - "\\blanguage model\\b"
+unsafe_markers:
+  - "\\bsuicide\\b"
+  - "\\bkill yourself\\b"
+  - "\\bgo back to your country\\b"
+help_hint_ui: {en: "Try saying it in English — the NPC only understands English.", fr: "Essayez en anglais — le personnage ne comprend que l'anglais."}
+months: [january, february, march, april, may, june, july, august, september, october, november, december]
+weekdays: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+number_words: {two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, fifteen: 15, twenty: 20, thirty: 30, forty: 40, fifty: 50, hundred: 100, thousand: 1000}
+narrator_voice: en_f_narrator
+choose_correct_prompt: "Which is correct?"
+capitalised_common: [i, "i'm", "i've", "i'll", "i'd", mr, mrs, ms, sir, madam, love, mate]

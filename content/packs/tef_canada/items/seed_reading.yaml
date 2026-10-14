@@ -1,0 +1,75 @@
+# Original items in the format of TEF Canada compréhension écrite (multiple choice). Written for Lingard.
+defaults: {pack: tef_canada, language: fr, skill: reading, section: comprehension_ecrite, task_type: ce_document}
+items:
+  - id: fr-ce-001
+    band: 4
+    stimulus: "BIBLIOTHÈQUE DU VIEUX-PORT — Fermée le lundi. Du mardi au samedi : 10 h – 18 h. Dimanche : 13 h – 17 h."
+    question: "Quand pouvez-vous aller à la bibliothèque le matin ?"
+    options: ["Le lundi", "Le mardi", "Le dimanche", "Jamais"]
+    answer: 1
+  - id: fr-ce-002
+    band: 4
+    stimulus: "Salut Inès ! Je suis malade, je ne peux pas venir au cinéma ce soir. On y va samedi ? Bisous, Léa"
+    question: "Pourquoi Léa écrit-elle ce message ?"
+    options: ["Pour inviter Inès au restaurant", "Pour annuler une sortie", "Pour demander un médicament", "Pour acheter des billets"]
+    answer: 1
+  - id: fr-ce-003
+    band: 5
+    stimulus: "Avis aux locataires : l'eau chaude sera coupée jeudi de 9 h à 14 h pour des travaux dans la chaufferie. Merci de votre compréhension. — La gestion"
+    question: "Que va-t-il se passer jeudi ?"
+    options: ["L'immeuble sera fermé", "Il n'y aura pas d'eau chaude pendant quelques heures", "Les locataires devront payer des travaux", "Le chauffage sera réparé le soir"]
+    answer: 1
+  - id: fr-ce-004
+    band: 5
+    stimulus: "Offre d'emploi — Café du Quai cherche serveur ou serveuse, fins de semaine, expérience appréciée mais non obligatoire. Envoyer CV à l'adresse indiquée."
+    question: "Pour ce poste, l'expérience est…"
+    options: ["obligatoire", "souhaitée", "interdite", "payée en plus"]
+    answer: 1
+  - id: fr-ce-005
+    band: 6
+    stimulus: "Madame, Monsieur, suite à mon achat du 3 mars, je constate que l'aspirateur ne fonctionne plus. Conformément à la garantie, je vous demande son remplacement ou son remboursement intégral."
+    question: "Quel est le but principal de cette lettre ?"
+    options: ["Commander un nouvel appareil", "Remercier le magasin", "Faire valoir une garantie", "Annuler une livraison"]
+    answer: 2
+  - id: fr-ce-006
+    band: 6
+    stimulus: "Le conseil municipal a voté hier l'agrandissement de la piste cyclable du quai. Les travaux débuteront au printemps et devraient durer six mois, malgré l'opposition de certains commerçants."
+    question: "Selon le texte, certains commerçants…"
+    options: ["ont proposé le projet", "sont contre le projet", "financent les travaux", "ont voté au conseil"]
+    answer: 1
+  - id: fr-ce-007
+    band: 7
+    stimulus: "Bien que le télétravail ait permis à de nombreux employés de gagner du temps, plusieurs études soulignent un risque d'isolement, en particulier chez les jeunes recrues qui apprennent davantage au contact de leurs collègues."
+    question: "Quel inconvénient du télétravail l'auteur met-il en avant ?"
+    options: ["La perte de temps dans les transports", "L'isolement des nouveaux employés", "Le coût du matériel informatique", "La baisse des salaires"]
+    answer: 1
+  - id: fr-ce-008
+    band: 7
+    stimulus: "Contrairement à ce que l'on croit souvent, les achats en vrac ne sont pas toujours moins chers : tout dépend du produit et du magasin. En revanche, ils réduisent nettement les déchets d'emballage."
+    question: "Que peut-on conclure sur les achats en vrac ?"
+    options: ["Ils coûtent toujours moins cher", "Leur avantage certain concerne les déchets", "Ils sont interdits dans certains magasins", "Ils augmentent les emballages"]
+    answer: 1
+  - id: fr-ce-009
+    band: 8
+    stimulus: "Si la gratuité des transports en commun séduit par sa simplicité, ses détracteurs rappellent qu'elle ne suffit pas à convaincre les automobilistes lorsque l'offre reste insuffisante : sans fréquence ni fiabilité, le prix n'est qu'un argument parmi d'autres."
+    question: "Pour les détracteurs, la gratuité…"
+    options: ["règle à elle seule le problème de la voiture", "est inutile si le service n'est pas de qualité", "doit être réservée aux étudiants", "augmente la fiabilité des lignes"]
+    answer: 1
+  - id: fr-ce-010
+    band: 8
+    stimulus: "L'auteure ne nie pas les bienfaits des réseaux sociaux pour les associations locales ; elle regrette cependant que la visibilité y dépende davantage de l'algorithme que de l'utilité réelle des actions menées."
+    question: "Quelle est la position de l'auteure ?"
+    options: ["Totalement hostile aux réseaux sociaux", "Nuancée : utiles mais injustes dans leur fonctionnement", "Indifférente au sujet", "Enthousiaste sans réserve"]
+    answer: 1
+  - id: fr-ce-011
+    band: 9
+    stimulus: "Que l'on se réjouisse ou non de la reconversion des anciens entrepôts en logements, force est de constater qu'elle a précédé, plus qu'elle n'a provoqué, la hausse des loyers du quartier, déjà amorcée par l'arrivée du tramway."
+    question: "D'après le texte, la hausse des loyers…"
+    options: ["est uniquement due à la reconversion des entrepôts", "avait commencé avant, avec le tramway", "a été stoppée par les nouveaux logements", "n'a jamais eu lieu"]
+    answer: 1
+  - id: fr-ce-012
+    band: 10
+    stimulus: "On aurait tort de lire dans la baisse de fréquentation des musées un désintérêt pour la culture : les publics, loin de déserter, se déplacent vers des formes plus éphémères et participatives, que les statistiques officielles peinent encore à saisir."
+    question: "Selon l'auteur, la baisse de fréquentation des musées…"
+    options: ["prouve que le public se désintéresse de la culture", "reflète surtout des pratiques que les chiffres mesurent mal", "s'explique par le prix des billets", "concerne uniquement les jeunes"]
+    answer: 1

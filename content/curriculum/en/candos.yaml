@@ -1,0 +1,36 @@
+# Can-do statements per skill × CLB band, paraphrased in Lingard's own words from the CLB descriptors.
+defaults:
+  kind: cando
+  language: en
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
+  as_of: "2012"
+auto_requires: same_band
+nodes:
+  - {key: en.cando.listening.clb4, band: 4, skill: listening, title: "Understand short, simple exchanges on familiar topics spoken slowly with repetition."}
+  - {key: en.cando.listening.clb5, band: 5, skill: listening, title: "Follow everyday conversations and multi-step instructions on predictable topics."}
+  - {key: en.cando.listening.clb6, band: 6, skill: listening, title: "Catch the main points and details of announcements, messages and talk at normal speed."}
+  - {key: en.cando.listening.clb7, band: 7, skill: listening, title: "Follow longer exchanges, identify opinions and attitudes, and follow a clear presentation."}
+  - {key: en.cando.listening.clb8, band: 8, skill: listening, title: "Follow complex discussions and reports, picking up simple implied meaning and tone."}
+  - {key: en.cando.listening.clb9, band: 9, skill: listening, title: "Understand debates and broadcasts in varied accents, including nuance and implication."}
+  - {key: en.cando.listening.clb10, band: 10, skill: listening, title: "Understand fast or specialised speech effortlessly, including humour and irony."}
+  - {key: en.cando.reading.clb4, band: 4, skill: reading, title: "Read short, predictable texts: notices, timetables, simple messages."}
+  - {key: en.cando.reading.clb5, band: 5, skill: reading, title: "Find useful information in everyday documents: ads, forms, emails."}
+  - {key: en.cando.reading.clb6, band: 6, skill: reading, title: "Understand the main idea and details of one-page informational texts."}
+  - {key: en.cando.reading.clb7, band: 7, skill: reading, title: "Read articles and letters, telling fact from opinion and the writer's purpose."}
+  - {key: en.cando.reading.clb8, band: 8, skill: reading, title: "Understand dense argumentative and workplace texts and draw inferences."}
+  - {key: en.cando.reading.clb9, band: 9, skill: reading, title: "Analyse long complex texts, judging argument quality and register."}
+  - {key: en.cando.reading.clb10, band: 10, skill: reading, title: "Read specialised or literary texts with ease and grasp their subtleties."}
+  - {key: en.cando.writing.clb4, band: 4, skill: writing, title: "Write short messages and complete simple forms on familiar topics."}
+  - {key: en.cando.writing.clb5, band: 5, skill: writing, title: "Write an email or note recounting an event in time order."}
+  - {key: en.cando.writing.clb6, band: 6, skill: writing, title: "Write a structured message to request, explain or complain, using simple linkers."}
+  - {key: en.cando.writing.clb7, band: 7, skill: writing, title: "Write a coherent text that states and supports an opinion in a suitable register."}
+  - {key: en.cando.writing.clb8, band: 8, skill: writing, title: "Write a nuanced argument with clear structure and precise vocabulary."}
+  - {key: en.cando.writing.clb9, band: 9, skill: writing, title: "Produce complex, persuasive, well-organised writing with few errors."}
+  - {key: en.cando.writing.clb10, band: 10, skill: writing, title: "Write fluently and precisely in any register with controlled style."}
+  - {key: en.cando.speaking.clb4, band: 4, skill: speaking, title: "Take part in short routine exchanges, introduce yourself, ask simple questions."}
+  - {key: en.cando.speaking.clb5, band: 5, skill: speaking, title: "Describe and narrate experiences and handle predictable everyday situations."}
+  - {key: en.cando.speaking.clb6, band: 6, skill: speaking, title: "Give opinions, compare, complain politely and handle simple surprises."}
+  - {key: en.cando.speaking.clb7, band: 7, skill: speaking, title: "Negotiate, hypothesise and sustain a discussion with reasonable ease."}
+  - {key: en.cando.speaking.clb8, band: 8, skill: speaking, title: "Argue and persuade in a structured way, adapting to listener and register."}
+  - {key: en.cando.speaking.clb9, band: 9, skill: speaking, title: "Debate complex topics with nuance, conceding and rebutting precisely."}
+  - {key: en.cando.speaking.clb10, band: 10, skill: speaking, title: "Speak spontaneously and with finesse in any situation, including formal ones."}

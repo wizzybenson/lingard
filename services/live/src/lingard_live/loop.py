@@ -1,0 +1,404 @@
+"""Per-turn live loop (SPEC §6.3): STT → gate → language check → Actor stream → sentence → Guard → TTS → speak.
+
+Replies are *prepared* (STT, actor, guard and TTS run into a buffer) and later *committed* (spoken, recorded,
+published). A ``SpeculativeTurn`` starts preparation during the end-of-turn silence, so most of the cascade's latency
+is hidden inside the wait the learner needs anyway; ``LearnerSpeechResumed`` discards it. Side effects happen only
+on commit. Every committed learner turn is published as a ``TurnEvent``; assessment never blocks the conversation.
+"""
+
+from __future__ import annotations
+
+import asyncio
+import contextlib
+import logging
+import time
+import uuid
+from collections.abc import AsyncIterator
+from dataclasses import dataclass, field
+
+import lingard_telemetry as telemetry
+from lingard_contracts.common import CITY_LOCALE
+from lingard_contracts.events import NpcContext, TurnEvent, TurnTimings
+from lingard_contracts.live import (
+    AudioChunk,
+    BargeIn,
+    Closed,
+    LearnerSpeechResumed,
+    LearnerTurnEnded,
+    SpeculativeTurn,
+    personalised_turn_policy,
+)
+from lingard_live.actor import ActorState, DialogueTurn, NpcActor
+from lingard_live.events import HintSource, TurnPublisher, fire_and_forget
+from lingard_live.guard import ContractGuard, GuardContext, GuardResult, Verdict
+from lingard_live.languages import LanguageConfig, LanguageIdentifier
+from lingard_live.sentences import SentenceSplitter, split_stream
+from lingard_live.stt import SttProvider, Transcript
+from lingard_live.transport import LiveSession
+from lingard_live.tts import TtsProvider, VoiceSpec
+from lingard_live.turn_gate import EchoCheck, GatePolicy, TurnDecision, validate_turn
+
+logger = logging.getLogger(__name__)
+_NO_ECHO = EchoCheck(checked=False, matched=False)
+WRAP_UP_HINT = "The scene is nearly over: bring the conversation to a natural close in the next reply."
+
+
+@dataclass
+class TurnTiming:
+    """Preparation stages in ms from preparation start; ``first_audio_ms`` from the end-of-turn decision."""
+
+    stt_ms: float = 0
+    first_token_ms: float | None = None
+    first_sentence_ms: float | None = None
+    guard_ms: list[float] = field(default_factory=list)
+    first_audio_ms: float | None = None
+    total_ms: float = 0
+    speculative: bool = False
+
+
+@dataclass
+class TurnOutcome:
+    learner_text: str
+    npc_text: str
+    status: str
+    timing: TurnTiming
+    guard_results: list[GuardResult] = field(default_factory=list)
+
+
+@dataclass
+class SceneIdentity:
+    user_id: uuid.UUID
+    session_id: uuid.UUID
+    trace_id: uuid.UUID
+    learner_band: int
+
+
+@dataclass
+class Prepared:
+    transcript: Transcript
+    decision: TurnDecision
+    status: str  # ignored | clarify | other_language | npc
+    timing: TurnTiming
+    audio: asyncio.Queue[AudioChunk | str | None] = field(default_factory=asyncio.Queue)
+    """Audio chunks, each sentence's text queued just before its audio (for captions), then ``None``."""
+    sentences: list[str] = field(default_factory=list)
+    guard_results: list[GuardResult] = field(default_factory=list)
+    producer: asyncio.Task[None] | None = None
+    hint: str | None = None
+
+
+class LiveLoop:
+    def __init__(
+        self,
+        *,
+        session: LiveSession,
+        state: ActorState,
+        identity: SceneIdentity,
+        actor: NpcActor,
+        guard: ContractGuard,
+        guard_ctx: GuardContext,
+        language: LanguageConfig,
+        identifier: LanguageIdentifier,
+        stt: SttProvider,
+        tts: TtsProvider,
+        publisher: TurnPublisher,
+        hints: HintSource,
+        gate: GatePolicy | None = None,
+    ) -> None:
+        self.session = session
+        self.state = state
+        self.identity = identity
+        self.actor = actor
+        self.guard = guard
+        self.guard_ctx = guard_ctx
+        self.language = language
+        self.identifier = identifier
+        self.stt = stt
+        self.tts = tts
+        self.publisher = publisher
+        self.hints = hints
+        self.gate = gate or GatePolicy()
+        self.outcomes: list[TurnOutcome] = []
+        self.pauses: list[int] = []
+        self.learner_turns = 0
+        self.discarded_speculations = 0
+        self._turn_index = 0
+        self._pending: set[asyncio.Task[None]] = set()
+        self._current: asyncio.Task[None] | None = None
+        self._utterance: str | None = None
+        self._speculation: tuple[int, asyncio.Task[Prepared]] | None = None
+        self.voice = VoiceSpec(
+            voice_id=state.cast.voice_id, language=state.contract.language, rate=state.contract.speech_rate
+        )
+
+    @property
+    def scene_id(self) -> str:
+        return str(self.state.contract.scene_id)
+
+    # ---- event loop ----------------------------------------------------------------------------------------------
+
+    async def run(self) -> None:
+        async for event in self.session.events():
+            if isinstance(event, SpeculativeTurn):
+                await self._discard_speculation()
+                task = asyncio.create_task(self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms))
+                self._speculation = (event.speech_start_ms, task)
+            elif isinstance(event, LearnerSpeechResumed):
+                await self._discard_speculation()
+            elif isinstance(event, LearnerTurnEnded):
+                committed_at = time.perf_counter()
+                if self._current is not None and not self._current.done():
+                    await self._interrupt()
+                self._current = asyncio.create_task(self._end_of_turn(event, committed_at))
+            elif isinstance(event, BargeIn):
+                await self._interrupt()
+            elif isinstance(event, Closed):
+                break
+        await self._discard_speculation()
+        if self._current is not None:
+            await asyncio.gather(self._current, return_exceptions=True)
+        await asyncio.gather(*self._pending, return_exceptions=True)
+
+    async def _end_of_turn(self, event: LearnerTurnEnded, committed_at: float) -> None:
+        prepared: Prepared | None = None
+        if self._speculation is not None and self._speculation[0] == event.speech_start_ms:
+            _, task = self._speculation
+            self._speculation = None
+            prepared = await task
+            prepared.timing.speculative = True
+        else:
+            await self._discard_speculation()
+        if prepared is None:
+            prepared = await self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms)
+        await self._commit(prepared, event, committed_at)
+
+    async def handle_turn(self, event: LearnerTurnEnded) -> None:
+        """Non-speculative turn (also used by tests and benchmarks)."""
+        committed_at = time.perf_counter()
+        await self._commit(
+            await self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms), event, committed_at
+        )
+
+    async def handle_speculative_turn(self, speculation: SpeculativeTurn, event: LearnerTurnEnded) -> None:
+        """Prepare at the speculation point, wait out the rest of the end-of-turn silence, then commit."""
+        task = asyncio.create_task(
+            self._prepare(speculation.audio, speculation.speech_end_ms - speculation.speech_start_ms)
+        )
+        await asyncio.sleep(max(event.eot_decided_ms - speculation.at_ms, 0) / 1000)
+        committed_at = time.perf_counter()
+        prepared = await task
+        prepared.timing.speculative = True
+        await self._commit(prepared, event, committed_at)
+
+    async def _discard_speculation(self) -> None:
+        if self._speculation is None:
+            return
+        _, task = self._speculation
+        self._speculation = None
+        self.discarded_speculations += 1
+        task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            prepared = await task
+            await self._abandon(prepared)
+
+    async def _abandon(self, prepared: Prepared) -> None:
+        if prepared.producer is not None:
+            prepared.producer.cancel()
+            await asyncio.gather(prepared.producer, return_exceptions=True)
+        if prepared.hint and self.state.pending_hint is None:
+            self.state.pending_hint = prepared.hint  # the hint was taken for a reply that never played
+
+    async def _interrupt(self) -> None:
+        if self._utterance is not None:
+            await self.session.cancel_speech(self._utterance)
+            self.state.interrupted = True
+        if self._current is not None and not self._current.done():
+            self._current.cancel()
+            await asyncio.gather(self._current, return_exceptions=True)
+
+    # ---- preparation (no side effects visible to the learner or the world) ----------------------------------------
+
+    async def _prepare(self, audio: bytes, speech_ms: int) -> Prepared:
+        started = time.perf_counter()
+        timing = TurnTiming()
+        transcript = await self.stt.transcribe(audio, CITY_LOCALE[self.state.contract.city])
+        timing.stt_ms = (time.perf_counter() - started) * 1000
+        recent = [t.text for t in self.state.dialogue[-4:] if t.speaker != "learner"]
+        decision = validate_turn(
+            transcript.text,
+            confidence=transcript.confidence,
+            speech_ms=speech_ms,
+            recent_npc_lines=recent,
+            policy=self.gate,
+        )
+        if decision.status == "ignored":
+            return Prepared(transcript, decision, "ignored", timing)
+        if decision.status == "needs_confirmation":
+            return self._fixed(transcript, decision, "clarify", self.language.pick(self.language.clarify), timing)
+        detected = self.identifier.identify(transcript.text)
+        if detected is not None and detected != self.language.language:
+            line = self.language.pick(self.language.other_language_reply)
+            return self._fixed(transcript, decision, "other_language", line, timing)
+
+        prepared = Prepared(transcript, decision, "npc", timing)
+        prepared.hint = await self.hints.take(self.scene_id)
+        hint = prepared.hint or self.state.pending_hint
+        if self.learner_turns + 1 >= self.state.contract.max_turns - 1:
+            hint = WRAP_UP_HINT
+        self.guard_ctx.admit_learner_text(transcript.text)
+        tokens = self.actor.reply(self.state, str(self.identity.trace_id), pending_learner=transcript.text, hint=hint)
+        prepared.producer = asyncio.create_task(self._produce(prepared, tokens, started))
+        return prepared
+
+    def _fixed(
+        self, transcript: Transcript, decision: TurnDecision, status: str, line: str, timing: TurnTiming
+    ) -> Prepared:
+        prepared = Prepared(transcript, decision, status, timing)
+
+        async def one() -> AsyncIterator[str]:
+            yield line
+
+        prepared.producer = asyncio.create_task(self._synthesise(prepared, one()))
+        return prepared
+
+    async def _produce(self, prepared: Prepared, tokens: AsyncIterator[str], started: float) -> None:
+        timing = prepared.timing
+
+        async def timed() -> AsyncIterator[str]:
+            async for token in tokens:
+                if timing.first_token_ms is None:
+                    timing.first_token_ms = (time.perf_counter() - started) * 1000
+                yield token
+
+        async def guarded() -> AsyncIterator[str]:
+            async for sentence in split_stream(timed(), SentenceSplitter(self.language.abbreviations)):
+                if timing.first_sentence_ms is None:
+                    timing.first_sentence_ms = (time.perf_counter() - started) * 1000
+                result = await self.guard.check(sentence, self.guard_ctx)
+                prepared.guard_results.append(result)
+                timing.guard_ms.append(result.elapsed_ms)
+                if result.verdict is Verdict.BLOCK:
+                    logger.info("guard blocked sentence (%s)", ",".join(result.reasons))
+                    continue
+                yield result.text
+
+        await self._synthesise(prepared, guarded(), fallback=self.language.pick(self.language.clarify))
+
+    async def _synthesise(self, prepared: Prepared, sentences: AsyncIterator[str], fallback: str | None = None) -> None:
+        try:
+            async for sentence in sentences:
+                prepared.sentences.append(sentence)
+                await prepared.audio.put(sentence)
+                async for chunk in self.tts.stream(sentence, self.voice):
+                    await prepared.audio.put(chunk)
+            if not prepared.sentences and fallback:
+                prepared.sentences.append(fallback)
+                await prepared.audio.put(fallback)
+                async for chunk in self.tts.stream(fallback, self.voice):
+                    await prepared.audio.put(chunk)
+        finally:
+            await prepared.audio.put(None)
+
+    # ---- commit (speak, remember, publish) -------------------------------------------------------------------------
+
+    async def _commit(self, prepared: Prepared, event: LearnerTurnEnded, committed_at: float) -> None:
+        timing = prepared.timing
+        text = prepared.transcript.text
+        if prepared.status == "ignored":
+            self.outcomes.append(TurnOutcome(text, "", f"ignored:{prepared.decision.reason}", timing))
+            return
+        with telemetry.span(
+            "live.turn", trace_id=str(self.identity.trace_id), scene=self.scene_id, speculative=timing.speculative
+        ):
+            self.pauses.extend(event.pauses_ms)
+            self.learner_turns += 1
+            await self.session.set_turn_policy(personalised_turn_policy(self.identity.learner_band, self.pauses))
+            self._publish_learner(text, prepared.transcript.confidence, event)
+            await self.session.caption("learner", text)
+            if prepared.status == "npc":
+                self.state.dialogue.append(DialogueTurn("learner", text))
+                self.state.pending_hint = None
+                self.state.interrupted = False
+            try:
+                await self._speak(prepared, committed_at)
+            except asyncio.CancelledError:
+                await self._abandon(prepared)
+                raise
+            npc_text = " ".join(prepared.sentences)
+            if prepared.status == "npc":
+                self.state.dialogue.append(DialogueTurn(self.state.persona.key, npc_text))
+                self._publish_npc(npc_text)
+            timing.total_ms = (time.perf_counter() - committed_at) * 1000
+            status = "ok" if prepared.status == "npc" else prepared.status
+            self.outcomes.append(TurnOutcome(text, npc_text, status, timing, prepared.guard_results))
+
+    async def opening(self) -> TurnOutcome:
+        """The NPC speaks first when the scene starts."""
+        committed_at = time.perf_counter()
+        timing = TurnTiming()
+        prepared = Prepared(
+            Transcript("", None, "none"), TurnDecision("accepted", "opening", _NO_ECHO, ""), "npc", timing
+        )
+        tokens = self.actor.reply(self.state, str(self.identity.trace_id))
+        prepared.producer = asyncio.create_task(self._produce(prepared, tokens, committed_at))
+        await self._speak(prepared, committed_at)
+        npc_text = " ".join(prepared.sentences)
+        self.state.dialogue.append(DialogueTurn(self.state.persona.key, npc_text))
+        self._publish_npc(npc_text)
+        outcome = TurnOutcome("", npc_text, "ok", timing, prepared.guard_results)
+        self.outcomes.append(outcome)
+        return outcome
+
+    async def _speak(self, prepared: Prepared, committed_at: float) -> None:
+        utterance_id = uuid.uuid4().hex
+        self._utterance = utterance_id
+
+        async def audio() -> AsyncIterator[AudioChunk]:
+            while (item := await prepared.audio.get()) is not None:
+                if isinstance(item, str):
+                    await self.session.caption("npc", item)
+                    continue
+                if prepared.timing.first_audio_ms is None:
+                    prepared.timing.first_audio_ms = (time.perf_counter() - committed_at) * 1000
+                yield item
+
+        try:
+            await self.session.speak(audio(), utterance_id)
+        finally:
+            self._utterance = None
+        if prepared.producer is not None:
+            await asyncio.gather(prepared.producer, return_exceptions=True)
+
+    def _event(self, speaker: str, text: str, **extra: object) -> TurnEvent:
+        event = TurnEvent(
+            trace_id=self.identity.trace_id,
+            user_id=self.identity.user_id,
+            session_id=self.identity.session_id,
+            scene_id=self.state.contract.scene_id,
+            turn_index=self._turn_index,
+            speaker=speaker,
+            language=CITY_LOCALE[self.state.contract.city],
+            transcript=text,
+            targets_active=self.state.contract.targets.all(),
+            **extra,
+        )
+        self._turn_index += 1
+        return event
+
+    def _publish_learner(self, text: str, confidence: float | None, event: LearnerTurnEnded) -> None:
+        last_npc = next((t.text for t in reversed(self.state.dialogue) if t.speaker != "learner"), "")
+        turn = self._event(
+            "learner",
+            text,
+            stt_confidence=confidence,
+            timings_ms=TurnTimings(
+                speech_start=event.speech_start_ms, speech_end=event.speech_end_ms, eot_decided=event.eot_decided_ms
+            ),
+            pauses_ms=list(event.pauses_ms),
+            npc_context=NpcContext(npc_id=self.state.persona.key, last_npc_line=last_npc),
+            interrupted_npc=event.interrupted_npc,
+        )
+        fire_and_forget(self.publisher, turn, self._pending)
+
+    def _publish_npc(self, text: str) -> None:
+        fire_and_forget(self.publisher, self._event("npc", text), self._pending)

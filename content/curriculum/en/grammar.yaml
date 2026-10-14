@@ -1,0 +1,264 @@
+# English grammar nodes. All rules and examples are original Lingard content.
+defaults:
+  kind: grammar
+  language: en
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
+  as_of: "2012"
+nodes:
+  - key: en.grammar.present_simple_continuous
+    band: 4
+    title: Present simple vs present continuous
+    payload:
+      lesson:
+        rule: "Present simple for habits and facts (she works nights); present continuous for actions happening now or temporary situations (she's working from home this week)."
+        examples: ["I take the bus to work.", "I'm staying with a friend until I find a flat."]
+        common_errors:
+          - {wrong: "I am live in Ashford.", right: "I live in Ashford."}
+          - {wrong: "She work at the hospital.", right: "She works at the hospital."}
+  - key: en.grammar.articles
+    band: 4
+    title: Articles a / an / the / zero article
+    payload:
+      lesson:
+        rule: "A/an for one of many or first mention; the for something specific or already known; no article for general plurals and uncountables."
+        examples: ["I saw a flat on Mill Road. The flat has two bedrooms.", "Rent is expensive here."]
+        common_errors:
+          - {wrong: "I need the advice.", right: "I need some advice."}
+          - {wrong: "She is teacher.", right: "She is a teacher."}
+  - key: en.grammar.past_simple
+    band: 4
+    title: Past simple (regular and irregular)
+    payload:
+      lesson:
+        rule: "Finished actions at a finished time. Regular verbs add -ed; irregular verbs must be learned (go → went, buy → bought). Questions and negatives use did + base form."
+        examples: ["I moved here in March.", "Did you get my message?"]
+        common_errors:
+          - {wrong: "I didn't went to work.", right: "I didn't go to work."}
+          - {wrong: "Yesterday I buyed a coat.", right: "Yesterday I bought a coat."}
+  - key: en.grammar.comparatives
+    band: 4
+    title: Comparatives and superlatives
+    payload:
+      lesson:
+        rule: "Short adjectives add -er/-est (cheaper, the cheapest); long adjectives use more/most. Irregular: good → better → best, bad → worse → worst."
+        examples: ["This route is quicker than the motorway.", "It's the most expensive area in town."]
+        common_errors:
+          - {wrong: "It's more cheaper.", right: "It's cheaper."}
+  - key: en.grammar.questions
+    band: 4
+    title: Question forms
+    payload:
+      lesson:
+        rule: "Auxiliary before subject (Are you…? Do you…? Have you…?). Subject questions need no auxiliary (Who called?)."
+        examples: ["Where do you work?", "How long have you lived here?"]
+        common_errors:
+          - {wrong: "Where you work?", right: "Where do you work?"}
+          - {wrong: "Who did call you?", right: "Who called you?"}
+  - key: en.grammar.countable_uncountable
+    band: 5
+    title: Countable and uncountable nouns
+    payload:
+      lesson:
+        rule: "Uncountables (information, advice, furniture, luggage) take no plural and no a/an; use some, much, a piece of."
+        examples: ["Could you give me some information?", "How much luggage do you have?"]
+        common_errors:
+          - {wrong: "I have many furnitures.", right: "I have a lot of furniture."}
+  - key: en.grammar.present_perfect
+    band: 5
+    title: Present perfect
+    payload:
+      lesson:
+        rule: "Have/has + past participle for life experience, unfinished time (since/for), and recent results. Not with finished time expressions (yesterday, in 2020)."
+        examples: ["I've lived here for six months.", "Have you ever been to London?"]
+        common_errors:
+          - {wrong: "I have seen him yesterday.", right: "I saw him yesterday."}
+          - {wrong: "I live here since March.", right: "I've lived here since March."}
+    prereq: [en.grammar.past_simple]
+  - key: en.grammar.past_continuous
+    band: 5
+    title: Past continuous
+    payload:
+      lesson:
+        rule: "Was/were + -ing for an action in progress in the past, often interrupted by a past simple action."
+        examples: ["I was cooking when the landlord rang.", "It was raining all morning."]
+        common_errors:
+          - {wrong: "When I arrived, they were eat.", right: "When I arrived, they were eating."}
+    prereq: [en.grammar.past_simple]
+  - key: en.grammar.future_forms
+    band: 5
+    title: "Future: will, going to, present continuous"
+    payload:
+      lesson:
+        rule: "Will for decisions made now and predictions; going to for plans; present continuous for fixed arrangements."
+        examples: ["I'll call you back.", "We're going to look at a flat on Saturday.", "I'm meeting the agent at ten."]
+        common_errors:
+          - {wrong: "I will to call you.", right: "I'll call you."}
+  - key: en.grammar.modals_obligation
+    band: 5
+    title: "Modals of obligation and advice: must, have to, should"
+    payload:
+      lesson:
+        rule: "Have to for external rules; must for strong personal obligation or written rules; should for advice; don't have to = not necessary; mustn't = prohibited."
+        examples: ["You have to show ID at the bank.", "You should complain to the council."]
+        common_errors:
+          - {wrong: "You must to pay a deposit.", right: "You must pay a deposit."}
+  - key: en.grammar.first_conditional
+    band: 6
+    title: "First conditional: if + present, will"
+    payload:
+      lesson:
+        rule: "If + present simple, will + base form for real future possibilities. No will after if."
+        examples: ["If it rains, we'll take the bus.", "If you sign today, you'll get the keys on Friday."]
+        common_errors:
+          - {wrong: "If it will rain, we'll stay in.", right: "If it rains, we'll stay in."}
+    prereq: [en.grammar.future_forms]
+  - key: en.grammar.relative_clauses
+    band: 6
+    title: "Relative clauses: who, which, that, where"
+    payload:
+      lesson:
+        rule: "Who for people, which for things, that for both (defining only), where for places."
+        examples: ["The woman who runs the café is from Leeds.", "The flat that I liked has gone."]
+        common_errors:
+          - {wrong: "The man which lives upstairs is loud.", right: "The man who lives upstairs is loud."}
+  - key: en.grammar.gerund_infinitive
+    band: 6
+    title: Gerund or infinitive after verbs
+    payload:
+      lesson:
+        rule: "Enjoy, avoid, mind, suggest + -ing; want, decide, hope, agree + to-infinitive; stop/remember/try change meaning."
+        examples: ["I suggest calling the agency.", "We decided to stay."]
+        common_errors:
+          - {wrong: "I suggest to call the agency.", right: "I suggest calling the agency."}
+  - key: en.grammar.used_to_would
+    band: 6
+    title: Used to / would for past habits
+    payload:
+      lesson:
+        rule: "Used to + base form for past habits and states; would for repeated past actions only (not states)."
+        examples: ["I used to live in Casablanca.", "On Sundays we would walk by the sea."]
+        common_errors:
+          - {wrong: "I use to work in a bank.", right: "I used to work in a bank."}
+  - key: en.grammar.second_conditional
+    band: 7
+    title: "Second conditional: if + past, would"
+    payload:
+      lesson:
+        rule: "If + past simple, would + base form for unreal or unlikely present/future situations. Were is preferred for all persons in formal style."
+        examples: ["If I had more time, I'd take an evening course.", "If I were you, I'd ask for a refund."]
+        common_errors:
+          - {wrong: "If I would have money, I would buy a car.", right: "If I had money, I would buy a car."}
+    prereq: [en.grammar.first_conditional]
+  - key: en.grammar.past_perfect
+    band: 7
+    title: Past perfect
+    payload:
+      lesson:
+        rule: "Had + past participle for an action before another past action."
+        examples: ["When I got to the station, the train had left.", "She told me she had lost her keys."]
+        common_errors:
+          - {wrong: "When I arrived, he already left.", right: "When I arrived, he had already left."}
+    prereq: [en.grammar.present_perfect]
+  - key: en.grammar.passive_voice
+    band: 7
+    title: Passive voice
+    payload:
+      lesson:
+        rule: "Be (in any tense) + past participle when the action matters more than who did it; by + agent if needed."
+        examples: ["The repairs will be done next week.", "My application was rejected."]
+        common_errors:
+          - {wrong: "The letter was wrote yesterday.", right: "The letter was written yesterday."}
+  - key: en.grammar.linking_words
+    band: 7
+    title: "Linking words: contrast, cause, result, addition"
+    payload:
+      lesson:
+        rule: "Contrast: however, although, whereas. Cause: because, since, due to. Result: therefore, as a result. Addition: moreover, furthermore. Mind punctuation: However, …"
+        examples: ["Although the flat is small, it's very bright.", "The bus was cancelled; as a result, I was late."]
+        common_errors:
+          - {wrong: "Although it was late, but we continued.", right: "Although it was late, we continued."}
+  - key: en.grammar.question_tags
+    band: 7
+    title: Question tags
+    payload:
+      lesson:
+        rule: "Positive statement → negative tag, negative statement → positive tag, using the same auxiliary."
+        examples: ["You're new here, aren't you?", "She didn't call, did she?"]
+        common_errors:
+          - {wrong: "You live here, isn't it?", right: "You live here, don't you?"}
+  - key: en.grammar.third_conditional
+    band: 8
+    title: "Third conditional: if + past perfect, would have"
+    payload:
+      lesson:
+        rule: "If + past perfect, would have + past participle for imagined changes to the past (regrets, criticism)."
+        examples: ["If I'd known, I would have come earlier.", "If you had told me, I would have fixed the wall."]
+        common_errors:
+          - {wrong: "If I would have known, I would have come.", right: "If I had known, I would have come."}
+    prereq: [en.grammar.past_perfect, en.grammar.second_conditional]
+  - key: en.grammar.reported_speech
+    band: 8
+    title: Reported speech
+    payload:
+      lesson:
+        rule: "After a past reporting verb, tenses usually shift back: present → past, will → would, past → past perfect. Reported questions use statement word order."
+        examples: ["He said he would call back.", "She asked whether I had filled in the form."]
+        common_errors:
+          - {wrong: "She asked me where did I live.", right: "She asked me where I lived."}
+    prereq: [en.grammar.past_perfect]
+  - key: en.grammar.non_defining_relatives
+    band: 8
+    title: Non-defining relative clauses
+    payload:
+      lesson:
+        rule: "Extra information between commas with who/which (never that)."
+        examples: ["My landlord, who is retired, lives next door.", "The council, which meets monthly, rejected the plan."]
+        common_errors:
+          - {wrong: "My brother, that lives in Leeds, is a nurse.", right: "My brother, who lives in Leeds, is a nurse."}
+    prereq: [en.grammar.relative_clauses]
+  - key: en.grammar.wish_if_only
+    band: 8
+    title: Wish / if only
+    payload:
+      lesson:
+        rule: "Wish + past simple for present regrets; wish + past perfect for past regrets; wish + would for annoyance."
+        examples: ["I wish I lived closer to work.", "If only I had read the contract."]
+        common_errors:
+          - {wrong: "I wish I have more time.", right: "I wish I had more time."}
+  - key: en.grammar.mixed_conditionals
+    band: 9
+    title: Mixed conditionals
+    payload:
+      lesson:
+        rule: "Past condition with present result (If I had taken the job, I would be in London now) or present condition with past result."
+        examples: ["If I'd saved more, I wouldn't be worried now."]
+        common_errors:
+          - {wrong: "If I took that job, I would be rich now.", right: "If I had taken that job, I would be rich now."}
+    prereq: [en.grammar.third_conditional]
+  - key: en.grammar.participle_clauses
+    band: 9
+    title: Participle clauses
+    payload:
+      lesson:
+        rule: "Use -ing or past participle clauses to condense ideas; the implied subject must match the main clause."
+        examples: ["Having finished the report, she left early.", "Built in 1890, the station needs repairs."]
+        common_errors:
+          - {wrong: "Walking to work, the rain started.", right: "Walking to work, I got caught in the rain."}
+  - key: en.grammar.cleft_sentences
+    band: 9
+    title: Cleft sentences for emphasis
+    payload:
+      lesson:
+        rule: "It is/was … that/who … and What … is/was … to focus on one element."
+        examples: ["It's the noise that bothers me.", "What I'd suggest is a compromise."]
+        common_errors:
+          - {wrong: "What I need it is more time.", right: "What I need is more time."}
+  - key: en.grammar.inversion
+    band: 10
+    title: Inversion after negative adverbials
+    payload:
+      lesson:
+        rule: "Never, rarely, not only, at no time, only then + auxiliary + subject, for formal emphasis."
+        examples: ["Not only was the flat damp, but the heating didn't work.", "Rarely have I seen such poor service."]
+        common_errors:
+          - {wrong: "Never I have seen this.", right: "Never have I seen this."}

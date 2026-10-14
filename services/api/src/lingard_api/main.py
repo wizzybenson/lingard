@@ -1,0 +1,46 @@
+"""FastAPI application factory. API is versioned under ``/v1``; OpenAPI is generated for the TS client."""
+
+from __future__ import annotations
+
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from lingard_api.routes import admin, auth, economy, glance, learning, me, sessions, speech, studio, voice, world
+from lingard_api.settings import Settings, get_settings
+from lingard_api.state import AppState
+
+
+def create_app(settings: Settings | None = None, state: AppState | None = None) -> FastAPI:
+    config = settings or get_settings()
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        app.state.lingard = state or AppState.build(config)
+        if app.state.lingard.interactive is None:
+            await app.state.lingard.start()
+        try:
+            yield
+        finally:
+            await app.state.lingard.close()
+
+    app = FastAPI(title="Lingard API", version="1", lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=config.cors_origins,
+        allow_methods=["*"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
+    for module in (auth, me, admin, world, sessions, learning, economy, voice, glance, speech, studio):
+        app.include_router(module.router)
+
+    @app.get("/v1/health")
+    async def health() -> dict[str, str]:
+        return {"status": "ok"}
+
+    return app
+
+
+app = create_app()

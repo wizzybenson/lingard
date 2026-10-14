@@ -1,0 +1,23 @@
+defaults:
+  kind: lexset
+  language: fr
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+  as_of: "2012"
+nodes:
+  - {key: fr.lex.greetings_courtesy, band: 4, title: "Formules de politesse", payload: {items: [bonjour, bonsoir, "s'il vous plaît", merci, "de rien", "excusez-moi", "au revoir", "bonne journée"]}}
+  - {key: fr.lex.transport, band: 4, title: "Transports", payload: {items: [billet, quai, correspondance, "arrêt de bus", horaire, retard, aller-retour, métro, gare]}}
+  - {key: fr.lex.food_shopping, band: 4, title: "Courses et alimentation", payload: {items: [boulangerie, épicerie, caisse, "un kilo de", "une douzaine de", frais, "en promotion", reçu]}}
+  - {key: fr.lex.weather_seasons, band: 4, title: "Météo et saisons", payload: {items: [neige, verglas, "il fait froid", "il pleut", orage, canicule, hiver, printemps]}}
+  - {key: fr.lex.housing.renting, band: 4, title: "Logement : louer", payload: {items: [appartement, loyer, bail, propriétaire, locataire, "charges comprises", "meublé", studio, colocation]}}
+  - {key: fr.lex.leisure, band: 4, title: "Loisirs", payload: {items: [cinéma, randonnée, patinoire, bibliothèque, "match de hockey", festival, abonnement]}}
+  - {key: fr.lex.health_appointments, band: 5, title: "Santé et rendez-vous médicaux", payload: {items: [ordonnance, pharmacie, "carte d'assurance maladie", symptôme, fièvre, urgence, "clinique sans rendez-vous"]}}
+  - {key: fr.lex.banking, band: 5, title: "Banque", payload: {items: ["ouvrir un compte", virement, guichet, "carte de débit", "relevé de compte", frais, épargne]}}
+  - {key: fr.lex.emotions, band: 5, title: "Émotions", payload: {items: [inquiet, soulagé, déçu, fier, agacé, "avoir hâte", "en avoir marre"]}}
+  - {key: fr.lex.housing.deposit_repairs, band: 6, title: "Logement : dépôt et réparations", payload: {items: ["dépôt de garantie", "état des lieux", fissure, fuite, plombier, "remise en état", "retenir sur le dépôt", usure]}}
+  - {key: fr.lex.work_job_search, band: 6, title: "Travail et recherche d'emploi", payload: {items: [candidature, "lettre de motivation", entretien, "poste à pourvoir", salaire, "période d'essai", "temps partiel", recruteur]}}
+  - {key: fr.lex.administration, band: 6, title: "Démarches administratives", payload: {items: [formulaire, "pièce d'identité", "numéro d'assurance sociale", guichet, délai, "justificatif de domicile", demande]}}
+  - {key: fr.lex.education, band: 7, title: "Éducation et formation", payload: {items: [inscription, "frais de scolarité", diplôme, "formation continue", stage, équivalence, bourse]}}
+  - {key: fr.lex.technology, band: 7, title: "Technologie", payload: {items: ["données personnelles", "mot de passe", application, télétravail, "réseaux sociaux", cybersécurité]}}
+  - {key: fr.lex.news_current_affairs, band: 8, title: "Actualité et société", payload: {items: [enquête, "conseil municipal", manifestation, sondage, "projet de loi", porte-parole, "selon les autorités"]}}
+  - {key: fr.lex.environment, band: 8, title: "Environnement", payload: {items: ["changement climatique", recyclage, "transport en commun", "empreinte carbone", "espaces verts", gaspillage]}}
+  - {key: fr.lex.abstract_argument, band: 9, title: "Lexique de l'argumentation", payload: {items: [enjeu, "mettre en évidence", "remettre en question", nuancer, "à long terme", "en contrepartie", primordial]}}

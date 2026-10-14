@@ -1,0 +1,171 @@
+{
+  "suite": "placement_accuracy",
+  "mode": "offline",
+  "metrics": {
+    "learners": 30,
+    "within_one_band": 1.0,
+    "mean_abs_error": 0.5
+  },
+  "gates": [
+    {
+      "metric": "within_one_band",
+      "op": ">=",
+      "threshold": 0.9
+    }
+  ],
+  "notes": [],
+  "samples": [
+    {
+      "language": "fr",
+      "true": 4.5,
+      "placed": 5
+    },
+    {
+      "language": "fr",
+      "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "fr",
+      "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "fr",
+      "true": 5.5,
+      "placed": 6
+    },
+    {
+      "language": "fr",
+      "true": 5.5,
+      "placed": 6
+    },
+    {
+      "language": "fr",
+      "true": 5.5,
+      "placed": 5
+    },
+    {
+      "language": "fr",
+      "true": 6.5,
+      "placed": 6
+    },
+    {
+      "language": "fr",
+      "true": 6.5,
+      "placed": 6
+    },
+    {
+      "language": "fr",
+      "true": 6.5,
+      "placed": 6
+    },
+    {
+      "language": "fr",
+      "true": 7.5,
+      "placed": 8
+    },
+    {
+      "language": "fr",
+      "true": 7.5,
+      "placed": 7
+    },
+    {
+      "language": "fr",
+      "true": 7.5,
+      "placed": 7
+    },
+    {
+      "language": "fr",
+      "true": 8.5,
+      "placed": 8
+    },
+    {
+      "language": "fr",
+      "true": 8.5,
+      "placed": 8
+    },
+    {
+      "language": "fr",
+      "true": 8.5,
+      "placed": 8
+    },
+    {
+      "language": "en",
+      "true": 4.5,
+      "placed": 5
+    },
+    {
+      "language": "en",
+      "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "en",
+      "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "en",
+      "true": 5.5,
+      "placed": 5
+    },
+    {
+      "language": "en",
+      "true": 5.5,
+      "placed": 5
+    },
+    {
+      "language": "en",
+      "true": 5.5,
+      "placed": 6
+    },
+    {
+      "language": "en",
+      "true": 6.5,
+      "placed": 7
+    },
+    {
+      "language": "en",
+      "true": 6.5,
+      "placed": 6
+    },
+    {
+      "language": "en",
+      "true": 6.5,
+      "placed": 7
+    },
+    {
+      "language": "en",
+      "true": 7.5,
+      "placed": 8
+    },
+    {
+      "language": "en",
+      "true": 7.5,
+      "placed": 8
+    },
+    {
+      "language": "en",
+      "true": 7.5,
+      "placed": 8
+    },
+    {
+      "language": "en",
+      "true": 8.5,
+      "placed": 8
+    },
+    {
+      "language": "en",
+      "true": 8.5,
+      "placed": 9
+    },
+    {
+      "language": "en",
+      "true": 8.5,
+      "placed": 9
+    }
+  ],
+  "ran_at": "2026-10-14T08:48:27+00:00",
+  "status": "PASS"
+}

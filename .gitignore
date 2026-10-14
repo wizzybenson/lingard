@@ -1,0 +1,35 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Calibration vault: never committed (SPEC §8.3)
+vault/
+
+# Learner audio, voice embeddings, recordings (SPEC §0.6)
+*.wav
+*.opus
+*.mp3
+*.m4a
+*.flac
+tools/voicebench/data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+
+# OS
+.DS_Store
+
+# Claude Code local state
+.claude/scheduled_tasks.lock

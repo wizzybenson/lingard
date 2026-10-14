@@ -1,0 +1,8 @@
+# Accent Studio shadowing lines (SPEC §13.4). Each line drills one pronunciation node; every word must be in
+# lexicon_en.yaml (checked by a test). Original lines for Lingard.
+lines:
+  - {node_key: en.pron.th_sounds, line: "Three, please."}
+  - {node_key: en.pron.short_long_vowels, line: "A ship, not a sheep."}
+  - {node_key: en.pron.v_vs_f, line: "Very, not ferry."}
+  - {node_key: en.pron.p_vs_b, line: "Pen, not Ben."}
+  - {node_key: en.pron.schwa, line: "I'd like a cup of tea, please."}

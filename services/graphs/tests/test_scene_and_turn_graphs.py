@@ -1,0 +1,212 @@
+import uuid
+from typing import Any
+
+import pytest
+from langchain_core.messages import BaseMessage
+
+from lingard_contracts.events import NpcContext, TurnEvent
+from lingard_contracts.planning import SceneBrief
+from lingard_graphs.agents.assessor import locate
+from lingard_graphs.agents.scene_compiler import CompileError, SceneCompiler
+from lingard_graphs.deps import GraphDeps, MemoryHints
+from lingard_graphs.graphs.turn_assessment import build_turn_assessment
+from lingard_graphs.store import MemoryStore, SceneRecord
+from lingard_llm.testing import message_text
+
+from .conftest import USER, Script
+
+TARGETS = ["fr.func.negotiate", "fr.grammar.si_imparfait", "fr.lex.housing.deposit_repairs"]
+
+
+def good_draft(_: list[BaseMessage]) -> dict[str, Any]:
+    return {
+        "learner_goal": "Récupérer votre dépôt de garantie",
+        "elicitation": [
+            {"target": "fr.func.negotiate", "tactic": "Offer to return half the deposit and wait for a counter-offer"},
+            {
+                "target": "fr.grammar.si_imparfait",
+                "tactic": "Ask what the tenant would do if he kept the whole deposit",
+            },
+            {"target": "fr.lex.housing.deposit_repairs", "tactic": "Point at the crack and list repair costs"},
+        ],
+        "approved_facts": [
+            "Le dépôt était de 900 dollars",
+            "Le mur du salon a une fissure",
+            "Le bail a pris fin le 30 septembre",
+        ],
+        "success_conditions": ["Le locataire fait une contre-proposition"],
+        "evidence_required": [{"target": "fr.grammar.si_imparfait", "min_uses": 1}],
+        "exits": [{"key": "deal", "trigger": "they agree on an amount", "consequence": "part of the deposit returned"}],
+        "max_turns": 16,
+        "mood": "defensive",
+    }
+
+
+def brief() -> SceneBrief:
+    return SceneBrief(
+        city="rivemont",
+        location_key="rivemont.vieux_port.apartment_3b",
+        npc_keys=["landlord_martin"],
+        story_beat="End of lease; Martin is keeping the deposit.",
+        targets=TARGETS,
+        learner_band=6,
+        intensity="tense",
+        pack_alignment=["tef_canada.eo.section_b"],
+    )
+
+
+async def test_compiler_builds_a_valid_contract(deps: GraphDeps, script: Script) -> None:
+    script.handlers["You design one scene"] = good_draft
+    contract = await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    assert contract.npc_language_band == 7 and contract.cast[0].voice_id == "fr_m_58_martin"
+    assert contract.targets.grammar == ["fr.grammar.si_imparfait"]
+    assert contract.accent_variety == ["fr-FR-standard"]
+
+
+async def test_compiler_feeds_issues_back_then_succeeds(deps: GraphDeps, script: Script) -> None:
+    attempts: list[int] = []
+
+    def flaky(messages: list[BaseMessage]) -> dict[str, Any]:
+        attempts.append(1)
+        draft = good_draft(messages)
+        if len(attempts) == 1:
+            draft["elicitation"] = draft["elicitation"][:1]  # missing tactics
+        else:
+            assert "missing_tactic" in message_text(messages[-2])
+        return draft
+
+    script.handlers["You design one scene"] = flaky
+    await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    assert len(attempts) == 2
+
+
+async def test_compiler_rejects_unreviewed_targets(deps: GraphDeps) -> None:
+    await deps.curriculum.unmark_reviewed("fr.grammar.si_imparfait")
+    with pytest.raises(CompileError):
+        await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+
+
+def test_locate_requires_real_span() -> None:
+    text = "si j'aurais su je serais venu"
+    span = locate(text, "Si j'aurais")
+    assert span is not None and (span.start, span.end) == (0, 11)
+    assert locate(text, "si j'avais") is None
+
+
+def assessor_answer(messages: list[BaseMessage]) -> dict[str, Any]:
+    return {
+        "dimensions": [
+            {"dimension": "fluency", "score": 6, "confidence": 0.6},
+            {"dimension": "grammatical_control", "score": 5, "confidence": 0.7},
+            {"dimension": "invented_dimension", "score": 9, "confidence": 1.0},
+        ],
+        "errors": [
+            {
+                "node_key": "fr.grammar.si_imparfait",
+                "span": "si je refuserais",
+                "correction": "si je refusais",
+                "explanation": "no conditional after si",
+                "severity": "major",
+                "confidence": 0.93,
+            },
+            {"node_key": "fr.grammar.articles_gender", "span": "not in transcript", "confidence": 0.99},
+            {"node_key": "fr.grammar.negation", "span": "je vais", "confidence": 0.5},
+        ],
+        "target_evidence": [
+            {"node_key": "fr.grammar.si_imparfait", "correct": False, "span": "si je refuserais", "confidence": 0.9}
+        ],
+        "band_estimate": 6,
+        "confidence": 0.7,
+    }
+
+
+def event(scene_id: uuid.UUID, text: str) -> TurnEvent:
+    return TurnEvent(
+        trace_id=uuid.uuid4(),
+        user_id=USER,
+        session_id=uuid.uuid4(),
+        scene_id=scene_id,
+        turn_index=1,
+        speaker="learner",
+        language="fr-FR",
+        transcript=text,
+        npc_context=NpcContext(npc_id="landlord_martin", last_npc_line="Et si je refusais ?"),
+        targets_active=TARGETS,
+    )
+
+
+async def setup_scene(deps: GraphDeps, script: Script) -> SceneRecord:
+    script.handlers["You design one scene"] = good_draft
+    contract = await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    record = SceneRecord(scene_id=contract.scene_id, user_id=USER, session_id=uuid.uuid4(), contract=contract)
+    await deps.store.save_scene(record)
+    return record
+
+
+async def test_turn_assessment_filters_tags_checks_and_updates_evidence(deps: GraphDeps, script: Script) -> None:
+    scene = await setup_scene(deps, script)
+    script.handlers["silent, rigorous examiner"] = assessor_answer
+    script.handlers["Independent check"] = lambda m: {"is_error": True, "confidence": 0.95}
+    graph = build_turn_assessment(deps)
+    first = event(scene.scene_id, "Bon, si je refuserais votre offre, je vais au tribunal.")
+    result = await graph.ainvoke({"event": first})
+    assessment = result["assessment"]
+    assert [t.node_key for t in assessment.error_tags] == ["fr.grammar.si_imparfait", "fr.grammar.negation"]
+    top = assessment.error_tags[0]
+    assert top.span.text == "si je refuserais" and top.showable
+    assert not assessment.error_tags[1].showable, "below 0.85 → evidence only, no second check"
+    assert {d.dimension for d in assessment.dimensions} == {"fluency", "grammatical_control"}
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    mastery = await store.mastery(USER, ["fr.grammar.si_imparfait"])
+    assert mastery["fr.grammar.si_imparfait"].p_mastery < deps.pedagogy.bkt.p_init
+    assert "fr.grammar.si_imparfait" in await store.fsrs(USER)
+
+    second = event(scene.scene_id, "Alors si je refuserais encore, vous gardez tout ?")
+    result = await graph.ainvoke({"event": second})
+    assert "opened:fr.grammar.si_imparfait" in result["ticket_events"]
+    assert "fr.grammar.si_imparfait" in await store.tickets(USER)
+
+    calls_before = len(script.calls)
+    again = await graph.ainvoke({"event": second})
+    assert again["skip"] is True and len(script.calls) == calls_before, "redelivered event is a no-op"
+
+
+async def test_steering_hint_every_four_turns_without_corrections(deps: GraphDeps, script: Script) -> None:
+    scene = await setup_scene(deps, script)
+    script.handlers["silent, rigorous examiner"] = lambda m: {
+        "dimensions": [],
+        "errors": [],
+        "target_evidence": [],
+        "confidence": 0.5,
+    }
+    graph = build_turn_assessment(deps)
+    hints = deps.hints
+    assert isinstance(hints, MemoryHints)
+    for i in range(4):
+        await graph.ainvoke({"event": event(scene.scene_id, f"Je voudrais mon dépôt, numéro {i}.")})
+        if i < 3:
+            assert str(scene.scene_id) not in hints.hints
+    hint = hints.hints[str(scene.scene_id)]
+    assert "Hypothèse irréelle" in hint and "turns left" in hint
+    assert len(hint) <= deps.pedagogy.steering.max_hint_chars
+
+
+async def test_errors_far_above_band_do_not_open_tickets(deps: GraphDeps, script: Script) -> None:
+    scene = await setup_scene(deps, script)
+    far = "fr.grammar.voix_passive"  # band 8: assessed (≤ band + 2) but two bands above the band-6 learner
+    script.handlers["silent, rigorous examiner"] = lambda m: {
+        "dimensions": [],
+        "target_evidence": [],
+        "confidence": 0.8,
+        "errors": [
+            {"node_key": far, "span": "la loi a été voté", "confidence": 0.95, "correction": "la loi a été votée"}
+        ],
+    }
+    graph = build_turn_assessment(deps)
+    for i in range(3):
+        await graph.ainvoke({"event": event(scene.scene_id, f"Bon, la loi a été voté hier, numéro {i}.")})
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    assert far not in await store.tickets(USER, active_only=False)
+    assert (await store.mastery(USER, [far]))[far].evidence_count == 3, "mastery still learns from stretch errors"

@@ -1,0 +1,14 @@
+# TEF Canada task types. exercises: can-do bands this task can evidence. assessed_by: pack rubric dimensions.
+defaults:
+  kind: tasktype
+  language: fr
+  band: 4
+  source_url: https://www.lefrancaisdesaffaires.fr/tests-diplomes/test-evaluation-francais-tef/tef-canada/
+  as_of: "2026-10-14"
+nodes:
+  - {key: fr.task.tef_ce, skill: reading, title: "TEF CE : compréhension écrite (40 QCM, 60 min)", payload: {pack: tef_canada, section: comprehension_ecrite}, exercises_skill: reading}
+  - {key: fr.task.tef_co, skill: listening, title: "TEF CO : compréhension orale (40 QCM, 40 min)", payload: {pack: tef_canada, section: comprehension_orale}, exercises_skill: listening}
+  - {key: fr.task.tef_ee_section_a, skill: writing, title: "TEF EE A : suite d'un fait divers (80 mots min, 25 min)", payload: {pack: tef_canada, section: expression_ecrite, task: section_a}, exercises_skill: writing, assessed_by: [tef_canada.ee.task_fulfilment, tef_canada.ee.coherence_cohesion, tef_canada.ee.lexical_resource, tef_canada.ee.grammatical_control]}
+  - {key: fr.task.tef_ee_section_b, skill: writing, title: "TEF EE B : point de vue argumenté (200 mots min, 35 min)", payload: {pack: tef_canada, section: expression_ecrite, task: section_b}, exercises_skill: writing, assessed_by: [tef_canada.ee.task_fulfilment, tef_canada.ee.argumentation, tef_canada.ee.coherence_cohesion, tef_canada.ee.lexical_resource, tef_canada.ee.grammatical_control]}
+  - {key: fr.task.tef_eo_section_a, skill: speaking, title: "TEF EO A : obtenir des renseignements (5 min)", payload: {pack: tef_canada, section: expression_orale, task: section_a}, exercises_skill: speaking, assessed_by: [tef_canada.eo.task_fulfilment, tef_canada.eo.interaction, tef_canada.eo.fluency, tef_canada.eo.lexical_resource, tef_canada.eo.grammatical_control, tef_canada.eo.pronunciation]}
+  - {key: fr.task.tef_eo_section_b, skill: speaking, title: "TEF EO B : convaincre (10 min)", payload: {pack: tef_canada, section: expression_orale, task: section_b}, exercises_skill: speaking, assessed_by: [tef_canada.eo.task_fulfilment, tef_canada.eo.interaction, tef_canada.eo.fluency, tef_canada.eo.lexical_resource, tef_canada.eo.grammatical_control, tef_canada.eo.pronunciation]}

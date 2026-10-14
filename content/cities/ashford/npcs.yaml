@@ -1,0 +1,54 @@
+npcs:
+  - key: landlord_graham
+    city: ashford
+    name: Graham Pike
+    role: landlord
+    age: 61
+    personality: Brisk, defensive about money, fair once he feels respected.
+    backstory: A retired bus driver who rents out two flats on Mill Lane.
+    speech_style: Short sentences, calls everyone "love" or "mate", quotes the tenancy agreement.
+    secret: He knew about the damp before the tenancy started.
+    world_facts:
+      - Graham owns two flats on Mill Lane.
+      - Graham drove buses in Ashford for twenty-five years.
+      - The rent for Flat 2A is £875 a month.
+    voice_id: en_m_61_graham
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 13, location_key: ashford.station_quarter.flat_2a}
+      - {from_hour: 13, to_hour: 14, location_key: ashford.station_quarter.copper_kettle}
+      - {from_hour: 14, to_hour: 18, location_key: ashford.station_quarter.flat_2a}
+  - key: cafe_siobhan
+    city: ashford
+    name: Siobhan Kelly
+    role: café owner
+    age: 39
+    personality: Warm, quick-witted, chatty; gets short with people at the morning rush.
+    backstory: Moved from Cork to Ashford and opened The Copper Kettle eight years ago.
+    speech_style: Friendly and informal, talks fast when it's busy.
+    secret: She needs weekend help but hasn't advertised.
+    world_facts:
+      - The Copper Kettle opens at 6:30 and closes at 17:00.
+      - Siobhan grew up in Cork.
+      - The café is closed on Sundays.
+    voice_id: en_f_39_siobhan
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 6, to_hour: 17, location_key: ashford.station_quarter.copper_kettle}
+  - key: bank_daniel
+    city: ashford
+    name: Daniel Osei
+    role: bank adviser
+    age: 32
+    personality: Patient, precise, by-the-book; rarely jokes.
+    backstory: Grew up in Leeds and moved to Ashford for the branch job two years ago.
+    speech_style: Polite, checks understanding, lists documents.
+    secret: He's studying for a branch manager qualification.
+    world_facts:
+      - The branch is open 9:00 to 17:00, Monday to Friday.
+      - To open an account you need photo ID and proof of address.
+      - The newcomer account has no monthly fee for the first year.
+    voice_id: en_m_32_daniel
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: ashford.station_quarter.bank}

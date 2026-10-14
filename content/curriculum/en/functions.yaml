@@ -1,0 +1,28 @@
+defaults:
+  kind: function
+  language: en
+  skill: speaking
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
+  as_of: "2012"
+nodes:
+  - {key: en.func.greet_introduce, band: 4, title: "Greet and introduce yourself", payload: {exponents: ["Hi, I'm…", "Nice to meet you.", "I've just moved to Ashford."]}}
+  - {key: en.func.ask_information, band: 4, title: "Ask for information", payload: {exponents: ["Excuse me, could you tell me…?", "Do you know where…?", "What time does… open?"]}, requires: [en.grammar.questions]}
+  - {key: en.func.make_request, band: 4, title: "Make polite requests", payload: {exponents: ["Could I…?", "Would you mind…ing?", "I was wondering if…"]}}
+  - {key: en.func.ask_clarification, band: 4, title: "Ask for repetition or clarification", payload: {exponents: ["Sorry, could you say that again?", "What do you mean by…?", "Could you speak a bit more slowly?"]}}
+  - {key: en.func.make_appointment, band: 4, title: "Make or change an appointment", payload: {exponents: ["I'd like to book an appointment for…", "Would Tuesday suit you?", "I need to cancel my appointment."]}}
+  - {key: en.func.express_preference, band: 4, title: "Express preferences", payload: {exponents: ["I'd rather…", "I prefer… to…", "I don't mind."]}}
+  - {key: en.func.describe_person_place, band: 5, title: "Describe people and places", payload: {exponents: ["It's a lively area where…", "She seems…", "It's next to…"]}, requires: [en.grammar.relative_clauses]}
+  - {key: en.func.narrate_past, band: 5, title: "Narrate past events", payload: {exponents: ["First…, then…, in the end…", "While I was…", "That day…"]}, requires: [en.grammar.past_simple, en.grammar.past_continuous]}
+  - {key: en.func.apologise, band: 5, title: "Apologise and respond to apologies", payload: {exponents: ["I'm really sorry about…", "I apologise for…", "Don't worry about it."]}}
+  - {key: en.func.complain_politely, band: 6, title: "Complain politely", payload: {exponents: ["I'm afraid there's a problem with…", "I'm not happy with…", "I'd like this to be sorted out."]}}
+  - {key: en.func.give_advice, band: 6, title: "Give advice", payload: {exponents: ["If I were you, I'd…", "You should…", "Why don't you…?"]}, requires: [en.grammar.modals_obligation]}
+  - {key: en.func.express_opinion, band: 6, title: "Give opinions", payload: {exponents: ["In my view,…", "I reckon…", "As far as I'm concerned,…"]}}
+  - {key: en.func.agree_disagree, band: 6, title: "Agree and disagree", payload: {exponents: ["I couldn't agree more.", "I see your point, but…", "I'm not so sure about that."]}}
+  - {key: en.func.compare_options, band: 6, title: "Compare options", payload: {exponents: ["The advantage of… is that…", "Compared to…", "On the one hand…, on the other…"]}, requires: [en.grammar.comparatives]}
+  - {key: en.func.negotiate, band: 7, title: "Negotiate", payload: {exponents: ["How about we meet halfway?", "I could accept that if…", "What if I…?"]}, requires: [en.grammar.second_conditional]}
+  - {key: en.func.hypothesise, band: 7, title: "Hypothesise", payload: {exponents: ["Suppose…", "If that happened,…", "Imagine if…"]}, requires: [en.grammar.second_conditional]}
+  - {key: en.func.express_regret, band: 7, title: "Express regret", payload: {exponents: ["I regret…ing", "I should have…", "If only I had…"]}, requires: [en.grammar.wish_if_only]}
+  - {key: en.func.argue_point_of_view, band: 8, title: "Argue a point of view", payload: {exponents: ["Firstly…, furthermore…, finally…", "There is no doubt that…", "Take, for example,…"]}, requires: [en.grammar.linking_words]}
+  - {key: en.func.persuade, band: 8, title: "Persuade", payload: {exponents: ["You won't regret it.", "Just think how much you'd save…", "I understand your concerns, but…"]}, requires: [en.grammar.linking_words]}
+  - {key: en.func.concede_and_counter, band: 9, title: "Concede and counter-argue", payload: {exponents: ["Admittedly…, but…", "While it's true that…, …", "That said,…"]}, requires: [en.grammar.linking_words]}
+  - {key: en.func.summarise, band: 9, title: "Summarise and paraphrase", payload: {exponents: ["To sum up,…", "In other words,…", "So what you're saying is…"]}}

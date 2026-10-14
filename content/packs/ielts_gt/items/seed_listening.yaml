@@ -1,0 +1,75 @@
+# Original items in the style of IELTS Listening. The stimulus is an audio script (TTS-rendered, never shown).
+defaults: {pack: ielts_gt, language: en, skill: listening, section: listening, task_type: listening_mcq}
+items:
+  - id: en-l-001
+    band: 4
+    stimulus: "Hello, this is the dental surgery. Your appointment on Friday has moved from ten o'clock to half past eleven. Please call us if that's a problem."
+    question: "What time is the new appointment?"
+    options: ["10:00", "10:30", "11:30", "12:00"]
+    answer: 2
+  - id: en-l-002
+    band: 4
+    stimulus: "The next train to Canterbury is cancelled. Passengers should take the replacement bus from outside the main entrance."
+    question: "What should passengers do?"
+    options: ["Wait on the platform", "Take a bus", "Buy a new ticket", "Go to Canterbury tomorrow"]
+    answer: 1
+  - id: en-l-003
+    band: 5
+    stimulus: "Hi, it's Priya. The team lunch is still on Thursday, but we've changed the place — it's at the Italian on Mill Lane now, not the café. Same time, one o'clock."
+    question: "What has changed about the lunch?"
+    options: ["The day", "The time", "The place", "Who is coming"]
+    answer: 2
+  - id: en-l-004
+    band: 5
+    stimulus: "To join the library you'll need some photo ID and something with your address on it, like a utility bill from the last three months. Membership is free."
+    question: "What do you need to join?"
+    options: ["Photo ID and proof of address", "A passport and a fee", "A letter from your employer", "Nothing at all"]
+    answer: 0
+  - id: en-l-005
+    band: 6
+    stimulus: "So did you take the flat? — I did. It's a longer commute than my old place, but the rent's a lot lower and there's a big park right opposite."
+    question: "What is the main advantage of the new flat?"
+    options: ["The shorter commute", "The lower rent", "The bigger rooms", "The new kitchen"]
+    answer: 1
+  - id: en-l-006
+    band: 6
+    stimulus: "Because of the marathon on Sunday, parking on the High Street will be suspended from six a.m. until four p.m. Residents are asked to use the multi-storey on Station Road."
+    question: "Why is parking suspended?"
+    options: ["Road repairs", "A sporting event", "A market", "Snow clearing"]
+    answer: 1
+  - id: en-l-007
+    band: 7
+    stimulus: "I do understand, sir, but we can only give a refund with the receipt. What I can do is offer an exchange, or a credit note you can use any time in the next twelve months."
+    question: "What does the assistant offer?"
+    options: ["An immediate refund", "An exchange or credit note", "A discount on the next purchase only", "Nothing"]
+    answer: 1
+  - id: en-l-008
+    band: 7
+    stimulus: "Our guest set up a community fridge three years ago. She says finding food was never the hard part; the real challenge was persuading people it was all right to take it without feeling embarrassed."
+    question: "What was the guest's biggest challenge?"
+    options: ["Finding food", "Finding a location", "Helping people accept food without embarrassment", "Recruiting volunteers"]
+    answer: 2
+  - id: en-l-009
+    band: 8
+    stimulus: "The four-day week is often presented as a no-brainer. The trials, though, paint a mixed picture: wellbeing improves almost everywhere, but productivity depends heavily on the sector and how work is organised."
+    question: "What does the speaker say about the four-day week?"
+    options: ["It boosts productivity everywhere", "Its effects vary between sectors", "It harms wellbeing", "It has been abandoned"]
+    answer: 1
+  - id: en-l-010
+    band: 8
+    stimulus: "The issue isn't so much a shortage of homes as a mismatch: developers are putting up studios, while what families actually need are affordable three-bedroom houses."
+    question: "What problem does the speaker identify?"
+    options: ["Too few homes are built", "The homes built don't match needs", "Families prefer studios", "Rents are falling"]
+    answer: 1
+  - id: en-l-011
+    band: 9
+    stimulus: "It's too simplistic to blame online shopping alone for empty high streets; parking charges and the loss of local services have, in my view, played just as big a part."
+    question: "What is the speaker's view of online shopping?"
+    options: ["It is the only cause", "It is one cause among several", "It has had no effect", "It has helped high streets"]
+    answer: 1
+  - id: en-l-012
+    band: 10
+    stimulus: "Far be it from me to belittle the progress made; but celebrating record employment while glossing over how insecure many of those contracts are strikes me as, shall we say, rather selective optimism."
+    question: "What is the speaker's tone?"
+    options: ["Enthusiastic", "Ironic and critical", "Neutral", "Worried about their own job"]
+    answer: 1

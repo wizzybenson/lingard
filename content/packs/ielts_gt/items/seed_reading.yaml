@@ -1,0 +1,75 @@
+# Original items in the style of IELTS General Training Reading (multiple choice). Written for Lingard.
+defaults: {pack: ielts_gt, language: en, skill: reading, section: reading, task_type: gt_reading_mcq}
+items:
+  - id: en-r-001
+    band: 4
+    stimulus: "ASHFORD LEISURE CENTRE — Pool closed Monday mornings for cleaning. Open daily 6:30am–9pm otherwise."
+    question: "When can you NOT swim?"
+    options: ["Monday at 8am", "Monday at 7pm", "Sunday at 7am", "Friday at 8pm"]
+    answer: 0
+  - id: en-r-002
+    band: 4
+    stimulus: "Lost: small black umbrella with a wooden handle, left on the number 12 bus on Tuesday. Reward offered. Call 07700 900123."
+    question: "What is the notice about?"
+    options: ["A bus timetable change", "Something someone has lost", "An umbrella for sale", "A job on the buses"]
+    answer: 1
+  - id: en-r-003
+    band: 5
+    stimulus: "Staff notice: from 1 March, all holiday requests must be submitted through the online portal at least two weeks in advance. Paper forms will no longer be accepted."
+    question: "What will change on 1 March?"
+    options: ["Staff will get more holiday", "Paper holiday forms will stop being used", "Holidays must be taken in March", "The portal will close"]
+    answer: 1
+  - id: en-r-004
+    band: 5
+    stimulus: "Tenants are reminded that bins go out on Wednesday night for Thursday collection. Recycling (blue lid) is collected every other week; general waste weekly."
+    question: "How often is recycling collected?"
+    options: ["Every Wednesday", "Every Thursday", "Every two weeks", "Once a month"]
+    answer: 2
+  - id: en-r-005
+    band: 6
+    stimulus: "The evening course in bookkeeping runs for ten weeks. Places are limited to fifteen, and priority is given to applicants who are currently unemployed. A small materials fee applies."
+    question: "Who is most likely to get a place?"
+    options: ["Someone with a full-time job", "Someone looking for work", "Someone who pays the highest fee", "Someone who has done bookkeeping before"]
+    answer: 1
+  - id: en-r-006
+    band: 6
+    stimulus: "Although the new car park has added 200 spaces near the station, commuters say queues to leave it at peak times can last twenty minutes, cancelling out the time saved."
+    question: "What do commuters complain about?"
+    options: ["There are too few spaces", "Leaving the car park takes too long", "The car park is too far from the station", "Parking is too expensive"]
+    answer: 1
+  - id: en-r-007
+    band: 7
+    stimulus: "While flexible working is popular with staff, managers report that coordinating meetings has become harder, and some teams now insist on two fixed office days a week to keep projects on track."
+    question: "Why have some teams introduced fixed office days?"
+    options: ["Staff dislike flexible working", "To make coordination easier", "To reduce office costs", "Because of new government rules"]
+    answer: 1
+  - id: en-r-008
+    band: 7
+    stimulus: "Contrary to popular belief, buying second-hand furniture is not always cheaper once delivery and repairs are included; its clearest benefit is environmental rather than financial."
+    question: "What does the writer suggest about second-hand furniture?"
+    options: ["It is always cheaper", "Its main advantage is environmental", "It is usually poor quality", "It should be avoided"]
+    answer: 1
+  - id: en-r-009
+    band: 8
+    stimulus: "Free public transport sounds like an obvious way to get people out of their cars, yet critics point out that where services are infrequent or unreliable, removing the fare does little to change behaviour."
+    question: "According to critics, free transport…"
+    options: ["solves congestion on its own", "achieves little if the service is poor", "should only be offered to students", "makes services more reliable"]
+    answer: 1
+  - id: en-r-010
+    band: 8
+    stimulus: "The report stops short of condemning the scheme outright, but it notes that most of the benefits went to households that were already planning to insulate their homes."
+    question: "What is the report's view of the scheme?"
+    options: ["Strongly positive", "Openly hostile", "Cautiously critical", "Entirely neutral"]
+    answer: 2
+  - id: en-r-011
+    band: 9
+    stimulus: "Whether one welcomes the conversion of the old mills into flats or not, the rise in local rents predates it; if anything, the new rail link set the trend in motion a decade earlier."
+    question: "What does the writer say about rising rents?"
+    options: ["They were caused only by the mill conversions", "They began before the conversions", "They have now stopped", "They are lower than elsewhere"]
+    answer: 1
+  - id: en-r-012
+    band: 10
+    stimulus: "It would be a mistake to read falling museum attendance as indifference to culture; audiences seem rather to be migrating towards temporary, participatory events that official figures are poorly equipped to capture."
+    question: "What is the writer's main point?"
+    options: ["People are losing interest in culture", "Attendance figures miss newer cultural activities", "Museums charge too much", "Temporary events are less popular"]
+    answer: 1

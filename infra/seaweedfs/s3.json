@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "lingard-local",
+      "credentials": [{"accessKey": "lingard", "secretKey": "lingard-local-only"}],
+      "actions": ["Admin", "Read", "List", "Tagging", "Write"]
+    }
+  ]
+}

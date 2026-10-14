@@ -1,0 +1,28 @@
+defaults:
+  kind: function
+  language: fr
+  skill: speaking
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+  as_of: "2012"
+nodes:
+  - {key: fr.func.greet_introduce, band: 4, title: "Saluer, se présenter", payload: {exponents: ["Bonjour, je m'appelle…", "Enchanté(e).", "Je viens d'arriver à Rivemont."]}}
+  - {key: fr.func.ask_information, band: 4, title: "Demander un renseignement", payload: {exponents: ["Excusez-moi, où se trouve… ?", "À quelle heure ouvre… ?", "Est-ce que vous savez si… ?"]}}
+  - {key: fr.func.make_request, band: 4, title: "Faire une demande polie", payload: {exponents: ["Je voudrais…", "Est-ce que je pourrais… ?", "Vous serait-il possible de… ?"]}, requires: [fr.grammar.conditionnel_present]}
+  - {key: fr.func.ask_clarification, band: 4, title: "Demander de répéter, faire préciser", payload: {exponents: ["Pardon, vous pouvez répéter ?", "Qu'est-ce que vous voulez dire par… ?", "Plus lentement, s'il vous plaît."]}}
+  - {key: fr.func.make_appointment, band: 4, title: "Prendre ou déplacer un rendez-vous", payload: {exponents: ["Je voudrais prendre rendez-vous pour…", "Est-ce que mardi vous conviendrait ?", "Je dois annuler mon rendez-vous."]}}
+  - {key: fr.func.express_preference, band: 4, title: "Exprimer une préférence", payload: {exponents: ["Je préfère…", "J'aime mieux…", "Ça m'est égal."]}}
+  - {key: fr.func.describe_person_place, band: 5, title: "Décrire une personne, un lieu", payload: {exponents: ["C'est un quartier animé où…", "Il a l'air…", "Il y a… à côté de…"]}, requires: [fr.grammar.relatifs_qui_que_ou]}
+  - {key: fr.func.narrate_past, band: 5, title: "Raconter un événement passé", payload: {exponents: ["D'abord…, ensuite…, finalement…", "Au moment où…", "Ce jour-là…"]}, requires: [fr.grammar.passe_compose_avoir, fr.grammar.passe_compose_etre, fr.grammar.imparfait]}
+  - {key: fr.func.apologise, band: 5, title: "S'excuser et répondre à des excuses", payload: {exponents: ["Je suis désolé(e) pour…", "Toutes mes excuses.", "Ce n'est pas grave."]}}
+  - {key: fr.func.complain_politely, band: 6, title: "Se plaindre poliment", payload: {exponents: ["Je me permets de vous signaler que…", "Je ne suis pas satisfait(e) de…", "Il me semble que ce n'est pas normal."]}, requires: [fr.grammar.conditionnel_present]}
+  - {key: fr.func.give_advice, band: 6, title: "Donner un conseil", payload: {exponents: ["À ta place, je…", "Tu devrais…", "Il vaudrait mieux…"]}, requires: [fr.grammar.conditionnel_present]}
+  - {key: fr.func.express_opinion, band: 6, title: "Donner son opinion", payload: {exponents: ["À mon avis,…", "Je trouve que…", "Selon moi,…"]}}
+  - {key: fr.func.agree_disagree, band: 6, title: "Exprimer l'accord et le désaccord", payload: {exponents: ["Je suis tout à fait d'accord.", "Je ne partage pas votre avis.", "Pas tout à fait…"]}}
+  - {key: fr.func.compare_options, band: 6, title: "Comparer des options", payload: {exponents: ["L'avantage de…, c'est que…", "Par rapport à…", "D'un côté…, de l'autre…"]}, requires: [fr.grammar.comparatif_superlatif]}
+  - {key: fr.func.negotiate, band: 7, title: "Négocier", payload: {exponents: ["Je vous propose…", "Et si on coupait la poire en deux ?", "Je pourrais accepter à condition que…"]}, requires: [fr.grammar.si_imparfait, fr.grammar.conditionnel_present]}
+  - {key: fr.func.hypothesise, band: 7, title: "Formuler une hypothèse", payload: {exponents: ["Si c'était le cas, …", "Imaginons que…", "Au cas où…"]}, requires: [fr.grammar.si_imparfait]}
+  - {key: fr.func.express_regret, band: 7, title: "Exprimer un regret", payload: {exponents: ["Je regrette de…", "J'aurais dû…", "Si seulement j'avais…"]}, requires: [fr.grammar.conditionnel_passe]}
+  - {key: fr.func.argue_point_of_view, band: 8, title: "Défendre un point de vue argumenté", payload: {exponents: ["Premièrement…, de plus…, enfin…", "Il est indéniable que…", "Prenons l'exemple de…"]}, requires: [fr.grammar.connecteurs_logiques, fr.grammar.subjonctif_vs_indicatif]}
+  - {key: fr.func.persuade, band: 8, title: "Convaincre un interlocuteur", payload: {exponents: ["Vous ne le regretterez pas.", "Pensez à tout ce que vous gagneriez…", "Je comprends vos hésitations, mais…"]}, requires: [fr.grammar.connecteurs_logiques]}
+  - {key: fr.func.concede_and_counter, band: 9, title: "Concéder puis réfuter", payload: {exponents: ["Certes…, mais…", "Il est vrai que… ; néanmoins…", "Même si…, il n'en reste pas moins que…"]}, requires: [fr.grammar.connecteurs_logiques]}
+  - {key: fr.func.summarise, band: 9, title: "Résumer, reformuler", payload: {exponents: ["En résumé,…", "Autrement dit,…", "Si je comprends bien,…"]}, requires: [fr.grammar.nominalisation]}

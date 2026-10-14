@@ -1,0 +1,37 @@
+{
+  "suite": "contract_adherence",
+  "mode": "offline",
+  "metrics": {
+    "scenes": 50,
+    "violations_planted": 500,
+    "fact_violations_leaked": 0,
+    "language_leaks": 0,
+    "tutor_or_break_leaks": 0,
+    "blocked_for_wrong_reason": 0,
+    "clean_lines": 700,
+    "false_block_rate": 0.0
+  },
+  "gates": [
+    {
+      "metric": "fact_violations_leaked",
+      "op": "==",
+      "threshold": 0
+    },
+    {
+      "metric": "language_leaks",
+      "op": "==",
+      "threshold": 0
+    },
+    {
+      "metric": "false_block_rate",
+      "op": "<=",
+      "threshold": 0.05
+    }
+  ],
+  "notes": [
+    "Offline mode checks the Guard against planted violations; targets-elicited needs live mode."
+  ],
+  "samples": [],
+  "ran_at": "2026-10-14T08:47:15+00:00",
+  "status": "PASS"
+}

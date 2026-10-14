@@ -1,0 +1,322 @@
+# French grammar nodes. All rules and examples are original Lingard content.
+defaults:
+  kind: grammar
+  language: fr
+  source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
+  as_of: "2012"
+nodes:
+  - key: fr.grammar.present_regular
+    band: 4
+    title: Présent des verbes réguliers
+    payload:
+      lesson:
+        rule: "Verbes en -er : radical + -e, -es, -e, -ons, -ez, -ent. Verbes en -ir (finir) : -is, -is, -it, -issons, -issez, -issent."
+        examples: ["Je travaille au port.", "Nous finissons à six heures.", "Ils habitent près du marché."]
+        common_errors:
+          - {wrong: "Nous travaillez demain.", right: "Nous travaillons demain."}
+          - {wrong: "Ils finit le travail.", right: "Ils finissent le travail."}
+  - key: fr.grammar.present_irregular
+    band: 4
+    title: Présent des verbes irréguliers fréquents
+    payload:
+      lesson:
+        rule: "Être, avoir, aller, faire, venir, prendre, pouvoir, vouloir ont des formes à mémoriser : je suis, j'ai, je vais, je fais, je viens, je prends, je peux, je veux."
+        examples: ["Je vais à la banque.", "Vous faites quoi ce soir ?", "Elle prend le bus."]
+        common_errors:
+          - {wrong: "Je vas au travail.", right: "Je vais au travail."}
+          - {wrong: "Vous faisez la cuisine.", right: "Vous faites la cuisine."}
+  - key: fr.grammar.articles_gender
+    band: 4
+    title: Articles et genre
+    payload:
+      lesson:
+        rule: "Défini : le, la, l', les. Indéfini : un, une, des. Partitif : du, de la, de l'. Après une négation : de / d'."
+        examples: ["Je voudrais du pain.", "Il n'y a pas de lait.", "C'est une bonne idée."]
+        common_errors:
+          - {wrong: "Je n'ai pas du temps.", right: "Je n'ai pas de temps."}
+          - {wrong: "Le problème est la clé.", right: "Le problème, c'est la clé."}
+  - key: fr.grammar.negation
+    band: 4
+    title: "Négation : ne… pas, ne… jamais, ne… plus, ne… rien"
+    payload:
+      lesson:
+        rule: "La négation entoure le verbe conjugué : ne + verbe + pas. Aux temps composés : ne + auxiliaire + pas + participe."
+        examples: ["Je ne fume pas.", "Il n'a jamais vu la mer.", "Nous ne voulons rien."]
+        common_errors:
+          - {wrong: "Je ne ai pas compris.", right: "Je n'ai pas compris."}
+          - {wrong: "Il n'a vu pas le film.", right: "Il n'a pas vu le film."}
+  - key: fr.grammar.questions
+    band: 4
+    title: "Poser des questions : intonation, est-ce que, inversion"
+    payload:
+      lesson:
+        rule: "Trois registres : intonation (Vous venez ?), est-ce que (Est-ce que vous venez ?), inversion soutenue (Venez-vous ?)."
+        examples: ["Est-ce que le bureau est ouvert ?", "À quelle heure part le train ?", "Pourriez-vous m'aider ?"]
+        common_errors:
+          - {wrong: "Où est-ce que tu habites est ?", right: "Où est-ce que tu habites ?"}
+          - {wrong: "Quand vous partez-vous ?", right: "Quand partez-vous ?"}
+  - key: fr.grammar.futur_proche
+    band: 4
+    title: Futur proche
+    payload:
+      lesson:
+        rule: "Aller au présent + infinitif pour un projet proche : je vais signer le bail."
+        examples: ["Je vais appeler le propriétaire.", "On va visiter l'appartement demain."]
+        common_errors:
+          - {wrong: "Je vais à signer.", right: "Je vais signer."}
+  - key: fr.grammar.passe_compose_avoir
+    band: 5
+    title: Passé composé avec avoir
+    payload:
+      lesson:
+        rule: "Avoir au présent + participe passé. Le participe s'accorde avec un COD placé avant le verbe."
+        examples: ["J'ai payé le loyer.", "Les clés ? Je les ai rendues hier."]
+        common_errors:
+          - {wrong: "J'ai prendu le métro.", right: "J'ai pris le métro."}
+          - {wrong: "Je suis mangé au restaurant.", right: "J'ai mangé au restaurant."}
+  - key: fr.grammar.passe_compose_etre
+    band: 5
+    title: Passé composé avec être
+    payload:
+      lesson:
+        rule: "Verbes de mouvement (aller, venir, arriver, partir, entrer, sortir, monter, descendre, naître, mourir, rester, tomber, retourner) et verbes pronominaux prennent être ; le participe s'accorde avec le sujet."
+        examples: ["Elle est arrivée à Rivemont lundi.", "Nous nous sommes inscrits au cours."]
+        common_errors:
+          - {wrong: "Elle a arrivé hier.", right: "Elle est arrivée hier."}
+          - {wrong: "Ils sont parti tôt.", right: "Ils sont partis tôt."}
+    prereq: [fr.grammar.passe_compose_avoir]
+  - key: fr.grammar.imparfait
+    band: 5
+    title: Imparfait (description et habitude)
+    payload:
+      lesson:
+        rule: "Radical du « nous » au présent + -ais, -ais, -ait, -ions, -iez, -aient. Pour le décor, l'habitude, l'état ; le passé composé pour l'événement."
+        examples: ["Quand j'étais petit, je jouais au foot.", "Il pleuvait quand je suis sorti."]
+        common_errors:
+          - {wrong: "Hier, je regardais la télé quand le téléphone sonnait.", right: "Hier, je regardais la télé quand le téléphone a sonné."}
+    prereq: [fr.grammar.passe_compose_avoir]
+  - key: fr.grammar.comparatif_superlatif
+    band: 5
+    title: Comparatif et superlatif
+    payload:
+      lesson:
+        rule: "Plus / moins / aussi + adjectif + que. Le plus / le moins + adjectif. Bon → meilleur, bien → mieux."
+        examples: ["Cet appartement est plus calme que l'autre.", "C'est le quartier le plus cher de la ville."]
+        common_errors:
+          - {wrong: "C'est plus bon.", right: "C'est meilleur."}
+          - {wrong: "Il parle plus bien que moi.", right: "Il parle mieux que moi."}
+  - key: fr.grammar.imperatif
+    band: 5
+    title: Impératif
+    payload:
+      lesson:
+        rule: "Trois personnes sans sujet : prends, prenons, prenez. Les verbes en -er perdent le -s au « tu » : parle !"
+        examples: ["Prenez la deuxième rue à droite.", "Ne t'inquiète pas."]
+        common_errors:
+          - {wrong: "Tu parles plus lentement, s'il te plaît !", right: "Parle plus lentement, s'il te plaît !"}
+  - key: fr.grammar.pronoms_cod_coi
+    band: 6
+    title: Pronoms compléments directs et indirects
+    payload:
+      lesson:
+        rule: "COD : me, te, le, la, nous, vous, les. COI (à quelqu'un) : me, te, lui, nous, vous, leur. Placés avant le verbe conjugué."
+        examples: ["Je le connais depuis deux ans.", "Je lui ai envoyé un courriel."]
+        common_errors:
+          - {wrong: "Je connais le.", right: "Je le connais."}
+          - {wrong: "Je les ai téléphoné.", right: "Je leur ai téléphoné."}
+  - key: fr.grammar.pronoms_y_en
+    band: 6
+    title: Pronoms y et en
+    payload:
+      lesson:
+        rule: "Y remplace à + chose ou un lieu ; en remplace de + nom ou une quantité."
+        examples: ["Le marché ? J'y vais le samedi.", "Des pommes ? J'en voudrais trois."]
+        common_errors:
+          - {wrong: "J'ai besoin de ça, j'y ai besoin.", right: "J'en ai besoin."}
+    prereq: [fr.grammar.pronoms_cod_coi]
+  - key: fr.grammar.futur_simple
+    band: 6
+    title: Futur simple
+    payload:
+      lesson:
+        rule: "Infinitif (ou radical irrégulier : ser-, aur-, ir-, fer-, pourr-, voudr-, viendr-) + -ai, -as, -a, -ons, -ez, -ont."
+        examples: ["Je vous rappellerai demain.", "Quand tu arriveras, appelle-moi."]
+        common_errors:
+          - {wrong: "Quand j'arrive demain, je t'appellerai.", right: "Quand j'arriverai demain, je t'appellerai."}
+          - {wrong: "Je seras là.", right: "Je serai là."}
+  - key: fr.grammar.conditionnel_present
+    band: 6
+    title: Conditionnel présent (politesse, souhait)
+    payload:
+      lesson:
+        rule: "Radical du futur + terminaisons de l'imparfait : je voudrais, vous pourriez, il faudrait."
+        examples: ["Je voudrais prendre rendez-vous.", "Pourriez-vous répéter, s'il vous plaît ?"]
+        common_errors:
+          - {wrong: "Je voudrai un café, s'il vous plaît.", right: "Je voudrais un café, s'il vous plaît."}
+    prereq: [fr.grammar.futur_simple, fr.grammar.imparfait]
+  - key: fr.grammar.relatifs_qui_que_ou
+    band: 6
+    title: "Pronoms relatifs : qui, que, où"
+    payload:
+      lesson:
+        rule: "Qui = sujet du verbe qui suit ; que = complément d'objet ; où = lieu ou temps."
+        examples: ["La voisine qui habite en face est infirmière.", "Le studio que j'ai visité est petit.", "Le jour où je suis arrivé…"]
+        common_errors:
+          - {wrong: "L'homme que parle est mon patron.", right: "L'homme qui parle est mon patron."}
+  - key: fr.grammar.si_present_futur
+    band: 6
+    title: "Hypothèse probable : si + présent → futur"
+    payload:
+      lesson:
+        rule: "Si + présent, futur (ou impératif). Jamais de futur après si."
+        examples: ["S'il fait beau, nous irons au parc.", "Si tu as besoin d'aide, appelle-moi."]
+        common_errors:
+          - {wrong: "Si tu viendras, on mangera ensemble.", right: "Si tu viens, on mangera ensemble."}
+    prereq: [fr.grammar.futur_simple]
+  - key: fr.grammar.si_imparfait
+    band: 7
+    title: "Hypothèse irréelle au présent : si + imparfait → conditionnel présent"
+    payload:
+      lesson:
+        rule: "Si + imparfait, conditionnel présent. Jamais de conditionnel après si."
+        examples: ["Si j'avais plus de temps, je suivrais un cours du soir.", "Si vous refusiez, j'irais au tribunal."]
+        common_errors:
+          - {wrong: "Si j'aurais le temps, je viendrais.", right: "Si j'avais le temps, je viendrais."}
+          - {wrong: "Si j'avais de l'argent, j'achèterai une voiture.", right: "Si j'avais de l'argent, j'achèterais une voiture."}
+    prereq: [fr.grammar.imparfait, fr.grammar.conditionnel_present]
+  - key: fr.grammar.relatif_dont
+    band: 7
+    title: Pronom relatif dont
+    payload:
+      lesson:
+        rule: "Dont remplace un complément introduit par de : parler de, avoir besoin de, se souvenir de, le nom de."
+        examples: ["Voici le document dont vous avez besoin.", "C'est la collègue dont je t'ai parlé."]
+        common_errors:
+          - {wrong: "Le livre que j'ai besoin.", right: "Le livre dont j'ai besoin."}
+    prereq: [fr.grammar.relatifs_qui_que_ou]
+  - key: fr.grammar.plus_que_parfait
+    band: 7
+    title: Plus-que-parfait
+    payload:
+      lesson:
+        rule: "Avoir ou être à l'imparfait + participe passé : une action antérieure à une autre action passée."
+        examples: ["Quand je suis arrivé, le train était déjà parti.", "Il m'a dit qu'il avait perdu ses clés."]
+        common_errors:
+          - {wrong: "Quand je suis arrivé, il est déjà parti.", right: "Quand je suis arrivé, il était déjà parti."}
+    prereq: [fr.grammar.passe_compose_etre, fr.grammar.imparfait]
+  - key: fr.grammar.subjonctif_present
+    band: 7
+    title: Subjonctif présent après la nécessité, la volonté, l'émotion
+    payload:
+      lesson:
+        rule: "Il faut que, je veux que, je suis content que, avant que, pour que + subjonctif. Radical du « ils » au présent + -e, -es, -e, -ions, -iez, -ent ; irréguliers : sois, aie, aille, fasse, puisse, sache."
+        examples: ["Il faut que vous signiez ici.", "Je voudrais que tu viennes avec moi."]
+        common_errors:
+          - {wrong: "Il faut que tu vas à la mairie.", right: "Il faut que tu ailles à la mairie."}
+          - {wrong: "Je veux que je parte.", right: "Je veux partir."}
+  - key: fr.grammar.gerondif
+    band: 7
+    title: Gérondif
+    payload:
+      lesson:
+        rule: "En + participe présent (radical du « nous » + -ant) pour la simultanéité ou la manière ; même sujet que le verbe principal."
+        examples: ["J'écoute la radio en conduisant.", "C'est en pratiquant qu'on progresse."]
+        common_errors:
+          - {wrong: "En sortant du bureau, la pluie a commencé.", right: "Quand je suis sorti du bureau, la pluie a commencé."}
+  - key: fr.grammar.connecteurs_logiques
+    band: 7
+    title: Connecteurs logiques (cause, conséquence, opposition, concession)
+    payload:
+      lesson:
+        rule: "Cause : parce que, puisque, car, comme. Conséquence : donc, c'est pourquoi, si bien que. Opposition : mais, pourtant, alors que. Concession : bien que (+ subjonctif), même si (+ indicatif)."
+        examples: ["Puisque le bail est terminé, je demande mon dépôt.", "Bien qu'il soit tard, je vais finir ce rapport."]
+        common_errors:
+          - {wrong: "Bien qu'il est malade, il travaille.", right: "Bien qu'il soit malade, il travaille."}
+  - key: fr.grammar.conditionnel_passe
+    band: 8
+    title: Conditionnel passé (regret, reproche)
+    payload:
+      lesson:
+        rule: "Avoir ou être au conditionnel présent + participe passé : j'aurais dû, tu aurais pu, elle serait venue."
+        examples: ["J'aurais dû vérifier le contrat.", "Vous auriez pu me prévenir."]
+        common_errors:
+          - {wrong: "J'aurais du partir plus tôt.", right: "J'aurais dû partir plus tôt."}
+    prereq: [fr.grammar.conditionnel_present, fr.grammar.passe_compose_etre]
+  - key: fr.grammar.si_plus_que_parfait
+    band: 8
+    title: "Hypothèse irréelle au passé : si + plus-que-parfait → conditionnel passé"
+    payload:
+      lesson:
+        rule: "Si + plus-que-parfait, conditionnel passé. Pour regretter ou imaginer un passé différent."
+        examples: ["Si j'avais su, je serais venu plus tôt.", "Si vous m'aviez prévenu, j'aurais réparé le mur."]
+        common_errors:
+          - {wrong: "Si j'aurais su, je serais venu.", right: "Si j'avais su, je serais venu."}
+    prereq: [fr.grammar.plus_que_parfait, fr.grammar.conditionnel_passe, fr.grammar.si_imparfait]
+  - key: fr.grammar.subjonctif_vs_indicatif
+    band: 8
+    title: Subjonctif ou indicatif ? (opinion, certitude, doute)
+    payload:
+      lesson:
+        rule: "Je pense que, je suis sûr que, il est évident que + indicatif ; je ne pense pas que, je doute que, il est possible que + subjonctif."
+        examples: ["Je pense qu'il a raison.", "Je ne pense pas qu'il ait raison."]
+        common_errors:
+          - {wrong: "Je pense qu'il ait raison.", right: "Je pense qu'il a raison."}
+          - {wrong: "Je doute qu'il vient.", right: "Je doute qu'il vienne."}
+    prereq: [fr.grammar.subjonctif_present]
+  - key: fr.grammar.discours_rapporte
+    band: 8
+    title: Discours rapporté au passé
+    payload:
+      lesson:
+        rule: "Après un verbe introducteur au passé : présent → imparfait, passé composé → plus-que-parfait, futur → conditionnel présent."
+        examples: ["Il a dit qu'il viendrait.", "Elle m'a demandé si j'avais rempli le formulaire."]
+        common_errors:
+          - {wrong: "Il m'a dit qu'il viendra.", right: "Il m'a dit qu'il viendrait."}
+    prereq: [fr.grammar.plus_que_parfait, fr.grammar.conditionnel_present]
+  - key: fr.grammar.voix_passive
+    band: 8
+    title: Voix passive
+    payload:
+      lesson:
+        rule: "Être au temps voulu + participe passé accordé avec le sujet ; l'agent est introduit par par."
+        examples: ["La décision a été prise par le conseil.", "Les candidats seront convoqués lundi."]
+        common_errors:
+          - {wrong: "La loi a été voté hier.", right: "La loi a été votée hier."}
+  - key: fr.grammar.concordance_des_temps
+    band: 9
+    title: Concordance des temps dans le récit
+    payload:
+      lesson:
+        rule: "Dans un récit au passé, articuler passé composé (événements), imparfait (cadre), plus-que-parfait (antériorité) et conditionnel (futur dans le passé)."
+        examples: ["Elle savait qu'elle partirait, car on lui avait proposé un poste."]
+        common_errors:
+          - {wrong: "Il savait qu'il réussira.", right: "Il savait qu'il réussirait."}
+    prereq: [fr.grammar.discours_rapporte]
+  - key: fr.grammar.subjonctif_passe
+    band: 9
+    title: Subjonctif passé
+    payload:
+      lesson:
+        rule: "Avoir ou être au subjonctif présent + participe passé, pour une action antérieure au verbe principal."
+        examples: ["Je suis ravi que vous ayez accepté.", "Bien qu'il soit parti tôt, il est arrivé en retard."]
+        common_errors:
+          - {wrong: "Je suis content que tu es venu.", right: "Je suis content que tu sois venu."}
+    prereq: [fr.grammar.subjonctif_vs_indicatif]
+  - key: fr.grammar.nominalisation
+    band: 9
+    title: Nominalisation (style écrit)
+    payload:
+      lesson:
+        rule: "Transformer un verbe en nom pour condenser l'information : augmenter → l'augmentation, décider → la décision."
+        examples: ["L'augmentation des loyers inquiète les locataires.", "Après la signature du contrat…"]
+        common_errors:
+          - {wrong: "Le fait d'augmenter les loyers il inquiète.", right: "L'augmentation des loyers inquiète."}
+  - key: fr.grammar.mise_en_relief
+    band: 10
+    title: "Mise en relief : c'est… qui / ce que… c'est"
+    payload:
+      lesson:
+        rule: "Souligner un élément : c'est + élément + qui/que ; ce qui/ce que + verbe, c'est…"
+        examples: ["C'est la sécurité qui m'inquiète.", "Ce que je propose, c'est un compromis."]
+        common_errors:
+          - {wrong: "C'est la sécurité que m'inquiète.", right: "C'est la sécurité qui m'inquiète."}

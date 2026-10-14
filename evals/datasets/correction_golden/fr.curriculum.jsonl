@@ -1,0 +1,159 @@
+{"text": "Nous travaillez demain.", "has_error": true, "node_key": "fr.grammar.present_regular", "correction": "Nous travaillons demain.", "origin": "curriculum"}
+{"text": "Nous travaillons demain.", "has_error": false, "origin": "curriculum"}
+{"text": "Ils finit le travail.", "has_error": true, "node_key": "fr.grammar.present_regular", "correction": "Ils finissent le travail.", "origin": "curriculum"}
+{"text": "Ils finissent le travail.", "has_error": false, "origin": "curriculum"}
+{"text": "Je travaille au port.", "has_error": false, "origin": "curriculum"}
+{"text": "Nous finissons à six heures.", "has_error": false, "origin": "curriculum"}
+{"text": "Ils habitent près du marché.", "has_error": false, "origin": "curriculum"}
+{"text": "Je vas au travail.", "has_error": true, "node_key": "fr.grammar.present_irregular", "correction": "Je vais au travail.", "origin": "curriculum"}
+{"text": "Je vais au travail.", "has_error": false, "origin": "curriculum"}
+{"text": "Vous faisez la cuisine.", "has_error": true, "node_key": "fr.grammar.present_irregular", "correction": "Vous faites la cuisine.", "origin": "curriculum"}
+{"text": "Vous faites la cuisine.", "has_error": false, "origin": "curriculum"}
+{"text": "Je vais à la banque.", "has_error": false, "origin": "curriculum"}
+{"text": "Vous faites quoi ce soir ?", "has_error": false, "origin": "curriculum"}
+{"text": "Elle prend le bus.", "has_error": false, "origin": "curriculum"}
+{"text": "Je n'ai pas du temps.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "Je n'ai pas de temps.", "origin": "curriculum"}
+{"text": "Je n'ai pas de temps.", "has_error": false, "origin": "curriculum"}
+{"text": "Le problème est la clé.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "Le problème, c'est la clé.", "origin": "curriculum"}
+{"text": "Le problème, c'est la clé.", "has_error": false, "origin": "curriculum"}
+{"text": "Je voudrais du pain.", "has_error": false, "origin": "curriculum"}
+{"text": "Il n'y a pas de lait.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est une bonne idée.", "has_error": false, "origin": "curriculum"}
+{"text": "Je ne ai pas compris.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Je n'ai pas compris.", "origin": "curriculum"}
+{"text": "Je n'ai pas compris.", "has_error": false, "origin": "curriculum"}
+{"text": "Il n'a vu pas le film.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Il n'a pas vu le film.", "origin": "curriculum"}
+{"text": "Il n'a pas vu le film.", "has_error": false, "origin": "curriculum"}
+{"text": "Je ne fume pas.", "has_error": false, "origin": "curriculum"}
+{"text": "Il n'a jamais vu la mer.", "has_error": false, "origin": "curriculum"}
+{"text": "Nous ne voulons rien.", "has_error": false, "origin": "curriculum"}
+{"text": "Où est-ce que tu habites est ?", "has_error": true, "node_key": "fr.grammar.questions", "correction": "Où est-ce que tu habites ?", "origin": "curriculum"}
+{"text": "Où est-ce que tu habites ?", "has_error": false, "origin": "curriculum"}
+{"text": "Quand vous partez-vous ?", "has_error": true, "node_key": "fr.grammar.questions", "correction": "Quand partez-vous ?", "origin": "curriculum"}
+{"text": "Quand partez-vous ?", "has_error": false, "origin": "curriculum"}
+{"text": "Est-ce que le bureau est ouvert ?", "has_error": false, "origin": "curriculum"}
+{"text": "À quelle heure part le train ?", "has_error": false, "origin": "curriculum"}
+{"text": "Pourriez-vous m'aider ?", "has_error": false, "origin": "curriculum"}
+{"text": "Je vais à signer.", "has_error": true, "node_key": "fr.grammar.futur_proche", "correction": "Je vais signer.", "origin": "curriculum"}
+{"text": "Je vais signer.", "has_error": false, "origin": "curriculum"}
+{"text": "Je vais appeler le propriétaire.", "has_error": false, "origin": "curriculum"}
+{"text": "On va visiter l'appartement demain.", "has_error": false, "origin": "curriculum"}
+{"text": "J'ai prendu le métro.", "has_error": true, "node_key": "fr.grammar.passe_compose_avoir", "correction": "J'ai pris le métro.", "origin": "curriculum"}
+{"text": "J'ai pris le métro.", "has_error": false, "origin": "curriculum"}
+{"text": "Je suis mangé au restaurant.", "has_error": true, "node_key": "fr.grammar.passe_compose_avoir", "correction": "J'ai mangé au restaurant.", "origin": "curriculum"}
+{"text": "J'ai mangé au restaurant.", "has_error": false, "origin": "curriculum"}
+{"text": "J'ai payé le loyer.", "has_error": false, "origin": "curriculum"}
+{"text": "Les clés ? Je les ai rendues hier.", "has_error": false, "origin": "curriculum"}
+{"text": "Elle a arrivé hier.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Elle est arrivée hier.", "origin": "curriculum"}
+{"text": "Elle est arrivée hier.", "has_error": false, "origin": "curriculum"}
+{"text": "Ils sont parti tôt.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Ils sont partis tôt.", "origin": "curriculum"}
+{"text": "Ils sont partis tôt.", "has_error": false, "origin": "curriculum"}
+{"text": "Elle est arrivée à Rivemont lundi.", "has_error": false, "origin": "curriculum"}
+{"text": "Nous nous sommes inscrits au cours.", "has_error": false, "origin": "curriculum"}
+{"text": "Hier, je regardais la télé quand le téléphone sonnait.", "has_error": true, "node_key": "fr.grammar.imparfait", "correction": "Hier, je regardais la télé quand le téléphone a sonné.", "origin": "curriculum"}
+{"text": "Hier, je regardais la télé quand le téléphone a sonné.", "has_error": false, "origin": "curriculum"}
+{"text": "Quand j'étais petit, je jouais au foot.", "has_error": false, "origin": "curriculum"}
+{"text": "Il pleuvait quand je suis sorti.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est plus bon.", "has_error": true, "node_key": "fr.grammar.comparatif_superlatif", "correction": "C'est meilleur.", "origin": "curriculum"}
+{"text": "C'est meilleur.", "has_error": false, "origin": "curriculum"}
+{"text": "Il parle plus bien que moi.", "has_error": true, "node_key": "fr.grammar.comparatif_superlatif", "correction": "Il parle mieux que moi.", "origin": "curriculum"}
+{"text": "Il parle mieux que moi.", "has_error": false, "origin": "curriculum"}
+{"text": "Cet appartement est plus calme que l'autre.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est le quartier le plus cher de la ville.", "has_error": false, "origin": "curriculum"}
+{"text": "Tu parles plus lentement, s'il te plaît !", "has_error": true, "node_key": "fr.grammar.imperatif", "correction": "Parle plus lentement, s'il te plaît !", "origin": "curriculum"}
+{"text": "Parle plus lentement, s'il te plaît !", "has_error": false, "origin": "curriculum"}
+{"text": "Prenez la deuxième rue à droite.", "has_error": false, "origin": "curriculum"}
+{"text": "Ne t'inquiète pas.", "has_error": false, "origin": "curriculum"}
+{"text": "Je connais le.", "has_error": true, "node_key": "fr.grammar.pronoms_cod_coi", "correction": "Je le connais.", "origin": "curriculum"}
+{"text": "Je le connais.", "has_error": false, "origin": "curriculum"}
+{"text": "Je les ai téléphoné.", "has_error": true, "node_key": "fr.grammar.pronoms_cod_coi", "correction": "Je leur ai téléphoné.", "origin": "curriculum"}
+{"text": "Je leur ai téléphoné.", "has_error": false, "origin": "curriculum"}
+{"text": "Je le connais depuis deux ans.", "has_error": false, "origin": "curriculum"}
+{"text": "Je lui ai envoyé un courriel.", "has_error": false, "origin": "curriculum"}
+{"text": "J'ai besoin de ça, j'y ai besoin.", "has_error": true, "node_key": "fr.grammar.pronoms_y_en", "correction": "J'en ai besoin.", "origin": "curriculum"}
+{"text": "J'en ai besoin.", "has_error": false, "origin": "curriculum"}
+{"text": "Le marché ? J'y vais le samedi.", "has_error": false, "origin": "curriculum"}
+{"text": "Des pommes ? J'en voudrais trois.", "has_error": false, "origin": "curriculum"}
+{"text": "Quand j'arrive demain, je t'appellerai.", "has_error": true, "node_key": "fr.grammar.futur_simple", "correction": "Quand j'arriverai demain, je t'appellerai.", "origin": "curriculum"}
+{"text": "Quand j'arriverai demain, je t'appellerai.", "has_error": false, "origin": "curriculum"}
+{"text": "Je seras là.", "has_error": true, "node_key": "fr.grammar.futur_simple", "correction": "Je serai là.", "origin": "curriculum"}
+{"text": "Je serai là.", "has_error": false, "origin": "curriculum"}
+{"text": "Je vous rappellerai demain.", "has_error": false, "origin": "curriculum"}
+{"text": "Quand tu arriveras, appelle-moi.", "has_error": false, "origin": "curriculum"}
+{"text": "Je voudrai un café, s'il vous plaît.", "has_error": true, "node_key": "fr.grammar.conditionnel_present", "correction": "Je voudrais un café, s'il vous plaît.", "origin": "curriculum"}
+{"text": "Je voudrais un café, s'il vous plaît.", "has_error": false, "origin": "curriculum"}
+{"text": "Je voudrais prendre rendez-vous.", "has_error": false, "origin": "curriculum"}
+{"text": "Pourriez-vous répéter, s'il vous plaît ?", "has_error": false, "origin": "curriculum"}
+{"text": "L'homme que parle est mon patron.", "has_error": true, "node_key": "fr.grammar.relatifs_qui_que_ou", "correction": "L'homme qui parle est mon patron.", "origin": "curriculum"}
+{"text": "L'homme qui parle est mon patron.", "has_error": false, "origin": "curriculum"}
+{"text": "La voisine qui habite en face est infirmière.", "has_error": false, "origin": "curriculum"}
+{"text": "Le studio que j'ai visité est petit.", "has_error": false, "origin": "curriculum"}
+{"text": "Le jour où je suis arrivé…", "has_error": false, "origin": "curriculum"}
+{"text": "Si tu viendras, on mangera ensemble.", "has_error": true, "node_key": "fr.grammar.si_present_futur", "correction": "Si tu viens, on mangera ensemble.", "origin": "curriculum"}
+{"text": "Si tu viens, on mangera ensemble.", "has_error": false, "origin": "curriculum"}
+{"text": "S'il fait beau, nous irons au parc.", "has_error": false, "origin": "curriculum"}
+{"text": "Si tu as besoin d'aide, appelle-moi.", "has_error": false, "origin": "curriculum"}
+{"text": "Si j'aurais le temps, je viendrais.", "has_error": true, "node_key": "fr.grammar.si_imparfait", "correction": "Si j'avais le temps, je viendrais.", "origin": "curriculum"}
+{"text": "Si j'avais le temps, je viendrais.", "has_error": false, "origin": "curriculum"}
+{"text": "Si j'avais de l'argent, j'achèterai une voiture.", "has_error": true, "node_key": "fr.grammar.si_imparfait", "correction": "Si j'avais de l'argent, j'achèterais une voiture.", "origin": "curriculum"}
+{"text": "Si j'avais de l'argent, j'achèterais une voiture.", "has_error": false, "origin": "curriculum"}
+{"text": "Si j'avais plus de temps, je suivrais un cours du soir.", "has_error": false, "origin": "curriculum"}
+{"text": "Si vous refusiez, j'irais au tribunal.", "has_error": false, "origin": "curriculum"}
+{"text": "Le livre que j'ai besoin.", "has_error": true, "node_key": "fr.grammar.relatif_dont", "correction": "Le livre dont j'ai besoin.", "origin": "curriculum"}
+{"text": "Le livre dont j'ai besoin.", "has_error": false, "origin": "curriculum"}
+{"text": "Voici le document dont vous avez besoin.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est la collègue dont je t'ai parlé.", "has_error": false, "origin": "curriculum"}
+{"text": "Quand je suis arrivé, il est déjà parti.", "has_error": true, "node_key": "fr.grammar.plus_que_parfait", "correction": "Quand je suis arrivé, il était déjà parti.", "origin": "curriculum"}
+{"text": "Quand je suis arrivé, il était déjà parti.", "has_error": false, "origin": "curriculum"}
+{"text": "Quand je suis arrivé, le train était déjà parti.", "has_error": false, "origin": "curriculum"}
+{"text": "Il m'a dit qu'il avait perdu ses clés.", "has_error": false, "origin": "curriculum"}
+{"text": "Il faut que tu vas à la mairie.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Il faut que tu ailles à la mairie.", "origin": "curriculum"}
+{"text": "Il faut que tu ailles à la mairie.", "has_error": false, "origin": "curriculum"}
+{"text": "Je veux que je parte.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Je veux partir.", "origin": "curriculum"}
+{"text": "Je veux partir.", "has_error": false, "origin": "curriculum"}
+{"text": "Il faut que vous signiez ici.", "has_error": false, "origin": "curriculum"}
+{"text": "Je voudrais que tu viennes avec moi.", "has_error": false, "origin": "curriculum"}
+{"text": "En sortant du bureau, la pluie a commencé.", "has_error": true, "node_key": "fr.grammar.gerondif", "correction": "Quand je suis sorti du bureau, la pluie a commencé.", "origin": "curriculum"}
+{"text": "Quand je suis sorti du bureau, la pluie a commencé.", "has_error": false, "origin": "curriculum"}
+{"text": "J'écoute la radio en conduisant.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est en pratiquant qu'on progresse.", "has_error": false, "origin": "curriculum"}
+{"text": "Bien qu'il est malade, il travaille.", "has_error": true, "node_key": "fr.grammar.connecteurs_logiques", "correction": "Bien qu'il soit malade, il travaille.", "origin": "curriculum"}
+{"text": "Bien qu'il soit malade, il travaille.", "has_error": false, "origin": "curriculum"}
+{"text": "Puisque le bail est terminé, je demande mon dépôt.", "has_error": false, "origin": "curriculum"}
+{"text": "Bien qu'il soit tard, je vais finir ce rapport.", "has_error": false, "origin": "curriculum"}
+{"text": "J'aurais du partir plus tôt.", "has_error": true, "node_key": "fr.grammar.conditionnel_passe", "correction": "J'aurais dû partir plus tôt.", "origin": "curriculum"}
+{"text": "J'aurais dû partir plus tôt.", "has_error": false, "origin": "curriculum"}
+{"text": "J'aurais dû vérifier le contrat.", "has_error": false, "origin": "curriculum"}
+{"text": "Vous auriez pu me prévenir.", "has_error": false, "origin": "curriculum"}
+{"text": "Si j'aurais su, je serais venu.", "has_error": true, "node_key": "fr.grammar.si_plus_que_parfait", "correction": "Si j'avais su, je serais venu.", "origin": "curriculum"}
+{"text": "Si j'avais su, je serais venu.", "has_error": false, "origin": "curriculum"}
+{"text": "Si j'avais su, je serais venu plus tôt.", "has_error": false, "origin": "curriculum"}
+{"text": "Si vous m'aviez prévenu, j'aurais réparé le mur.", "has_error": false, "origin": "curriculum"}
+{"text": "Je pense qu'il ait raison.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "Je pense qu'il a raison.", "origin": "curriculum"}
+{"text": "Je pense qu'il a raison.", "has_error": false, "origin": "curriculum"}
+{"text": "Je doute qu'il vient.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "Je doute qu'il vienne.", "origin": "curriculum"}
+{"text": "Je doute qu'il vienne.", "has_error": false, "origin": "curriculum"}
+{"text": "Je pense qu'il a raison.", "has_error": false, "origin": "curriculum"}
+{"text": "Je ne pense pas qu'il ait raison.", "has_error": false, "origin": "curriculum"}
+{"text": "Il m'a dit qu'il viendra.", "has_error": true, "node_key": "fr.grammar.discours_rapporte", "correction": "Il m'a dit qu'il viendrait.", "origin": "curriculum"}
+{"text": "Il m'a dit qu'il viendrait.", "has_error": false, "origin": "curriculum"}
+{"text": "Il a dit qu'il viendrait.", "has_error": false, "origin": "curriculum"}
+{"text": "Elle m'a demandé si j'avais rempli le formulaire.", "has_error": false, "origin": "curriculum"}
+{"text": "La loi a été voté hier.", "has_error": true, "node_key": "fr.grammar.voix_passive", "correction": "La loi a été votée hier.", "origin": "curriculum"}
+{"text": "La loi a été votée hier.", "has_error": false, "origin": "curriculum"}
+{"text": "La décision a été prise par le conseil.", "has_error": false, "origin": "curriculum"}
+{"text": "Les candidats seront convoqués lundi.", "has_error": false, "origin": "curriculum"}
+{"text": "Il savait qu'il réussira.", "has_error": true, "node_key": "fr.grammar.concordance_des_temps", "correction": "Il savait qu'il réussirait.", "origin": "curriculum"}
+{"text": "Il savait qu'il réussirait.", "has_error": false, "origin": "curriculum"}
+{"text": "Elle savait qu'elle partirait, car on lui avait proposé un poste.", "has_error": false, "origin": "curriculum"}
+{"text": "Je suis content que tu es venu.", "has_error": true, "node_key": "fr.grammar.subjonctif_passe", "correction": "Je suis content que tu sois venu.", "origin": "curriculum"}
+{"text": "Je suis content que tu sois venu.", "has_error": false, "origin": "curriculum"}
+{"text": "Je suis ravi que vous ayez accepté.", "has_error": false, "origin": "curriculum"}
+{"text": "Bien qu'il soit parti tôt, il est arrivé en retard.", "has_error": false, "origin": "curriculum"}
+{"text": "Le fait d'augmenter les loyers il inquiète.", "has_error": true, "node_key": "fr.grammar.nominalisation", "correction": "L'augmentation des loyers inquiète.", "origin": "curriculum"}
+{"text": "L'augmentation des loyers inquiète.", "has_error": false, "origin": "curriculum"}
+{"text": "L'augmentation des loyers inquiète les locataires.", "has_error": false, "origin": "curriculum"}
+{"text": "Après la signature du contrat…", "has_error": false, "origin": "curriculum"}
+{"text": "C'est la sécurité que m'inquiète.", "has_error": true, "node_key": "fr.grammar.mise_en_relief", "correction": "C'est la sécurité qui m'inquiète.", "origin": "curriculum"}
+{"text": "C'est la sécurité qui m'inquiète.", "has_error": false, "origin": "curriculum"}
+{"text": "C'est la sécurité qui m'inquiète.", "has_error": false, "origin": "curriculum"}
+{"text": "Ce que je propose, c'est un compromis.", "has_error": false, "origin": "curriculum"}

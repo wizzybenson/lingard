@@ -1,0 +1,15 @@
+# TEF Canada ("équivalence ancien score" scale) → NCLC, per skill. Minimum score for each NCLC level.
+source_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html
+as_of: "2026-06-22"
+verified_at: "2026-10-14"
+pack: tef_canada
+scale: points
+note: IRCC reverted the Dec 2023–May 2024 raw-score grid; profiles use the "Équivalence ancien score" column.
+levels:
+  10: {speaking: 393, listening: 316, reading: 263, writing: 393}
+  9:  {speaking: 371, listening: 298, reading: 248, writing: 371}
+  8:  {speaking: 349, listening: 280, reading: 233, writing: 349}
+  7:  {speaking: 310, listening: 249, reading: 207, writing: 310}
+  6:  {speaking: 271, listening: 217, reading: 181, writing: 271}
+  5:  {speaking: 226, listening: 181, reading: 151, writing: 226}
+  4:  {speaking: 181, listening: 145, reading: 121, writing: 181}

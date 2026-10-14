@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env: {POSTGRES_USER: lingard, POSTGRES_PASSWORD: lingard, POSTGRES_DB: lingard}
+        ports: ["55432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U lingard" --health-interval 2s --health-retries 30
+      redis:
+        image: redis:7.4-alpine
+        ports: ["56379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with: {python-version: "3.12"}
+      - run: uv sync --frozen
+      - run: scripts/check.sh
+      - name: Migration drift check
+        run: |
+          cd packages/db
+          uv run alembic upgrade head
+          uv run alembic check
+      - name: Evals affected by prompts, packs or content
+        run: uv run python -m evals.run --changed-only --base origin/main
+        if: github.event_name == 'pull_request'
+      - name: Licence check
+        run: |
+          uvx pip-licenses --python .venv/bin/python --format=csv --with-system --fail-on="GNU General Public License v3 (GPLv3);GNU Affero General Public License v3;AGPL-3.0;GPL-3.0" > licences.csv
+      - uses: actions/upload-artifact@v4
+        with: {name: licences, path: licences.csv}
+
+  mobile:
+    runs-on: ubuntu-24.04
+    defaults: {run: {working-directory: apps/mobile}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22", cache: npm, cache-dependency-path: apps/mobile/package-lock.json}
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test -- --ci
+      - run: npx license-checker --production --failOn "GPL-3.0;AGPL-3.0"
+
+  secrets:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: gitleaks/gitleaks-action@v2
+        env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
