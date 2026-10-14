@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PlayButton } from "@/live/PlayButton";
+import type { CityEntry } from "@/api/types";
 import { Recorder } from "@/live/Recorder";
 import { useApi } from "@/state/auth";
+import { useCities } from "@/state/cities";
 import { Body, Button, Card, ErrorText, Screen, Title } from "@/ui/kit";
 
 interface StudioLine {
@@ -28,13 +30,17 @@ const MAX_ATTEMPTS = 3;
 export default function Studio() {
   const { t } = useTranslation();
   const api = useApi();
-  const [language, setLanguage] = useState<"fr" | "en">("fr");
+  const cities = useCities();
+  const languages = cities.data?.map((c) => c.language) ?? [];
+  const [chosen, setLanguage] = useState<CityEntry["language"] | null>(null);
+  const language = chosen ?? languages[0] ?? null;
   const [lines, setLines] = useState<StudioLine[]>([]);
   const [results, setResults] = useState<Record<string, ShadowResult>>({});
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setResults({});
+    if (!language) return;
     api
       .get<StudioLine[]>(`/v1/studio/items?language=${language}`)
       .then((items) => {
@@ -47,9 +53,15 @@ export default function Studio() {
   return (
     <Screen>
       <Title>{t("studio.title")}</Title>
-      <Button label={language.toUpperCase()} kind="secondary" onPress={() => setLanguage(language === "fr" ? "en" : "fr")} />
-      <ErrorText message={error} />
-      {lines.map((item) => {
+      {languages.length > 1 && language && (
+        <Button
+          label={language.toUpperCase()}
+          kind="secondary"
+          onPress={() => setLanguage(languages[(languages.indexOf(language) + 1) % languages.length] ?? language)}
+        />
+      )}
+      <ErrorText message={cities.error ?? error} />
+      {language && lines.map((item) => {
         const result = results[item.line];
         const attempt = result ? MAX_ATTEMPTS - result.attempts_left + 1 : 1;
         return (

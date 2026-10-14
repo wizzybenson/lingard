@@ -13,7 +13,7 @@ from lingard_contracts.assessment import BandEstimate, ErrorTag, UtteranceAssess
 from lingard_contracts.events import TurnEvent
 from lingard_contracts.planning import DayPlan, Lesson
 from lingard_contracts.scene import SceneContract
-from lingard_contracts.world import NpcPersona, WorldView
+from lingard_contracts.world import CityEntry, NpcPersona, WorldView
 
 EXPORTED: tuple[type[BaseModel], ...] = (
     TurnEvent,
@@ -25,6 +25,7 @@ EXPORTED: tuple[type[BaseModel], ...] = (
     DayPlan,
     Lesson,
     WorldView,
+    CityEntry,
     NpcPersona,
 )
 

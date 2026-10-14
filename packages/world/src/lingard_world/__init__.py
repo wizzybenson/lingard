@@ -42,6 +42,7 @@ class CityContent:
             city=self.city.key,
             name=self.city.name,
             hour=hour,
+            palette=self.city.palette,
             districts=[
                 DistrictView(
                     key=d.key,

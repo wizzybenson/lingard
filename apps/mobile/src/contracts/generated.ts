@@ -16,6 +16,11 @@ export type Sd = number;
  */
 export type Skill = "listening" | "reading" | "writing" | "speaking";
 export type City = "ashford" | "rivemont";
+export type Language = "fr" | "en";
+export type Name = string;
+export type Pack1 = "ielts_gt" | "tef_canada";
+export type PackName = string;
+export type City1 = "ashford" | "rivemont";
 export type NodeKey = string;
 export type Reason = "ticket_reopened" | "director" | "new_band";
 export type Lessons = LessonSlot[];
@@ -24,7 +29,7 @@ export type Lessons = LessonSlot[];
  */
 export type Scenes = [SceneBrief, ...SceneBrief[]];
 export type BriefId = string;
-export type City1 = "ashford" | "rivemont";
+export type City2 = "ashford" | "rivemont";
 export type Intensity = "calm" | "tense" | "heated";
 export type LearnerBand = number;
 export type LocationKey = string;
@@ -77,9 +82,9 @@ export type Title = string;
 export type Accent = string;
 export type Age = number;
 export type Backstory = string;
-export type City2 = "ashford" | "rivemont";
+export type City3 = "ashford" | "rivemont";
 export type Key = string;
-export type Name = string;
+export type Name1 = string;
 export type Personality = string;
 export type Role = string;
 /**
@@ -109,7 +114,7 @@ export type Mood = string;
 export type NpcKey = string;
 export type Role1 = string;
 export type VoiceId1 = string;
-export type City3 = "ashford" | "rivemont";
+export type City4 = "ashford" | "rivemont";
 export type Default = "recast" | "clarify" | "elicit";
 export type OnIntelligibilityFailure = "recast" | "clarify" | "elicit";
 export type Tactic = string;
@@ -146,7 +151,7 @@ export type Pron = string[];
 export type AudioRef = string | null;
 export type EventId = string;
 export type InterruptedNpc = boolean;
-export type Language = "fr-FR" | "fr-CA" | "en-GB";
+export type Language1 = "fr-FR" | "fr-CA" | "en-GB";
 export type LastNpcLine = string;
 export type NpcId = string;
 export type PausesMs = number[];
@@ -170,13 +175,13 @@ export type Rationale = string;
 export type Score = number;
 export type Dimensions = DimensionScore[];
 export type ErrorTags = ErrorTag[];
-export type Pack1 = "ielts_gt" | "tef_canada";
+export type Pack2 = "ielts_gt" | "tef_canada";
 export type Confidence3 = number;
 export type Correct = boolean;
 export type NodeKey4 = string;
 export type TargetEvidence = TargetEvidence1[];
 export type TurnEventId = string;
-export type City4 = "ashford" | "rivemont";
+export type City5 = "ashford" | "rivemont";
 export type Key2 = string;
 export type Description1 = string;
 export type Key3 = string;
@@ -189,25 +194,34 @@ export type Y = number;
 export type Hotspots = Hotspot[];
 export type Key4 = string;
 export type LayerArt = string[];
-export type Name1 = string;
+export type Name2 = string;
 export type X1 = number;
 export type Y1 = number;
 export type Locations = Location[];
 export type MinBand = number;
-export type Name2 = string;
+export type Name3 = string;
 export type Unlocked = boolean;
 export type Districts = DistrictView[];
 export type Hour = number;
-export type Name3 = string;
+export type Name4 = string;
 export type Key5 = string;
 export type LocationKey3 = string | null;
-export type Name4 = string;
+export type Name5 = string;
 export type Role2 = string;
 export type Npcs = NpcView[];
+export type Far = string;
+export type Mid = string;
+export type Near = string;
+/**
+ * @minItems 2
+ * @maxItems 2
+ */
+export type Sky = [string, string];
+export type Water = string;
 export type BandOrPoints = number;
 export type Dimensions1 = DimensionScore[];
 export type ErrorTags1 = ErrorTag[];
-export type Pack2 = "ielts_gt" | "tef_canada";
+export type Pack3 = "ielts_gt" | "tef_canada";
 export type Rewrite = string;
 export type Samples = number;
 export type TaskType = string;
@@ -215,6 +229,7 @@ export type WordCount = number;
 
 export interface LingardContracts {
   BandEstimate?: BandEstimate;
+  CityEntry?: CityEntry;
   DayPlan?: DayPlan;
   ErrorTag?: ErrorTag;
   Lesson?: Lesson;
@@ -244,11 +259,24 @@ export interface BandEstimate {
   skill: Skill;
 }
 /**
+ * One row of ``GET /v1/world``: the cities a learner can play and the exam each one trains for.
+ *
+ * This interface was referenced by `LingardContracts`'s JSON-Schema
+ * via the `definition` "CityEntry".
+ */
+export interface CityEntry {
+  city: City;
+  language: Language;
+  name: Name;
+  pack: Pack1;
+  pack_name: PackName;
+}
+/**
  * This interface was referenced by `LingardContracts`'s JSON-Schema
  * via the `definition` "DayPlan".
  */
 export interface DayPlan {
-  city: City;
+  city: City1;
   lessons?: Lessons;
   scenes: Scenes;
   user_id: UserId;
@@ -269,7 +297,7 @@ export interface LessonSlot {
  */
 export interface SceneBrief {
   brief_id?: BriefId;
-  city: City1;
+  city: City2;
   intensity?: Intensity;
   learner_band: LearnerBand;
   location_key: LocationKey;
@@ -352,9 +380,9 @@ export interface NpcPersona {
   accent: Accent;
   age: Age;
   backstory: Backstory;
-  city: City2;
+  city: City3;
   key: Key;
-  name: Name;
+  name: Name1;
   personality: Personality;
   role: Role;
   schedule: Schedule;
@@ -380,7 +408,7 @@ export interface SceneContract {
   accent_variety: AccentVariety;
   approved_facts: ApprovedFacts;
   cast: Cast;
-  city: City3;
+  city: City4;
   correction_style?: CorrectionPolicy;
   elicitation: Elicitation;
   evidence_required?: EvidenceRequired;
@@ -467,7 +495,7 @@ export interface TurnEvent {
   audio_ref?: AudioRef;
   event_id?: EventId;
   interrupted_npc?: InterruptedNpc;
-  language: Language;
+  language: Language1;
   npc_context?: NpcContext | null;
   pauses_ms?: PausesMs;
   scene_id: SceneId1;
@@ -508,7 +536,7 @@ export interface UtteranceAssessment {
   dimensions: Dimensions;
   error_tags?: ErrorTags;
   model_versions?: ModelVersions;
-  pack: Pack1;
+  pack: Pack2;
   target_evidence?: TargetEvidence;
   turn_event_id: TurnEventId;
 }
@@ -542,11 +570,12 @@ export interface TargetEvidence1 {
  * via the `definition` "WorldView".
  */
 export interface WorldView {
-  city: City4;
+  city: City5;
   districts: Districts;
   hour: Hour;
-  name: Name3;
+  name: Name4;
   npcs: Npcs;
+  palette: Palette;
 }
 /**
  * This interface was referenced by `LingardContracts`'s JSON-Schema
@@ -556,7 +585,7 @@ export interface DistrictView {
   key: Key2;
   locations: Locations;
   min_band: MinBand;
-  name: Name2;
+  name: Name3;
   unlocked: Unlocked;
 }
 /**
@@ -568,7 +597,7 @@ export interface Location {
   hotspots?: Hotspots;
   key: Key4;
   layer_art?: LayerArt;
-  name: Name1;
+  name: Name2;
   x?: X1;
   y?: Y1;
 }
@@ -592,8 +621,21 @@ export interface Hotspot {
 export interface NpcView {
   key: Key5;
   location_key: LocationKey3;
-  name: Name4;
+  name: Name5;
   role: Role2;
+}
+/**
+ * Map colours per city, so each city looks distinct before illustrated art exists.
+ *
+ * This interface was referenced by `LingardContracts`'s JSON-Schema
+ * via the `definition` "Palette".
+ */
+export interface Palette {
+  far: Far;
+  mid: Mid;
+  near: Near;
+  sky: Sky;
+  water: Water;
 }
 /**
  * This interface was referenced by `LingardContracts`'s JSON-Schema
@@ -604,7 +646,7 @@ export interface WritingAssessment {
   dimensions: Dimensions1;
   error_tags?: ErrorTags1;
   model_versions?: ModelVersions1;
-  pack: Pack2;
+  pack: Pack3;
   rewrite: Rewrite;
   samples?: Samples;
   task_type: TaskType;

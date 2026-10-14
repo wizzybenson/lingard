@@ -5,18 +5,18 @@ import { Platform } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useDerivedValue, useSharedValue, withRepeat, withTiming, runOnJS } from "react-native-reanimated";
 
-import { LAYERS, MARKER_RADIUS, clampPan, initials, npcsAt, palette, project, unlockedLocations, type Size } from "../model";
+import { LAYERS, MARKER_RADIUS, clampPan, hitTest, initials, npcsAt, placedLocations, project, worldWidth, type Size } from "../model";
 import type { Location, WorldView } from "../types";
 
 // Skia objects are created at render time, never at import: on the web CanvasKit loads asynchronously.
 const FONT_SPEC = { fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }), fontSize: 12 };
 
-function skyline(size: Size, seed: number, height: number): string {
+function skyline(size: Size, seed: number, height: number, widthFactor: number): string {
   const path = Skia.Path.Make();
   path.moveTo(0, size.height);
   let x = 0;
   let step = 0;
-  while (x < size.width * 1.7) {
+  while (x < size.width * (widthFactor + 0.1)) {
     const h = height * (0.6 + 0.4 * Math.abs(Math.sin(seed + step * 1.7)));
     path.lineTo(x, size.height - h);
     x += 30 + 25 * Math.abs(Math.cos(seed * 3 + step));
@@ -35,7 +35,7 @@ interface Props {
 }
 
 export function CityCanvas({ view, size, onSelect }: Props) {
-  const colours = palette(view.city);
+  const colours = view.palette;
   // CanvasKit on the web has no system fonts; labels there come from the accessible list under the map.
   const font = useMemo(() => (Platform.OS === "web" ? null : matchFont(FONT_SPEC)), []);
   const pan = useSharedValue(0);
@@ -44,22 +44,15 @@ export function CityCanvas({ view, size, onSelect }: Props) {
   useEffect(() => {
     bob.value = withRepeat(withTiming(1, { duration: 1400 }), -1, true);
   }, [bob]);
-  const far = useMemo(() => skyline(size, 1, size.height * 0.45), [size]);
-  const mid = useMemo(() => skyline(size, 4, size.height * 0.3), [size]);
-  const locations = unlockedLocations(view);
+  const placed = placedLocations(view);
+  const width = worldWidth(view);
+  const far = useMemo(() => skyline(size, 1, size.height * 0.45, width), [size, width]);
+  const mid = useMemo(() => skyline(size, 4, size.height * 0.3, width), [size, width]);
+  const districts = view.districts.filter((d) => d.unlocked);
 
   const pick = (x: number, y: number) => {
-    let best: Location | null = null;
-    let bestDistance = Infinity;
-    for (const location of locations) {
-      const centre = project({ x: location.x ?? 0.5, y: location.y ?? 0.5 }, size, pan.value);
-      const distance = Math.hypot(centre.x - x, centre.y - y);
-      if (distance < MARKER_RADIUS * 1.6 && distance < bestDistance) {
-        best = location;
-        bestDistance = distance;
-      }
-    }
-    if (best) onSelect(best);
+    const location = hitTest(view, { x, y }, size, pan.value);
+    if (location) onSelect(location);
   };
 
   const gesture = Gesture.Race(
@@ -68,7 +61,7 @@ export function CityCanvas({ view, size, onSelect }: Props) {
         start.value = pan.value;
       })
       .onUpdate((e) => {
-        pan.value = clampPan(start.value + e.translationX, size);
+        pan.value = clampPan(start.value + e.translationX, size, width);
       }),
     Gesture.Tap().onEnd((e) => {
       runOnJS(pick)(e.x, e.y);
@@ -91,11 +84,15 @@ export function CityCanvas({ view, size, onSelect }: Props) {
         </Group>
         <Group transform={midTransform}>
           <Path path={mid} color={colours.mid} />
-          <Rect x={-size.width} y={size.height * 0.82} width={size.width * 4} height={size.height * 0.18} color={colours.water} />
+          <Rect x={-size.width} y={size.height * 0.82} width={size.width * (width + 2)} height={size.height * 0.18} color={colours.water} />
         </Group>
         <Group transform={nearTransform}>
-          {locations.map((location) => {
-            const centre = project({ x: location.x ?? 0.5, y: location.y ?? 0.5 }, size, 0);
+          {font &&
+            districts.map((district, i) => (
+              <Text key={district.key} x={i * size.width + 12} y={22} text={district.name} font={font} color="#ffffff" />
+            ))}
+          {placed.map(({ location, point }) => {
+            const centre = project(point, size, 0);
             const people = npcsAt(view, location.key);
             return (
               <Group key={location.key}>

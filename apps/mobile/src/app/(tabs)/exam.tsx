@@ -2,16 +2,18 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { StepView } from "@/api/types";
+import type { CityEntry, StepView } from "@/api/types";
 import { useApi } from "@/state/auth";
+import { useCities } from "@/state/cities";
 import { Body, Button, Card, ErrorText, Screen, Title } from "@/ui/kit";
 
 export default function ExamHall() {
   const { t } = useTranslation();
   const api = useApi();
+  const cities = useCities();
   const [error, setError] = useState<string | null>(null);
 
-  const begin = async (path: string, body: object, language: "fr" | "en") => {
+  const begin = async (path: string, body: object, language: CityEntry["language"]) => {
     setError(null);
     try {
       const step = await api.post<StepView>(path, body);
@@ -25,17 +27,17 @@ export default function ExamHall() {
   return (
     <Screen>
       <Title>{t("exam.title")}</Title>
-      <ErrorText message={error} />
-      {(["fr", "en"] as const).map((language) => (
+      <ErrorText message={cities.error ?? error} />
+      {cities.data?.map(({ language, pack, pack_name }) => (
         <Card key={language}>
-          <Title>{language === "fr" ? "TEF Canada" : "IELTS General Training"}</Title>
+          <Title>{pack_name}</Title>
           <Body muted>{t("exam.placement")}</Body>
           <Button label={t("exam.quick")} onPress={() => void begin("/v1/placement", { language, path: "quick" }, language)} />
           <Button label={t("exam.skip")} kind="secondary" onPress={() => void begin("/v1/placement", { language, path: "skip" }, language)} />
-          <Button label={t("exam.start")} kind="secondary" onPress={() => void begin("/v1/exams", { pack: language === "fr" ? "tef_canada" : "ielts_gt" }, language)} />
+          <Button label={t("exam.start")} kind="secondary" onPress={() => void begin("/v1/exams", { pack }, language)} />
         </Card>
       ))}
-      <Button label="Desk" kind="secondary" onPress={() => router.push("/desk")} />
+      <Button label={t("exam.desk")} kind="secondary" onPress={() => router.push("/desk")} />
     </Screen>
   );
 }

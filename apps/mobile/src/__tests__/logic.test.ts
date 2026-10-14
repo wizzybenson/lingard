@@ -6,7 +6,7 @@ import { choices, isCorrect, score } from "@/games/engine";
 import { clock, remaining, wordCount } from "@/games/exam";
 import en from "@/i18n/en.json";
 import fr from "@/i18n/fr.json";
-import { clampPan, hitTest, initials, project } from "@/world/model";
+import { clampPan, hitTest, initials, placedLocations, project, worldWidth } from "@/world/model";
 import type { WorldView } from "@/world/types";
 
 jest.mock("expo-secure-store", () => ({}));
@@ -38,6 +38,7 @@ const world: WorldView = {
   city: "rivemont",
   name: "Rivemont",
   hour: 12,
+  palette: { sky: ["#f6d7b0", "#8fb8de"], far: "#6d8fb3", mid: "#b5835a", near: "#5b4636", water: "#3e6f97" },
   districts: [
     { key: "rivemont.vieux_port", name: "Vieux-Port", unlocked: true, min_band: 1,
       locations: [{ key: "a", name: "A", description: "", layer_art: [], hotspots: [], x: 0.2, y: 0.5 },
@@ -56,6 +57,24 @@ test("projection, parallax, pan clamping and hit-testing", () => {
   expect(hitTest(world, { x: 82 - 200, y: 152 }, size, -200)?.key).toBe("a");
   expect(hitTest(world, { x: 200, y: 40 }, size, 0)).toBeNull();
   expect(initials("Martin Lefebvre")).toBe("ML");
+});
+
+test("unlocked districts sit side by side so their markers never overlap", () => {
+  const size = { width: 400, height: 300 };
+  const both: WorldView = {
+    ...world,
+    districts: [
+      world.districts[0]!,
+      { key: "rivemont.saint_roch", name: "Saint-Roch", unlocked: true, min_band: 6,
+        locations: [{ key: "c", name: "C", description: "", layer_art: [], hotspots: [], x: 0.2, y: 0.5 }] },
+    ],
+  };  // prettier-ignore
+  expect(worldWidth(world)).toBe(1.6);
+  expect(worldWidth(both)).toBe(2);
+  expect(placedLocations(both).map((p) => [p.location.key, p.point.x])).toEqual([["a", 0.2], ["b", 0.8], ["c", 1.2]]);
+  expect(hitTest(both, { x: 82, y: 152 }, size, 0)?.key).toBe("a");
+  expect(hitTest(both, { x: 82, y: 152 }, size, -400)?.key).toBe("c");
+  expect(clampPan(-1000, size, worldWidth(both))).toBe(-400);
 });
 
 test("game scoring normalises answers and reports missed nodes", () => {

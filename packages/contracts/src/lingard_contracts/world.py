@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import Field
+from pydantic import Field, StringConstraints
 
-from lingard_contracts.common import CityKey, Language, Locale, Strict
+from lingard_contracts.common import CityKey, Language, Locale, PackId, Strict
 
 
 class Hotspot(Strict):
@@ -38,6 +38,20 @@ class District(Strict):
     locations: list[Location] = Field(min_length=1)
 
 
+HexColour = Annotated[str, StringConstraints(pattern=r"^#[0-9a-fA-F]{6}$")]
+
+
+class Palette(Strict):
+    """Map colours per city, so each city looks distinct before illustrated art exists."""
+
+    sky: list[HexColour] = Field(min_length=2, max_length=2)
+    """Gradient, top to bottom."""
+    far: HexColour
+    mid: HexColour
+    near: HexColour
+    water: HexColour
+
+
 class City(Strict):
     key: CityKey
     name: str
@@ -46,6 +60,7 @@ class City(Strict):
     country: str
     school: str
     """Name of the city's language school (Teacher + School, SPEC §12)."""
+    palette: Palette
     districts: list[District] = Field(min_length=1)
 
 
@@ -98,5 +113,16 @@ class WorldView(Strict):
     city: CityKey
     name: str
     hour: int
+    palette: Palette
     districts: list[DistrictView]
     npcs: list[NpcView]
+
+
+class CityEntry(Strict):
+    """One row of ``GET /v1/world``: the cities a learner can play and the exam each one trains for."""
+
+    city: CityKey
+    name: str
+    language: Language
+    pack: PackId
+    pack_name: str

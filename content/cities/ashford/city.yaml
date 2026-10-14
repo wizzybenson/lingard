@@ -5,6 +5,7 @@ language: en
 locale: en-GB
 country: England
 school: Ashford College
+palette: {sky: ["#dfe6ee", "#9aa9bd"], far: "#7c8a9c", mid: "#9a6b52", near: "#47423f", water: "#566f7f"}
 districts:
   - key: ashford.station_quarter
     name: Station Quarter

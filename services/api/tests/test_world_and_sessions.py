@@ -90,3 +90,20 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api) -> N
 
     ended = await api.client.post(f"/v1/sessions/{session_id}/end", headers=api.bearer(token))
     assert ended.json()["status"] == "ended" and jobs.jobs[-1][1]["kind"] == "night_consolidation"
+
+
+async def test_city_catalogue_comes_from_content(api) -> None:  # type: ignore[no-untyped-def]
+    token = await api.admin_token("Founder", PIN)
+    response = await api.client.get("/v1/world", headers=api.bearer(token))
+    assert response.status_code == 200
+    entries = {e["city"]: e for e in response.json()}
+    assert entries["rivemont"] == {
+        "city": "rivemont",
+        "name": "Rivemont",
+        "language": "fr",
+        "pack": "tef_canada",
+        "pack_name": "TEF Canada",
+    }
+    assert entries["ashford"]["pack_name"] == "IELTS General Training"
+    world = await api.client.get("/v1/world/ashford", headers=api.bearer(token))
+    assert world.json()["palette"]["sky"] == ["#dfe6ee", "#9aa9bd"]

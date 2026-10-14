@@ -3,8 +3,9 @@ import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 
-import type { SessionView, WorldView } from "@/api/types";
+import type { CityEntry, SessionView, WorldView } from "@/api/types";
 import { useApi } from "@/state/auth";
+import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
 import { npcsAt, unlockedLocations } from "@/world/model";
@@ -18,11 +19,13 @@ export default function City() {
   const { t } = useTranslation();
   const api = useApi();
   const { width } = useWindowDimensions();
-  const [city, setCity] = useState<"rivemont" | "ashford">("rivemont");
+  const cities = useCities();
+  const [chosen, setCity] = useState<CityEntry["city"] | null>(null);
+  const city = chosen ?? cities.data?.[0]?.city ?? null;
   const [selected, setSelected] = useState<Location | null>(null);
   const [planning, setPlanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const world = useResource(() => api.get<WorldView>(`/v1/world/${city}`), [city]);
+  const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
 
   const startDay = async () => {
     setPlanning(true);
@@ -46,14 +49,14 @@ export default function City() {
     <Screen>
       <Title>{t("city.choose")}</Title>
       <View style={{ flexDirection: "row", gap: 8 }}>
-        {(["rivemont", "ashford"] as const).map((c) => (
-          <View key={c} style={{ flex: 1 }}>
-            <Button label={t(`city.${c}`)} kind={c === city ? "primary" : "secondary"} onPress={() => setCity(c)} />
+        {cities.data?.map((c) => (
+          <View key={c.city} style={{ flex: 1 }}>
+            <Button label={c.name} kind={c.city === city ? "primary" : "secondary"} onPress={() => setCity(c.city)} />
           </View>
         ))}
       </View>
       {world.loading && <Loading />}
-      <ErrorText message={world.error ?? error} />
+      <ErrorText message={cities.error ?? world.error ?? error} />
       {world.data && (
         <Suspense fallback={<Loading />}>
           <CityCanvas view={world.data} size={{ width: Math.min(width, 760) - 32, height: 340 }} onSelect={setSelected} />
