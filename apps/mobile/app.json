@@ -58,7 +58,8 @@
           "faceIDPermission": "Unlock Lingard without typing your PIN."
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

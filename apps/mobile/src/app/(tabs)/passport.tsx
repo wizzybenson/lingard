@@ -4,11 +4,10 @@ import { useTranslation } from "react-i18next";
 
 import type { Passport, Profile, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
+import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
 
-const SCALE: Record<string, string> = { ielts_gt: "IELTS", tef_canada: "TEF" };
-const LEVEL: Record<string, string> = { ielts_gt: "CLB", tef_canada: "NCLC" };
 
 /** Conversion tables start at level 4; anything lower is shown as "<4". */
 function levelLabel(level: number | null | undefined): string {
@@ -22,6 +21,8 @@ export default function PassportScreen() {
   const passport = useResource(() => api.get<Passport>("/v1/passport"));
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"));
   const profile = useResource(() => api.get<Profile>("/v1/me"));
+  const cities = useCities();
+  const packOf = (pack: string) => cities.data?.find((c) => c.pack === pack);
   useFocusEffect(
     useCallback(() => {
       passport.reload();
@@ -45,14 +46,14 @@ export default function PassportScreen() {
           {passport.data.bands.map((band) => (
             <Card key={`${band.pack}-${band.skill}`}>
               <Body muted>
-                {SCALE[band.pack]} · {t(`skills.${band.skill}`)}
+                {packOf(band.pack)?.pack_name ?? band.pack} · {t(`skills.${band.skill}`)}
               </Body>
               <Title>
                 {t("passport.predicted")} {band.mean}
               </Title>
               <Body>{t("passport.range", { low: band.low80, high: band.high80 })}</Body>
               <Body muted>
-                {LEVEL[band.pack]} {levelLabel(band.clb_nclc_low)}–{levelLabel(band.clb_nclc_high)}
+                {packOf(band.pack)?.level_scale} {levelLabel(band.clb_nclc_low)}–{levelLabel(band.clb_nclc_high)}
                 {profile.data?.target_bands[band.pack]?.[band.skill] !== undefined &&
                   ` · ${t("passport.target", { level: profile.data.target_bands[band.pack]![band.skill] })}`}
               </Body>

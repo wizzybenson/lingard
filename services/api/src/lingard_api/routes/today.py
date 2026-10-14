@@ -13,7 +13,7 @@ from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.learning import learner_bands
 from lingard_api.routes.me import DEFAULT_TARGETS
 from lingard_contracts.common import PackId
-from lingard_db.models import LearnerProfile, Lesson
+from lingard_db.models import LearnerProfile, Lesson, Session
 from lingard_economy.events import streak
 from lingard_graphs.pedagogy.review import due_at
 
@@ -39,6 +39,14 @@ class Goal(BaseModel):
     skills: list[SkillGoal]
 
 
+class Onboarding(BaseModel):
+    """First-run checklist: a new learner is walked through goal → placement → first story."""
+
+    goal: bool
+    placement: bool
+    first_story: bool
+
+
 class Today(BaseModel):
     streak: int
     practised_today: bool
@@ -46,6 +54,7 @@ class Today(BaseModel):
     lessons_waiting: int
     goals: list[Goal]
     next_step: NextStep
+    onboarding: Onboarding
 
 
 def skill_status(target: int, low: int | None, high: int | None) -> Literal["met", "close", "behind", "unknown"]:
@@ -99,6 +108,13 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
                 skills=skills,
             )
         )
+    stories = (
+        await db.execute(
+            select(func.count())
+            .select_from(Session)
+            .where(Session.user_id == principal.user_id, Session.kind == "live", Session.ended_at.is_not(None))
+        )
+    ).scalar_one()
     practised_today = now.date() in days
     step: NextStep
     if not exam_dates:
@@ -118,4 +134,5 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         lessons_waiting=lessons_waiting,
         goals=goals,
         next_step=step,
+        onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
     )

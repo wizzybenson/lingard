@@ -124,6 +124,7 @@ export interface Today {
     skills: { skill: string; target: number; level_low: number | null; level_high: number | null; status: SkillStatus }[];
   }[];
   next_step: "set_goal" | "placement" | "reviews" | "lesson" | "story";
+  onboarding: { goal: boolean; placement: boolean; first_story: boolean };
 }
 
 export interface WritingTask {

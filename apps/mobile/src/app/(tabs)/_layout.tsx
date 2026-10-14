@@ -1,6 +1,9 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Redirect, Tabs } from "expo-router";
-import type { ComponentProps } from "react";
+import { useEffect, type ComponentProps } from "react";
+
+import type { Profile } from "@/api/types";
+import { applyLocale } from "@/i18n";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/state/auth";
@@ -19,7 +22,11 @@ const ICONS: Record<string, IconName> = {
 
 export default function TabsLayout() {
   const { t } = useTranslation();
-  const { status, pinChangeRequired } = useAuth();
+  const { status, pinChangeRequired, api } = useAuth();
+  useEffect(() => {
+    // The learner's chosen interface language follows them across devices.
+    if (status === "signedIn") void api.get<Profile>("/v1/me").then((p) => applyLocale(p.ui_locale)).catch(() => undefined);
+  }, [status, api]);
   if (status !== "signedIn") return <Redirect href="/sign-in" />;
   if (pinChangeRequired) return <Redirect href="/change-pin" />;
   return (

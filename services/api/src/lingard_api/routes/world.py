@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
 
 from lingard_api.deps import Db, Principal, State
-from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, CityKey
+from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, LANGUAGE_SCALE, CityKey
 from lingard_contracts.world import CityEntry, WorldView
 from lingard_db.models import LearnerProfile, WorldState
 from lingard_world import load_city
@@ -22,7 +22,11 @@ async def cities(principal: Principal, state: State) -> list[CityEntry]:
     for key, language in CITY_LANGUAGE.items():
         city, pack = load_city(state.settings.content_root, key).city, LANGUAGE_PACK[language]
         name = state.packs.pack(pack).name
-        entries.append(CityEntry(city=city.key, name=city.name, language=language, pack=pack, pack_name=name))
+        scale = LANGUAGE_SCALE[language]
+        entry = CityEntry(
+            city=city.key, name=city.name, language=language, pack=pack, pack_name=name, level_scale=scale
+        )
+        entries.append(entry)
     return entries
 
 

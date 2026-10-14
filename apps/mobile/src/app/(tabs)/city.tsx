@@ -1,10 +1,11 @@
 import { router, useFocusEffect } from "expo-router";
-import { lazy, Suspense, useCallback, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 
 import type { CityEntry, SessionView, Today, WorldView } from "@/api/types";
 import { TodayCard } from "@/home/TodayCard";
+import { refreshReminderText, reminderText } from "@/state/reminders";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
@@ -31,6 +32,11 @@ export default function City() {
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
   // Coming back from a goal, a lesson or a scene must show the updated streak and next step.
   useFocusEffect(useCallback(() => today.reload(), [today.reload]));
+  useEffect(() => {
+    if (!today.data) return;
+    const { title, body } = reminderText(t, today.data);
+    void refreshReminderText(title, body).catch(() => undefined);
+  }, [today.data, t]);
   const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
 
   const startDay = async () => {

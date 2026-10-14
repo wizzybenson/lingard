@@ -36,6 +36,7 @@ async def test_today_guides_a_new_learner_then_counts_any_practice(api) -> None:
     token, user_id = await learner(api)
     first = (await api.client.get("/v1/today", headers=api.bearer(token))).json()
     assert first["next_step"] == "set_goal" and first["streak"] == 0 and first["goals"] == []
+    assert first["onboarding"] == {"goal": False, "placement": False, "first_story": False}
 
     goal = {"exam_dates": {"tef_canada": "2027-03-01"}, "target_bands": {"tef_canada": {"speaking": 9}}}
     profile = (await api.client.patch("/v1/me", json=goal, headers=api.bearer(token))).json()
@@ -48,6 +49,7 @@ async def test_today_guides_a_new_learner_then_counts_any_practice(api) -> None:
 
     after_goal = (await api.client.get("/v1/today", headers=api.bearer(token))).json()
     assert after_goal["next_step"] == "placement"
+    assert after_goal["onboarding"]["goal"] is True and after_goal["onboarding"]["placement"] is False
     tef = after_goal["goals"][0]
     assert tef["pack_name"] == "TEF Canada" and tef["days_left"] > 0
     assert {s["skill"]: s["target"] for s in tef["skills"]}["speaking"] == 9

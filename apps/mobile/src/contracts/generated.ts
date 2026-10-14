@@ -17,6 +17,7 @@ export type Sd = number;
 export type Skill = "listening" | "reading" | "writing" | "speaking";
 export type City = "ashford" | "rivemont";
 export type Language = "fr" | "en";
+export type LevelScale = string;
 export type Name = string;
 export type Pack1 = "ielts_gt" | "tef_canada";
 export type PackName = string;
@@ -267,6 +268,7 @@ export interface BandEstimate {
 export interface CityEntry {
   city: City;
   language: Language;
+  level_scale: LevelScale;
   name: Name;
   pack: Pack1;
   pack_name: PackName;

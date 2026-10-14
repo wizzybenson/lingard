@@ -106,6 +106,7 @@ async def test_city_catalogue_comes_from_content(api) -> None:  # type: ignore[n
         "language": "fr",
         "pack": "tef_canada",
         "pack_name": "TEF Canada",
+        "level_scale": "NCLC",
     }
     assert entries["ashford"]["pack_name"] == "IELTS General Training"
     world = await api.client.get("/v1/world/ashford", headers=api.bearer(token))

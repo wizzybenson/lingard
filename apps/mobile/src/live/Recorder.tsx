@@ -73,7 +73,7 @@ export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, pa
   return (
     <>
       {state.isRecording ? (
-        <Button label={`■ ${Math.round((state.durationMillis ?? 0) / 1000)} s`} kind="danger" onPress={() => void stop()} />
+        <Button label={`■ ${t("units.seconds", { count: Math.round((state.durationMillis ?? 0) / 1000) })}`} kind="danger" onPress={() => void stop()} />
       ) : (
         <Button label={`● ${t("exam.record")}`} busy={busy} onPress={() => void start()} />
       )}

@@ -126,3 +126,5 @@ class CityEntry(Strict):
     language: Language
     pack: PackId
     pack_name: str
+    level_scale: str
+    """Canadian level scale the pack converts to: CLB for English, NCLC for French."""

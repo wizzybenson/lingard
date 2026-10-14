@@ -24,7 +24,7 @@ export default function School() {
         <Card key={lesson.id}>
           <Title>{lesson.content.title}</Title>
           <Body muted>
-            {lesson.content.minutes} min{lesson.status === "done" ? ` · ${t("school.done")}` : ""}
+            {t("units.minutes", { count: lesson.content.minutes })}{lesson.status === "done" ? ` · ${t("school.done")}` : ""}
           </Body>
           <Button label={t("school.start")} onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: lesson.id } })} />
         </Card>

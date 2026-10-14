@@ -1,5 +1,6 @@
 /** Small UI kit: one-thumb friendly sizes (≥ 48 px targets), accessible labels everywhere. */
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -83,7 +84,8 @@ export function ErrorText({ message }: { message: string | null }) {
 }
 
 export function Loading() {
-  return <ActivityIndicator accessibilityLabel="Loading" style={{ marginTop: space(4) }} />;
+  const { t } = useTranslation();
+  return <ActivityIndicator accessibilityLabel={t("app.loading")} style={{ marginTop: space(4) }} />;
 }
 
 const styles = StyleSheet.create({

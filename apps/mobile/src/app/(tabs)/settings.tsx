@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { File, Paths } from "expo-file-system";
 import { router } from "expo-router";
@@ -6,7 +6,9 @@ import * as Sharing from "expo-sharing";
 import { Platform, Switch, View } from "react-native";
 
 import type { Profile } from "@/api/types";
-import i18n from "@/i18n";
+import { applyLocale, UI_LOCALES } from "@/i18n";
+import { currentReminder, REMINDER_TIMES, reminderText, remindersSupported, setReminder, type ReminderTime } from "@/state/reminders";
+import type { Today } from "@/api/types";
 import { useAuth } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from "@/ui/kit";
@@ -19,6 +21,17 @@ export default function Settings() {
   const [pin, setPin] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [reminder, setReminderState] = useState<ReminderTime | null>(null);
+  useEffect(() => {
+    void currentReminder().then(setReminderState);
+  }, []);
+
+  const chooseReminder = async (time: ReminderTime | null) => {
+    const today = await api.get<Today>("/v1/today").catch(() => ({ streak: 0, reviews_due: 0 }));
+    const { title, body } = reminderText(t, today);
+    if (await setReminder(time, title, body)) setReminderState(time);
+    else setError(t("reminders.denied"));
+  };
 
   /** The export is a zip behind auth: download it with the token, then save (web) or open the share sheet (phones). */
   const exportData = async () => {
@@ -62,17 +75,33 @@ export default function Settings() {
       <Title>{t("settings.title")}</Title>
       <ErrorText message={error} />
       <Button label={t("settings.goal")} onPress={() => router.push("/goal")} />
+      {remindersSupported && (
+        <Card>
+          <Body muted>{t("reminders.title")}</Body>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            <Button label={t("reminders.off")} kind={reminder === null ? "primary" : "secondary"} onPress={() => void chooseReminder(null)} />
+            {REMINDER_TIMES.map((time) => (
+              <Button
+                key={`${time.hour}:${time.minute}`}
+                label={`${time.hour}:${String(time.minute).padStart(2, "0")}`}
+                kind={reminder?.hour === time.hour && reminder.minute === time.minute ? "primary" : "secondary"}
+                onPress={() => void chooseReminder(time)}
+              />
+            ))}
+          </View>
+        </Card>
+      )}
       <Card>
         <Body muted>{t("settings.uiLanguage")}</Body>
         <View style={{ flexDirection: "row", gap: 8 }}>
-          {(["en", "fr"] as const).map((locale) => (
-            <View key={locale} style={{ flex: 1 }}>
+          {UI_LOCALES.map(({ code, label }) => (
+            <View key={code} style={{ flex: 1 }}>
               <Button
-                label={locale.toUpperCase()}
-                kind={profile.data?.ui_locale === locale ? "primary" : "secondary"}
+                label={label}
+                kind={profile.data?.ui_locale === code ? "primary" : "secondary"}
                 onPress={() => {
-                  void i18n.changeLanguage(locale);
-                  void update({ ui_locale: locale });
+                  applyLocale(code);
+                  void update({ ui_locale: code });
                 }}
               />
             </View>

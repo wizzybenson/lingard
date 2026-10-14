@@ -15,6 +15,7 @@ const STATUS_COLOUR: Record<SkillStatus, string> = {
   unknown: colors.muted,
 };
 
+// Level ranges sit in a left-to-right isolate (U+2066…U+2069) so "<4–8/7" reads the same inside Arabic text.
 export function TodayCard({ today, onStartStory }: { today: Today; onStartStory: () => void }) {
   const { t } = useTranslation();
   const go = () => {
@@ -31,8 +32,24 @@ export function TodayCard({ today, onStartStory }: { today: Today; onStartStory:
         return onStartStory();
     }
   };
+  const steps = [
+    { done: today.onboarding.goal, label: t("onboarding.goal") },
+    { done: today.onboarding.placement, label: t("onboarding.placement") },
+    { done: today.onboarding.first_story, label: t("onboarding.firstStory") },
+  ];
+  const onboarding = steps.some((s) => !s.done);
   return (
     <Card>
+      {onboarding && (
+        <View style={{ gap: 4 }} accessible accessibilityLabel={t("onboarding.title")}>
+          <Title>{t("onboarding.title")}</Title>
+          {steps.map((s, i) => (
+            <Text key={s.label} style={{ fontSize: 16, color: s.done ? colors.success : colors.ink }}>
+              {s.done ? "✓" : `${i + 1}.`} {s.label}
+            </Text>
+          ))}
+        </View>
+      )}
       <Title>{today.streak > 0 ? `🔥 ${t("today.streak", { count: today.streak })}` : t("today.noStreak")}</Title>
       {today.practised_today && <Body muted>{t("today.practised")}</Body>}
       {today.goals.map((goal) => (
@@ -53,7 +70,7 @@ export function TodayCard({ today, onStartStory }: { today: Today; onStartStory:
                 style={{ borderRadius: 999, borderWidth: 1, borderColor: STATUS_COLOUR[s.status], paddingHorizontal: 10, paddingVertical: 4 }}
               >
                 <Text style={{ color: STATUS_COLOUR[s.status], fontSize: 13 }}>
-                  {t(`skills.${s.skill}`)} {levelRange(s.level_low, s.level_high)}/{s.target}
+                  {t(`skills.${s.skill}`)} {"\u2066"}{levelRange(s.level_low, s.level_high)}/{s.target}{"\u2069"}
                 </Text>
               </View>
             ))}

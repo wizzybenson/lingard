@@ -1,5 +1,5 @@
 {
-  "app": {"name": "Lingard", "loading": "Loading…", "retry": "Try again", "back": "Back", "continue": "Continue", "save": "Save", "cancel": "Cancel"},
+  "app": {"name": "Lingard", "loading": "Loading", "retry": "Try again", "back": "Back", "continue": "Continue", "save": "Save", "cancel": "Cancel"},
   "pin": {"label": "6-digit PIN", "mustBeSixDigits": "Your PIN must be exactly 6 digits.", "tooFewDigits": "Use more different digits.", "sequence": "Avoid sequences like 123456.", "repeats": "Avoid repeating patterns.", "pattern": "Avoid simple patterns.", "change": "Choose a new PIN", "current": "Current PIN", "new": "New PIN"},
   "signIn": {"title": "Welcome to Lingard", "name": "Your name", "submit": "Sign in", "haveInvite": "I have an invite code", "invite": "Invite code", "join": "Join", "biometric": "Unlock with Face ID / fingerprint", "mustChange": "Please choose your own PIN before you continue."},
   "tabs": {"city": "City", "phone": "Phone", "school": "School", "exam": "Exam Hall", "passport": "Passport", "settings": "Settings"},
@@ -18,5 +18,8 @@
   "goal": {"title": "My goal", "intro": "Tell us which exam you are preparing for, when, and the level you need. Your plan and progress are measured against it.", "examDate": "Exam date (YYYY-MM-DD)", "noExam": "Not preparing for this exam", "target": "Level needed", "save": "Save my goal", "saved": "Saved.", "badDate": "Use the format YYYY-MM-DD, e.g. 2027-03-01.", "prepare": "I'm preparing for this exam"},
   "skills": {"listening": "Listening", "reading": "Reading", "writing": "Writing", "speaking": "Speaking"},
   "writing": {"title": "Writing desk", "another": "Another topic", "scoring": "Scoring your text… this takes about a minute.", "history": "Your texts", "kinds": {"letter": "Letter", "essay": "Essay", "continue_news_item": "Continue a news item", "argue_point_of_view": "Opinion piece"}, "words": "{{count}} words"},
-  "rubric": {"task_achievement": "Task achievement", "task_response": "Task response", "coherence_cohesion": "Coherence and cohesion", "lexical_resource": "Vocabulary", "grammatical_range_accuracy": "Grammar range and accuracy", "task_fulfilment": "Task fulfilment", "argumentation": "Argumentation", "grammatical_control": "Grammatical control"}
+  "rubric": {"task_achievement": "Task achievement", "task_response": "Task response", "coherence_cohesion": "Coherence and cohesion", "lexical_resource": "Vocabulary", "grammatical_range_accuracy": "Grammar range and accuracy", "task_fulfilment": "Task fulfilment", "argumentation": "Argumentation", "grammatical_control": "Grammatical control"},
+  "units": {"minutes": "{{count}} min", "seconds": "{{count}} s"},
+  "reminders": {"title": "Daily reminder", "off": "Off", "denied": "Notifications are turned off for Lingard in your phone settings.", "keepStreak_one": "Keep your {{count}}-day streak going", "keepStreak_other": "Keep your {{count}}-day streak going", "startStreak": "Five minutes today starts a streak", "reviews_one": "{{count}} review is due. It takes two minutes.", "reviews_other": "{{count}} reviews are due. They take a few minutes.", "story": "Someone in the city is waiting to talk to you."},
+  "onboarding": {"title": "Getting started", "goal": "Set your exam and target level", "placement": "Find your level (25–35 min, or skip)", "firstStory": "Live your first day in the city"}
 }

@@ -5,6 +5,7 @@ import type { Game } from "@/contracts/generated";
 import { choices, isCorrect, score } from "@/games/engine";
 import { levelRange } from "@/home/levels";
 import { clock, remaining, wordCount } from "@/games/exam";
+import ar from "@/i18n/ar.json";
 import en from "@/i18n/en.json";
 import fr from "@/i18n/fr.json";
 import { clampPan, hitTest, initials, placedLocations, project, worldWidth } from "@/world/model";
@@ -33,6 +34,11 @@ function keys(obj: object, prefix = ""): string[] {
 
 test("every UI string exists in English and French", () => {
   expect(keys(fr).sort()).toEqual(keys(en).sort());
+});
+
+test("Arabic covers every English string (with its own plural forms)", () => {
+  const base = (k: string) => k.replace(/_(zero|one|two|few|many|other)$/, "");
+  expect([...new Set(keys(ar).map(base))].sort()).toEqual([...new Set(keys(en).map(base))].sort());
 });
 
 const world: WorldView = {
