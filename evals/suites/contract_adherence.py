@@ -7,6 +7,7 @@ Live: real actor + simulated learner per scene; an independent judge checks deli
 from __future__ import annotations
 
 import os
+import re
 from collections import Counter
 from typing import Any
 
@@ -31,13 +32,20 @@ def _sentences(language: str) -> dict[str, Any]:
     return data
 
 
+def _on_contract(violation: dict[str, str], allowed_text: str) -> bool:
+    """A planted fact whose ``key`` the scene legitimately knows (e.g. a weekday in an NPC's world facts) isn't a
+    violation in that scene, so it is skipped rather than counted as a leak."""
+    key = violation.get("key")
+    return key is not None and re.search(rf"\b{re.escape(key)}\b", allowed_text, re.IGNORECASE) is not None
+
+
 async def offline() -> SuiteResult:
     content = ROOT / "content"
     identifier = LanguageIdentifier([load_language(content, "fr"), load_language(content, "en")])
     guard = ContractGuard(identifier)
     leaked: Counter[str] = Counter()
     wrong_reason = 0
-    clean_total = clean_blocked = violation_total = 0
+    clean_total = clean_blocked = violation_total = on_contract = 0
     samples: list[dict[str, object]] = []
     for contract, _, amount in eval_scenes(50):
         runtime = build_scene(contract, content, learner_name="Ernest")
@@ -51,6 +59,9 @@ async def offline() -> SuiteResult:
                 clean_blocked += 1
                 samples.append({"kind": "false_block", "text": text, "reasons": list(result.reasons)})
         for violation in lines["violations"]:
+            if _on_contract(violation, runtime.guard_ctx.allowed_text):
+                on_contract += 1
+                continue
             result = await guard.check(violation["text"], runtime.guard_ctx)
             violation_total += 1
             if result.verdict is not Verdict.BLOCK:
@@ -65,6 +76,7 @@ async def offline() -> SuiteResult:
         metrics={
             "scenes": 50,
             "violations_planted": violation_total,
+            "plants_skipped_on_contract": on_contract,
             "fact_violations_leaked": sum(leaked[r] for r in fact_reasons),
             "language_leaks": leaked["wrong_language"],
             "tutor_or_break_leaks": leaked["tutor"] + leaked["character_break"],

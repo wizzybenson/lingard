@@ -14,11 +14,12 @@ async def test_world_view_respects_band_unlocks(api) -> None:  # type: ignore[no
     assert world.status_code == 200
     districts = {d["key"]: d for d in world.json()["districts"]}
     assert districts["rivemont.vieux_port"]["unlocked"] and not districts["rivemont.saint_roch"]["unlocked"]
-    async with api.state.sessions() as db:
-        await db.execute(update(LearnerProfile).values(settings={"language_bands": {"fr": 7}}))
-        await db.commit()
-    world = await api.client.get("/v1/world/rivemont", params={"hour": 12}, headers=api.bearer(token))
-    assert all(d["unlocked"] for d in world.json()["districts"])
+    for band, expected in ((7, {"rivemont.vieux_port", "rivemont.saint_roch"}), (8, set(districts))):
+        async with api.state.sessions() as db:
+            await db.execute(update(LearnerProfile).values(settings={"language_bands": {"fr": band}}))
+            await db.commit()
+        world = await api.client.get("/v1/world/rivemont", params={"hour": 12}, headers=api.bearer(token))
+        assert {d["key"] for d in world.json()["districts"] if d["unlocked"]} == expected
     assert (await api.client.get("/v1/world/atlantis", headers=api.bearer(token))).status_code == 422
 
 

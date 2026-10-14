@@ -17,12 +17,12 @@ clean:
   - "Moi, c'est {npc}, enchanté."
 violations:
   - {text: "Bon, je vous propose 417 dollars.", reason: off_contract_number}
-  - {text: "On avait signé le contrat en mars.", reason: off_contract_date}
-  - {text: "Mon avocat, Maître Lavoie, va vous appeler.", reason: off_contract_name}
+  - {text: "On avait signé le contrat en mars.", reason: off_contract_date, key: mars}
+  - {text: "Mon avocat, Maître Lavoie, va vous appeler.", reason: off_contract_name, key: Lavoie}
   - {text: "Look, I really don't have time for this.", reason: wrong_language}
   - {text: "Attention, on dit « si j'avais », pas « si j'aurais ».", reason: tutor}
   - {text: "En tant qu'intelligence artificielle, je ne peux pas répondre.", reason: character_break}
-  - {text: "Je reviens mercredi avec les papiers.", reason: off_contract_date}
-  - {text: "C'est Gilbert, mon frère, qui s'en occupe.", reason: off_contract_name}
+  - {text: "Je reviens mercredi avec les papiers.", reason: off_contract_date, key: mercredi}
+  - {text: "C'est Gilbert, mon frère, qui s'en occupe.", reason: off_contract_name, key: Gilbert}
   - {text: "Ça coûterait au moins 2 500 dollars.", reason: off_contract_number}
   - {text: "Petite remarque de grammaire : le subjonctif est obligatoire ici.", reason: tutor}

@@ -76,3 +76,36 @@ districts:
           - {key: denis, kind: npc, label: Denis Bouchard, npc_key: quincaillier_denis, x: 0.45, y: 0.5}
           - {key: location, kind: sign, label: Location d'outils, x: 0.75, y: 0.3, text: "Location à la journée : perceuse 15 $, échelle 10 $."}
           - {key: enduit, kind: object, label: Enduit de rebouchage, x: 0.25, y: 0.65, text: "Pot d'enduit de rebouchage, 12 $ : pour les petites fissures."}
+  - key: rivemont.haute_ville
+    name: La Haute-Ville
+    min_band: 8
+    order: 3
+    description: "Le quartier civique, sur la colline : on y défend ses idées, on y lit le journal et on y règle ses démarches."
+    locations:
+      - key: rivemont.haute_ville.hotel_de_ville
+        name: Hôtel de ville de Rivemont
+        description: Un grand bâtiment de pierre où se tiennent les consultations publiques et les démarches administratives.
+        x: 0.3
+        y: 0.35
+        layer_art: [rivemont/haute_ville/hotel_de_ville_bg.png, rivemont/haute_ville/hotel_de_ville_mid.png]
+        hotspots:
+          - {key: sophie, kind: npc, label: Sophie Lavoie, npc_key: fonctionnaire_sophie, x: 0.5, y: 0.55}
+          - {key: consultation, kind: sign, label: Avis de consultation, x: 0.2, y: 0.3, text: "Consultation publique : projet de piste cyclable rue des Remparts. Mardi 19 h, salle du conseil."}
+      - key: rivemont.haute_ville.bibliotheque
+        name: Bibliothèque Gabrielle-Roy
+        description: La bibliothèque municipale, avec une salle où se tient chaque mois un débat citoyen.
+        x: 0.62
+        y: 0.55
+        layer_art: [rivemont/haute_ville/bibliotheque_bg.png, rivemont/haute_ville/bibliotheque_mid.png]
+        hotspots:
+          - {key: antoine, kind: npc, label: Antoine Girard, npc_key: bibliothecaire_antoine, x: 0.45, y: 0.5}
+          - {key: debat, kind: sign, label: Débat du mois, x: 0.78, y: 0.3, text: "Débat citoyen : faut-il limiter les loyers dans le Vieux-Port ? Premier jeudi du mois, 18 h 30."}
+      - key: rivemont.haute_ville.echo
+        name: Rédaction de L'Écho de Rivemont
+        description: Les bureaux du journal local, encombrés de piles de journaux et de tasses de café.
+        x: 0.82
+        y: 0.3
+        layer_art: [rivemont/haute_ville/echo_bg.png, rivemont/haute_ville/echo_mid.png]
+        hotspots:
+          - {key: emilie, kind: npc, label: Émilie Côté, npc_key: journaliste_emilie, x: 0.5, y: 0.5}
+          - {key: une, kind: object, label: La une du jour, x: 0.25, y: 0.6, text: "« Loyers : les nouveaux arrivants en première ligne »"}

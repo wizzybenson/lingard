@@ -76,3 +76,36 @@ districts:
           - {key: ron, kind: npc, label: Ron Hargreaves, npc_key: hardware_ron, x: 0.45, y: 0.5}
           - {key: hire, kind: sign, label: Tool hire, x: 0.75, y: 0.3, text: "Hire by the day: drill £12, ladder £8."}
           - {key: kit, kind: object, label: Damp treatment kit, x: 0.25, y: 0.65, text: "Anti-mould spray and stain block, £14.99. Treats the stain, not the cause."}
+  - key: ashford.civic_quarter
+    name: Civic Quarter
+    min_band: 8
+    order: 3
+    description: "The civic heart of town: where people argue their case, read the local paper and sort out official business."
+    locations:
+      - key: ashford.civic_quarter.town_hall
+        name: Ashford Town Hall
+        description: A red-brick Victorian building that hosts council meetings and public consultations.
+        x: 0.3
+        y: 0.35
+        layer_art: [ashford/civic_quarter/town_hall_bg.png, ashford/civic_quarter/town_hall_mid.png]
+        hotspots:
+          - {key: margaret, kind: npc, label: Margaret Doyle, npc_key: council_margaret, x: 0.5, y: 0.55}
+          - {key: consultation, kind: sign, label: Consultation notice, x: 0.2, y: 0.3, text: "Public consultation: proposed cycle lane on Station Road. Tuesday 7 pm, Council Chamber."}
+      - key: ashford.civic_quarter.library
+        name: Ashford Central Library
+        description: The central library, with a room upstairs where a public debate is held every month.
+        x: 0.62
+        y: 0.55
+        layer_art: [ashford/civic_quarter/library_bg.png, ashford/civic_quarter/library_mid.png]
+        hotspots:
+          - {key: femi, kind: npc, label: Femi Adeyemi, npc_key: librarian_femi, x: 0.45, y: 0.5}
+          - {key: debate, kind: sign, label: This month's debate, x: 0.78, y: 0.3, text: "Public debate: should rents be capped in the Station Quarter? First Thursday of the month, 6.30 pm."}
+      - key: ashford.civic_quarter.gazette
+        name: The Ashford Gazette
+        description: The local newspaper office, cluttered with old editions and half-finished mugs of tea.
+        x: 0.82
+        y: 0.3
+        layer_art: [ashford/civic_quarter/gazette_bg.png, ashford/civic_quarter/gazette_mid.png]
+        hotspots:
+          - {key: lucy, kind: npc, label: Lucy Brennan, npc_key: reporter_lucy, x: 0.5, y: 0.5}
+          - {key: front_page, kind: object, label: Today's front page, x: 0.25, y: 0.6, text: "\"Damp, mould and silence: renters speak out\""}

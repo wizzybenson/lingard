@@ -23,8 +23,10 @@ soon as keys are configured.
 
 ## Contract adherence (`evals/suites/contract_adherence.py`)
 
-- 50 scenes from `evals/scenes.py`, with 500 violations planted in NPC lines (facts outside the approved set, language
-  leaks, tutor-speak, character breaks) and 700 clean lines.
+- 50 scenes from `evals/scenes.py`, cycling through all 18 NPCs in both cities, with 500 violations planted in NPC
+  lines (facts outside the approved set, language leaks, tutor-speak, character breaks) and 700 clean lines. A planted
+  fact whose `key` the scene legitimately knows (e.g. "mercredi" when the NPC's paper comes out on Wednesdays) isn't a
+  violation there. It is skipped and counted as `plants_skipped_on_contract` (6 of 500), not scored as a leak.
 - Leaked: 0 fact violations, 0 language leaks, 0 tutor or character-break lines. False blocks: 0% (0 of 700 clean
   lines blocked).
 - This tests the **Contract Guard**, not the actor model. A live run is needed to measure how often a real model

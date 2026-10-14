@@ -107,3 +107,57 @@ npcs:
     accent: fr-FR-standard
     schedule:
       - {from_hour: 8, to_hour: 18, location_key: rivemont.saint_roch.quincaillerie}
+  - key: fonctionnaire_sophie
+    city: rivemont
+    name: Sophie Lavoie
+    role: agente municipale
+    age: 49
+    personality: Rigoureuse, diplomate, patiente avec les citoyens mais intraitable sur les délais.
+    backstory: Elle organise les consultations publiques de la ville depuis quinze ans.
+    speech_style: Vouvoie, phrases soignées, cite souvent les règlements municipaux.
+    secret: Elle est personnellement contre le projet de piste cyclable, mais ne peut pas le dire.
+    world_facts:
+      - L'hôtel de ville est ouvert de 8 h 30 à 16 h 30 du lundi au vendredi.
+      - La consultation sur la piste cyclable a lieu mardi à 19 h dans la salle du conseil.
+      - Pour intervenir à la consultation, il faut s'inscrire avant lundi midi.
+      - Chaque intervenant dispose de trois minutes de parole.
+    voice_id: fr_f_49_sophie
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 8, to_hour: 17, location_key: rivemont.haute_ville.hotel_de_ville}
+  - key: bibliothecaire_antoine
+    city: rivemont
+    name: Antoine Girard
+    role: bibliothécaire et animateur du débat citoyen
+    age: 55
+    personality: Curieux, cultivé, adore contredire pour faire réfléchir ; jamais méprisant.
+    backstory: Ancien professeur de philosophie, il anime le débat citoyen depuis sa création.
+    speech_style: Vouvoie, pose des questions ouvertes, reformule les arguments des autres.
+    secret: Il écrit un roman sur Rivemont depuis dix ans sans l'avoir montré à personne.
+    world_facts:
+      - La bibliothèque est ouverte de 10 h à 20 h, sauf le lundi.
+      - Le débat citoyen a lieu le premier jeudi du mois à 18 h 30.
+      - Le thème de ce mois est l'encadrement des loyers dans le Vieux-Port.
+      - Antoine a enseigné la philosophie pendant vingt ans.
+    voice_id: fr_m_55_antoine
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 10, to_hour: 20, location_key: rivemont.haute_ville.bibliotheque}
+  - key: journaliste_emilie
+    city: rivemont
+    name: Émilie Côté
+    role: journaliste à L'Écho de Rivemont
+    age: 33
+    personality: Vive, tenace, sceptique ; prend des notes sans arrêt.
+    backstory: Elle couvre le logement et la vie de quartier pour le journal depuis cinq ans.
+    speech_style: Tutoie vite, pose des questions précises, demande toujours des exemples concrets.
+    secret: Elle enquête sur les propriétaires du Vieux-Port qui ne font pas les réparations.
+    world_facts:
+      - L'Écho de Rivemont paraît le mercredi et le samedi.
+      - Émilie cherche des témoignages de locataires pour un article sur les loyers.
+      - La rédaction est ouverte de 9 h à 18 h.
+      - Émilie couvre le logement depuis cinq ans.
+    voice_id: fr_f_33_emilie
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 9, to_hour: 18, location_key: rivemont.haute_ville.echo}

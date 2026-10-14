@@ -36,6 +36,24 @@ rivemont:
     facts: ["L'enduit et la spatule coûtent {n} dollars", "L'enduit sèche en vingt-quatre heures", "La perceuse se loue à la journée"]
     targets: {functions: [fr.func.ask_information, fr.func.give_advice], grammar: [fr.grammar.imperatif], lexset: [fr.lex.housing.deposit_repairs]}
     band: 7
+  - location_key: rivemont.haute_ville.hotel_de_ville
+    npc_key: fonctionnaire_sophie
+    goal: "Défendre votre position à la consultation sur la piste cyclable"
+    facts: ["Le projet coûte {n} mille dollars", "La piste passerait rue des Remparts", "Chaque intervenant a trois minutes"]
+    targets: {functions: [fr.func.argue_point_of_view, fr.func.persuade], grammar: [fr.grammar.subjonctif_present], lexset: [fr.lex.administration]}
+    band: 8
+  - location_key: rivemont.haute_ville.bibliotheque
+    npc_key: bibliothecaire_antoine
+    goal: "Préparer votre intervention au débat sur les loyers"
+    facts: ["Le loyer moyen a augmenté de {n} dollars en deux ans", "Le débat a lieu à 18 h 30", "Trois intervenants sont déjà inscrits"]
+    targets: {functions: [fr.func.concede_and_counter, fr.func.argue_point_of_view], grammar: [fr.grammar.connecteurs_logiques], lexset: [fr.lex.abstract_argument]}
+    band: 9
+  - location_key: rivemont.haute_ville.echo
+    npc_key: journaliste_emilie
+    goal: "Témoigner pour un article sur le logement"
+    facts: ["Votre loyer a augmenté de {n} dollars cette année", "L'article paraîtra samedi", "Votre nom peut rester anonyme"]
+    targets: {functions: [fr.func.narrate_past, fr.func.summarise], grammar: [fr.grammar.plus_que_parfait], lexset: [fr.lex.news_current_affairs]}
+    band: 8
 ashford:
   - location_key: ashford.station_quarter.flat_2a
     npc_key: landlord_graham
@@ -73,3 +91,21 @@ ashford:
     facts: ["The kit and a brush cost {n} pounds", "The stain block dries in two hours", "Ladders can be hired by the day"]
     targets: {functions: [en.func.ask_information, en.func.give_advice], grammar: [en.grammar.modals_obligation], lexset: [en.lex.housing.deposit_repairs]}
     band: 7
+  - location_key: ashford.civic_quarter.town_hall
+    npc_key: council_margaret
+    goal: "Make your case at the cycle lane consultation"
+    facts: ["The scheme costs {n} thousand pounds", "The lane would run along Station Road", "Each speaker has three minutes"]
+    targets: {functions: [en.func.argue_point_of_view, en.func.persuade], grammar: [en.grammar.passive_voice], lexset: [en.lex.administration]}
+    band: 8
+  - location_key: ashford.civic_quarter.library
+    npc_key: librarian_femi
+    goal: "Prepare your contribution to the rent debate"
+    facts: ["Average rent has gone up by {n} pounds in two years", "The debate starts at 6.30 pm", "Three speakers have already signed up"]
+    targets: {functions: [en.func.concede_and_counter, en.func.argue_point_of_view], grammar: [en.grammar.linking_words], lexset: [en.lex.abstract_argument]}
+    band: 9
+  - location_key: ashford.civic_quarter.gazette
+    npc_key: reporter_lucy
+    goal: "Give an interview for a story on housing"
+    facts: ["Your rent went up by {n} pounds this year", "The story runs on Saturday", "You can stay anonymous"]
+    targets: {functions: [en.func.narrate_past, en.func.summarise], grammar: [en.grammar.past_perfect], lexset: [en.lex.news_current_affairs]}
+    band: 8

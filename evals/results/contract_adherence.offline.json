@@ -3,7 +3,8 @@
   "mode": "offline",
   "metrics": {
     "scenes": 50,
-    "violations_planted": 500,
+    "violations_planted": 494,
+    "plants_skipped_on_contract": 6,
     "fact_violations_leaked": 0,
     "language_leaks": 0,
     "tutor_or_break_leaks": 0,
@@ -32,6 +33,6 @@
     "Offline mode checks the Guard against planted violations; targets-elicited needs live mode."
   ],
   "samples": [],
-  "ran_at": "2026-10-14T17:24:53+00:00",
+  "ran_at": "2026-10-14T17:43:10+00:00",
   "status": "PASS"
 }

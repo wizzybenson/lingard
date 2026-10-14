@@ -18,9 +18,11 @@
 
 ## Known gaps
 
-- **Content:** each city has two districts with real locations and NPCs: Vieux-Port / Station Quarter (band 1+) and
-  Saint-Roch / Kingsway (band 6+: job centre, GP clinic, hardware shop). The two cities are at parity (6 NPCs each).
-  The later districts in SPEC (through Civic) aren't written yet. That's content work, not code (see Phase 1b).
+- **Content:** each city has three districts with real locations and NPCs, Arrivals through Civic:
+  Vieux-Port / Station Quarter (band 1+), Saint-Roch / Kingsway (band 6+: job centre, GP clinic, hardware shop) and
+  Haute-Ville / Civic Quarter (band 8+: town hall consultation, library debate, local newspaper). The two cities are at
+  parity (9 NPCs each). The SPEC doesn't name districts between Arrivals and Civic, so three is a content choice.
+  More can be added as YAML only (see Phase 1b).
   Location art (`layer_art`) is referenced but no image files exist yet.
 - The day planner used to fill every day from the first district's settings in content order, so a learner never
   reached Saint-Roch or Kingsway. It now rotates the unlocked settings by day. Covered by

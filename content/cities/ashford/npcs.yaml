@@ -106,3 +106,57 @@ npcs:
     accent: en-GB-standard
     schedule:
       - {from_hour: 8, to_hour: 17, location_key: ashford.kingsway.hardware}
+  - key: council_margaret
+    city: ashford
+    name: Margaret Doyle
+    role: council officer
+    age: 52
+    personality: Thorough and diplomatic; patient with residents but strict about deadlines.
+    backstory: She has run the council's public consultations for fifteen years.
+    speech_style: Formal, careful wording, often quotes council procedure.
+    secret: She privately thinks the cycle lane is a bad idea but can't say so.
+    world_facts:
+      - The Town Hall is open from 9 am to 5 pm, Monday to Friday.
+      - The cycle lane consultation is on Tuesday at 7 pm in the Council Chamber.
+      - To speak at the consultation you must register by Monday noon.
+      - Each speaker has three minutes.
+    voice_id: en_f_52_margaret
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: ashford.civic_quarter.town_hall}
+  - key: librarian_femi
+    city: ashford
+    name: Femi Adeyemi
+    role: librarian and debate host
+    age: 44
+    personality: Curious, well-read, loves playing devil's advocate; never condescending.
+    backstory: A former philosophy teacher, he has hosted the library's public debate since it began.
+    speech_style: Asks open questions, sums up other people's arguments, says "fair point, but".
+    secret: He has been writing a novel about Ashford for ten years and has shown it to no one.
+    world_facts:
+      - The library is open from 10 am to 8 pm, except on Mondays.
+      - The public debate is on the first Thursday of the month at 6.30 pm.
+      - This month's topic is rent caps in the Station Quarter.
+      - Femi taught philosophy for twelve years.
+    voice_id: en_m_44_femi
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 10, to_hour: 20, location_key: ashford.civic_quarter.library}
+  - key: reporter_lucy
+    city: ashford
+    name: Lucy Brennan
+    role: reporter at The Ashford Gazette
+    age: 31
+    personality: Quick, persistent and sceptical; never stops taking notes.
+    backstory: She has covered housing and local issues for the Gazette for five years.
+    speech_style: Informal, asks precise questions, always wants a concrete example.
+    secret: She's investigating Station Quarter landlords who ignore damp complaints.
+    world_facts:
+      - The Ashford Gazette comes out on Wednesdays and Saturdays.
+      - Lucy is looking for tenants to interview for a story on rents.
+      - The newsroom is open from 9 am to 6 pm.
+      - Lucy has covered housing for five years.
+    voice_id: en_f_31_lucy
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 18, location_key: ashford.civic_quarter.gazette}
