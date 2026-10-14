@@ -6,7 +6,7 @@ import uuid
 from typing import Any
 
 from evals.framework import ROOT
-from lingard_contracts.common import Skill
+from lingard_contracts.common import CITY_LOCALE, LANGUAGE_CITY, LANGUAGE_PACK, Language, Skill
 from lingard_contracts.events import TurnEvent
 from lingard_curriculum.graph import InMemoryCurriculumGraph
 from lingard_curriculum.packs import PackLibrary
@@ -47,12 +47,12 @@ async def score_samples(rows: list[dict[str, Any]]) -> tuple[list[float], list[f
     return predicted, human, packs
 
 
-async def correction_run(language: str, rows: list[dict[str, Any]]) -> tuple[int, int]:
+async def correction_run(language: Language, rows: list[dict[str, Any]]) -> tuple[int, int]:
     router, prompts = _router()
     curriculum = InMemoryCurriculumGraph()
-    await seed_graph(curriculum, load_seed(ROOT / "content", language))  # type: ignore[arg-type]
-    nodes = {n.key: n for n in await curriculum.nodes(language)}  # type: ignore[arg-type]
-    pack = PackLibrary(ROOT / "content").pack("tef_canada" if language == "fr" else "ielts_gt")
+    await seed_graph(curriculum, load_seed(ROOT / "content", language))
+    nodes = {n.key: n for n in await curriculum.nodes(language)}
+    pack = PackLibrary(ROOT / "content").pack(LANGUAGE_PACK[language])
     assessor = UtteranceAssessor(router, prompts)
     shown = correct = 0
     for row in rows:
@@ -63,19 +63,20 @@ async def correction_run(language: str, rows: list[dict[str, Any]]) -> tuple[int
             scene_id=uuid.uuid4(),
             turn_index=0,
             speaker="learner",
-            language="fr-FR" if language == "fr" else "en-GB",
+            language=CITY_LOCALE[LANGUAGE_CITY[language]],
             transcript=row["text"],
         )
         result = await assessor.assess(
             event,
             pack=pack,
             language=language,
-            learner_band=6,  # type: ignore[arg-type]
+            learner_band=6,
             npc_name="a neighbour",
             nodes=nodes,
         )
         for tag in result.error_tags:
             if tag.showable:
                 shown += 1
-                correct += bool(row["has_error"]) and tag.node_key == row.get("node_key")
+                accepted = {row.get("node_key"), *row.get("accept_node_keys", [])}
+                correct += bool(row["has_error"]) and tag.node_key in accepted
     return shown, correct

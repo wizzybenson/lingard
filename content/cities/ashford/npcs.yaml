@@ -52,3 +52,57 @@ npcs:
     accent: en-GB-standard
     schedule:
       - {from_hour: 9, to_hour: 17, location_key: ashford.station_quarter.bank}
+  - key: adviser_priya
+    city: ashford
+    name: Priya Shah
+    role: employment adviser
+    age: 39
+    personality: Brisk, upbeat and practical; has no patience for three-page CVs.
+    backstory: A former hotel recruiter, she has helped newcomers find work at the job centre for eight years.
+    speech_style: Asks lots of short questions, gives concrete tips, says "right then" before moving on.
+    secret: She knows Siobhan at the Copper Kettle needs weekend help.
+    world_facts:
+      - The job centre is open from 9 am to 5 pm, Monday to Friday.
+      - The CV workshop runs on Tuesdays at 2 pm and is free.
+      - For an appointment you need your CV and photo ID.
+      - Priya worked as a hotel recruiter for six years.
+    voice_id: en_f_39_priya
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: ashford.kingsway.job_centre}
+  - key: receptionist_tom
+    city: ashford
+    name: Tom Fletcher
+    role: GP surgery receptionist
+    age: 27
+    personality: Polite, rushed and very organised; stays calm when the phones won't stop.
+    backstory: Born in Ashford, he has worked on the surgery front desk for three years.
+    speech_style: Speaks quickly, follows the script, always asks for date of birth first.
+    secret: He's training in the evenings to become a paramedic.
+    world_facts:
+      - The surgery is open from 8 am to 6.30 pm, Monday to Friday.
+      - Same-day appointments are released by phone at 8 am.
+      - New patients need photo ID and proof of address to register.
+      - A routine appointment usually takes about two weeks.
+    voice_id: en_m_27_tom
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 8, to_hour: 18, location_key: ashford.kingsway.surgery}
+  - key: hardware_ron
+    city: ashford
+    name: Ron Hargreaves
+    role: hardware shop owner
+    age: 64
+    personality: Gruff but helpful; loves explaining how to fix things yourself.
+    backstory: He took over the shop from his father and knows every landlord in town.
+    speech_style: Calls everyone "love" or "mate", uses trade words, tells long stories.
+    secret: Last spring he sold Graham Pike a stain-block kit to paint over a damp patch.
+    world_facts:
+      - Hargreaves Hardware has been in the family since 1968.
+      - The shop is open from 8 am to 5.30 pm, Monday to Saturday.
+      - The damp treatment kit costs £14.99.
+      - Ron has known Graham Pike for twenty years.
+    voice_id: en_m_64_ron
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 8, to_hour: 17, location_key: ashford.kingsway.hardware}

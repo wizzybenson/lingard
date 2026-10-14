@@ -25,6 +25,7 @@ from lingard_graphs.deps import GraphDeps, MemoryHints
 from lingard_graphs.pedagogy.config import load_pedagogy
 from lingard_graphs.runtime import RedisHints
 from lingard_graphs.sql_store import SqlStore
+from lingard_live.tts import TtsProvider
 from lingard_llm import LLMConfig, LLMRouter, PromptRegistry
 from lingard_pronunciation.clone import ElevenLabsClone, VoiceboxClone, VoiceCloneProvider
 from lingard_storage import MemoryObjectStore, ObjectStore, S3ObjectStore
@@ -45,6 +46,8 @@ class AppState:
     graph_deps: GraphDeps
     interactive: InteractiveGraphs | None = None
     pronunciation: httpx.AsyncClient | None = None
+    tts: TtsProvider | None = None
+    """Narrator TTS, built from settings on first use so its line cache lives as long as the app."""
     _stack: AsyncExitStack = field(default_factory=AsyncExitStack)
 
     @classmethod

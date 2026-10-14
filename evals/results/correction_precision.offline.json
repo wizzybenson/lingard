@@ -2,16 +2,19 @@
   "suite": "correction_precision",
   "mode": "offline",
   "metrics": {
-    "fr_items": 159.0,
-    "en_items": 118.0,
-    "fr_positives": 45.0,
-    "en_positives": 32.0
+    "fr_items": 366.0,
+    "en_items": 349.0,
+    "fr_unreviewed": 207.0,
+    "en_unreviewed": 231.0,
+    "fr_positives": 122.0,
+    "en_positives": 120.0
   },
   "gates": [],
   "notes": [
-    "golden items: {'fr': 159, 'en': 118} (target ≥ 300 each)"
+    "golden items: {'fr': 366, 'en': 349} (target ≥ 300 each)",
+    "drafted items awaiting native review: {'fr': 207, 'en': 231}"
   ],
   "samples": [],
-  "ran_at": "2026-10-14T08:47:15+00:00",
+  "ran_at": "2026-10-14T17:24:53+00:00",
   "status": "INCOMPLETE"
 }

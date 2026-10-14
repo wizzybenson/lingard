@@ -21,7 +21,7 @@ def eval_scenes(count: int = 50) -> list[tuple[SceneContract, int, str]]:
     for i in range(count):
         city, template = templates[i % len(templates)]
         amount = AMOUNTS[(i // len(templates)) % len(AMOUNTS)]
-        npc = load_city(ROOT / "content", city).npc(template["npc_key"])  # type: ignore[arg-type]
+        npc = load_city(ROOT / "content", city).npc(template["npc_key"])
         targets = template["targets"]
         elicitation = [
             {

@@ -18,9 +18,13 @@
 
 ## Known gaps
 
-- **Content:** only the first district of each city has real locations and NPCs. Later districts (through Civic) are
-  placeholders. That's content work, not code (see Phase 1b).
-- Both cities' first districts are at parity (3 NPCs each). Parity beyond that depends on the content above.
+- **Content:** each city has two districts with real locations and NPCs: Vieux-Port / Station Quarter (band 1+) and
+  Saint-Roch / Kingsway (band 6+: job centre, GP clinic, hardware shop). The two cities are at parity (6 NPCs each).
+  The later districts in SPEC (through Civic) aren't written yet. That's content work, not code (see Phase 1b).
+  Location art (`layer_art`) is referenced but no image files exist yet.
+- The day planner used to fill every day from the first district's settings in content order, so a learner never
+  reached Saint-Roch or Kingsway. It now rotates the unlocked settings by day. Covered by
+  `test_day_planner_rotates_through_every_unlocked_district`.
 
 ## Phase 6 (real-world validation)
 

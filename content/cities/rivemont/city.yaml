@@ -45,6 +45,34 @@ districts:
     name: Saint-Roch
     min_band: 6
     order: 2
-    description: Le quartier des commerces et du travail (contenu en Phase 5).
+    description: "Le quartier des commerces et du travail : on y cherche un emploi, un médecin et de quoi réparer."
     locations:
-      - {key: rivemont.saint_roch.placeholder, name: Rue Saint-Roch, description: "À venir.", x: 0.5, y: 0.5}
+      - key: rivemont.saint_roch.centre_emploi
+        name: Centre d'emploi Saint-Roch
+        description: Un bureau au rez-de-chaussée, plein de dépliants, où l'on prépare son CV et ses entrevues.
+        x: 0.25
+        y: 0.45
+        layer_art: [rivemont/saint_roch/emploi_bg.png, rivemont/saint_roch/emploi_mid.png]
+        hotspots:
+          - {key: nadia, kind: npc, label: Nadia Tremblay, npc_key: conseillere_nadia, x: 0.55, y: 0.5}
+          - {key: offres, kind: sign, label: Offres de la semaine, x: 0.2, y: 0.3, text: "Commis d'épicerie (temps partiel) · Réceptionniste bilingue · Aide-cuisinier. Entrevues le jeudi."}
+          - {key: atelier, kind: sign, label: Atelier CV, x: 0.8, y: 0.35, text: "Atelier CV : mardi 14 h, gratuit, sur inscription."}
+      - key: rivemont.saint_roch.clinique
+        name: Clinique médicale Saint-Roch
+        description: Une clinique de quartier avec une salle d'attente toujours pleine le matin.
+        x: 0.6
+        y: 0.3
+        layer_art: [rivemont/saint_roch/clinique_bg.png, rivemont/saint_roch/clinique_mid.png]
+        hotspots:
+          - {key: julien, kind: npc, label: Julien Roy, npc_key: receptionniste_julien, x: 0.5, y: 0.55}
+          - {key: affiche, kind: sign, label: Affiche, x: 0.2, y: 0.35, text: "Sans rendez-vous : de 8 h à 11 h. Apportez votre carte d'assurance maladie."}
+      - key: rivemont.saint_roch.quincaillerie
+        name: Quincaillerie Bouchard
+        description: Une vieille quincaillerie familiale où l'on trouve de tout, des vis aux conseils.
+        x: 0.8
+        y: 0.6
+        layer_art: [rivemont/saint_roch/quincaillerie_bg.png, rivemont/saint_roch/quincaillerie_mid.png]
+        hotspots:
+          - {key: denis, kind: npc, label: Denis Bouchard, npc_key: quincaillier_denis, x: 0.45, y: 0.5}
+          - {key: location, kind: sign, label: Location d'outils, x: 0.75, y: 0.3, text: "Location à la journée : perceuse 15 $, échelle 10 $."}
+          - {key: enduit, kind: object, label: Enduit de rebouchage, x: 0.25, y: 0.65, text: "Pot d'enduit de rebouchage, 12 $ : pour les petites fissures."}

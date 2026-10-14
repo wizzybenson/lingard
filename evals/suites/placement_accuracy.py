@@ -14,7 +14,9 @@ from typing import Any
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command
 
 from evals.framework import ROOT, Gate, Mode, SuiteResult, suite
@@ -76,8 +78,8 @@ async def run(mode: Mode) -> SuiteResult:
                 store = deps.store
                 assert isinstance(store, MemoryStore)
                 store.profiles[user_id] = LearnerProfileView(user_id, "sim", "ar", "tense", {}, {}, {})
-                graph = build_placement(deps, bank, InMemorySaver())
-                config = {"configurable": {"thread_id": str(user_id)}}
+                graph: CompiledStateGraph[Any, Any, Any, Any] = build_placement(deps, bank, InMemorySaver())
+                config: RunnableConfig = {"configurable": {"thread_id": str(user_id)}}
                 rng = random.Random(f"{language}{true_band}{repeat}")  # noqa: S311
                 result = await graph.ainvoke({"user_id": user_id, "language": language, "path": "quick"}, config)
                 while result.get("__interrupt__"):

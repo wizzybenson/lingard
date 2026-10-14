@@ -9,9 +9,10 @@ import json
 import os
 import statistics
 from pathlib import Path
-from typing import Any
+from typing import Any, get_args
 
 from evals.framework import ROOT, Gate, Mode, SuiteResult, suite
+from lingard_contracts.common import Language
 
 MIN_CALIBRATION_SAMPLES = 30
 MIN_GOLDEN_ITEMS = 300
@@ -97,10 +98,17 @@ async def band_calibration(mode: Mode) -> SuiteResult:
 )
 async def correction_precision(mode: Mode) -> SuiteResult:
     folder = ROOT / "evals/datasets/correction_golden"
-    by_language = {lang: _rows(folder, f"{lang}.*.jsonl") for lang in ("fr", "en")}
+    by_language: dict[Language, list[dict[str, Any]]] = {
+        lang: _rows(folder, f"{lang}.*.jsonl") for lang in get_args(Language)
+    }
     metrics: dict[str, float] = {f"{lang}_items": float(len(rows)) for lang, rows in by_language.items()}
     gates = [Gate("fr_precision", ">=", 0.95), Gate("en_precision", ">=", 0.95)]
-    notes = [f"golden items: { {k: len(v) for k, v in by_language.items()} } (target ≥ {MIN_GOLDEN_ITEMS} each)"]
+    unreviewed = {lang: sum(r.get("reviewed") is False for r in rows) for lang, rows in by_language.items()}
+    metrics.update({f"{lang}_unreviewed": float(n) for lang, n in unreviewed.items()})
+    notes = [
+        f"golden items: { {k: len(v) for k, v in by_language.items()} } (target ≥ {MIN_GOLDEN_ITEMS} each)",
+        f"drafted items awaiting native review: {unreviewed}",
+    ]
     if mode == "offline" or not os.environ.get("ANTHROPIC_API_KEY"):
         positives = {lang: sum(r["has_error"] for r in rows) for lang, rows in by_language.items()}
         metrics.update({f"{lang}_positives": float(n) for lang, n in positives.items()})

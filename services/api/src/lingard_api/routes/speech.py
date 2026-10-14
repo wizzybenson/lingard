@@ -10,6 +10,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import Response
 
 from lingard_api.deps import Principal, State
+from lingard_api.state import AppState
 from lingard_contracts.common import Language
 from lingard_exam_packs.items import ItemBank
 from lingard_live.audio import pcm_to_wav, wav_to_pcm
@@ -81,11 +82,19 @@ async def item_audio(item_id: str, principal: Principal, state: State) -> Respon
     if item.skill.value != "listening":
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Not a listening item")
     try:
-        tts = build_tts(_live_settings(state))
+        pcm = await narrate(state, item.stimulus, item.language)
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
-    narrator = load_language(state.settings.content_root, item.language).narrator_voice
-    voice = VoiceSpec(voice_id=narrator, language=item.language)
-    pcm = b"".join([chunk.pcm async for chunk in tts.stream(item.stimulus, voice)])
-    buffer = io.BytesIO(pcm_to_wav(pcm))
-    return Response(buffer.getvalue(), media_type="audio/wav", headers={"Cache-Control": "private, max-age=86400"})
+    return wav_response(pcm)
+
+
+async def narrate(state: AppState, text: str, language: Language) -> bytes:
+    """16 kHz PCM of ``text`` in the language's narrator voice. Raises ``RuntimeError`` when no TTS is configured."""
+    if state.tts is None:
+        state.tts = build_tts(_live_settings(state))
+    voice = VoiceSpec(voice_id=load_language(state.settings.content_root, language).narrator_voice, language=language)
+    return b"".join([chunk.pcm async for chunk in state.tts.stream(text, voice)])
+
+
+def wav_response(pcm: bytes) -> Response:
+    return Response(pcm_to_wav(pcm), media_type="audio/wav", headers={"Cache-Control": "private, max-age=86400"})

@@ -171,3 +171,13 @@ def test_studio_loop_max_three_attempts_and_fsrs_grade() -> None:
     with pytest.raises(ValueError):
         shadow(item, glide(150, 180, 800), Recognizer({}))
     assert len(item.attempts) == MAX_ATTEMPTS
+
+
+async def test_golden_self_uses_a_supplied_native_render() -> None:
+    converter, cache = Converter(), Cache()
+    golden = GoldenSelf(None, converter, cache)
+    native = glide(200, 260, 1500)
+    render = await golden.render("Bonjour", accent="fr-FR", profile_id="el-1", user_id="u1", native=native)
+    assert not render.cached and converter.calls == 1
+    with pytest.raises(ValueError, match="no native render"):
+        await golden.render("Salut", accent="fr-FR", profile_id="el-1", user_id="u1")

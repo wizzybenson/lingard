@@ -3,14 +3,14 @@
   "mode": "offline",
   "metrics": {
     "turns": 60,
-    "first_audio_p50_ms": 333,
-    "first_audio_p95_ms": 660,
-    "first_audio_p50_ci_low": 278,
-    "first_audio_p50_ci_high": 436,
+    "first_audio_p50_ms": 335,
+    "first_audio_p95_ms": 659,
+    "first_audio_p50_ci_low": 281,
+    "first_audio_p50_ci_high": 435,
     "no_speculation_p50_ms": 888,
-    "no_speculation_p95_ms": 1145,
+    "no_speculation_p95_ms": 1142,
     "wasted_drafts_per_turn": 0.467,
-    "guard_p99_ms": 0.29
+    "guard_p99_ms": 0.271
   },
   "gates": [
     {
@@ -33,6 +33,6 @@
     "provider latencies from profile 'assumed_cloud' (assumption, 2026-10-14)"
   ],
   "samples": [],
-  "ran_at": "2026-10-14T08:48:22+00:00",
+  "ran_at": "2026-10-14T17:26:01+00:00",
   "status": "PASS"
 }

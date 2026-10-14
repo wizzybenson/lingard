@@ -1,13 +1,17 @@
 import math
+from datetime import UTC, datetime
 
 import httpx
 import numpy as np
 from sqlalchemy import select
 
-from lingard_db.models import User
-from lingard_live.audio import pcm_to_wav
+from lingard_db.models import User, VoiceProfile
+from lingard_live.audio import pcm_to_wav, wav_to_pcm
+from lingard_live.tts import ScriptedTts
+from lingard_pronunciation import watermark
 from lingard_pronunciation.app import Engines, create_app
 from lingard_pronunciation.g2p import LexiconG2P
+from lingard_pronunciation.golden_self import GoldenSelf, MemoryCache
 from lingard_pronunciation.server import load_targets
 
 PIN = "613470"
@@ -86,3 +90,71 @@ async def test_shadow_scores_and_reviews_on_final_attempt(api) -> None:  # type:
         "/v1/studio/shadow", data={**form, "line": "Bonjour tout le monde."}, files=files, headers=api.bearer(token)
     )
     assert unknown.status_code == 404
+
+
+async def test_reference_render_feeds_listening_and_intonation(api) -> None:  # type: ignore[no-untyped-def]
+    token = await api.admin_token("Founder", PIN)
+    line = "Un pain, pas un bain."
+    params = {"line": line, "language": "fr"}
+
+    no_tts = await api.client.get("/v1/studio/reference", params=params, headers=api.bearer(token))
+    assert no_tts.status_code == 503
+
+    api.state.tts = tts = ScriptedTts()
+    listen = await api.client.get("/v1/studio/reference", params=params, headers=api.bearer(token))
+    assert listen.status_code == 200 and listen.content[:4] == b"RIFF"
+    assert tts.spoken == [line]
+    missing = await api.client.get(
+        "/v1/studio/reference", params={**params, "line": "Bonjour."}, headers=api.bearer(token)
+    )
+    assert missing.status_code == 404
+
+    _attach(api, LexiconRecognizer(LexiconG2P(api.settings.content_root), line, "fr"))
+    form = {"line": line, "language": "fr", "attempt": "1"}
+    scored = await api.client.post(
+        "/v1/studio/shadow", data=form, files={"audio": ("a.wav", _wav(), "audio/wav")}, headers=api.bearer(token)
+    )
+    assert scored.status_code == 200, scored.text
+    assert scored.json()["pitch"]["reference"], "the narrator render is sent as the intonation reference"
+    assert scored.json()["intonation"] is not None
+
+
+class FakeSpeechToSpeech:
+    """Records which cloned voice it was asked for; returns the audio unchanged."""
+
+    name = "fake-sts"
+
+    def __init__(self) -> None:
+        self.profiles: list[str] = []
+
+    async def convert(self, source_pcm: bytes, target_profile_id: str) -> bytes:
+        self.profiles.append(target_profile_id)
+        return source_pcm
+
+
+async def test_reference_is_the_golden_self_when_the_learner_has_a_clone(api) -> None:  # type: ignore[no-untyped-def]
+    token = await api.admin_token("Founder", PIN)
+    async with api.state.sessions() as db:
+        user = (await db.execute(select(User))).scalar_one()
+        db.add(
+            VoiceProfile(
+                tenant_id=user.tenant_id,
+                user_id=user.id,
+                provider="elevenlabs",
+                provider_profile_id="el-voice-1",
+                consent_at=datetime.now(UTC),
+            )
+        )
+        await db.commit()
+    api.state.tts = ScriptedTts()
+    root = api.settings.content_root
+    converter = FakeSpeechToSpeech()
+    golden = GoldenSelf(None, converter, MemoryCache())
+    app = create_app(Engines(LexiconG2P(root), golden, None, load_targets(root)))
+    api.state.pronunciation = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://pron")
+
+    params = {"line": "Un pain, pas un bain.", "language": "fr"}
+    response = await api.client.get("/v1/studio/reference", params=params, headers=api.bearer(token))
+    assert response.status_code == 200
+    assert converter.profiles == ["el-voice-1"]
+    assert watermark.detect(wav_to_pcm(response.content), f"lingard:{user.id}")

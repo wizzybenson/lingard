@@ -1,7 +1,8 @@
 """Runnable pronunciation service: ``uvicorn --factory lingard_pronunciation.server:build_app --port 58100``.
 
 The wav2vec2 recogniser loads only when the ``models`` extra is installed and ``LINGARD_PRON_RECOGNIZER`` is not
-``off``; without it ``/shadow`` answers 503 and the API reports scoring as unavailable.
+``off``; without it ``/shadow`` answers 503 and the API reports scoring as unavailable. Golden-self renders need
+``ELEVENLABS_API_KEY`` (speech-to-speech into the learner's cloned voice); without it ``/golden`` answers 503.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from fastapi import FastAPI
 
 from lingard_pronunciation.app import Engines, create_app
 from lingard_pronunciation.g2p import LexiconG2P
+from lingard_pronunciation.golden_self import ElevenLabsSpeechToSpeech, GoldenSelf, MemoryCache
 from lingard_pronunciation.recognizer import PhonemeRecognizer, Wav2Vec2PhonemeRecognizer
 from lingard_pronunciation.scoring import PronTarget
 
@@ -43,6 +45,13 @@ def _recognizer() -> PhonemeRecognizer | None:
         return None
 
 
+def _golden() -> GoldenSelf | None:
+    key = os.environ.get("ELEVENLABS_API_KEY")
+    return GoldenSelf(None, ElevenLabsSpeechToSpeech(key), MemoryCache()) if key else None
+
+
 def build_app(content_root: Path | None = None) -> FastAPI:
     root = content_root or Path(os.environ.get("LINGARD_CONTENT_ROOT", REPO_ROOT / "content"))
-    return create_app(Engines(g2p=LexiconG2P(root), golden=None, recognizer=_recognizer(), targets=load_targets(root)))
+    return create_app(
+        Engines(g2p=LexiconG2P(root), golden=_golden(), recognizer=_recognizer(), targets=load_targets(root))
+    )

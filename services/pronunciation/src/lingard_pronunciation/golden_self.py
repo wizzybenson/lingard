@@ -7,6 +7,7 @@ timbre comes from the learner. Renders are watermarked and cached by (profile, t
 from __future__ import annotations
 
 import hashlib
+from collections import OrderedDict
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Protocol
@@ -54,12 +55,30 @@ class CacheBackend(Protocol):
     async def put(self, key: str, audio: bytes) -> None: ...
 
 
+class MemoryCache:
+    """Bounded in-process render cache (one service instance; the durable copy belongs in ``synthesis_cache``)."""
+
+    def __init__(self, limit: int = 256) -> None:
+        self._limit = limit
+        self._items: OrderedDict[str, bytes] = OrderedDict()
+
+    async def get(self, key: str) -> bytes | None:
+        if key in self._items:
+            self._items.move_to_end(key)
+        return self._items.get(key)
+
+    async def put(self, key: str, audio: bytes) -> None:
+        self._items[key] = audio
+        self._items.move_to_end(key)
+        while len(self._items) > self._limit:
+            self._items.popitem(last=False)
+
+
 @dataclass(frozen=True)
 class GoldenRender:
     pcm: bytes
     cache_key: str
     cached: bool
-    native_pcm: bytes
 
 
 def cache_key(profile_id: str, text: str, accent: str, engine: str) -> str:
@@ -67,18 +86,24 @@ def cache_key(profile_id: str, text: str, accent: str, engine: str) -> str:
 
 
 class GoldenSelf:
-    def __init__(self, native_tts: NativeTts, converter: VoiceConverter, cache: CacheBackend) -> None:
+    def __init__(self, native_tts: NativeTts | None, converter: VoiceConverter, cache: CacheBackend) -> None:
         self._tts, self._converter, self._cache = native_tts, converter, cache
 
-    async def render(self, text: str, *, accent: str, profile_id: str, user_id: str) -> GoldenRender:
+    async def render(
+        self, text: str, *, accent: str, profile_id: str, user_id: str, native: bytes | None = None
+    ) -> GoldenRender:
+        """``native`` is a native-speaker render supplied by the caller; without it the configured TTS renders one."""
         key = cache_key(profile_id, text, accent, self._converter.name)
-        native = await self._tts(text, accent)
         cached = await self._cache.get(key)
         if cached is not None:
-            return GoldenRender(cached, key, True, native)
+            return GoldenRender(cached, key, True)
+        if native is None:
+            if self._tts is None:
+                raise ValueError("no native render supplied and no native TTS configured")
+            native = await self._tts(text, accent)
         converted = await self._converter.convert(native, profile_id)
         if converted[:4] == b"RIFF":
             converted, _ = wav_to_pcm(converted)
         marked = watermark.embed(converted, f"lingard:{user_id}")
         await self._cache.put(key, marked)
-        return GoldenRender(marked, key, False, native)
+        return GoldenRender(marked, key, False)

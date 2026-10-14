@@ -16,7 +16,7 @@ them. Timed mocks convert to CLB/NCLC levels for Express Entry.
 | 0 Foundations | pass |
 | 1 / 1b French and English streets | pass offline. Live latency and elicitation not measured (no provider keys) |
 | 2 Learning loop + placement | pass offline (synthetic learners, 20 runs; placement 30/30 within ±1 band) |
-| 3 Exam Hall + writing | **blocked**: needs human-rated calibration samples and a larger correction golden set |
+| 3 Exam Hall + writing | **blocked**: needs human-rated calibration samples and native review of the drafted correction golden set |
 | 4 Accent studio | built, not measured |
 | 5 Full city (v1) | needs real play: founder for 2 weeks, friends' retention, measured cost |
 

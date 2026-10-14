@@ -1,0 +1,207 @@
+{"text": "Nous mangons au restaurant ce soir.", "has_error": true, "node_key": "fr.grammar.present_regular", "correction": "Nous mangeons au restaurant ce soir.", "origin": "drafted", "reviewed": false}
+{"text": "Nous mangeons au restaurant ce soir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ils finit le travail à six heures.", "has_error": true, "node_key": "fr.grammar.present_regular", "correction": "Ils finissent le travail à six heures.", "accept_node_keys": ["fr.conj.finir.present"], "origin": "drafted", "reviewed": false}
+{"text": "Ils finissent le travail à six heures.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Tu parle très bien français.", "has_error": true, "node_key": "fr.grammar.present_regular", "correction": "Tu parles très bien français.", "accept_node_keys": ["fr.conj.parler.present"], "origin": "drafted", "reviewed": false}
+{"text": "Tu parles très bien français.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je peut venir demain.", "has_error": true, "node_key": "fr.grammar.present_irregular", "correction": "Je peux venir demain.", "accept_node_keys": ["fr.conj.pouvoir.present"], "origin": "drafted", "reviewed": false}
+{"text": "Je peux venir demain.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ils allent au marché le samedi.", "has_error": true, "node_key": "fr.grammar.present_irregular", "correction": "Ils vont au marché le samedi.", "accept_node_keys": ["fr.conj.aller.present"], "origin": "drafted", "reviewed": false}
+{"text": "Ils vont au marché le samedi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Vous faisez quoi ce week-end ?", "has_error": true, "node_key": "fr.grammar.present_irregular", "correction": "Vous faites quoi ce week-end ?", "accept_node_keys": ["fr.conj.faire.present"], "origin": "drafted", "reviewed": false}
+{"text": "Vous faites quoi ce week-end ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Vous disez la vérité.", "has_error": true, "node_key": "fr.conj.dire.present", "correction": "Vous dites la vérité.", "accept_node_keys": ["fr.grammar.present_irregular"], "origin": "drafted", "reviewed": false}
+{"text": "Vous dites la vérité.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ils voyent la mer depuis le balcon.", "has_error": true, "node_key": "fr.conj.voir.present", "correction": "Ils voient la mer depuis le balcon.", "accept_node_keys": ["fr.grammar.present_irregular"], "origin": "drafted", "reviewed": false}
+{"text": "Ils voient la mer depuis le balcon.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je suis vingt-cinq ans.", "has_error": true, "node_key": "fr.conj.avoir.present", "correction": "J'ai vingt-cinq ans.", "accept_node_keys": ["fr.grammar.present_irregular"], "origin": "drafted", "reviewed": false}
+{"text": "J'ai vingt-cinq ans.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je suis faim, on mange ?", "has_error": true, "node_key": "fr.conj.avoir.present", "correction": "J'ai faim, on mange ?", "accept_node_keys": ["fr.grammar.present_irregular"], "origin": "drafted", "reviewed": false}
+{"text": "J'ai faim, on mange ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'ai acheté un voiture d'occasion.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "J'ai acheté une voiture d'occasion.", "origin": "drafted", "reviewed": false}
+{"text": "J'ai acheté une voiture d'occasion.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Le maison est trop petite pour nous.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "La maison est trop petite pour nous.", "origin": "drafted", "reviewed": false}
+{"text": "La maison est trop petite pour nous.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je bois de la lait le matin.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "Je bois du lait le matin.", "origin": "drafted", "reviewed": false}
+{"text": "Je bois du lait le matin.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je vais à le marché.", "has_error": true, "node_key": "fr.grammar.articles_gender", "correction": "Je vais au marché.", "origin": "drafted", "reviewed": false}
+{"text": "Je vais au marché.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il n'y a pas de la place dans le bus.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Il n'y a pas de place dans le bus.", "accept_node_keys": ["fr.grammar.articles_gender"], "origin": "drafted", "reviewed": false}
+{"text": "Il n'y a pas de place dans le bus.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je ne mange jamais pas de viande.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Je ne mange jamais de viande.", "origin": "drafted", "reviewed": false}
+{"text": "Je ne mange jamais de viande.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je n'ai pas des enfants.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Je n'ai pas d'enfants.", "accept_node_keys": ["fr.grammar.articles_gender"], "origin": "drafted", "reviewed": false}
+{"text": "Je n'ai pas d'enfants.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je ne pas comprends.", "has_error": true, "node_key": "fr.grammar.negation", "correction": "Je ne comprends pas.", "origin": "drafted", "reviewed": false}
+{"text": "Je ne comprends pas.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Quoi tu veux manger ?", "has_error": true, "node_key": "fr.grammar.questions", "correction": "Qu'est-ce que tu veux manger ?", "origin": "drafted", "reviewed": false}
+{"text": "Qu'est-ce que tu veux manger ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Où habite-il ?", "has_error": true, "node_key": "fr.grammar.questions", "correction": "Où habite-t-il ?", "origin": "drafted", "reviewed": false}
+{"text": "Où habite-t-il ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je vais à appeler le propriétaire.", "has_error": true, "node_key": "fr.grammar.futur_proche", "correction": "Je vais appeler le propriétaire.", "origin": "drafted", "reviewed": false}
+{"text": "Il va pleut ce soir.", "has_error": true, "node_key": "fr.grammar.futur_proche", "correction": "Il va pleuvoir ce soir.", "origin": "drafted", "reviewed": false}
+{"text": "Il va pleuvoir ce soir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'ai prendu le bus ce matin.", "has_error": true, "node_key": "fr.grammar.passe_compose_avoir", "correction": "J'ai pris le bus ce matin.", "accept_node_keys": ["fr.conj.prendre.passe_compose"], "origin": "drafted", "reviewed": false}
+{"text": "J'ai pris le bus ce matin.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle a ouvri la fenêtre.", "has_error": true, "node_key": "fr.grammar.passe_compose_avoir", "correction": "Elle a ouvert la fenêtre.", "origin": "drafted", "reviewed": false}
+{"text": "Elle a ouvert la fenêtre.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il a voulé partir plus tôt.", "has_error": true, "node_key": "fr.conj.vouloir.passe_compose", "correction": "Il a voulu partir plus tôt.", "accept_node_keys": ["fr.grammar.passe_compose_avoir"], "origin": "drafted", "reviewed": false}
+{"text": "Il a voulu partir plus tôt.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Les clés que j'ai perdu étaient dans mon sac.", "has_error": true, "node_key": "fr.grammar.passe_compose_avoir", "correction": "Les clés que j'ai perdues étaient dans mon sac.", "origin": "drafted", "reviewed": false}
+{"text": "Les clés que j'ai perdues étaient dans mon sac.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle a allée au cinéma hier.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Elle est allée au cinéma hier.", "accept_node_keys": ["fr.conj.aller.passe_compose"], "origin": "drafted", "reviewed": false}
+{"text": "Elle est allée au cinéma hier.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Nous avons arrivés en retard.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Nous sommes arrivés en retard.", "accept_node_keys": ["fr.conj.arriver.passe_compose"], "origin": "drafted", "reviewed": false}
+{"text": "Nous sommes arrivés en retard.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle est né à Lyon.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Elle est née à Lyon.", "origin": "drafted", "reviewed": false}
+{"text": "Elle est née à Lyon.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Nous avons venu hier soir.", "has_error": true, "node_key": "fr.grammar.passe_compose_etre", "correction": "Nous sommes venus hier soir.", "accept_node_keys": ["fr.conj.venir.passe_compose"], "origin": "drafted", "reviewed": false}
+{"text": "Nous sommes venus hier soir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Quand j'ai été petit, j'allais à la plage.", "has_error": true, "node_key": "fr.grammar.imparfait", "correction": "Quand j'étais petit, j'allais à la plage.", "origin": "drafted", "reviewed": false}
+{"text": "Quand j'étais petit, j'allais à la plage.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je mangeait tous les jours à la cantine.", "has_error": true, "node_key": "fr.grammar.imparfait", "correction": "Je mangeais tous les jours à la cantine.", "origin": "drafted", "reviewed": false}
+{"text": "Je mangeais tous les jours à la cantine.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ce quartier est plus bon que l'autre.", "has_error": true, "node_key": "fr.grammar.comparatif_superlatif", "correction": "Ce quartier est meilleur que l'autre.", "origin": "drafted", "reviewed": false}
+{"text": "Ce quartier est meilleur que l'autre.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il est plus grand de moi.", "has_error": true, "node_key": "fr.grammar.comparatif_superlatif", "correction": "Il est plus grand que moi.", "origin": "drafted", "reviewed": false}
+{"text": "Il est plus grand que moi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "C'est le plus cher appartement.", "has_error": true, "node_key": "fr.grammar.comparatif_superlatif", "correction": "C'est l'appartement le plus cher.", "origin": "drafted", "reviewed": false}
+{"text": "C'est l'appartement le plus cher.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Vas au magasin avant midi !", "has_error": true, "node_key": "fr.grammar.imperatif", "correction": "Va au magasin avant midi !", "origin": "drafted", "reviewed": false}
+{"text": "Va au magasin avant midi !", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ne oublie pas tes clés.", "has_error": true, "node_key": "fr.grammar.imperatif", "correction": "N'oublie pas tes clés.", "origin": "drafted", "reviewed": false}
+{"text": "N'oublie pas tes clés.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Donne-me le livre, s'il te plaît.", "has_error": true, "node_key": "fr.grammar.imperatif", "correction": "Donne-moi le livre, s'il te plaît.", "accept_node_keys": ["fr.grammar.pronoms_cod_coi"], "origin": "drafted", "reviewed": false}
+{"text": "Donne-moi le livre, s'il te plaît.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je lui ai vu hier.", "has_error": true, "node_key": "fr.grammar.pronoms_cod_coi", "correction": "Je l'ai vu hier.", "origin": "drafted", "reviewed": false}
+{"text": "Je l'ai vu hier.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je le téléphone ce soir.", "has_error": true, "node_key": "fr.grammar.pronoms_cod_coi", "correction": "Je lui téléphone ce soir.", "origin": "drafted", "reviewed": false}
+{"text": "Je lui téléphone ce soir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Tu peux me aider ?", "has_error": true, "node_key": "fr.grammar.pronoms_cod_coi", "correction": "Tu peux m'aider ?", "origin": "drafted", "reviewed": false}
+{"text": "Tu peux m'aider ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Des pommes ? J'ai acheté trois.", "has_error": true, "node_key": "fr.grammar.pronoms_y_en", "correction": "Des pommes ? J'en ai acheté trois.", "origin": "drafted", "reviewed": false}
+{"text": "Des pommes ? J'en ai acheté trois.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Demain, je irai à la banque.", "has_error": true, "node_key": "fr.grammar.futur_simple", "correction": "Demain, j'irai à la banque.", "accept_node_keys": ["fr.conj.aller.futur_simple"], "origin": "drafted", "reviewed": false}
+{"text": "Demain, j'irai à la banque.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je voirai le médecin lundi.", "has_error": true, "node_key": "fr.grammar.futur_simple", "correction": "Je verrai le médecin lundi.", "accept_node_keys": ["fr.conj.voir.futur_simple"], "origin": "drafted", "reviewed": false}
+{"text": "Je verrai le médecin lundi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je envoyerai le dossier demain.", "has_error": true, "node_key": "fr.grammar.futur_simple", "correction": "J'enverrai le dossier demain.", "origin": "drafted", "reviewed": false}
+{"text": "J'enverrai le dossier demain.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je metterai mon manteau.", "has_error": true, "node_key": "fr.conj.mettre.futur_simple", "correction": "Je mettrai mon manteau.", "accept_node_keys": ["fr.grammar.futur_simple"], "origin": "drafted", "reviewed": false}
+{"text": "Je mettrai mon manteau.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je voudrai réserver une table pour deux, s'il vous plaît.", "has_error": true, "node_key": "fr.grammar.conditionnel_present", "correction": "Je voudrais réserver une table pour deux, s'il vous plaît.", "accept_node_keys": ["fr.conj.vouloir.conditionnel_present"], "origin": "drafted", "reviewed": false}
+{"text": "Je voudrais réserver une table pour deux, s'il vous plaît.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "La personne que habite ici est gentille.", "has_error": true, "node_key": "fr.grammar.relatifs_qui_que_ou", "correction": "La personne qui habite ici est gentille.", "origin": "drafted", "reviewed": false}
+{"text": "La personne qui habite ici est gentille.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Le livre qui j'ai lu était long.", "has_error": true, "node_key": "fr.grammar.relatifs_qui_que_ou", "correction": "Le livre que j'ai lu était long.", "origin": "drafted", "reviewed": false}
+{"text": "Le livre que j'ai lu était long.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Si il pleut, on restera à la maison.", "has_error": true, "node_key": "fr.grammar.si_present_futur", "correction": "S'il pleut, on restera à la maison.", "origin": "drafted", "reviewed": false}
+{"text": "S'il pleut, on restera à la maison.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Si tu viendras, je serai content.", "has_error": true, "node_key": "fr.grammar.si_present_futur", "correction": "Si tu viens, je serai content.", "origin": "drafted", "reviewed": false}
+{"text": "Si tu viens, je serai content.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Si j'aurais de l'argent, j'achèterais une maison.", "has_error": true, "node_key": "fr.grammar.si_imparfait", "correction": "Si j'avais de l'argent, j'achèterais une maison.", "origin": "drafted", "reviewed": false}
+{"text": "Si j'avais de l'argent, j'achèterais une maison.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Si j'avais le temps, je vais voyager.", "has_error": true, "node_key": "fr.grammar.si_imparfait", "correction": "Si j'avais le temps, je voyagerais.", "origin": "drafted", "reviewed": false}
+{"text": "Si j'avais le temps, je voyagerais.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "C'est le film que je t'ai parlé.", "has_error": true, "node_key": "fr.grammar.relatif_dont", "correction": "C'est le film dont je t'ai parlé.", "origin": "drafted", "reviewed": false}
+{"text": "C'est le film dont je t'ai parlé.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Voici le document que j'ai besoin.", "has_error": true, "node_key": "fr.grammar.relatif_dont", "correction": "Voici le document dont j'ai besoin.", "origin": "drafted", "reviewed": false}
+{"text": "Voici le document dont j'ai besoin.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Quand je suis arrivé, le train est déjà parti.", "has_error": true, "node_key": "fr.grammar.plus_que_parfait", "correction": "Quand je suis arrivé, le train était déjà parti.", "origin": "drafted", "reviewed": false}
+{"text": "Il faut que tu viens demain.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Il faut que tu viennes demain.", "accept_node_keys": ["fr.conj.venir.subjonctif_present"], "origin": "drafted", "reviewed": false}
+{"text": "Il faut que tu viennes demain.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je veux que tu fais attention.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Je veux que tu fasses attention.", "accept_node_keys": ["fr.conj.faire.subjonctif_present"], "origin": "drafted", "reviewed": false}
+{"text": "Je veux que tu fasses attention.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Avant que tu pars, appelle-moi.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Avant que tu partes, appelle-moi.", "accept_node_keys": ["fr.conj.partir.subjonctif_present"], "origin": "drafted", "reviewed": false}
+{"text": "Avant que tu partes, appelle-moi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il faut que je sais la réponse.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Il faut que je sache la réponse.", "accept_node_keys": ["fr.conj.savoir.subjonctif_present"], "origin": "drafted", "reviewed": false}
+{"text": "Il faut que je sache la réponse.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Nous voulons que vous venez.", "has_error": true, "node_key": "fr.grammar.subjonctif_present", "correction": "Nous voulons que vous veniez.", "accept_node_keys": ["fr.conj.venir.subjonctif_present"], "origin": "drafted", "reviewed": false}
+{"text": "Nous voulons que vous veniez.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il est tombé en courrant.", "has_error": true, "node_key": "fr.grammar.gerondif", "correction": "Il est tombé en courant.", "origin": "drafted", "reviewed": false}
+{"text": "Il est tombé en courant.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Malgré il pleuvait, nous sommes sortis.", "has_error": true, "node_key": "fr.grammar.connecteurs_logiques", "correction": "Malgré la pluie, nous sommes sortis.", "origin": "drafted", "reviewed": false}
+{"text": "Malgré la pluie, nous sommes sortis.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Bien que le loyer est élevé, j'aime l'appartement.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "Bien que le loyer soit élevé, j'aime l'appartement.", "accept_node_keys": ["fr.grammar.connecteurs_logiques"], "origin": "drafted", "reviewed": false}
+{"text": "Bien que le loyer soit élevé, j'aime l'appartement.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'aurais aimé de venir.", "has_error": true, "node_key": "fr.grammar.conditionnel_passe", "correction": "J'aurais aimé venir.", "origin": "drafted", "reviewed": false}
+{"text": "J'aurais aimé venir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Si tu avais étudié, tu as réussi l'examen.", "has_error": true, "node_key": "fr.grammar.si_plus_que_parfait", "correction": "Si tu avais étudié, tu aurais réussi l'examen.", "origin": "drafted", "reviewed": false}
+{"text": "Si tu avais étudié, tu aurais réussi l'examen.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je crois qu'il vienne demain.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "Je crois qu'il viendra demain.", "origin": "drafted", "reviewed": false}
+{"text": "Je crois qu'il viendra demain.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je suis sûr qu'il soit là.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "Je suis sûr qu'il est là.", "origin": "drafted", "reviewed": false}
+{"text": "Je suis sûr qu'il est là.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'espère que tu ailles bien.", "has_error": true, "node_key": "fr.grammar.subjonctif_vs_indicatif", "correction": "J'espère que tu vas bien.", "origin": "drafted", "reviewed": false}
+{"text": "J'espère que tu vas bien.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il m'a demandé qu'est-ce que je voulais.", "has_error": true, "node_key": "fr.grammar.discours_rapporte", "correction": "Il m'a demandé ce que je voulais.", "origin": "drafted", "reviewed": false}
+{"text": "Il m'a demandé ce que je voulais.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il m'a demandé est-ce que j'avais une voiture.", "has_error": true, "node_key": "fr.grammar.discours_rapporte", "correction": "Il m'a demandé si j'avais une voiture.", "origin": "drafted", "reviewed": false}
+{"text": "Il m'a demandé si j'avais une voiture.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "La maison a été construit en 1990.", "has_error": true, "node_key": "fr.grammar.voix_passive", "correction": "La maison a été construite en 1990.", "origin": "drafted", "reviewed": false}
+{"text": "La maison a été construite en 1990.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je pensais que tu viendras.", "has_error": true, "node_key": "fr.grammar.concordance_des_temps", "correction": "Je pensais que tu viendrais.", "origin": "drafted", "reviewed": false}
+{"text": "Je pensais que tu viendrais.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Bien qu'il a fini, il reste au bureau.", "has_error": true, "node_key": "fr.grammar.subjonctif_passe", "correction": "Bien qu'il ait fini, il reste au bureau.", "origin": "drafted", "reviewed": false}
+{"text": "Bien qu'il ait fini, il reste au bureau.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "C'est moi qui a payé.", "has_error": true, "node_key": "fr.grammar.mise_en_relief", "correction": "C'est moi qui ai payé.", "origin": "drafted", "reviewed": false}
+{"text": "C'est moi qui ai payé.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je cherche pour un emploi.", "has_error": true, "node_key": "fr.lex.work_job_search", "correction": "Je cherche un emploi.", "origin": "drafted", "reviewed": false}
+{"text": "Je cherche un emploi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il a demandé une question au professeur.", "has_error": true, "node_key": "fr.lex.education", "correction": "Il a posé une question au professeur.", "origin": "drafted", "reviewed": false}
+{"text": "Il a posé une question au professeur.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je commence à huit heures.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Nous prenons le métro.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elles doivent partir tôt.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'aime le fromage.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle a un problème avec son téléphone.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il ne travaille plus ici.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Personne n'est venu.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Où tu habites ?", "has_error": false, "note": "spoken register: question by intonation without inversion is standard French", "origin": "drafted", "reviewed": false}
+{"text": "Habites-tu à Rivemont ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Combien coûte ce billet ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle s'est lavé les mains.", "has_error": false, "note": "no agreement: the direct object follows the verb", "origin": "drafted", "reviewed": false}
+{"text": "Ils se sont téléphoné hier.", "has_error": false, "note": "no agreement: se is an indirect object", "origin": "drafted", "reviewed": false}
+{"text": "Elle a monté les valises.", "has_error": false, "note": "transitive monter takes avoir", "origin": "drafted", "reviewed": false}
+{"text": "Il pleuvait quand je suis arrivé.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle parle mieux que moi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il y a moins de monde aujourd'hui.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Vas-y !", "has_error": false, "note": "the s is restored before y", "origin": "drafted", "reviewed": false}
+{"text": "Dis-lui de venir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je les ai appelés hier.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il n'y en a plus.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Quand j'arriverai, je t'appellerai.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je payerai le loyer demain.", "has_error": false, "note": "payerai and paierai are both correct", "origin": "drafted", "reviewed": false}
+{"text": "Tu devrais voir un médecin.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Le jour où il est arrivé, il pleuvait.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "L'homme dont la voiture est rouge habite à côté.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Bien qu'il soit tard, je travaille encore.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "En sortant du métro, j'ai croisé Paul.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Par contre, le service était lent.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Tu aurais pu me prévenir.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Après qu'il est parti, nous avons dîné.", "has_error": false, "note": "après que takes the indicative in the norm", "origin": "drafted", "reviewed": false}
+{"text": "Elle m'a demandé si j'avais faim.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Les résultats seront publiés lundi.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je regrette qu'il soit parti.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "L'augmentation des loyers inquiète les habitants.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ce qui me plaît, c'est le calme.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Le propriétaire a gardé ma caution.", "has_error": false, "note": "caution is the correct French word for a deposit", "origin": "drafted", "reviewed": false}
+{"text": "On y va ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ça fait trois ans que j'habite ici.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je viens de finir mon travail.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il vaut mieux partir tôt.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je me suis trompé de numéro.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Les fleurs que j'ai achetées sont belles.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ni lui ni moi ne sommes d'accord.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "La plupart des gens prennent le métro.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il se peut qu'il pleuve.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Quoi qu'il arrive, je serai là.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Elle a beau essayer, elle n'y arrive pas.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Dès que j'aurai fini, je t'appellerai.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "C'est pas grave.", "has_error": false, "note": "spoken register: dropping ne is normal in conversation", "origin": "drafted", "reviewed": false}
+{"text": "Tu viens ce soir ?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "J'ai mal à la tête.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je suis en train de chercher un appartement.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Il faut que j'y aille.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je vous en prie.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Je dois prendre rendez-vous chez le médecin.", "has_error": false, "origin": "drafted", "reviewed": false}

@@ -15,6 +15,7 @@ from lingard_graphs.graphs.night_consolidation import build_night_consolidation,
 from lingard_graphs.pedagogy.tickets import Example, Ticket
 from lingard_graphs.store import MemoryStore, SceneRecord
 from lingard_llm.testing import message_text
+from lingard_world import load_city
 
 from .conftest import USER, Script
 
@@ -57,6 +58,10 @@ async def test_day_planner_builds_three_valid_scenes_with_ticket_share(deps: Gra
         "beats": ["Beat one.", "Beat two.", "Beat three."]
     }
     script.handlers["You design one scene"] = draft_for
+    day = datetime(2026, 11, 2, 9, tzinfo=UTC)
+    deps.clock = lambda: (
+        day - timedelta(days=day.toordinal() % _npc_settings(deps, "rivemont", 6))
+    )  # rotation starts at the flat
     session_id = uuid.uuid4()
     result = await build_day_planner(deps).ainvoke({"user_id": USER, "session_id": session_id, "city": "rivemont"})
     plan = result["plan"]
@@ -66,6 +71,31 @@ async def test_day_planner_builds_three_valid_scenes_with_ticket_share(deps: Gra
     assert not set(landlord.ticket_targets), "tickets failed at the landlord's are never re-tried there"
     saved = [s for s in store.scenes.values() if s.session_id == session_id]
     assert len(saved) == 3 and store.plans[session_id] == plan
+
+
+def _npc_settings(deps: GraphDeps, city_key: str, band: int) -> int:
+    city = load_city(deps.content_root, city_key)
+    unlocked = city.unlocked_districts(band)
+    return sum(
+        1
+        for d in city.city.districts
+        if d.key in unlocked
+        for loc in d.locations
+        for h in loc.hotspots
+        if h.kind == "npc" and h.npc_key
+    )
+
+
+async def test_day_planner_rotates_through_every_unlocked_district(deps: GraphDeps, script: Script) -> None:
+    script.handlers["director of an ongoing life story"] = lambda m: {"beats": ["One.", "Two.", "Three."]}
+    script.handlers["You design one scene"] = draft_for
+    planner = build_day_planner(deps)
+    visited = set()
+    for offset in range(_npc_settings(deps, "rivemont", 6)):
+        deps.clock = lambda offset=offset: datetime(2026, 11, 2, 9, tzinfo=UTC) + timedelta(days=offset)
+        result = await planner.ainvoke({"user_id": USER, "session_id": uuid.uuid4(), "city": "rivemont"})
+        visited |= {s.location_key.rsplit(".", 1)[0] for s in result["plan"].scenes}
+    assert visited == {"rivemont.vieux_port", "rivemont.saint_roch"}
 
 
 async def scene_with_assessments(deps: GraphDeps) -> uuid.UUID:

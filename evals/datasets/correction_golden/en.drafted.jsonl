@@ -1,0 +1,231 @@
+{"text": "He don't like coffee.", "has_error": true, "node_key": "en.grammar.present_simple_continuous", "correction": "He doesn't like coffee.", "origin": "drafted", "reviewed": false}
+{"text": "He doesn't like coffee.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I am knowing the answer.", "has_error": true, "node_key": "en.grammar.present_simple_continuous", "correction": "I know the answer.", "origin": "drafted", "reviewed": false}
+{"text": "I know the answer.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She is having two children.", "has_error": true, "node_key": "en.grammar.present_simple_continuous", "correction": "She has two children.", "origin": "drafted", "reviewed": false}
+{"text": "She has two children.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Look, it rains again.", "has_error": true, "node_key": "en.grammar.present_simple_continuous", "correction": "Look, it's raining again.", "origin": "drafted", "reviewed": false}
+{"text": "Look, it's raining again.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Every morning I am taking the bus.", "has_error": true, "node_key": "en.grammar.present_simple_continuous", "correction": "Every morning I take the bus.", "origin": "drafted", "reviewed": false}
+{"text": "Every morning I take the bus.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I want to be engineer.", "has_error": true, "node_key": "en.grammar.articles", "correction": "I want to be an engineer.", "origin": "drafted", "reviewed": false}
+{"text": "I want to be an engineer.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The life is hard in a big city.", "has_error": true, "node_key": "en.grammar.articles", "correction": "Life is hard in a big city.", "origin": "drafted", "reviewed": false}
+{"text": "Life is hard in a big city.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I live in United Kingdom.", "has_error": true, "node_key": "en.grammar.articles", "correction": "I live in the United Kingdom.", "origin": "drafted", "reviewed": false}
+{"text": "I live in the United Kingdom.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He's an university student.", "has_error": true, "node_key": "en.grammar.articles", "correction": "He's a university student.", "origin": "drafted", "reviewed": false}
+{"text": "He's a university student.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I go to work by the car.", "has_error": true, "node_key": "en.grammar.articles", "correction": "I go to work by car.", "origin": "drafted", "reviewed": false}
+{"text": "I go to work by car.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "We goed to the beach.", "has_error": true, "node_key": "en.grammar.past_simple", "correction": "We went to the beach.", "accept_node_keys": ["en.conj.go.principal_parts"], "origin": "drafted", "reviewed": false}
+{"text": "We went to the beach.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Did she called you?", "has_error": true, "node_key": "en.grammar.past_simple", "correction": "Did she call you?", "origin": "drafted", "reviewed": false}
+{"text": "Did she call you?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I writed to the council.", "has_error": true, "node_key": "en.grammar.past_simple", "correction": "I wrote to the council.", "accept_node_keys": ["en.conj.write.principal_parts"], "origin": "drafted", "reviewed": false}
+{"text": "I wrote to the council.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He catched the last train.", "has_error": true, "node_key": "en.grammar.past_simple", "correction": "He caught the last train.", "origin": "drafted", "reviewed": false}
+{"text": "He caught the last train.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I thinked about it.", "has_error": true, "node_key": "en.conj.think.principal_parts", "correction": "I thought about it.", "accept_node_keys": ["en.grammar.past_simple"], "origin": "drafted", "reviewed": false}
+{"text": "I thought about it.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She brang the documents.", "has_error": true, "node_key": "en.conj.bring.principal_parts", "correction": "She brought the documents.", "accept_node_keys": ["en.grammar.past_simple"], "origin": "drafted", "reviewed": false}
+{"text": "She brought the documents.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I spended too much last month.", "has_error": true, "node_key": "en.conj.spend.principal_parts", "correction": "I spent too much last month.", "accept_node_keys": ["en.grammar.past_simple"], "origin": "drafted", "reviewed": false}
+{"text": "I spent too much last month.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "My new flat is more big than the old one.", "has_error": true, "node_key": "en.grammar.comparatives", "correction": "My new flat is bigger than the old one.", "origin": "drafted", "reviewed": false}
+{"text": "My new flat is bigger than the old one.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She is the most tallest in the class.", "has_error": true, "node_key": "en.grammar.comparatives", "correction": "She is the tallest in the class.", "origin": "drafted", "reviewed": false}
+{"text": "She is the tallest in the class.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Today is gooder than yesterday.", "has_error": true, "node_key": "en.grammar.comparatives", "correction": "Today is better than yesterday.", "origin": "drafted", "reviewed": false}
+{"text": "Today is better than yesterday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He's as tall than his brother.", "has_error": true, "node_key": "en.grammar.comparatives", "correction": "He's as tall as his brother.", "origin": "drafted", "reviewed": false}
+{"text": "He's as tall as his brother.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "It's the worse film I've ever seen.", "has_error": true, "node_key": "en.grammar.comparatives", "correction": "It's the worst film I've ever seen.", "origin": "drafted", "reviewed": false}
+{"text": "It's the worst film I've ever seen.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "What time the shop opens?", "has_error": true, "node_key": "en.grammar.questions", "correction": "What time does the shop open?", "origin": "drafted", "reviewed": false}
+{"text": "What time does the shop open?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Why you didn't call me?", "has_error": true, "node_key": "en.grammar.questions", "correction": "Why didn't you call me?", "origin": "drafted", "reviewed": false}
+{"text": "Why didn't you call me?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "How much costs this?", "has_error": true, "node_key": "en.grammar.questions", "correction": "How much does this cost?", "origin": "drafted", "reviewed": false}
+{"text": "How much does this cost?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Do you can help me?", "has_error": true, "node_key": "en.grammar.questions", "correction": "Can you help me?", "origin": "drafted", "reviewed": false}
+{"text": "Can you help me?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Can you tell me where is the post office?", "has_error": true, "node_key": "en.grammar.questions", "correction": "Can you tell me where the post office is?", "origin": "drafted", "reviewed": false}
+{"text": "Can you tell me where the post office is?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Can you give me an advice?", "has_error": true, "node_key": "en.grammar.countable_uncountable", "correction": "Can you give me some advice?", "origin": "drafted", "reviewed": false}
+{"text": "Can you give me some advice?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "There are too much people here.", "has_error": true, "node_key": "en.grammar.countable_uncountable", "correction": "There are too many people here.", "origin": "drafted", "reviewed": false}
+{"text": "There are too many people here.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I need some informations about the course.", "has_error": true, "node_key": "en.grammar.countable_uncountable", "correction": "I need some information about the course.", "origin": "drafted", "reviewed": false}
+{"text": "I need some information about the course.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "How many money do you need?", "has_error": true, "node_key": "en.grammar.countable_uncountable", "correction": "How much money do you need?", "origin": "drafted", "reviewed": false}
+{"text": "How much money do you need?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I don't have many luggages.", "has_error": true, "node_key": "en.grammar.countable_uncountable", "correction": "I don't have much luggage.", "origin": "drafted", "reviewed": false}
+{"text": "I don't have much luggage.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I am here since two weeks.", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "I've been here for two weeks.", "origin": "drafted", "reviewed": false}
+{"text": "I've been here for two weeks.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Have you ever went to Scotland?", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "Have you ever been to Scotland?", "accept_node_keys": ["en.conj.go.principal_parts"], "origin": "drafted", "reviewed": false}
+{"text": "Have you ever been to Scotland?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I've finished it last night.", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "I finished it last night.", "accept_node_keys": ["en.grammar.past_simple"], "origin": "drafted", "reviewed": false}
+{"text": "I finished it last night.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Last week I have lost my wallet.", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "Last week I lost my wallet.", "accept_node_keys": ["en.grammar.past_simple"], "origin": "drafted", "reviewed": false}
+{"text": "Last week I lost my wallet.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She has already ate.", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "She has already eaten.", "origin": "drafted", "reviewed": false}
+{"text": "She has already eaten.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I didn't see him since Monday.", "has_error": true, "node_key": "en.grammar.present_perfect", "correction": "I haven't seen him since Monday.", "origin": "drafted", "reviewed": false}
+{"text": "I haven't seen him since Monday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I have choosed a flat.", "has_error": true, "node_key": "en.conj.choose.principal_parts", "correction": "I have chosen a flat.", "accept_node_keys": ["en.grammar.present_perfect"], "origin": "drafted", "reviewed": false}
+{"text": "I have chosen a flat.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I've forgot my keys.", "has_error": true, "node_key": "en.conj.forget.principal_parts", "correction": "I've forgotten my keys.", "accept_node_keys": ["en.grammar.present_perfect"], "origin": "drafted", "reviewed": false}
+{"text": "I've forgotten my keys.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He has broke his arm.", "has_error": true, "node_key": "en.conj.break.principal_parts", "correction": "He has broken his arm.", "accept_node_keys": ["en.grammar.present_perfect"], "origin": "drafted", "reviewed": false}
+{"text": "He has broken his arm.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "While I cooked, the phone was ringing.", "has_error": true, "node_key": "en.grammar.past_continuous", "correction": "While I was cooking, the phone rang.", "origin": "drafted", "reviewed": false}
+{"text": "While I was cooking, the phone rang.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I was sleep when you called.", "has_error": true, "node_key": "en.grammar.past_continuous", "correction": "I was sleeping when you called.", "origin": "drafted", "reviewed": false}
+{"text": "I was sleeping when you called.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "They was waiting outside.", "has_error": true, "node_key": "en.grammar.past_continuous", "correction": "They were waiting outside.", "accept_node_keys": ["en.conj.be.principal_parts"], "origin": "drafted", "reviewed": false}
+{"text": "They were waiting outside.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I will meeting him tomorrow.", "has_error": true, "node_key": "en.grammar.future_forms", "correction": "I'll meet him tomorrow.", "origin": "drafted", "reviewed": false}
+{"text": "I'll meet him tomorrow.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I think it's going rain.", "has_error": true, "node_key": "en.grammar.future_forms", "correction": "I think it's going to rain.", "origin": "drafted", "reviewed": false}
+{"text": "I think it's going to rain.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "When I will arrive, I'll call you.", "has_error": true, "node_key": "en.grammar.future_forms", "correction": "When I arrive, I'll call you.", "accept_node_keys": ["en.grammar.first_conditional"], "origin": "drafted", "reviewed": false}
+{"text": "When I arrive, I'll call you.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "You don't must smoke here.", "has_error": true, "node_key": "en.grammar.modals_obligation", "correction": "You mustn't smoke here.", "origin": "drafted", "reviewed": false}
+{"text": "You mustn't smoke here.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She cans speak French.", "has_error": true, "node_key": "en.grammar.modals_obligation", "correction": "She can speak French.", "origin": "drafted", "reviewed": false}
+{"text": "She can speak French.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "We should to leave now.", "has_error": true, "node_key": "en.grammar.modals_obligation", "correction": "We should leave now.", "origin": "drafted", "reviewed": false}
+{"text": "We should leave now.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I must went to the bank yesterday.", "has_error": true, "node_key": "en.grammar.modals_obligation", "correction": "I had to go to the bank yesterday.", "origin": "drafted", "reviewed": false}
+{"text": "I had to go to the bank yesterday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If you will need help, call me.", "has_error": true, "node_key": "en.grammar.first_conditional", "correction": "If you need help, call me.", "origin": "drafted", "reviewed": false}
+{"text": "If you need help, call me.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Unless you don't hurry, you'll miss the bus.", "has_error": true, "node_key": "en.grammar.first_conditional", "correction": "Unless you hurry, you'll miss the bus.", "origin": "drafted", "reviewed": false}
+{"text": "Unless you hurry, you'll miss the bus.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "This is the book who I bought.", "has_error": true, "node_key": "en.grammar.relative_clauses", "correction": "This is the book that I bought.", "origin": "drafted", "reviewed": false}
+{"text": "This is the book that I bought.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The house where I live in is old.", "has_error": true, "node_key": "en.grammar.relative_clauses", "correction": "The house where I live is old.", "origin": "drafted", "reviewed": false}
+{"text": "The house where I live is old.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The person which called you left a message.", "has_error": true, "node_key": "en.grammar.relative_clauses", "correction": "The person who called you left a message.", "origin": "drafted", "reviewed": false}
+{"text": "The person who called you left a message.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I enjoy to cook.", "has_error": true, "node_key": "en.grammar.gerund_infinitive", "correction": "I enjoy cooking.", "origin": "drafted", "reviewed": false}
+{"text": "I enjoy cooking.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'm looking forward to meet you.", "has_error": true, "node_key": "en.grammar.gerund_infinitive", "correction": "I'm looking forward to meeting you.", "origin": "drafted", "reviewed": false}
+{"text": "I'm looking forward to meeting you.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She decided going home.", "has_error": true, "node_key": "en.grammar.gerund_infinitive", "correction": "She decided to go home.", "origin": "drafted", "reviewed": false}
+{"text": "She decided to go home.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I want that you come.", "has_error": true, "node_key": "en.grammar.gerund_infinitive", "correction": "I want you to come.", "origin": "drafted", "reviewed": false}
+{"text": "I want you to come.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'm used to get up early.", "has_error": true, "node_key": "en.grammar.used_to_would", "correction": "I'm used to getting up early.", "accept_node_keys": ["en.grammar.gerund_infinitive"], "origin": "drafted", "reviewed": false}
+{"text": "I'm used to getting up early.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I use to live in Manchester.", "has_error": true, "node_key": "en.grammar.used_to_would", "correction": "I used to live in Manchester.", "origin": "drafted", "reviewed": false}
+{"text": "I used to live in Manchester.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Did you used to smoke?", "has_error": true, "node_key": "en.grammar.used_to_would", "correction": "Did you use to smoke?", "origin": "drafted", "reviewed": false}
+{"text": "Did you use to smoke?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If I would have more money, I would travel.", "has_error": true, "node_key": "en.grammar.second_conditional", "correction": "If I had more money, I would travel.", "origin": "drafted", "reviewed": false}
+{"text": "If I had more money, I would travel.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If I won the lottery, I will buy a house.", "has_error": true, "node_key": "en.grammar.second_conditional", "correction": "If I won the lottery, I would buy a house.", "origin": "drafted", "reviewed": false}
+{"text": "If I won the lottery, I would buy a house.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "When we got to the station, the train already left.", "has_error": true, "node_key": "en.grammar.past_perfect", "correction": "When we got to the station, the train had already left.", "origin": "drafted", "reviewed": false}
+{"text": "When we got to the station, the train had already left.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The bridge was build in 1890.", "has_error": true, "node_key": "en.grammar.passive_voice", "correction": "The bridge was built in 1890.", "origin": "drafted", "reviewed": false}
+{"text": "The bridge was built in 1890.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "My car was stole last night.", "has_error": true, "node_key": "en.grammar.passive_voice", "correction": "My car was stolen last night.", "origin": "drafted", "reviewed": false}
+{"text": "My car was stolen last night.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The letter has been sent yesterday.", "has_error": true, "node_key": "en.grammar.passive_voice", "correction": "The letter was sent yesterday.", "accept_node_keys": ["en.grammar.present_perfect"], "origin": "drafted", "reviewed": false}
+{"text": "The letter was sent yesterday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The results will announce next week.", "has_error": true, "node_key": "en.grammar.passive_voice", "correction": "The results will be announced next week.", "origin": "drafted", "reviewed": false}
+{"text": "The results will be announced next week.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Although it was raining, but we went out.", "has_error": true, "node_key": "en.grammar.linking_words", "correction": "Although it was raining, we went out.", "origin": "drafted", "reviewed": false}
+{"text": "Although it was raining, we went out.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Despite of the rain, we went out.", "has_error": true, "node_key": "en.grammar.linking_words", "correction": "Despite the rain, we went out.", "origin": "drafted", "reviewed": false}
+{"text": "Despite the rain, we went out.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Because of I was ill, I stayed home.", "has_error": true, "node_key": "en.grammar.linking_words", "correction": "Because I was ill, I stayed home.", "origin": "drafted", "reviewed": false}
+{"text": "Because I was ill, I stayed home.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "You're coming tonight, isn't it?", "has_error": true, "node_key": "en.grammar.question_tags", "correction": "You're coming tonight, aren't you?", "origin": "drafted", "reviewed": false}
+{"text": "You're coming tonight, aren't you?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He can't drive, can't he?", "has_error": true, "node_key": "en.grammar.question_tags", "correction": "He can't drive, can he?", "origin": "drafted", "reviewed": false}
+{"text": "He can't drive, can he?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If she had left earlier, she would catch the train.", "has_error": true, "node_key": "en.grammar.third_conditional", "correction": "If she had left earlier, she would have caught the train.", "origin": "drafted", "reviewed": false}
+{"text": "If she had left earlier, she would have caught the train.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She said me that she was tired.", "has_error": true, "node_key": "en.grammar.reported_speech", "correction": "She told me that she was tired.", "origin": "drafted", "reviewed": false}
+{"text": "She told me that she was tired.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He asked me where did I live.", "has_error": true, "node_key": "en.grammar.reported_speech", "correction": "He asked me where I lived.", "origin": "drafted", "reviewed": false}
+{"text": "He asked me where I lived.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She told that she would come.", "has_error": true, "node_key": "en.grammar.reported_speech", "correction": "She said that she would come.", "origin": "drafted", "reviewed": false}
+{"text": "She said that she would come.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I wish I can speak Japanese.", "has_error": true, "node_key": "en.grammar.wish_if_only", "correction": "I wish I could speak Japanese.", "origin": "drafted", "reviewed": false}
+{"text": "I wish I could speak Japanese.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If I had studied medicine, I am a doctor now.", "has_error": true, "node_key": "en.grammar.mixed_conditionals", "correction": "If I had studied medicine, I would be a doctor now.", "origin": "drafted", "reviewed": false}
+{"text": "If I had studied medicine, I would be a doctor now.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "What I want it is a quiet flat.", "has_error": true, "node_key": "en.grammar.cleft_sentences", "correction": "What I want is a quiet flat.", "origin": "drafted", "reviewed": false}
+{"text": "What I want is a quiet flat.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Never I have seen such a mess.", "has_error": true, "node_key": "en.grammar.inversion", "correction": "Never have I seen such a mess.", "origin": "drafted", "reviewed": false}
+{"text": "Never have I seen such a mess.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Not only he is late, but he also forgot the keys.", "has_error": true, "node_key": "en.grammar.inversion", "correction": "Not only is he late, but he also forgot the keys.", "origin": "drafted", "reviewed": false}
+{"text": "Not only is he late, but he also forgot the keys.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I did a mistake in my homework.", "has_error": true, "node_key": "en.lex.education", "correction": "I made a mistake in my homework.", "origin": "drafted", "reviewed": false}
+{"text": "I made a mistake in my homework.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The landlord kept my caution.", "has_error": true, "node_key": "en.lex.housing.deposit_repairs", "correction": "The landlord kept my deposit.", "origin": "drafted", "reviewed": false}
+{"text": "The landlord kept my deposit.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'm searching a job.", "has_error": true, "node_key": "en.lex.work_job_search", "correction": "I'm looking for a job.", "origin": "drafted", "reviewed": false}
+{"text": "I'm looking for a job.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The actual rent is £900, but it's going up.", "has_error": true, "node_key": "en.lex.housing.renting", "correction": "The current rent is £900, but it's going up.", "origin": "drafted", "reviewed": false}
+{"text": "The current rent is £900, but it's going up.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Where is the station?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Shall I open the window?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "You don't have to come if you're busy.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "That's the man whose car was stolen.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If I was you, I'd take the job.", "has_error": false, "note": "informal but standard spoken English", "origin": "drafted", "reviewed": false}
+{"text": "She told me she had never been abroad.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "English is spoken here.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Even though he was tired, he kept working.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "However, the rent is high.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She lives here, doesn't she?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Let's go, shall we?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He asked if I was free on Friday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The flat, which has a garden, is available in June.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If only I had listened to you.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "If I had taken that job, I would be in London now.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Having finished the report, she went home.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Built in 1850, the church is the oldest in town.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "What I need is a holiday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Hardly had we arrived when it started raining.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Rarely do we get snow here.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I need to make an appointment with the doctor.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Can I pay by card?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Who did you see at the party?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Each of the flats has a balcony.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Neither of them was at home.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The police are investigating the burglary.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "My family are coming to visit.", "has_error": false, "note": "British English allows plural agreement with collective nouns", "origin": "drafted", "reviewed": false}
+{"text": "I've just got back from work.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'd rather you didn't smoke inside.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "It's high time we left.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Had I known, I would have called.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She suggested that he see a lawyer.", "has_error": false, "note": "mandative subjunctive", "origin": "drafted", "reviewed": false}
+{"text": "I'm not used to driving on the left.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Fewer people take the bus now.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'll have finished the report by Friday.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The council has decided to close the library.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "None of the flats were available.", "has_error": false, "note": "plural agreement with none is standard", "origin": "drafted", "reviewed": false}
+{"text": "Could I possibly change my appointment?", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I've got two sisters.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "It's the first time I've been to Ashford.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Whoever finishes first can leave.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I'd have come if you'd asked.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "You needn't bring anything.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She must have forgotten.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "I was about to call you.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The bus is due at ten past six.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Whatever happens, keep calm.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "No sooner had I sat down than the phone rang.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "He's been working here for years.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Ten pounds is too much for a sandwich.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "Everyone has their own opinion.", "has_error": false, "note": "singular they", "origin": "drafted", "reviewed": false}
+{"text": "Can I get a flat white, please?", "has_error": false, "note": "informal but standard when ordering", "origin": "drafted", "reviewed": false}
+{"text": "I reckon it'll rain later.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "She's off sick today.", "has_error": false, "origin": "drafted", "reviewed": false}
+{"text": "The flat's a bit pricey.", "has_error": false, "origin": "drafted", "reviewed": false}

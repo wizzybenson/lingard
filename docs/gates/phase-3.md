@@ -6,7 +6,7 @@ accuracy number can be honestly measured yet.
 | Gate (SPEC §25) | Status | Why |
 | --- | --- | --- |
 | Mean abs error ≤ 0.5 IELTS band, ≤ 1 NCLC | **INCOMPLETE** | 0 human-rated samples. Needs ≥ 30 per pack and skill from certified raters (founder input #3) |
-| Correction precision ≥ 95% | **INCOMPLETE** | Golden set has 159 FR and 118 EN items (target ≥ 300 each), and scoring it needs an LLM key |
+| Correction precision ≥ 95% | **INCOMPLETE** | Golden set has 366 FR and 349 EN items, but 207 FR and 231 EN are drafted and not yet native-reviewed; scoring needs an LLM key |
 
 ## What exists
 
@@ -18,10 +18,14 @@ accuracy number can be honestly measured yet.
 - The `band_calibration` suite computes MAE and QWK once samples exist: drop rated samples into
   `evals/datasets/band_calibration/`.
 - The `correction_precision` suite (offline counts items; `--live` scores with the configured `frontier` model).
-  Golden set: `evals/datasets/correction_golden/` (FR 45 positives / 114 clean; EN 32 / 86).
+  Golden set: `evals/datasets/correction_golden/`. `*.curriculum.jsonl` is built from lesson content (FR 45 positives /
+  114 clean; EN 32 / 86). `*.drafted.jsonl` adds hand-drafted rows marked `"reviewed": false` (FR 77 / 130; EN 88 / 143),
+  weighted towards typical learner errors and towards correct-but-tricky sentences (spoken register, BrE agreement,
+  pronominal agreement rules) that a precision-first assessor must leave alone.
 
 ## To close the gate
 
 1. Founder input #3: 2–3 certified raters (or a budget) to rate ≥ 30 responses per pack and skill.
-2. Grow the correction golden set to ≥ 300 per language. Each item must be reviewed by a native speaker.
+2. Have a native speaker review the drafted golden rows (set `"reviewed": true` or fix/delete the row). The suite
+   reports `<lang>_unreviewed`; the gate counts only once that is 0 and ≥ 300 items remain per language.
 3. Set `ANTHROPIC_API_KEY`, then run `uv run python -m evals.run --live --suite correction_precision --suite band_calibration`.

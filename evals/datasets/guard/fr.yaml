@@ -22,7 +22,7 @@ violations:
   - {text: "Look, I really don't have time for this.", reason: wrong_language}
   - {text: "Attention, on dit « si j'avais », pas « si j'aurais ».", reason: tutor}
   - {text: "En tant qu'intelligence artificielle, je ne peux pas répondre.", reason: character_break}
-  - {text: "Je reviens jeudi avec les papiers.", reason: off_contract_date}
+  - {text: "Je reviens mercredi avec les papiers.", reason: off_contract_date}
   - {text: "C'est Gilbert, mon frère, qui s'en occupe.", reason: off_contract_name}
   - {text: "Ça coûterait au moins 2 500 dollars.", reason: off_contract_number}
   - {text: "Petite remarque de grammaire : le subjonctif est obligatoire ici.", reason: tutor}

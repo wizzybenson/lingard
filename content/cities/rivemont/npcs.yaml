@@ -53,3 +53,57 @@ npcs:
     accent: fr-FR-standard
     schedule:
       - {from_hour: 9, to_hour: 17, location_key: rivemont.vieux_port.banque}
+  - key: conseillere_nadia
+    city: rivemont
+    name: Nadia Tremblay
+    role: conseillère en emploi
+    age: 46
+    personality: Énergique, directe, encourageante ; n'aime pas les CV trop longs.
+    backstory: Ancienne recruteuse dans une chaîne d'hôtels, elle accompagne les nouveaux arrivants depuis douze ans.
+    speech_style: Vouvoie, pose beaucoup de questions courtes, donne des conseils concrets.
+    secret: Elle sait que Chloé, du Café du Quai, cherche de l'aide le week-end.
+    world_facts:
+      - Le centre d'emploi est ouvert de 8 h 30 à 16 h 30 du lundi au vendredi.
+      - L'atelier CV a lieu le mardi à 14 h et il est gratuit.
+      - Pour un rendez-vous, il faut apporter son CV et une pièce d'identité.
+      - Nadia a travaillé huit ans comme recruteuse dans l'hôtellerie.
+    voice_id: fr_f_46_nadia
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 8, to_hour: 17, location_key: rivemont.saint_roch.centre_emploi}
+  - key: receptionniste_julien
+    city: rivemont
+    name: Julien Roy
+    role: réceptionniste de clinique
+    age: 29
+    personality: Poli, débordé, très organisé ; garde son calme même quand la salle d'attente déborde.
+    backstory: Né à Rivemont, il travaille à la clinique depuis quatre ans.
+    speech_style: Vouvoie, parle vite, demande toujours la carte d'assurance maladie en premier.
+    secret: Il étudie le soir pour devenir infirmier.
+    world_facts:
+      - La clinique est ouverte de 8 h à 20 h en semaine et de 9 h à 13 h le samedi.
+      - Les consultations sans rendez-vous ont lieu de 8 h à 11 h.
+      - Il faut présenter sa carte d'assurance maladie à chaque visite.
+      - Le délai pour un rendez-vous avec un médecin de famille est d'environ trois semaines.
+    voice_id: fr_m_29_julien
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 8, to_hour: 20, location_key: rivemont.saint_roch.clinique}
+  - key: quincaillier_denis
+    city: rivemont
+    name: Denis Bouchard
+    role: quincaillier
+    age: 63
+    personality: Bourru mais serviable, adore expliquer comment réparer les choses soi-même.
+    backstory: Il a repris la quincaillerie de son père et connaît tous les propriétaires du quartier.
+    speech_style: Tutoie facilement, utilise beaucoup de mots techniques, raconte des anecdotes.
+    secret: L'an dernier, il a vendu à Martin Lefebvre de la peinture pour « cacher » une fissure.
+    world_facts:
+      - La quincaillerie appartient à la famille Bouchard depuis 1971.
+      - Elle est ouverte de 8 h à 18 h, sauf le dimanche.
+      - Un pot d'enduit de rebouchage coûte 12 $.
+      - Denis connaît Martin Lefebvre depuis l'école.
+    voice_id: fr_m_63_denis
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 8, to_hour: 18, location_key: rivemont.saint_roch.quincaillerie}

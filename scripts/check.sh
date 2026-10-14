@@ -6,5 +6,5 @@ PACKAGES=(lingard_contracts lingard_llm agent_memory lingard_curriculum lingard_
           lingard_telemetry lingard_api lingard_live lingard_graphs lingard_pronunciation)
 uv run ruff check .
 uv run ruff format --check .
-uv run mypy $(printf -- '-p %s ' "${PACKAGES[@]}")
+uv run mypy $(printf -- '-p %s ' "${PACKAGES[@]}") -p evals
 uv run pytest "$@"

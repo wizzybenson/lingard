@@ -12,6 +12,6 @@
   "passport": {"title": "Passport", "predicted": "Predicted", "range": "80% range: {{low}}–{{high}}", "simCrs": "Residency Points (simulated CRS)", "disclaimer": "Simulated score for motivation only — not an official assessment.", "noData": "Play scenes or take a placement test to see your bands."},
   "notebook": {"title": "Night notebook", "corrections": "Corrections", "wentWell": "What went well", "review": "Review cards"},
   "wallet": {"title": "Wallet", "coins": "Coins", "stars": "Stars", "buy": "Buy", "notEnough": "Not enough coins."},
-  "studio": {"title": "Accent studio", "listen": "Hear your golden self", "shadow": "Shadow it", "intelligibility": "Clarity", "accent": "Accent match", "attemptsLeft": "{{count}} tries left"},
+  "studio": {"title": "Accent studio", "listen": "Listen", "shadow": "Shadow it", "intelligibility": "Clarity", "intonation": "Intonation", "accent": "Accent match", "attemptsLeft": "{{count}} tries left"},
   "settings": {"title": "Settings", "uiLanguage": "Interface language", "intensity": "Scene intensity", "calm": "Calm", "tense": "Tense", "heated": "Heated", "voiceClone": "Voice clone", "voiceCloneConsent": "Allow Lingard to create a voice clone from my recording (used only in my sessions, never exported, deletable any time)", "deleteClone": "Delete my voice clone", "export": "Export my data", "deleteAccount": "Delete my account", "signOut": "Sign out", "league": "Join the friends league", "keepAudio": "Keep my recordings longer than 30 days", "devices": "Signed-in devices"}
 }

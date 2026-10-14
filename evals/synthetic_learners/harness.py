@@ -6,15 +6,18 @@ import json
 import random
 import re
 import uuid
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage
+from langgraph.graph.state import CompiledStateGraph
 
 from evals.framework import ROOT
 from evals.synthetic_learners.learner import SyntheticLearner
+from lingard_contracts.common import CITY_LOCALE, LANGUAGE_CITY
 from lingard_contracts.events import TurnEvent
 from lingard_curriculum.graph import InMemoryCurriculumGraph
 from lingard_curriculum.packs import PackLibrary
@@ -32,7 +35,6 @@ from lingard_llm.testing import ScriptedChatModel, message_text
 MARKER = re.compile(r"⟦([a-z]{2}\.[a-z_.0-9]+):(ok|err)⟧")
 TURNS_PER_SCENE = 6
 STALE_DAYS = 7
-CITY = {"fr": "rivemont", "en": "ashford"}
 
 
 def oracle(messages: list[BaseMessage]) -> str:
@@ -113,7 +115,7 @@ async def build_deps() -> GraphDeps:
 
     curriculum = InMemoryCurriculumGraph()
     for language in ("fr", "en"):
-        await seed_graph(curriculum, load_seed(ROOT / "content", language))  # type: ignore[arg-type]
+        await seed_graph(curriculum, load_seed(ROOT / "content", language))
     return GraphDeps(
         store=MemoryStore(),
         curriculum=curriculum,
@@ -133,6 +135,10 @@ def _ids(seed: int) -> Iterator[uuid.UUID]:
         yield uuid.UUID(int=rng.getrandbits(128), version=4)
 
 
+def _frozen(moment: datetime) -> Callable[[], datetime]:
+    return lambda: moment
+
+
 async def live_days(learner: SyntheticLearner, days: int, deps: GraphDeps, replicate: int = 0) -> LearnerOutcome:
     """``replicate`` varies only the FSRS interval fuzz, so robustness to scheduling luck can be measured."""
     ids = _ids(learner.seed)
@@ -144,20 +150,22 @@ async def live_days(learner: SyntheticLearner, days: int, deps: GraphDeps, repli
     store.profiles[user_id] = LearnerProfileView(
         user_id, learner.name, "ar", "tense", {}, {}, {learner.language: int(learner.true_band)}
     )
-    planner, turns, night, lessons = (
+    graphs: tuple[CompiledStateGraph[Any, Any, Any, Any], ...] = (
         build_day_planner(deps),
         build_turn_assessment(deps),
         build_night_consolidation(deps),
         build_lesson_builder(deps),
     )
+    planner, turns, night, lessons = graphs
+    city = LANGUAGE_CITY[learner.language]
     outcome = LearnerOutcome(learner.name, sorted(learner.planted))
     start = datetime(2026, 11, 1, 9, tzinfo=UTC)
     for day in range(days):
         today = start + timedelta(days=day)
-        deps.clock = lambda today=today: today
+        deps.clock = _frozen(today)
         session_id = next(ids)
         store.days[user_id].add((start + timedelta(days=day)).date())
-        plan = await planner.ainvoke({"user_id": user_id, "session_id": session_id, "city": CITY[learner.language]})
+        plan = await planner.ainvoke({"user_id": user_id, "session_id": session_id, "city": city})
         for contract in plan["contracts"]:
             targets = [t for t in contract.targets.elicitable()]
             for k in range(TURNS_PER_SCENE):
@@ -170,7 +178,7 @@ async def live_days(learner: SyntheticLearner, days: int, deps: GraphDeps, repli
                     scene_id=contract.scene_id,
                     turn_index=k,
                     speaker="learner",
-                    language="fr-FR" if learner.language == "fr" else "en-GB",
+                    language=CITY_LOCALE[city],
                     transcript=text,
                     targets_active=contract.targets.all(),
                 )
@@ -178,7 +186,7 @@ async def live_days(learner: SyntheticLearner, days: int, deps: GraphDeps, repli
         result = await night.ainvoke({"user_id": user_id, "session_id": session_id})
         for node_key in result["notebook"].lessons_suggested:
             if node_key not in outcome.lessons:
-                await lessons.ainvoke({"user_id": user_id, "node_key": node_key, "city": CITY[learner.language]})
+                await lessons.ainvoke({"user_id": user_id, "node_key": node_key, "city": city})
                 learner.take_lesson(node_key)
                 outcome.lessons.append(node_key)
         for key, ticket in (await store.tickets(user_id, active_only=False)).items():

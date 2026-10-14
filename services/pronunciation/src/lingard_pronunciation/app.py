@@ -31,6 +31,8 @@ class GoldenRequest(BaseModel):
     accent: str
     profile_id: str
     user_id: str
+    native_pcm_b64: str | None = None
+    """Native-speaker render of ``text``; the caller usually has the TTS, so the service needs none of its own."""
 
 
 class ShadowRequest(BaseModel):
@@ -48,9 +50,13 @@ def create_app(engines: Engines) -> FastAPI:
     async def golden(body: GoldenRequest) -> dict[str, Any]:
         if engines.golden is None:
             raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "voice conversion is not configured")
-        render = await engines.golden.render(
-            body.text, accent=body.accent, profile_id=body.profile_id, user_id=body.user_id
-        )
+        native = base64.b64decode(body.native_pcm_b64) if body.native_pcm_b64 else None
+        try:
+            render = await engines.golden.render(
+                body.text, accent=body.accent, profile_id=body.profile_id, user_id=body.user_id, native=native
+            )
+        except ValueError as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
         return {
             "pcm_b64": base64.b64encode(render.pcm).decode(),
             "cache_key": render.cache_key,
@@ -74,6 +80,7 @@ def create_app(engines: Engines) -> FastAPI:
         return {
             "intelligibility": round(result.intelligibility, 1),
             "accent_proximity": round(result.accent_proximity, 1),
+            "intonation": round(intonation, 1) if intonation is not None else None,
             "node_scores": result.node_scores,
             "critical": result.critical,
             "heatmap": result.heatmap,

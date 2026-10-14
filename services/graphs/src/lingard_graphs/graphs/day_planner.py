@@ -129,7 +129,10 @@ def build_day_planner(
             fresh.append(Candidate(node.key, (1 - p) * weight))
         fresh += reviews
         count = min(rules.director.scenes_per_day, len(state.settings))
-        chosen_settings = [loc for loc, _ in state.settings[:count]]
+        # Rotate by day so every unlocked district gets visited, not only the first one in content order.
+        offset = today.toordinal() % len(state.settings) if state.settings else 0
+        rotated = state.settings[offset:] + state.settings[:offset]
+        chosen_settings = [loc for loc, _ in rotated[:count]]
         slots = plan_targets(ticket_candidates, fresh, chosen_settings, rules.director)
         lessons = [
             LessonSlot(node_key=k, reason="ticket_reopened")

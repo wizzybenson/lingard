@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { PlayButton } from "@/live/PlayButton";
 import { Recorder } from "@/live/Recorder";
 import { useApi } from "@/state/auth";
 import { Body, Button, Card, ErrorText, Screen, Title } from "@/ui/kit";
@@ -14,6 +15,7 @@ interface StudioLine {
 interface ShadowResult {
   intelligibility: number;
   accent_proximity: number;
+  intonation: number | null;
   critical: string[];
   heatmap: { phoneme: string; score: number; heard_as?: string | null }[];
   passed: boolean;
@@ -54,6 +56,11 @@ export default function Studio() {
           <Card key={item.line}>
             <Title>{item.line}</Title>
             <Body muted>{item.title}</Body>
+            <PlayButton
+              api={api}
+              path={`/v1/studio/reference?language=${language}&line=${encodeURIComponent(item.line)}`}
+              label={`🔊 ${t("studio.listen")}`}
+            />
             {result?.final ? null : (
               <Recorder<ShadowResult>
                 api={api}
@@ -67,6 +74,7 @@ export default function Studio() {
               <>
                 <Body>
                   {t("studio.intelligibility")}: {Math.round(result.intelligibility)} · {t("studio.accent")}: {Math.round(result.accent_proximity)}
+                  {result.intonation === null ? "" : ` · ${t("studio.intonation")}: ${Math.round(result.intonation)}`}
                   {result.passed ? " ✓" : ""}
                 </Body>
                 <Body muted>

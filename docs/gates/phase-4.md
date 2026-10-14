@@ -11,8 +11,8 @@
 
 - Prosody (pitch, rhythm), GOP-style phone scoring, and a combined scoring HTTP app. Unit tests in
   `services/pronunciation/tests`.
-- The wav2vec2 phone recogniser is an **optional install** (large model download). Without it, scoring uses the
-  prosody features only.
+- The wav2vec2 phone recogniser is an **optional install** (large model download). Without it, `/shadow` answers 503
+  and the app shows scoring as unavailable.
 - Golden self: the voice-clone provider interface, an audio watermark, and a clone-deletion cascade with verification
   (`services/api/src/lingard_api/privacy.py`). The Voicebox profile-creation endpoint paths are **assumed** from
   documentation and are untested against a live account.
@@ -22,12 +22,16 @@
   clarity, accent match and misheard phonemes. Up to 3 attempts; one FSRS review on the final attempt (Good, Hard or
   Again). Tested in `services/api/tests/test_studio.py` against the real service app with a fake recogniser. Every
   studio line is checked against the lexicon in `services/pronunciation/tests/test_app.py`.
-- Until a golden-self render exists, shadowing has **no reference audio**: intonation isn't scored and there's no
-  pitch overlay. Accent match is then phoneme accuracy only.
+- Reference audio: each line has a Listen button (`GET /v1/studio/reference`), and the same render goes to `/shadow` as
+  the pitch reference. Intonation (0–100) is then reported separately and blended into accent match (70% phonemes,
+  30% intonation). The render is the **golden self** when the learner has an ElevenLabs clone and the pronunciation
+  service has `ELEVENLABS_API_KEY`: the API sends the native narrator render to `/golden`, which converts it into the
+  learner's voice, watermarks and caches it. Otherwise it is the native narrator render. Without any TTS provider there
+  is no reference, and intonation is `null`. Tested with fakes in `test_studio.py` and `test_pronunciation.py`; never
+  run against live ElevenLabs.
 
 ## To close the gate
 
-1. Feed the golden-self render (or a native TTS render) to `/shadow` as the reference, so intonation is scored.
-2. Install the recogniser extra, then run speechocean762 and compare with the published PCC baselines.
-3. Build a small FR annotated set (founder plus native raters).
-4. Configure a voice provider, then run a blind A/B leakage test with ≥ 10 listeners.
+1. Install the recogniser extra, then run speechocean762 and compare with the published PCC baselines.
+2. Build a small FR annotated set (founder plus native raters).
+3. Configure a voice provider, then run a blind A/B leakage test with ≥ 10 listeners.

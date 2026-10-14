@@ -3,6 +3,8 @@
 Positives: each lesson's ``common_errors`` wrong sentence, with its node and correction. Negatives: the corrected
 sentence and every lesson example, where a correct assessor must show NO correction. The seed is small; human-labelled
 learner errors are appended to the same files as they are collected (SPEC §20 asks for ≥ 300 per language).
+``<lang>.drafted.jsonl`` holds hand-drafted rows marked ``"reviewed": false`` until a native speaker checks them; a row
+may list ``accept_node_keys`` when its error fits more than one node.
 """
 
 from __future__ import annotations

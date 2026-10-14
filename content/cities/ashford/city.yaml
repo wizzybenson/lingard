@@ -45,6 +45,34 @@ districts:
     name: Kingsway
     min_band: 6
     order: 2
-    description: Shops, offices and the job centre (content in Phase 5).
+    description: "Shops, offices and the job centre: where you look for work, register with a GP and buy what you need to fix things."
     locations:
-      - {key: ashford.kingsway.placeholder, name: Kingsway, description: "Coming soon.", x: 0.5, y: 0.5}
+      - key: ashford.kingsway.job_centre
+        name: Kingsway Job Centre
+        description: A ground-floor office full of leaflets, where people work on their CVs and practise for interviews.
+        x: 0.25
+        y: 0.45
+        layer_art: [ashford/kingsway/job_centre_bg.png, ashford/kingsway/job_centre_mid.png]
+        hotspots:
+          - {key: priya, kind: npc, label: Priya Shah, npc_key: adviser_priya, x: 0.55, y: 0.5}
+          - {key: vacancies, kind: sign, label: Vacancies, x: 0.2, y: 0.3, text: "Warehouse operative (nights) · Bilingual receptionist · Kitchen porter. Interviews on Thursdays."}
+          - {key: workshop, kind: sign, label: CV workshop, x: 0.8, y: 0.35, text: "CV workshop: Tuesdays at 2 pm, free, booking required."}
+      - key: ashford.kingsway.surgery
+        name: Kingsway Medical Practice
+        description: A busy GP surgery whose phone lines open at eight sharp.
+        x: 0.6
+        y: 0.3
+        layer_art: [ashford/kingsway/surgery_bg.png, ashford/kingsway/surgery_mid.png]
+        hotspots:
+          - {key: tom, kind: npc, label: Tom Fletcher, npc_key: receptionist_tom, x: 0.5, y: 0.55}
+          - {key: poster, kind: sign, label: Poster, x: 0.2, y: 0.35, text: "New patients: please bring photo ID and proof of address to register."}
+      - key: ashford.kingsway.hardware
+        name: Hargreaves Hardware
+        description: An old family hardware shop that sells everything from screws to advice.
+        x: 0.8
+        y: 0.6
+        layer_art: [ashford/kingsway/hardware_bg.png, ashford/kingsway/hardware_mid.png]
+        hotspots:
+          - {key: ron, kind: npc, label: Ron Hargreaves, npc_key: hardware_ron, x: 0.45, y: 0.5}
+          - {key: hire, kind: sign, label: Tool hire, x: 0.75, y: 0.3, text: "Hire by the day: drill £12, ladder £8."}
+          - {key: kit, kind: object, label: Damp treatment kit, x: 0.25, y: 0.65, text: "Anti-mould spray and stain block, £14.99. Treats the stain, not the cause."}

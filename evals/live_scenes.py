@@ -8,12 +8,15 @@ measured from the real ``turn_assessment`` graph's evidence.
 from __future__ import annotations
 
 import uuid
+from typing import Any
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langgraph.graph.state import CompiledStateGraph
 from pydantic import BaseModel
 
 from evals.framework import ROOT, Gate, SuiteResult
 from evals.scenes import eval_scenes
+from lingard_contracts.common import CITY_LOCALE, LANGUAGE_SCALE
 from lingard_contracts.live import LearnerTurnEnded, LiveSessionConfig, TurnPolicy
 from lingard_curriculum.graph import InMemoryCurriculumGraph
 from lingard_curriculum.packs import PackLibrary
@@ -40,7 +43,7 @@ LANGUAGE_NAMES = {"fr": "French", "en": "English"}
 async def _assessment_deps(router: LLMRouter, prompts: PromptRegistry) -> tuple[GraphDeps, uuid.UUID]:
     curriculum = InMemoryCurriculumGraph()
     for language in ("fr", "en"):
-        await seed_graph(curriculum, load_seed(ROOT / "content", language))  # type: ignore[arg-type]
+        await seed_graph(curriculum, load_seed(ROOT / "content", language))
     store = MemoryStore()
     user_id = uuid.uuid4()
     store.profiles[user_id] = LearnerProfileView(user_id, "Sam", "ar", "tense", {}, {}, {"fr": 6, "en": 6})
@@ -71,7 +74,7 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
     identifier = LanguageIdentifier(languages)
     learner_prompt, judge_prompt = prompts.get("sim_learner"), prompts.get("fact_judge")
     deps, user_id = await _assessment_deps(router, prompts)
-    graph = build_turn_assessment(deps)
+    graph: CompiledStateGraph[Any, Any, Any, Any] = build_turn_assessment(deps)
     lines = violations = leaks = tutor = 0
     elicited = required = 0
     samples: list[dict[str, object]] = []
@@ -85,7 +88,7 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
                 user_id=uuid.uuid4(),
                 scene_id=contract.scene_id,
                 room="eval",
-                locale="fr-FR" if contract.language == "fr" else "en-GB",
+                locale=CITY_LOCALE[contract.city],
                 policy=TurnPolicy(eot_ms=900),
             )
         )
@@ -109,7 +112,7 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
         npc_lines = [opening.npc_text]
         learner_lines: list[str] = []
         system = learner_prompt.render(
-            scale_name="NCLC" if contract.language == "fr" else "CLB",
+            scale_name=LANGUAGE_SCALE[contract.language],
             band=band,
             language_name=LANGUAGE_NAMES[contract.language],
             npc_name=npc.name,

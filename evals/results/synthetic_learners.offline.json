@@ -8,11 +8,11 @@
     "planted": 40,
     "detected_rate": 1.0,
     "closed_rate": 1.0,
-    "noise_tickets_opened": 11,
-    "noise_tickets_open_at_end": 5,
+    "noise_tickets_opened": 15,
+    "noise_tickets_open_at_end": 4,
     "noise_tickets_stale_7d": 0,
     "mean_detection_day": 0.38,
-    "lessons_built": 169
+    "lessons_built": 174
   },
   "gates": [
     {
@@ -41,22 +41,24 @@
         "fr.func.complain_politely": 2
       },
       "closed": {
-        "fr.grammar.conditionnel_present": 4,
-        "fr.func.complain_politely": 10
+        "fr.grammar.conditionnel_present": 19,
+        "fr.func.complain_politely": 11
       },
       "noise": [
-        "fr.grammar.imperatif"
+        "fr.lex.emotions"
       ],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
+        "fr.func.express_regret",
+        "fr.func.complain_politely",
         "fr.grammar.connecteurs_logiques",
-        "fr.grammar.gerondif",
-        "fr.lex.education",
         "fr.func.hypothesise",
-        "fr.func.negotiate",
-        "fr.grammar.plus_que_parfait"
+        "fr.lex.technology",
+        "fr.grammar.gerondif",
+        "fr.grammar.si_imparfait",
+        "fr.func.negotiate"
       ]
     },
     {
@@ -67,24 +69,24 @@
         "fr.grammar.futur_simple": 0
       },
       "closed": {
-        "fr.grammar.pronoms_cod_coi": 10,
-        "fr.grammar.futur_simple": 10
+        "fr.grammar.pronoms_cod_coi": 15,
+        "fr.grammar.futur_simple": 15
       },
-      "noise": [
-        "fr.func.complain_politely"
-      ],
+      "noise": [],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
+        "fr.func.negotiate",
+        "fr.grammar.relatif_dont",
+        "fr.grammar.connecteurs_logiques",
         "fr.grammar.futur_simple",
         "fr.grammar.pronoms_cod_coi",
-        "fr.grammar.gerondif",
-        "fr.func.hypothesise",
         "fr.grammar.subjonctif_present",
-        "fr.func.negotiate",
-        "fr.grammar.plus_que_parfait",
-        "fr.func.express_regret"
+        "fr.func.hypothesise",
+        "fr.func.express_regret",
+        "fr.grammar.gerondif",
+        "fr.lex.education"
       ]
     },
     {
@@ -96,22 +98,29 @@
       },
       "closed": {
         "en.grammar.first_conditional": 8,
-        "en.func.complain_politely": 23
+        "en.func.complain_politely": 3
       },
-      "noise": [],
-      "noise_open": [],
+      "noise": [
+        "en.func.compare_options"
+      ],
+      "noise_open": [
+        "en.func.compare_options"
+      ],
       "stale": [],
-      "opened_day": {},
+      "opened_day": {
+        "en.func.compare_options": 27
+      },
       "lessons": [
         "en.grammar.first_conditional",
-        "en.grammar.second_conditional",
-        "en.func.complain_politely",
-        "en.grammar.passive_voice",
-        "en.grammar.past_perfect",
         "en.grammar.question_tags",
-        "en.func.negotiate",
+        "en.func.hypothesise",
         "en.lex.education",
-        "en.func.hypothesise"
+        "en.func.express_regret",
+        "en.grammar.second_conditional",
+        "en.func.negotiate",
+        "en.grammar.linking_words",
+        "en.grammar.past_perfect",
+        "en.grammar.passive_voice"
       ]
     },
     {
@@ -122,22 +131,25 @@
         "en.grammar.gerund_infinitive": 0
       },
       "closed": {
-        "en.grammar.relative_clauses": 11,
-        "en.grammar.gerund_infinitive": 14
+        "en.grammar.relative_clauses": 21,
+        "en.grammar.gerund_infinitive": 15
       },
-      "noise": [],
+      "noise": [
+        "en.grammar.modals_obligation",
+        "en.grammar.used_to_would"
+      ],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
-        "en.func.express_regret",
-        "en.grammar.relative_clauses",
         "en.grammar.past_perfect",
-        "en.grammar.gerund_infinitive",
-        "en.lex.education",
-        "en.grammar.question_tags",
+        "en.func.negotiate",
+        "en.grammar.passive_voice",
+        "en.grammar.relative_clauses",
+        "en.grammar.linking_words",
         "en.func.hypothesise",
-        "en.func.negotiate"
+        "en.lex.education",
+        "en.func.express_regret"
       ]
     },
     {
@@ -148,20 +160,24 @@
         "fr.func.complain_politely": 2
       },
       "closed": {
-        "fr.grammar.conditionnel_present": 4,
-        "fr.func.complain_politely": 10
+        "fr.grammar.conditionnel_present": 3,
+        "fr.func.complain_politely": 11
       },
-      "noise": [],
+      "noise": [
+        "fr.lex.emotions"
+      ],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
-        "fr.grammar.connecteurs_logiques",
-        "fr.grammar.gerondif",
-        "fr.lex.education",
         "fr.func.express_regret",
+        "fr.func.complain_politely",
+        "fr.grammar.connecteurs_logiques",
         "fr.func.hypothesise",
-        "fr.grammar.plus_que_parfait"
+        "fr.grammar.gerondif",
+        "fr.grammar.si_imparfait",
+        "fr.func.negotiate",
+        "fr.lex.technology"
       ]
     },
     {
@@ -172,405 +188,398 @@
         "fr.grammar.futur_simple": 0
       },
       "closed": {
-        "fr.grammar.pronoms_cod_coi": 10,
-        "fr.grammar.futur_simple": 18
+        "fr.grammar.pronoms_cod_coi": 15,
+        "fr.grammar.futur_simple": 15
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.negotiate",
+        "fr.grammar.relatif_dont",
+        "fr.func.hypothesise",
+        "fr.grammar.connecteurs_logiques",
+        "fr.grammar.futur_simple",
+        "fr.grammar.pronoms_cod_coi",
+        "fr.grammar.plus_que_parfait",
+        "fr.func.express_regret",
+        "fr.lex.education",
+        "fr.lex.technology"
+      ]
+    },
+    {
+      "learner": "en-perfect",
+      "replicate": 1,
+      "detected": {
+        "en.grammar.first_conditional": 0,
+        "en.func.complain_politely": 1
+      },
+      "closed": {
+        "en.grammar.first_conditional": 12,
+        "en.func.complain_politely": 15
       },
       "noise": [
+        "en.func.compare_options",
+        "en.lex.work_job_search"
+      ],
+      "noise_open": [
+        "en.func.compare_options"
+      ],
+      "stale": [],
+      "opened_day": {
+        "en.func.compare_options": 26
+      },
+      "lessons": [
+        "en.grammar.first_conditional",
+        "en.grammar.passive_voice",
+        "en.grammar.question_tags",
+        "en.func.hypothesise",
+        "en.func.express_regret",
+        "en.grammar.second_conditional",
+        "en.lex.education",
+        "en.grammar.past_perfect",
+        "en.func.negotiate",
+        "en.grammar.linking_words"
+      ]
+    },
+    {
+      "learner": "en-relatives",
+      "replicate": 1,
+      "detected": {
+        "en.grammar.relative_clauses": 0,
+        "en.grammar.gerund_infinitive": 0
+      },
+      "closed": {
+        "en.grammar.relative_clauses": 7,
+        "en.grammar.gerund_infinitive": 18
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "en.grammar.past_perfect",
+        "en.lex.education",
+        "en.grammar.passive_voice",
+        "en.grammar.gerund_infinitive",
+        "en.func.express_regret"
+      ]
+    },
+    {
+      "learner": "fr-conditional",
+      "replicate": 2,
+      "detected": {
+        "fr.grammar.conditionnel_present": 0,
+        "fr.func.complain_politely": 2
+      },
+      "closed": {
+        "fr.grammar.conditionnel_present": 12,
+        "fr.func.complain_politely": 16
+      },
+      "noise": [
+        "fr.lex.emotions"
+      ],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.express_regret",
         "fr.func.complain_politely",
+        "fr.func.hypothesise",
+        "fr.grammar.si_imparfait",
+        "fr.lex.technology",
+        "fr.grammar.subjonctif_present",
+        "fr.grammar.gerondif",
+        "fr.func.negotiate"
+      ]
+    },
+    {
+      "learner": "fr-pronouns",
+      "replicate": 2,
+      "detected": {
+        "fr.grammar.pronoms_cod_coi": 0,
+        "fr.grammar.futur_simple": 0
+      },
+      "closed": {
+        "fr.grammar.pronoms_cod_coi": 4,
+        "fr.grammar.futur_simple": 15
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.hypothesise",
+        "fr.func.negotiate",
+        "fr.grammar.connecteurs_logiques",
+        "fr.grammar.futur_simple",
+        "fr.grammar.relatif_dont",
+        "fr.grammar.subjonctif_present",
+        "fr.grammar.gerondif",
+        "fr.func.express_regret",
+        "fr.lex.education"
+      ]
+    },
+    {
+      "learner": "en-perfect",
+      "replicate": 2,
+      "detected": {
+        "en.grammar.first_conditional": 0,
+        "en.func.complain_politely": 1
+      },
+      "closed": {
+        "en.grammar.first_conditional": 12,
+        "en.func.complain_politely": 15
+      },
+      "noise": [
+        "en.func.compare_options"
+      ],
+      "noise_open": [
+        "en.func.compare_options"
+      ],
+      "stale": [],
+      "opened_day": {
+        "en.func.compare_options": 26
+      },
+      "lessons": [
+        "en.grammar.first_conditional",
+        "en.grammar.passive_voice",
+        "en.grammar.question_tags",
+        "en.func.hypothesise",
+        "en.grammar.second_conditional",
+        "en.lex.education",
+        "en.func.express_regret",
+        "en.func.negotiate",
+        "en.grammar.past_perfect",
+        "en.grammar.linking_words"
+      ]
+    },
+    {
+      "learner": "en-relatives",
+      "replicate": 2,
+      "detected": {
+        "en.grammar.relative_clauses": 0,
+        "en.grammar.gerund_infinitive": 0
+      },
+      "closed": {
+        "en.grammar.relative_clauses": 7,
+        "en.grammar.gerund_infinitive": 17
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "en.grammar.past_perfect",
+        "en.lex.education",
+        "en.func.negotiate",
+        "en.grammar.passive_voice",
+        "en.grammar.linking_words",
+        "en.func.express_regret",
+        "en.func.hypothesise"
+      ]
+    },
+    {
+      "learner": "fr-conditional",
+      "replicate": 3,
+      "detected": {
+        "fr.grammar.conditionnel_present": 0,
+        "fr.func.complain_politely": 2
+      },
+      "closed": {
+        "fr.grammar.conditionnel_present": 26,
+        "fr.func.complain_politely": 16
+      },
+      "noise": [
+        "fr.lex.emotions"
+      ],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.express_regret",
+        "fr.func.complain_politely",
+        "fr.func.hypothesise",
+        "fr.grammar.connecteurs_logiques",
+        "fr.grammar.si_imparfait",
+        "fr.lex.technology",
+        "fr.grammar.plus_que_parfait",
+        "fr.func.negotiate",
+        "fr.grammar.conditionnel_present"
+      ]
+    },
+    {
+      "learner": "fr-pronouns",
+      "replicate": 3,
+      "detected": {
+        "fr.grammar.pronoms_cod_coi": 0,
+        "fr.grammar.futur_simple": 0
+      },
+      "closed": {
+        "fr.grammar.pronoms_cod_coi": 15,
+        "fr.grammar.futur_simple": 14
+      },
+      "noise": [
         "fr.func.narrate_past"
       ],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
-        "fr.grammar.futur_simple",
-        "fr.grammar.pronoms_cod_coi",
-        "fr.grammar.gerondif",
-        "fr.grammar.subjonctif_present",
-        "fr.grammar.connecteurs_logiques",
-        "fr.func.express_regret",
-        "fr.func.hypothesise",
-        "fr.grammar.plus_que_parfait",
-        "fr.func.negotiate"
-      ]
-    },
-    {
-      "learner": "en-perfect",
-      "replicate": 1,
-      "detected": {
-        "en.grammar.first_conditional": 0,
-        "en.func.complain_politely": 1
-      },
-      "closed": {
-        "en.grammar.first_conditional": 8,
-        "en.func.complain_politely": 9
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "en.grammar.first_conditional",
-        "en.grammar.second_conditional",
-        "en.func.complain_politely",
-        "en.grammar.passive_voice",
-        "en.grammar.past_perfect",
-        "en.grammar.question_tags",
-        "en.func.negotiate",
-        "en.func.hypothesise",
-        "en.lex.education"
-      ]
-    },
-    {
-      "learner": "en-relatives",
-      "replicate": 1,
-      "detected": {
-        "en.grammar.relative_clauses": 0,
-        "en.grammar.gerund_infinitive": 0
-      },
-      "closed": {
-        "en.grammar.relative_clauses": 11,
-        "en.grammar.gerund_infinitive": 21
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "en.func.express_regret",
-        "en.grammar.relative_clauses",
-        "en.grammar.past_perfect",
-        "en.grammar.gerund_infinitive",
-        "en.lex.education",
-        "en.grammar.question_tags",
-        "en.func.negotiate",
-        "en.func.hypothesise"
-      ]
-    },
-    {
-      "learner": "fr-conditional",
-      "replicate": 2,
-      "detected": {
-        "fr.grammar.conditionnel_present": 0,
-        "fr.func.complain_politely": 2
-      },
-      "closed": {
-        "fr.grammar.conditionnel_present": 4,
-        "fr.func.complain_politely": 16
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "fr.grammar.connecteurs_logiques",
-        "fr.grammar.gerondif",
-        "fr.func.complain_politely",
-        "fr.func.express_regret",
-        "fr.func.hypothesise",
-        "fr.func.negotiate",
-        "fr.grammar.plus_que_parfait"
-      ]
-    },
-    {
-      "learner": "fr-pronouns",
-      "replicate": 2,
-      "detected": {
-        "fr.grammar.pronoms_cod_coi": 0,
-        "fr.grammar.futur_simple": 0
-      },
-      "closed": {
-        "fr.grammar.pronoms_cod_coi": 10,
-        "fr.grammar.futur_simple": 10
-      },
-      "noise": [
-        "fr.func.complain_politely",
-        "fr.grammar.relatifs_qui_que_ou"
-      ],
-      "noise_open": [
-        "fr.grammar.relatifs_qui_que_ou"
-      ],
-      "stale": [],
-      "opened_day": {
-        "fr.grammar.relatifs_qui_que_ou": 23
-      },
-      "lessons": [
-        "fr.grammar.futur_simple",
-        "fr.grammar.pronoms_cod_coi",
-        "fr.grammar.gerondif",
-        "fr.grammar.subjonctif_present",
-        "fr.func.hypothesise",
         "fr.func.negotiate",
         "fr.grammar.connecteurs_logiques",
+        "fr.grammar.futur_simple",
+        "fr.grammar.pronoms_cod_coi",
+        "fr.grammar.relatif_dont",
+        "fr.func.hypothesise",
         "fr.grammar.plus_que_parfait",
-        "fr.lex.education",
+        "fr.grammar.subjonctif_present",
+        "fr.grammar.gerondif",
         "fr.func.express_regret"
       ]
     },
     {
       "learner": "en-perfect",
-      "replicate": 2,
-      "detected": {
-        "en.grammar.first_conditional": 0,
-        "en.func.complain_politely": 1
-      },
-      "closed": {
-        "en.grammar.first_conditional": 8,
-        "en.func.complain_politely": 9
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "en.grammar.first_conditional",
-        "en.grammar.second_conditional",
-        "en.func.complain_politely",
-        "en.grammar.passive_voice",
-        "en.grammar.past_perfect",
-        "en.grammar.question_tags",
-        "en.func.negotiate",
-        "en.lex.education",
-        "en.func.hypothesise"
-      ]
-    },
-    {
-      "learner": "en-relatives",
-      "replicate": 2,
-      "detected": {
-        "en.grammar.relative_clauses": 0,
-        "en.grammar.gerund_infinitive": 0
-      },
-      "closed": {
-        "en.grammar.relative_clauses": 18,
-        "en.grammar.gerund_infinitive": 14
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "en.func.express_regret",
-        "en.grammar.relative_clauses",
-        "en.grammar.past_perfect",
-        "en.grammar.gerund_infinitive",
-        "en.lex.education",
-        "en.func.hypothesise",
-        "en.grammar.question_tags",
-        "en.func.negotiate",
-        "en.grammar.passive_voice",
-        "en.lex.technology"
-      ]
-    },
-    {
-      "learner": "fr-conditional",
       "replicate": 3,
-      "detected": {
-        "fr.grammar.conditionnel_present": 0,
-        "fr.func.complain_politely": 2
-      },
-      "closed": {
-        "fr.grammar.conditionnel_present": 19,
-        "fr.func.complain_politely": 16
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "fr.grammar.connecteurs_logiques",
-        "fr.grammar.gerondif",
-        "fr.func.complain_politely",
-        "fr.func.express_regret",
-        "fr.func.hypothesise",
-        "fr.func.negotiate"
-      ]
-    },
-    {
-      "learner": "fr-pronouns",
-      "replicate": 3,
-      "detected": {
-        "fr.grammar.pronoms_cod_coi": 0,
-        "fr.grammar.futur_simple": 0
-      },
-      "closed": {
-        "fr.grammar.pronoms_cod_coi": 10,
-        "fr.grammar.futur_simple": 10
-      },
-      "noise": [
-        "fr.func.complain_politely"
-      ],
-      "noise_open": [
-        "fr.func.complain_politely"
-      ],
-      "stale": [],
-      "opened_day": {
-        "fr.func.complain_politely": 22
-      },
-      "lessons": [
-        "fr.grammar.futur_simple",
-        "fr.grammar.pronoms_cod_coi",
-        "fr.grammar.gerondif",
-        "fr.grammar.subjonctif_present",
-        "fr.func.express_regret",
-        "fr.func.hypothesise",
-        "fr.grammar.plus_que_parfait",
-        "fr.grammar.relatif_dont",
-        "fr.lex.technology",
-        "fr.lex.education",
-        "fr.grammar.connecteurs_logiques"
-      ]
-    },
-    {
-      "learner": "en-perfect",
-      "replicate": 3,
-      "detected": {
-        "en.grammar.first_conditional": 0,
-        "en.func.complain_politely": 1
-      },
-      "closed": {
-        "en.grammar.first_conditional": 8,
-        "en.func.complain_politely": 9
-      },
-      "noise": [
-        "en.grammar.present_perfect"
-      ],
-      "noise_open": [
-        "en.grammar.present_perfect"
-      ],
-      "stale": [],
-      "opened_day": {
-        "en.grammar.present_perfect": 26
-      },
-      "lessons": [
-        "en.grammar.first_conditional",
-        "en.grammar.second_conditional",
-        "en.func.complain_politely",
-        "en.grammar.passive_voice",
-        "en.grammar.past_perfect",
-        "en.grammar.question_tags",
-        "en.func.negotiate",
-        "en.lex.education",
-        "en.func.hypothesise"
-      ]
-    },
-    {
-      "learner": "en-relatives",
-      "replicate": 3,
-      "detected": {
-        "en.grammar.relative_clauses": 0,
-        "en.grammar.gerund_infinitive": 0
-      },
-      "closed": {
-        "en.grammar.relative_clauses": 11,
-        "en.grammar.gerund_infinitive": 14
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "en.func.express_regret",
-        "en.grammar.relative_clauses",
-        "en.grammar.past_perfect",
-        "en.grammar.gerund_infinitive",
-        "en.lex.education",
-        "en.grammar.question_tags",
-        "en.func.hypothesise",
-        "en.func.negotiate",
-        "en.grammar.passive_voice"
-      ]
-    },
-    {
-      "learner": "fr-conditional",
-      "replicate": 4,
-      "detected": {
-        "fr.grammar.conditionnel_present": 0,
-        "fr.func.complain_politely": 2
-      },
-      "closed": {
-        "fr.grammar.conditionnel_present": 4,
-        "fr.func.complain_politely": 16
-      },
-      "noise": [],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "fr.grammar.connecteurs_logiques",
-        "fr.grammar.gerondif",
-        "fr.func.complain_politely",
-        "fr.grammar.si_imparfait",
-        "fr.func.express_regret",
-        "fr.func.hypothesise",
-        "fr.func.negotiate"
-      ]
-    },
-    {
-      "learner": "fr-pronouns",
-      "replicate": 4,
-      "detected": {
-        "fr.grammar.pronoms_cod_coi": 0,
-        "fr.grammar.futur_simple": 0
-      },
-      "closed": {
-        "fr.grammar.pronoms_cod_coi": 10,
-        "fr.grammar.futur_simple": 10
-      },
-      "noise": [
-        "fr.func.complain_politely"
-      ],
-      "noise_open": [],
-      "stale": [],
-      "opened_day": {},
-      "lessons": [
-        "fr.grammar.futur_simple",
-        "fr.grammar.pronoms_cod_coi",
-        "fr.func.express_regret",
-        "fr.grammar.gerondif",
-        "fr.grammar.subjonctif_present",
-        "fr.grammar.connecteurs_logiques",
-        "fr.func.hypothesise",
-        "fr.lex.technology",
-        "fr.lex.education",
-        "fr.grammar.si_imparfait",
-        "fr.grammar.relatif_dont"
-      ]
-    },
-    {
-      "learner": "en-perfect",
-      "replicate": 4,
       "detected": {
         "en.grammar.first_conditional": 0,
         "en.func.complain_politely": 1
       },
       "closed": {
         "en.grammar.first_conditional": 24,
-        "en.func.complain_politely": 9
+        "en.func.complain_politely": 24
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "en.grammar.first_conditional",
+        "en.grammar.passive_voice",
+        "en.grammar.question_tags",
+        "en.func.hypothesise",
+        "en.func.express_regret",
+        "en.lex.education",
+        "en.grammar.second_conditional",
+        "en.func.negotiate",
+        "en.grammar.past_perfect",
+        "en.grammar.linking_words",
+        "en.func.complain_politely"
+      ]
+    },
+    {
+      "learner": "en-relatives",
+      "replicate": 3,
+      "detected": {
+        "en.grammar.relative_clauses": 0,
+        "en.grammar.gerund_infinitive": 0
+      },
+      "closed": {
+        "en.grammar.relative_clauses": 7,
+        "en.grammar.gerund_infinitive": 16
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "en.grammar.past_perfect",
+        "en.lex.education",
+        "en.grammar.gerund_infinitive",
+        "en.func.express_regret",
+        "en.lex.technology",
+        "en.grammar.second_conditional"
+      ]
+    },
+    {
+      "learner": "fr-conditional",
+      "replicate": 4,
+      "detected": {
+        "fr.grammar.conditionnel_present": 0,
+        "fr.func.complain_politely": 2
+      },
+      "closed": {
+        "fr.grammar.conditionnel_present": 3,
+        "fr.func.complain_politely": 16
       },
       "noise": [
-        "en.func.apologise",
-        "en.grammar.gerund_infinitive"
+        "fr.grammar.imparfait",
+        "fr.lex.emotions"
+      ],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.express_regret",
+        "fr.func.complain_politely",
+        "fr.grammar.connecteurs_logiques",
+        "fr.func.hypothesise",
+        "fr.grammar.si_imparfait",
+        "fr.grammar.gerondif",
+        "fr.grammar.relatif_dont"
+      ]
+    },
+    {
+      "learner": "fr-pronouns",
+      "replicate": 4,
+      "detected": {
+        "fr.grammar.pronoms_cod_coi": 0,
+        "fr.grammar.futur_simple": 0
+      },
+      "closed": {
+        "fr.grammar.pronoms_cod_coi": 16,
+        "fr.grammar.futur_simple": 15
+      },
+      "noise": [],
+      "noise_open": [],
+      "stale": [],
+      "opened_day": {},
+      "lessons": [
+        "fr.func.negotiate",
+        "fr.func.hypothesise",
+        "fr.grammar.connecteurs_logiques",
+        "fr.grammar.futur_simple",
+        "fr.grammar.pronoms_cod_coi",
+        "fr.grammar.relatif_dont",
+        "fr.grammar.plus_que_parfait",
+        "fr.grammar.gerondif",
+        "fr.grammar.subjonctif_present",
+        "fr.func.express_regret"
+      ]
+    },
+    {
+      "learner": "en-perfect",
+      "replicate": 4,
+      "detected": {
+        "en.grammar.first_conditional": 0,
+        "en.func.complain_politely": 1
+      },
+      "closed": {
+        "en.grammar.first_conditional": 12,
+        "en.func.complain_politely": 3
+      },
+      "noise": [
+        "en.func.give_advice"
       ],
       "noise_open": [
-        "en.func.apologise",
-        "en.grammar.gerund_infinitive"
+        "en.func.give_advice"
       ],
       "stale": [],
       "opened_day": {
-        "en.func.apologise": 27,
-        "en.grammar.gerund_infinitive": 27
+        "en.func.give_advice": 27
       },
       "lessons": [
         "en.grammar.first_conditional",
-        "en.grammar.second_conditional",
-        "en.func.complain_politely",
         "en.grammar.passive_voice",
+        "en.grammar.question_tags",
+        "en.func.express_regret",
+        "en.lex.education",
+        "en.func.hypothesise",
         "en.func.negotiate",
         "en.grammar.past_perfect",
-        "en.grammar.question_tags",
-        "en.func.hypothesise",
-        "en.lex.education"
+        "en.grammar.linking_words",
+        "en.grammar.second_conditional"
       ]
     },
     {
@@ -581,25 +590,27 @@
         "en.grammar.gerund_infinitive": 0
       },
       "closed": {
-        "en.grammar.relative_clauses": 18,
-        "en.grammar.gerund_infinitive": 14
+        "en.grammar.relative_clauses": 7,
+        "en.grammar.gerund_infinitive": 13
       },
-      "noise": [],
+      "noise": [
+        "en.grammar.modals_obligation"
+      ],
       "noise_open": [],
       "stale": [],
       "opened_day": {},
       "lessons": [
-        "en.func.express_regret",
-        "en.grammar.relative_clauses",
         "en.grammar.past_perfect",
-        "en.grammar.gerund_infinitive",
-        "en.grammar.question_tags",
         "en.lex.education",
+        "en.grammar.gerund_infinitive",
+        "en.func.express_regret",
+        "en.grammar.linking_words",
         "en.func.hypothesise",
-        "en.func.negotiate"
+        "en.func.negotiate",
+        "en.grammar.passive_voice"
       ]
     }
   ],
-  "ran_at": "2026-10-14T08:49:05+00:00",
+  "ran_at": "2026-10-14T17:26:44+00:00",
   "status": "PASS"
 }

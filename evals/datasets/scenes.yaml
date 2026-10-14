@@ -18,6 +18,24 @@ rivemont:
     facts: ["Les frais de carte sont de {n} dollars par an", "Il manque un justificatif d'adresse", "La carte arrive par la poste"]
     targets: {functions: [fr.func.ask_clarification, fr.func.make_request], grammar: [fr.grammar.conditionnel_present], lexset: [fr.lex.banking]}
     band: 5
+  - location_key: rivemont.saint_roch.centre_emploi
+    npc_key: conseillere_nadia
+    goal: "Préparer une entrevue pour un poste de réceptionniste"
+    facts: ["Le poste paie {n} dollars par semaine", "L'entrevue a lieu jeudi à 10 h", "Il faut une lettre de motivation"]
+    targets: {functions: [fr.func.describe_person_place, fr.func.ask_information], grammar: [fr.grammar.passe_compose_avoir], lexset: [fr.lex.work_job_search]}
+    band: 6
+  - location_key: rivemont.saint_roch.clinique
+    npc_key: receptionniste_julien
+    goal: "Prendre rendez-vous avec un médecin"
+    facts: ["La consultation sans carte coûte {n} dollars", "Le prochain rendez-vous est mardi à 15 h", "Le sans-rendez-vous commence à 8 h"]
+    targets: {functions: [fr.func.make_appointment, fr.func.ask_clarification], grammar: [fr.grammar.futur_simple], lexset: [fr.lex.health_appointments]}
+    band: 6
+  - location_key: rivemont.saint_roch.quincaillerie
+    npc_key: quincaillier_denis
+    goal: "Acheter de quoi réparer une fissure"
+    facts: ["L'enduit et la spatule coûtent {n} dollars", "L'enduit sèche en vingt-quatre heures", "La perceuse se loue à la journée"]
+    targets: {functions: [fr.func.ask_information, fr.func.give_advice], grammar: [fr.grammar.imperatif], lexset: [fr.lex.housing.deposit_repairs]}
+    band: 7
 ashford:
   - location_key: ashford.station_quarter.flat_2a
     npc_key: landlord_graham
@@ -37,3 +55,21 @@ ashford:
     facts: ["The card fee is {n} pounds a year", "You still need proof of address", "The card arrives by post"]
     targets: {functions: [en.func.ask_clarification, en.func.make_request], grammar: [en.grammar.modals_obligation], lexset: [en.lex.banking]}
     band: 5
+  - location_key: ashford.kingsway.job_centre
+    npc_key: adviser_priya
+    goal: "Prepare for an interview for a receptionist job"
+    facts: ["The job pays {n} pounds a week", "The interview is on Thursday at 10 am", "You need a covering letter"]
+    targets: {functions: [en.func.describe_person_place, en.func.ask_information], grammar: [en.grammar.present_perfect], lexset: [en.lex.work_job_search]}
+    band: 6
+  - location_key: ashford.kingsway.surgery
+    npc_key: receptionist_tom
+    goal: "Register with the GP and book an appointment"
+    facts: ["A private appointment costs {n} pounds", "The next routine appointment is Tuesday at 3 pm", "Same-day slots open at 8 am"]
+    targets: {functions: [en.func.make_appointment, en.func.ask_clarification], grammar: [en.grammar.future_forms], lexset: [en.lex.health_appointments]}
+    band: 6
+  - location_key: ashford.kingsway.hardware
+    npc_key: hardware_ron
+    goal: "Buy what you need to deal with damp"
+    facts: ["The kit and a brush cost {n} pounds", "The stain block dries in two hours", "Ladders can be hired by the day"]
+    targets: {functions: [en.func.ask_information, en.func.give_advice], grammar: [en.grammar.modals_obligation], lexset: [en.lex.housing.deposit_repairs]}
+    band: 7
