@@ -37,6 +37,7 @@ class Api:
 async def api(pg_schema_factory) -> AsyncIterator[Api]:  # type: ignore[no-untyped-def]
     async with pg_schema_factory() as (url, schema):
         settings = Settings(
+            _env_file=None,
             env="test",
             database_url=url,
             database_schema=schema,

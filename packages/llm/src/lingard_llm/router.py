@@ -16,7 +16,7 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from langchain_core.runnables import Runnable, RunnableConfig
 from pydantic import BaseModel, ValidationError
 
-from lingard_llm.config import LLMConfig, ModelSpec, Tier
+from lingard_llm.config import PROVIDER_ENV, LLMConfig, ModelSpec, Tier, provider_configured
 from lingard_llm.prompts import Prompt
 from lingard_llm.testing import message_text
 from lingard_llm.usage import MemoryUsageSink, UsageCallback, UsageSink
@@ -45,12 +45,22 @@ def default_factory(spec: ModelSpec) -> BaseChatModel:
             kwargs["effort"] = spec.effort
         return ChatAnthropic(**kwargs)
     if spec.provider == "openai":
-        try:
-            from langchain_openai import ChatOpenAI  # type: ignore[import-not-found,unused-ignore]
-        except ImportError as exc:  # optional provider
-            raise RuntimeError("install langchain-openai to use provider=openai") from exc
-        model: BaseChatModel = ChatOpenAI(model=spec.model, max_tokens=spec.max_tokens, timeout=spec.timeout_s)
-        return model
+        from langchain_openai import ChatOpenAI
+
+        effort = {"xhigh": "high", "max": "high"}.get(spec.effort or "", spec.effort)
+        return ChatOpenAI(
+            model=spec.model,
+            max_completion_tokens=spec.max_tokens,
+            timeout=spec.timeout_s,
+            max_retries=0,
+            reasoning_effort=effort,
+        )
+    if spec.provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
+        return ChatGoogleGenerativeAI(
+            model=spec.model, max_output_tokens=spec.max_tokens, timeout=spec.timeout_s, max_retries=0
+        )
     raise ValueError(f"provider {spec.provider!r} needs an explicit model factory (tests)")
 
 
@@ -71,22 +81,35 @@ class LLMRouter:
         *,
         factory: ModelFactory = default_factory,
         sink: UsageSink | None = None,
+        available: Callable[[str], bool] | None = None,
     ) -> None:
+        """``available`` decides which providers may be used; by default a hosted provider is used only when its API
+        key is set (``PROVIDER_ENV``), so each tier falls through to whichever configured provider comes first.
+        Custom factories (tests, recorded fixtures) default to every provider being available."""
         self.config = config
+        self._available = available or (provider_configured if factory is default_factory else lambda _: True)
         self.sink: UsageSink = sink or MemoryUsageSink()
         self._factory = factory
         self._models: dict[Tier, Runnable[Any, BaseMessage]] = {}
         prices = {spec.model: spec.price for tier in config.tiers.values() for spec in tier.models}
         self._callback = UsageCallback(self.sink, prices)
 
+    def specs(self, tier: Tier) -> list[ModelSpec]:
+        """The tier's models whose provider is available, in fallback order."""
+        specs = [spec for spec in self.config.tier(tier).models if self._available(spec.provider)]
+        if not specs:
+            keys = sorted({PROVIDER_ENV.get(s.provider, s.provider) for s in self.config.tier(tier).models})
+            raise RuntimeError(f"no {tier} model available: set one of {', '.join(keys)}")
+        return specs
+
     def primary_provider(self, tier: Tier) -> str:
-        return self.config.tier(tier).models[0].provider
+        return self.specs(tier)[0].provider
 
     def runnable(self, tier: Tier) -> Runnable[Any, BaseMessage]:
         if tier not in self._models:
             tier_config = self.config.tier(tier)
             chain: list[Runnable[Any, BaseMessage]] = []
-            for spec in tier_config.models:
+            for spec in self.specs(tier):
                 model: Runnable[Any, BaseMessage] = self._factory(spec)
                 if tier_config.retries:
                     model = model.with_retry(stop_after_attempt=tier_config.retries + 1, wait_exponential_jitter=True)

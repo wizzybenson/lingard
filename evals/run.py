@@ -7,6 +7,8 @@ import asyncio
 import subprocess
 import sys
 
+from dotenv import load_dotenv
+
 import evals.suites  # noqa: F401  (registers suites)
 from evals.framework import REGISTRY, Mode, SuiteResult
 
@@ -39,6 +41,7 @@ async def run_suites(names: list[str], mode: Mode) -> list[SuiteResult]:
 
 
 def main() -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", action="append", default=[])
     parser.add_argument("--live", action="store_true")

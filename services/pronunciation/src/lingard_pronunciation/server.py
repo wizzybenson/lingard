@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from lingard_pronunciation.app import Engines, create_app
@@ -51,6 +52,7 @@ def _golden() -> GoldenSelf | None:
 
 
 def build_app(content_root: Path | None = None) -> FastAPI:
+    load_dotenv()
     root = content_root or Path(os.environ.get("LINGARD_CONTENT_ROOT", REPO_ROOT / "content"))
     return create_app(
         Engines(g2p=LexiconG2P(root), golden=_golden(), recognizer=_recognizer(), targets=load_targets(root))

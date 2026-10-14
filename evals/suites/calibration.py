@@ -6,13 +6,13 @@ Both need real model calls (live mode). Offline mode checks dataset integrity an
 from __future__ import annotations
 
 import json
-import os
 import statistics
 from pathlib import Path
 from typing import Any, get_args
 
 from evals.framework import ROOT, Gate, Mode, SuiteResult, suite
 from lingard_contracts.common import Language
+from lingard_llm.config import any_llm_configured
 
 MIN_CALIBRATION_SAMPLES = 30
 MIN_GOLDEN_ITEMS = 300
@@ -59,7 +59,7 @@ async def band_calibration(mode: Mode) -> SuiteResult:
         "ielts_samples": sum(r["pack"] == "ielts_gt" for r in rows),
         "tef_samples": sum(r["pack"] == "tef_canada" for r in rows),
     }
-    if mode == "offline" or not os.environ.get("ANTHROPIC_API_KEY"):
+    if mode == "offline" or not any_llm_configured():
         bad = [r.get("id") for r in rows if len(r.get("human_scores", [])) < 2 or not r.get("consent")]
         notes = [
             f"{counts} human-rated samples; need ≥ {MIN_CALIBRATION_SAMPLES} per pack and skill (founder input #3)"
@@ -109,7 +109,7 @@ async def correction_precision(mode: Mode) -> SuiteResult:
         f"golden items: { {k: len(v) for k, v in by_language.items()} } (target ≥ {MIN_GOLDEN_ITEMS} each)",
         f"drafted items awaiting native review: {unreviewed}",
     ]
-    if mode == "offline" or not os.environ.get("ANTHROPIC_API_KEY"):
+    if mode == "offline" or not any_llm_configured():
         positives = {lang: sum(r["has_error"] for r in rows) for lang, rows in by_language.items()}
         metrics.update({f"{lang}_positives": float(n) for lang, n in positives.items()})
         return SuiteResult("correction_precision", mode, metrics, [], notes=notes)

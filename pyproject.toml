@@ -18,6 +18,7 @@ dependencies = [
     "lingard-world",
     "lingard-storage",
     "lingard-db",
+    "python-dotenv>=1.0",
 ]
 
 [dependency-groups]

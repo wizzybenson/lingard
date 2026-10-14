@@ -1,5 +1,7 @@
 # Tier → ordered models (primary first, fallbacks after). SPEC §10: tiers are config keys, not hard-coded IDs.
-# Prices: Anthropic first-party API rates, USD per million tokens.
+# Prices: first-party API rates, USD per million tokens. A model is used only when its provider's key is set
+# (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY), so any one key is enough; the first configured one wins.
+# gemini-3.8-flash: promotional price until 2026-12-31, then 1.50 / 7.50 / 0.15.
 tiers:
   fast:
     retries: 0            # live plane: a retry costs more latency than a fallback
@@ -16,6 +18,17 @@ tiers:
         effort: low
         timeout_s: 8
         price: {input: 2.00, output: 10.00, cache_read: 0.20, source_url: "https://docs.anthropic.com/en/docs/about-claude/models", as_of: "2026-10-06"}
+      - provider: openai
+        model: gpt-6-luna
+        max_tokens: 1024
+        effort: low
+        timeout_s: 8
+        price: {input: 0.1, output: 0.5, cache_read: 0.01, source_url: "https://developers.openai.com/api/docs/pricing", as_of: "2026-10-14"}
+      - provider: google
+        model: gemini-3.1-flash-lite
+        max_tokens: 1024
+        timeout_s: 8
+        price: {input: 0.25, output: 1.5, cache_read: 0.025, source_url: "https://ai.google.dev/gemini-api/docs/pricing", as_of: "2026-10-14"}
   mid:
     retries: 1
     models:
@@ -31,6 +44,17 @@ tiers:
         effort: low
         timeout_s: 60
         price: {input: 4.00, output: 20.00, cache_read: 0.20, source_url: "https://docs.anthropic.com/en/docs/about-claude/models", as_of: "2026-10-06"}
+      - provider: openai
+        model: gpt-6.1-sol
+        max_tokens: 8192
+        effort: medium
+        timeout_s: 60
+        price: {input: 2.0, output: 10.0, cache_read: 0.1, source_url: "https://developers.openai.com/api/docs/pricing", as_of: "2026-10-14"}
+      - provider: google
+        model: gemini-3.8-flash
+        max_tokens: 8192
+        timeout_s: 60
+        price: {input: 0.75, output: 3.75, cache_read: 0.075, source_url: "https://ai.google.dev/gemini-api/docs/pricing", as_of: "2026-10-14"}
   frontier:
     retries: 1
     models:
@@ -46,3 +70,14 @@ tiers:
         effort: high
         timeout_s: 180
         price: {input: 2.00, output: 10.00, cache_read: 0.20, source_url: "https://docs.anthropic.com/en/docs/about-claude/models", as_of: "2026-10-06"}
+      - provider: openai
+        model: gpt-6-astra
+        max_tokens: 16000
+        effort: high
+        timeout_s: 180
+        price: {input: 10.0, output: 50.0, cache_read: 1.0, source_url: "https://developers.openai.com/api/docs/pricing", as_of: "2026-10-14"}
+      - provider: google
+        model: gemini-3.1-pro-preview
+        max_tokens: 16000
+        timeout_s: 180
+        price: {input: 2.0, output: 12.0, cache_read: 0.2, source_url: "https://ai.google.dev/gemini-api/docs/pricing", as_of: "2026-10-14"}

@@ -1,12 +1,11 @@
 """``contract_adherence`` (SPEC §20): fact violations 0, language leaks 0, targets elicited ≥ 85%.
 
 Offline: 50 scenes × planted violations and clean lines through the real Contract Guard (no LLM).
-Live: real actor + simulated learner per scene; an independent judge checks delivered lines (needs ANTHROPIC_API_KEY).
+Live: real actor + simulated learner per scene; an independent judge checks delivered lines (needs any LLM key).
 """
 
 from __future__ import annotations
 
-import os
 import re
 from collections import Counter
 from typing import Any
@@ -18,6 +17,7 @@ from evals.scenes import eval_scenes
 from lingard_live.guard import ContractGuard, Verdict
 from lingard_live.languages import LanguageIdentifier, load_language
 from lingard_live.scene import build_scene
+from lingard_llm.config import any_llm_configured
 from lingard_world import load_city
 
 GATES = [
@@ -99,7 +99,7 @@ async def live() -> SuiteResult:
 @suite("contract_adherence", watches=("services/live/", "content/languages/", "prompts/npc_actor/", "content/cities/"))
 async def run(mode: Mode) -> SuiteResult:
     if mode == "live":
-        if not os.environ.get("ANTHROPIC_API_KEY"):
-            return SuiteResult("contract_adherence", "live", {}, GATES, notes=["skipped: ANTHROPIC_API_KEY not set"])
+        if not any_llm_configured():
+            return SuiteResult("contract_adherence", "live", {}, GATES, notes=["skipped: no LLM provider key set"])
         return await live()
     return await offline()

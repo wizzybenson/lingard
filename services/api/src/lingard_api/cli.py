@@ -6,6 +6,8 @@ import argparse
 import asyncio
 import getpass
 
+from dotenv import load_dotenv
+
 from lingard_api.settings import Settings
 from lingard_api.state import AppState
 from lingard_curriculum.seed import load_seed, seed_graph
@@ -36,6 +38,7 @@ async def bootstrap_admin(settings: Settings, name: str, pin: str) -> str:
 
 
 def main() -> None:
+    load_dotenv()
     parser = argparse.ArgumentParser(prog="lingard-api")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("migrate")

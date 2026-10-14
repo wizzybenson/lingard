@@ -11,6 +11,7 @@ import logging
 import uuid
 from typing import cast
 
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from redis.asyncio import Redis
 
@@ -96,6 +97,7 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
 
 
 async def main() -> None:
+    load_dotenv()
     telemetry.setup("live")
     settings = LiveSettings()
     redis = Redis.from_url(settings.redis_url, decode_responses=True)

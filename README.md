@@ -58,12 +58,18 @@ on the sign-in screen.
 
 ### Provider keys
 
-Without keys, the LLM, speech-to-text and text-to-speech paths only run against scripted test models. Put keys in
-`.env` (never commit it):
+Without keys, the LLM, speech-to-text and text-to-speech paths only run against scripted test models. Copy
+`.env.example` to `.env` (never commit it) and fill in what you have. Each group uses the first provider that is
+configured and falls back to the next configured one, so one key per group is enough:
 
-- `ANTHROPIC_API_KEY`: the fast/mid/frontier LLM tiers (`config/llm.yaml`)
-- STT: `VOICEBOX_URL` (self-hosted) or `OPENAI_API_KEY`
-- TTS: `VOICEBOX_URL`, `ELEVENLABS_API_KEY` or `OPENAI_API_KEY`
+| Group | Providers, in preference order |
+| --- | --- |
+| Language models (`config/llm.yaml`) | `ANTHROPIC_API_KEY` → `OPENAI_API_KEY` → `GOOGLE_API_KEY` |
+| Speech-to-text | `VOICEBOX_URL` → `DEEPGRAM_API_KEY` → `OPENAI_API_KEY` → `ELEVENLABS_API_KEY` |
+| Text-to-speech | `VOICEBOX_URL` → `ELEVENLABS_API_KEY` → `OPENAI_API_KEY` |
+| Voice clone and golden self | `VOICEBOX_URL` or `ELEVENLABS_API_KEY` (golden self: ElevenLabs only) |
+
+Tests never use these keys: a root fixture clears them, so a filled-in `.env` can't make a test call a paid API.
 
 ## Checks
 

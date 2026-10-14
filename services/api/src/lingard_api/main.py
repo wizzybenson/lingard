@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,4 +44,5 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
     return app
 
 
+load_dotenv()  # exports .env so provider SDKs that read os.environ (e.g. ANTHROPIC_API_KEY) see it
 app = create_app()

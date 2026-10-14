@@ -30,4 +30,4 @@ accuracy number can be honestly measured yet.
    `uv run python -m tools.content_cli.review_golden fr --reviewer NAME` (then `en`). Each row is accepted, corrected,
    relabelled or deleted, and saved immediately, so a review can stop and resume. The suite reports
    `<lang>_unreviewed`; the gate counts only once that is 0 and ≥ 300 items remain per language.
-3. Set `ANTHROPIC_API_KEY`, then run `uv run python -m evals.run --live --suite correction_precision --suite band_calibration`.
+3. Set any LLM key (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY` or `GOOGLE_API_KEY`), then run `uv run python -m evals.run --live --suite correction_precision --suite band_calibration`.

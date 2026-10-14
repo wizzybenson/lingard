@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Literal
 
@@ -9,8 +10,25 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 Tier = Literal["fast", "mid", "frontier"]
-Provider = Literal["anthropic", "openai", "scripted", "recorded"]
+Provider = Literal["anthropic", "openai", "google", "scripted", "recorded"]
+
+PROVIDER_ENV: dict[str, str] = {
+    "anthropic": "ANTHROPIC_API_KEY",
+    "openai": "OPENAI_API_KEY",
+    "google": "GOOGLE_API_KEY",
+}
+"""The environment variable that switches each hosted provider on. Offline providers need none."""
 Effort = Literal["low", "medium", "high", "xhigh", "max"]
+
+
+def provider_configured(provider: str) -> bool:
+    """True when the provider can be called: its API key is set, or it is an offline provider."""
+    variable = PROVIDER_ENV.get(provider)
+    return variable is None or bool(os.environ.get(variable, "").strip())
+
+
+def any_llm_configured() -> bool:
+    return any(provider_configured(p) for p in PROVIDER_ENV)
 
 
 class Price(BaseModel):

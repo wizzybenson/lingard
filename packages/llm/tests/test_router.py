@@ -102,7 +102,7 @@ def test_anthropic_system_prefix_gets_cache_breakpoint() -> None:
     router, _ = router_with({}, config("a"))
     assert router.messages("fast", "persona", "hi")[0].content == "persona"
     cfg = LLMConfig.load(ROOT / "config/llm.yaml")
-    anthropic_router = LLMRouter(cfg)
+    anthropic_router = LLMRouter(cfg, available=lambda provider: provider == "anthropic")
     system = anthropic_router.messages("fast", "persona", "hi")[0]
     assert isinstance(system.content, list)
     assert system.content[0]["cache_control"] == {"type": "ephemeral"}  # type: ignore[index]
@@ -127,3 +127,26 @@ async def test_recorded_model_replays_and_records(tmp_path: Path) -> None:
     assert (await recorder.ainvoke(messages)).content == "Salut"
     assert (tmp_path / f"{fixture_key(messages)}.json").is_file()
     assert (await replay.ainvoke(messages)).content == "Salut"
+
+
+def test_only_providers_with_keys_are_used(monkeypatch: pytest.MonkeyPatch) -> None:
+    cfg = LLMConfig.load(ROOT / "config/llm.yaml")
+    for variable in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.delenv(variable, raising=False)
+    router = LLMRouter(cfg)
+    with pytest.raises(RuntimeError, match="set one of ANTHROPIC_API_KEY, GOOGLE_API_KEY, OPENAI_API_KEY"):
+        router.specs("fast")
+
+    monkeypatch.setenv("GOOGLE_API_KEY", "g-test")
+    assert [s.provider for s in router.specs("mid")] == ["google"]
+    assert router.primary_provider("fast") == "google"
+
+    monkeypatch.setenv("OPENAI_API_KEY", "o-test")
+    assert [s.model for s in router.specs("frontier")] == ["gpt-6-astra", "gemini-3.1-pro-preview"]
+    monkeypatch.setenv("ANTHROPIC_API_KEY", " ")  # blank counts as unset
+    assert router.primary_provider("fast") == "openai"
+
+
+def test_custom_factories_see_every_provider() -> None:
+    router, _ = router_with({}, config("a"))
+    assert [s.model for s in router.specs("fast")] == ["a"]

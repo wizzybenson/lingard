@@ -44,8 +44,11 @@ def decode_audio(data: bytes) -> bytes:
 def _live_settings(state: State) -> LiveSettings:
     settings = state.settings
     return LiveSettings(
+        _env_file=None,  # the API settings are the single source of provider keys
         voicebox_url=settings.voicebox_url,
         elevenlabs_api_key=settings.elevenlabs_api_key,
+        openai_api_key=settings.openai_api_key,
+        deepgram_api_key=settings.deepgram_api_key,
         content_root=settings.content_root,
     )
 

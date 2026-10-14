@@ -60,6 +60,49 @@ class OpenAIStt:
         return Transcript(text=body.get("text", "").strip(), confidence=confidence, provider=self.name)
 
 
+class DeepgramStt:
+    name = "deepgram"
+    URL = "https://api.deepgram.com/v1/listen"
+
+    def __init__(self, api_key: str, model: str = "nova-3", timeout: float = 10.0) -> None:
+        self._key, self._model, self._timeout = api_key, model, timeout
+
+    async def transcribe(self, pcm: bytes, locale: str, prompt: str | None = None) -> Transcript:
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.post(
+                self.URL,
+                params={"model": self._model, "language": locale.split("-")[0], "smart_format": "true"},
+                headers={"Authorization": f"Token {self._key}", "Content-Type": "audio/wav"},
+                content=pcm_to_wav(pcm),
+            )
+            response.raise_for_status()
+            best = response.json()["results"]["channels"][0]["alternatives"][0]
+        return Transcript(
+            text=best.get("transcript", "").strip(), confidence=best.get("confidence"), provider=self.name
+        )
+
+
+class ElevenLabsStt:
+    name = "elevenlabs"
+    URL = "https://api.elevenlabs.io/v1/speech-to-text"
+
+    def __init__(self, api_key: str, model: str = "scribe_v2", timeout: float = 15.0) -> None:
+        self._key, self._model, self._timeout = api_key, model, timeout
+
+    async def transcribe(self, pcm: bytes, locale: str, prompt: str | None = None) -> Transcript:
+        async with httpx.AsyncClient(timeout=self._timeout) as client:
+            response = await client.post(
+                self.URL,
+                headers={"xi-api-key": self._key},
+                data={"model_id": self._model, "language_code": locale.split("-")[0], "file_format": "pcm_s16le_16"},
+                files={"file": ("turn.pcm", pcm, "application/octet-stream")},
+            )
+            response.raise_for_status()
+            body = response.json()
+        # Scribe reports language probability, not transcript confidence, so confidence stays unknown.
+        return Transcript(text=body.get("text", "").strip(), confidence=None, provider=self.name)
+
+
 class VoiceboxStt:
     """Self-hosted Whisper through voicebox ``POST /transcribe``."""
 

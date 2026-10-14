@@ -12,6 +12,7 @@ import logging
 import uuid
 from typing import cast
 
+from dotenv import load_dotenv
 from langchain_core.runnables import RunnableConfig
 from redis.asyncio import Redis
 from redis.exceptions import ResponseError
@@ -50,6 +51,7 @@ async def consume_jobs(redis: Redis, runner: JobRunner, consumer: str) -> None:
 
 
 async def main() -> None:
+    load_dotenv()
     telemetry.setup("graphs")
     settings = GraphSettings()
     engine = make_engine(settings.database_url)

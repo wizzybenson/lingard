@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     pronunciation_url: str | None = None
     """Internal pronunciation service (``lingard_pronunciation.server``); unset → Studio scoring unavailable."""
     elevenlabs_api_key: SecretStr | None = None
+    openai_api_key: SecretStr | None = None
+    deepgram_api_key: SecretStr | None = None
     audio_retention_days: int = 30
 
     jwt_secret: SecretStr = SecretStr("local-dev-only-change-me-0123456789abcdef")

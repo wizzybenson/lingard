@@ -8,6 +8,8 @@ dependencies = [
     "langchain-anthropic>=1.0",
     "pyyaml>=6",
     "lingard-contracts",
+    "langchain-openai>=1.0",
+    "langchain-google-genai>=3.0",
 ]
 
 [build-system]

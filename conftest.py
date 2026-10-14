@@ -11,6 +11,23 @@ from urllib.parse import urlparse
 
 import pytest
 
+PROVIDER_VARIABLES = (
+    "ANTHROPIC_API_KEY",
+    "OPENAI_API_KEY",
+    "GOOGLE_API_KEY",
+    "ELEVENLABS_API_KEY",
+    "DEEPGRAM_API_KEY",
+    "VOICEBOX_URL",
+)
+
+
+@pytest.fixture(autouse=True)
+def _no_real_providers(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never reach a paid provider, even with a filled-in .env on the machine (CI never calls one either)."""
+    for variable in PROVIDER_VARIABLES:
+        monkeypatch.delenv(variable, raising=False)
+
+
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", "postgresql+psycopg://lingard:lingard@localhost:55432/lingard")
 TEST_REDIS_URL = os.environ.get("TEST_REDIS_URL", "redis://localhost:56379/15")
 
