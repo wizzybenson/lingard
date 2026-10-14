@@ -18,6 +18,7 @@ import httpx
 
 from lingard_contracts.live import SAMPLE_RATE, AudioChunk
 from lingard_live.audio import chunked, resample, silence, tone, wav_to_pcm
+from lingard_live.voices import OPENAI_VOICES, gender_of, pick
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,7 @@ class TtsProvider(Protocol):
 class ElevenLabsTts:
     name = "elevenlabs"
     URL = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream"
+    VOICES_URL = "https://api.elevenlabs.io/v1/voices"
 
     def __init__(
         self,
@@ -53,6 +55,26 @@ class ElevenLabsTts:
         self._model = model
         self._voices = voices or {}
         self._timeout = timeout
+        self._pools: dict[str, list[str]] | None = None
+
+    async def voice_for(self, logical_id: str) -> str:
+        """Override, else a stable pick among the account's voices of the same gender (fetched once)."""
+        if logical_id in self._voices:
+            return self._voices[logical_id]
+        if self._pools is None:
+            async with httpx.AsyncClient(timeout=self._timeout) as client:
+                response = await client.get(self.VOICES_URL, headers={"xi-api-key": self._key})
+                response.raise_for_status()
+            pools: dict[str, list[str]] = {"f": [], "m": [], "all": []}
+            for item in sorted(response.json().get("voices", []), key=lambda v: v["voice_id"]):
+                gender = str((item.get("labels") or {}).get("gender", "")).lower()
+                pools["all"].append(item["voice_id"])
+                if gender in ("female", "male"):
+                    pools[gender[0]].append(item["voice_id"])
+            if not pools["all"]:
+                raise RuntimeError("the ElevenLabs account has no voices; add some or pin them in config/voices.yaml")
+            self._pools = pools
+        return pick(self._pools[gender_of(logical_id)] or self._pools["all"], logical_id)
 
     async def stream(self, text: str, voice: VoiceSpec) -> AsyncIterator[AudioChunk]:
         body = {
@@ -61,7 +83,7 @@ class ElevenLabsTts:
             "language_code": voice.language,
             "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True},
         }
-        voice_id = self._voices.get(voice.voice_id, voice.voice_id)
+        voice_id = await self.voice_for(voice.voice_id)
         async with (
             httpx.AsyncClient(timeout=self._timeout) as client,
             client.stream(
@@ -95,7 +117,7 @@ class OpenAITts:
     async def stream(self, text: str, voice: VoiceSpec) -> AsyncIterator[AudioChunk]:
         body = {
             "model": self._model,
-            "voice": self._voices.get(voice.voice_id, "marin"),
+            "voice": self._voices.get(voice.voice_id) or pick(OPENAI_VOICES[gender_of(voice.voice_id)], voice.voice_id),
             "input": text,
             "instructions": voice.style,
             "response_format": "pcm",

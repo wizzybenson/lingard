@@ -7,6 +7,8 @@ from pydantic import SecretStr
 
 from lingard_live.settings import LiveSettings, build_stt
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt
+from lingard_live.tts import ElevenLabsTts
+from lingard_live.voices import OPENAI_VOICES, gender_of, pick
 
 PCM = b"\x00\x01" * 1600
 
@@ -69,3 +71,30 @@ async def test_elevenlabs_scribe_sends_raw_pcm(monkeypatch: pytest.MonkeyPatch) 
     result = await ElevenLabsStt("el-key").transcribe(PCM, "en-GB")
     assert (result.text, result.confidence, result.provider) == ("Hello there", None, "elevenlabs")
     assert seen == {"key": "el-key", "pcm": True, "model": True}
+
+
+async def test_elevenlabs_maps_logical_voices_to_account_voices(monkeypatch: pytest.MonkeyPatch) -> None:
+    voices = [
+        {"voice_id": "v-f1", "labels": {"gender": "female"}},
+        {"voice_id": "v-m1", "labels": {"gender": "male"}},
+        {"voice_id": "v-m2", "labels": {"gender": "male"}},
+    ]
+    fetches = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        fetches.append(request.url.path)
+        return httpx.Response(200, json={"voices": voices})
+
+    _fake(monkeypatch, httpx.MockTransport(handle))
+    tts = ElevenLabsTts("k", voices={"fr_f_41_chloe": "pinned"})
+    martin = await tts.voice_for("fr_m_58_martin")
+    assert martin in ("v-m1", "v-m2") and await tts.voice_for("fr_m_58_martin") == martin
+    assert await tts.voice_for("fr_f_46_nadia") == "v-f1"
+    assert await tts.voice_for("fr_f_41_chloe") == "pinned"
+    assert fetches == ["/v1/voices"], "the voice list is fetched once"
+
+
+def test_openai_voices_follow_gender_and_stay_stable() -> None:
+    assert gender_of("en_m_64_ron") == "m" and gender_of("narrator") == "f"
+    assert pick(OPENAI_VOICES["m"], "en_m_64_ron") == pick(OPENAI_VOICES["m"], "en_m_64_ron")
+    assert pick(OPENAI_VOICES["m"], "en_m_64_ron") in OPENAI_VOICES["m"]

@@ -1,0 +1,9 @@
+# Pin an NPC to a specific provider voice: provider → logical voice id (from content/cities/*/npcs.yaml) → voice.
+# Unlisted ids get a stable voice of the same gender: ElevenLabs picks from the voices in your account (fetched once),
+# OpenAI from its built-in voices. Example:
+#   elevenlabs:
+#     fr_m_58_martin: <voice id from your ElevenLabs voice library>
+#   openai:
+#     en_f_41_siobhan: coral
+elevenlabs: {}
+openai: {}

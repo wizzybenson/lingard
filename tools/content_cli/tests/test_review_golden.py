@@ -2,7 +2,9 @@ import json
 from collections.abc import Iterator
 from pathlib import Path
 
-from tools.content_cli.review_golden import load, review
+from lingard_llm import LLMConfig, LLMRouter, PromptRegistry
+from lingard_llm.testing import ScriptedChatModel
+from tools.content_cli.review_golden import ROOT, load, machine_review, review
 
 ROWS = [
     {"text": "Je ne pas comprends.", "has_error": True, "node_key": "fr.grammar.negation",
@@ -63,3 +65,30 @@ def test_unknown_node_key_is_refused(tmp_path: Path) -> None:
     answers = _answers("s", "f", "fr.grammar.negaton", "Ce n'est pas grave.", "q")
     review(path, "Ana", frozenset({"fr.grammar.negation"}), ask=lambda _: next(answers), out=lambda _: None)
     assert {r["text"]: r for r in load(path)}["C'est pas grave."]["has_error"] is False
+
+
+async def test_machine_review_records_verdicts_without_marking_rows_reviewed(tmp_path: Path) -> None:
+    replies = iter(
+        [
+            {"verdict": "accept", "reason": "classic negation error"},
+            {"verdict": "delete", "reason": "spoken register, unfair either way"},
+            {"verdict": "fix", "correction": "Il a posé une question.", "node_key": "fr.grammar.nope", "reason": "x"},
+            {"verdict": "fix", "correction": "Que veux-tu ?", "node_key": "fr.grammar.questions", "reason": "better"},
+        ]
+    )
+    model = ScriptedChatModel(responder=lambda _: json.dumps(next(replies)))
+    config = LLMConfig.model_validate({"tiers": {"frontier": {"models": [{"provider": "scripted", "model": "judge"}]}}})
+    router = LLMRouter(config, factory=lambda _spec: model)
+    path = _file(tmp_path)
+    nodes = frozenset({"fr.grammar.negation", "fr.grammar.questions", "fr.lex.education"})
+    counts = await machine_review(path, "fr", router, PromptRegistry(ROOT / "prompts"), nodes, "Canada")
+    rows = {r["text"]: r for r in load(path)}
+    assert counts == {"accept": 2, "delete": 1, "fix": 1}
+    assert all(r.get("reviewed") is not True for r in rows.values())
+    assert rows["C'est pas grave."]["excluded"] is True
+    unknown_node = rows["Il a demandé une question."]
+    assert unknown_node["correction"] == "Il a posé une question." and "unapplied" in unknown_node["machine_review"]
+    assert rows["Quoi tu veux ?"]["correction"] == "Que veux-tu ?"
+    assert rows["Quoi tu veux ?"]["machine_review"]["original"]["correction"] == "Qu'est-ce que tu veux ?"
+    assert "machine_review" not in rows["Bonjour."], "only drafted rows are machine-reviewed"
+    assert await machine_review(path, "fr", router, PromptRegistry(ROOT / "prompts"), nodes, "Canada") == {}

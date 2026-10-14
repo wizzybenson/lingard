@@ -103,7 +103,12 @@ async def correction_precision(mode: Mode) -> SuiteResult:
     }
     metrics: dict[str, float] = {f"{lang}_items": float(len(rows)) for lang, rows in by_language.items()}
     gates = [Gate("fr_precision", ">=", 0.95), Gate("en_precision", ">=", 0.95)]
+    # Rows a machine reviewer judged ambiguous stay in the files for a human to look at, but are not scored.
+    by_language = {lang: [r for r in rows if not r.get("excluded")] for lang, rows in by_language.items()}
     unreviewed = {lang: sum(r.get("reviewed") is False for r in rows) for lang, rows in by_language.items()}
+    machine = {lang: sum("machine_review" in r for r in rows) for lang, rows in by_language.items()}
+    metrics.update({f"{lang}_items": float(len(rows)) for lang, rows in by_language.items()})
+    metrics.update({f"{lang}_machine_checked": float(n) for lang, n in machine.items()})
     metrics.update({f"{lang}_unreviewed": float(n) for lang, n in unreviewed.items()})
     notes = [
         f"golden items: { {k: len(v) for k, v in by_language.items()} } (target ≥ {MIN_GOLDEN_ITEMS} each)",

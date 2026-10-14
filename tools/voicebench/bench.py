@@ -80,14 +80,17 @@ def _sampler(profile: dict[str, Any], rng: random.Random) -> Callable[[str], flo
     return draw
 
 
-async def run_bench(*, mode: str, turns: int, profile_name: str = "assumed_cloud", seed: int = 7) -> BenchReport:
+async def run_bench(*, mode: str, turns: int, profile_name: str | None = None, seed: int = 7) -> BenchReport:
+    """``profile_name`` defaults to ``measured`` (written by ``tools.voicebench.probe``) when present."""
     report = BenchReport()
     if mode == "live":
         report.notes.append("live latency needs provider keys and a LiveKit room; see docs/gates/phase-1.md")
         return report
     from evals.scenes import eval_scenes
 
-    profile = yaml.safe_load((Path(__file__).parent / "profiles.yaml").read_text())[profile_name]
+    profiles = yaml.safe_load((Path(__file__).parent / "profiles.yaml").read_text())
+    profile_name = profile_name or ("measured" if "measured" in profiles else "assumed_cloud")
+    profile = profiles[profile_name]
     report.notes.append(f"provider latencies from profile '{profile_name}' ({profile['status']}, {profile['as_of']})")
     rng = random.Random(seed)  # noqa: S311
     draw = _sampler(profile, rng)

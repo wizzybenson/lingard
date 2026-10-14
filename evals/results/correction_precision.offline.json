@@ -4,6 +4,8 @@
   "metrics": {
     "fr_items": 366.0,
     "en_items": 349.0,
+    "fr_machine_checked": 0.0,
+    "en_machine_checked": 0.0,
     "fr_unreviewed": 207.0,
     "en_unreviewed": 231.0,
     "fr_positives": 122.0,
@@ -15,6 +17,6 @@
     "drafted items awaiting native review: {'fr': 207, 'en': 231}"
   ],
   "samples": [],
-  "ran_at": "2026-10-14T19:23:03+00:00",
+  "ran_at": "2026-10-14T19:30:31+00:00",
   "status": "INCOMPLETE"
 }

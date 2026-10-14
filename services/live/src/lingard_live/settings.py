@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt, OpenAIStt, SttProvider, VoiceboxStt
 from lingard_live.tts import CachingTts, ElevenLabsTts, FallbackTts, OpenAITts, TtsProvider, VoiceboxTts
+from lingard_live.voices import load_overrides
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -23,6 +24,7 @@ class LiveSettings(BaseSettings):
     content_root: Path = REPO_ROOT / "content"
     prompts_root: Path = REPO_ROOT / "prompts"
     llm_config: Path = REPO_ROOT / "config" / "llm.yaml"
+    voices_config: Path = REPO_ROOT / "config" / "voices.yaml"
     voicebox_url: str | None = None
     openai_api_key: SecretStr | None = None
     elevenlabs_api_key: SecretStr | None = None
@@ -36,7 +38,8 @@ def _secret(value: SecretStr | None) -> str | None:
     return value.get_secret_value() if value else None
 
 
-def build_stt(settings: LiveSettings) -> SttProvider:
+def stt_providers(settings: LiveSettings) -> dict[str, SttProvider]:
+    """Every speech-to-text provider that has a key or URL, in preference order."""
     available: dict[str, SttProvider] = {}
     if settings.voicebox_url:
         available["voicebox"] = VoiceboxStt(settings.voicebox_url)
@@ -46,7 +49,11 @@ def build_stt(settings: LiveSettings) -> SttProvider:
         available["openai"] = OpenAIStt(key)
     if key := _secret(settings.elevenlabs_api_key):
         available["elevenlabs"] = ElevenLabsStt(key)
-    chain = [available[name] for name in settings.stt_order if name in available]
+    return {name: available[name] for name in settings.stt_order if name in available}
+
+
+def build_stt(settings: LiveSettings) -> SttProvider:
+    chain = list(stt_providers(settings).values())
     if not chain:
         raise RuntimeError(
             "no STT provider configured (set VOICEBOX_URL, DEEPGRAM_API_KEY, OPENAI_API_KEY or ELEVENLABS_API_KEY)"
@@ -57,15 +64,21 @@ def build_stt(settings: LiveSettings) -> SttProvider:
     return provider
 
 
-def build_tts(settings: LiveSettings) -> TtsProvider:
+def tts_providers(settings: LiveSettings) -> dict[str, TtsProvider]:
+    """Every text-to-speech provider that has a key or URL, in preference order."""
     available: dict[str, TtsProvider] = {}
     if settings.voicebox_url:
         available["voicebox"] = VoiceboxTts(settings.voicebox_url)
+    overrides = load_overrides(settings.voices_config)
     if key := _secret(settings.elevenlabs_api_key):
-        available["elevenlabs"] = ElevenLabsTts(key)
+        available["elevenlabs"] = ElevenLabsTts(key, voices=overrides.get("elevenlabs"))
     if key := _secret(settings.openai_api_key):
-        available["openai"] = OpenAITts(key)
-    chain = [available[name] for name in settings.tts_order if name in available]
+        available["openai"] = OpenAITts(key, voices=overrides.get("openai"))
+    return {name: available[name] for name in settings.tts_order if name in available}
+
+
+def build_tts(settings: LiveSettings) -> TtsProvider:
+    chain = list(tts_providers(settings).values())
     if not chain:
         raise RuntimeError("no TTS provider configured (set VOICEBOX_URL, ELEVENLABS_API_KEY or OPENAI_API_KEY)")
     provider = chain[-1]
