@@ -14,6 +14,7 @@ import type { Location } from "@/world/types";
 const POLL_MS = 2500;
 // Loaded on first render, after the root layout has initialised Skia (CanvasKit on the web).
 const CityCanvas = lazy(() => import("@/world/renderer/CityCanvas").then((m) => ({ default: m.CityCanvas })));
+const LocationArt = lazy(() => import("@/world/renderer/LocationArt").then((m) => ({ default: m.LocationArt })));
 
 export default function City() {
   const { t } = useTranslation();
@@ -73,6 +74,11 @@ export default function City() {
         ))}
       {selected && world.data && (
         <Card>
+          {selected.layer_art && selected.layer_art.length > 0 && (
+            <Suspense fallback={null}>
+              <LocationArt api={api} layers={selected.layer_art} width={Math.min(width, 760) - 64} />
+            </Suspense>
+          )}
           <Title>{selected.name}</Title>
           <Body>{selected.description}</Body>
           <Body muted>{npcsAt(world.data, selected.key).map((n) => n.name).join(", ") || t("city.nobodyHere")}</Body>

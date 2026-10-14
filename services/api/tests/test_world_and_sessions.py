@@ -107,3 +107,9 @@ async def test_city_catalogue_comes_from_content(api) -> None:  # type: ignore[n
     assert entries["ashford"]["pack_name"] == "IELTS General Training"
     world = await api.client.get("/v1/world/ashford", headers=api.bearer(token))
     assert world.json()["palette"]["sky"] == ["#dfe6ee", "#9aa9bd"]
+
+
+async def test_location_art_is_served_without_sign_in(api) -> None:  # type: ignore[no-untyped-def]
+    response = await api.client.get("/v1/art/rivemont/vieux_port/apartment_bg.svg")
+    assert response.status_code == 200 and response.text.startswith("<svg")
+    assert (await api.client.get("/v1/art/../city.yaml")).status_code == 404

@@ -18,7 +18,7 @@ districts:
         description: A one-bedroom flat above a launderette, with a patch of damp in the bathroom.
         x: 0.25
         y: 0.4
-        layer_art: [ashford/station_quarter/flat_bg.png, ashford/station_quarter/flat_mid.png]
+        layer_art: [ashford/station_quarter/flat_bg.svg, ashford/station_quarter/flat_mid.svg]
         hotspots:
           - {key: graham, kind: npc, label: Graham Pike, npc_key: landlord_graham, x: 0.6, y: 0.55}
           - {key: damp, kind: object, label: Damp patch, x: 0.3, y: 0.35, text: "A grey patch of damp about the size of a dinner plate."}
@@ -28,7 +28,7 @@ districts:
         description: A busy café opposite the station, run by Siobhan for eight years.
         x: 0.55
         y: 0.6
-        layer_art: [ashford/station_quarter/cafe_bg.png, ashford/station_quarter/cafe_mid.png]
+        layer_art: [ashford/station_quarter/cafe_bg.svg, ashford/station_quarter/cafe_mid.svg]
         hotspots:
           - {key: siobhan, kind: npc, label: Siobhan Kelly, npc_key: cafe_siobhan, x: 0.45, y: 0.5}
           - {key: menu, kind: sign, label: Menu, x: 0.8, y: 0.3, text: "Flat white £3.10 · Bacon roll £4.20 · Soup of the day £5.50"}
@@ -38,7 +38,7 @@ districts:
         description: A small high-street branch where newcomers open their first UK account.
         x: 0.8
         y: 0.32
-        layer_art: [ashford/station_quarter/bank_bg.png, ashford/station_quarter/bank_mid.png]
+        layer_art: [ashford/station_quarter/bank_bg.svg, ashford/station_quarter/bank_mid.svg]
         hotspots:
           - {key: daniel, kind: npc, label: Daniel Osei, npc_key: bank_daniel, x: 0.5, y: 0.52}
           - {key: leaflet, kind: sign, label: Leaflet, x: 0.2, y: 0.6, text: "Newcomer account: no monthly fee for the first year."}
@@ -53,7 +53,7 @@ districts:
         description: A ground-floor office full of leaflets, where people work on their CVs and practise for interviews.
         x: 0.25
         y: 0.45
-        layer_art: [ashford/kingsway/job_centre_bg.png, ashford/kingsway/job_centre_mid.png]
+        layer_art: [ashford/kingsway/job_centre_bg.svg, ashford/kingsway/job_centre_mid.svg]
         hotspots:
           - {key: priya, kind: npc, label: Priya Shah, npc_key: adviser_priya, x: 0.55, y: 0.5}
           - {key: vacancies, kind: sign, label: Vacancies, x: 0.2, y: 0.3, text: "Warehouse operative (nights) · Bilingual receptionist · Kitchen porter. Interviews on Thursdays."}
@@ -63,7 +63,7 @@ districts:
         description: A busy GP surgery whose phone lines open at eight sharp.
         x: 0.6
         y: 0.3
-        layer_art: [ashford/kingsway/surgery_bg.png, ashford/kingsway/surgery_mid.png]
+        layer_art: [ashford/kingsway/surgery_bg.svg, ashford/kingsway/surgery_mid.svg]
         hotspots:
           - {key: tom, kind: npc, label: Tom Fletcher, npc_key: receptionist_tom, x: 0.5, y: 0.55}
           - {key: poster, kind: sign, label: Poster, x: 0.2, y: 0.35, text: "New patients: please bring photo ID and proof of address to register."}
@@ -72,7 +72,7 @@ districts:
         description: An old family hardware shop that sells everything from screws to advice.
         x: 0.8
         y: 0.6
-        layer_art: [ashford/kingsway/hardware_bg.png, ashford/kingsway/hardware_mid.png]
+        layer_art: [ashford/kingsway/hardware_bg.svg, ashford/kingsway/hardware_mid.svg]
         hotspots:
           - {key: ron, kind: npc, label: Ron Hargreaves, npc_key: hardware_ron, x: 0.45, y: 0.5}
           - {key: hire, kind: sign, label: Tool hire, x: 0.75, y: 0.3, text: "Hire by the day: drill £12, ladder £8."}
@@ -88,7 +88,7 @@ districts:
         description: A red-brick Victorian building that hosts council meetings and public consultations.
         x: 0.3
         y: 0.35
-        layer_art: [ashford/civic_quarter/town_hall_bg.png, ashford/civic_quarter/town_hall_mid.png]
+        layer_art: [ashford/civic_quarter/town_hall_bg.svg, ashford/civic_quarter/town_hall_mid.svg]
         hotspots:
           - {key: margaret, kind: npc, label: Margaret Doyle, npc_key: council_margaret, x: 0.5, y: 0.55}
           - {key: consultation, kind: sign, label: Consultation notice, x: 0.2, y: 0.3, text: "Public consultation: proposed cycle lane on Station Road. Tuesday 7 pm, Council Chamber."}
@@ -97,7 +97,7 @@ districts:
         description: The central library, with a room upstairs where a public debate is held every month.
         x: 0.62
         y: 0.55
-        layer_art: [ashford/civic_quarter/library_bg.png, ashford/civic_quarter/library_mid.png]
+        layer_art: [ashford/civic_quarter/library_bg.svg, ashford/civic_quarter/library_mid.svg]
         hotspots:
           - {key: femi, kind: npc, label: Femi Adeyemi, npc_key: librarian_femi, x: 0.45, y: 0.5}
           - {key: debate, kind: sign, label: This month's debate, x: 0.78, y: 0.3, text: "Public debate: should rents be capped in the Station Quarter? First Thursday of the month, 6.30 pm."}
@@ -106,7 +106,7 @@ districts:
         description: The local newspaper office, cluttered with old editions and half-finished mugs of tea.
         x: 0.82
         y: 0.3
-        layer_art: [ashford/civic_quarter/gazette_bg.png, ashford/civic_quarter/gazette_mid.png]
+        layer_art: [ashford/civic_quarter/gazette_bg.svg, ashford/civic_quarter/gazette_mid.svg]
         hotspots:
           - {key: lucy, kind: npc, label: Lucy Brennan, npc_key: reporter_lucy, x: 0.5, y: 0.5}
           - {key: front_page, kind: object, label: Today's front page, x: 0.25, y: 0.6, text: "\"Damp, mould and silence: renters speak out\""}

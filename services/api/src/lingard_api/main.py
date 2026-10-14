@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from lingard_api.routes import admin, auth, economy, glance, learning, me, sessions, speech, studio, voice, world
 from lingard_api.settings import Settings, get_settings
@@ -36,6 +37,9 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
     )
     for module in (auth, me, admin, world, sessions, learning, economy, voice, glance, speech, studio):
         app.include_router(module.router)
+
+    # Location artwork is original public content (tools/content_cli/art.py), so it needs no sign-in.
+    app.mount("/v1/art", StaticFiles(directory=config.content_root / "art"), name="art")
 
     @app.get("/v1/health")
     async def health() -> dict[str, str]:

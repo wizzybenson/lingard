@@ -77,6 +77,16 @@ export class ApiClient {
   }
 
   async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const response = await this.checked(path, init);
+    return (response.status === 204 ? undefined : await response.json()) as T;
+  }
+
+  /** A text resource, such as an SVG layer. */
+  async text(path: string): Promise<string> {
+    return (await this.checked(path, {})).text();
+  }
+
+  private async checked(path: string, init: RequestInit): Promise<Response> {
     let tokens = await this.store.load();
     let response = await this.raw(path, init, tokens?.accessToken);
     if (response.status === 401 && tokens) {
@@ -93,7 +103,7 @@ export class ApiClient {
       }
       throw new ApiError(response.status, detail);
     }
-    return (response.status === 204 ? undefined : await response.json()) as T;
+    return response;
   }
 
   /** For media players that fetch by URL themselves (listening items, golden-self audio). */
