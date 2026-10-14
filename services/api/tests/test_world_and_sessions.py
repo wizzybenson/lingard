@@ -23,8 +23,11 @@ async def test_world_view_respects_band_unlocks(api) -> None:  # type: ignore[no
     assert (await api.client.get("/v1/world/atlantis", headers=api.bearer(token))).status_code == 422
 
 
-async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api) -> None:  # type: ignore[no-untyped-def]
+async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     token = await api.admin_token("Founder", PIN)
+    unconfigured = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
+    assert unconfigured.status_code == 503 and "ANTHROPIC_API_KEY" in unconfigured.json()["detail"]
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")  # the graphs themselves run on the test's scripted models
     started = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
     assert started.status_code == 202
     session_id = started.json()["id"]

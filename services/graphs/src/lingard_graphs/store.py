@@ -95,6 +95,10 @@ class LearnerStore(Protocol):
         """Store the plan on ``session_id`` (marking it ready) or on a new session; returns the session id."""
         ...
 
+    async def fail_day_plan(self, session_id: uuid.UUID, reason: str) -> None:
+        """Mark a session whose planning gave up, so the client stops waiting and can say why."""
+        ...
+
     async def world_state(self, user_id: uuid.UUID, city: str) -> dict[str, Any]: ...
 
     async def save_world_state(self, user_id: uuid.UUID, city: str, state: dict[str, Any]) -> None: ...
@@ -146,6 +150,7 @@ class MemoryStore:
     )
     fsrs_by_user: dict[uuid.UUID, dict[str, dict[str, Any]]] = field(default_factory=lambda: defaultdict(dict))
     plans: dict[uuid.UUID, DayPlan] = field(default_factory=dict)
+    failed_plans: dict[uuid.UUID, str] = field(default_factory=dict)
     worlds: dict[tuple[uuid.UUID, str], dict[str, Any]] = field(default_factory=dict)
     relationships: dict[tuple[uuid.UUID, str], tuple[float, str]] = field(default_factory=dict)
     notebooks: dict[tuple[uuid.UUID, uuid.UUID], dict[str, Any]] = field(default_factory=dict)
@@ -236,6 +241,9 @@ class MemoryStore:
         plan_id = session_id or uuid.uuid4()
         self.plans[plan_id] = plan
         return plan_id
+
+    async def fail_day_plan(self, session_id: uuid.UUID, reason: str) -> None:
+        self.failed_plans[session_id] = reason
 
     async def world_state(self, user_id: uuid.UUID, city: str) -> dict[str, Any]:
         return dict(self.worlds.get((user_id, city), {"story_flags": {}, "district_unlocks": [], "inventory": []}))

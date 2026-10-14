@@ -12,6 +12,7 @@ from sqlalchemy import select
 from lingard_api.deps import Db, Principal, State
 from lingard_api.graph_runtime import Step, ThreadAccessError
 from lingard_api.jobs import GRAPH_JOBS
+from lingard_api.routes.speech import require_providers
 from lingard_contracts.assessment import BandEstimate
 from lingard_contracts.common import LANGUAGE_CITY, Language, PackId, Skill, node_language
 from lingard_db.models import BandPosterior, Lesson, SimCrsSnapshot, WritingSubmission
@@ -73,12 +74,15 @@ def _interactive(state: State) -> Any:
 
 @router.post("/placement", response_model=StepView, status_code=201)
 async def start_placement(body: PlacementBody, principal: Principal, state: State) -> StepView:
+    if body.path != "skip":
+        require_providers(state, llm=True, tts=True)
     step = await _interactive(state).start("placement", principal.user_id, body.model_dump())
     return StepView.of(step)
 
 
 @router.post("/exams", response_model=StepView, status_code=201)
 async def start_exam(body: ExamBody, principal: Principal, state: State) -> StepView:
+    require_providers(state, llm=True, tts=True)
     return StepView.of(await _interactive(state).start("exam", principal.user_id, body.model_dump()))
 
 

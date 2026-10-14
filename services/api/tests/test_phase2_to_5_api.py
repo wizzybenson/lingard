@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from lingard_db.models import AuditLog, User, VoiceProfile
 from lingard_economy.rewards import LedgerEntry
+from lingard_live.tts import ScriptedTts
 from lingard_pronunciation.clone import FakeClone
 from lingard_storage import AUDIO_BUCKET, MemoryObjectStore, user_prefix
 
@@ -40,7 +41,7 @@ async def learner(api, name: str = "Lina") -> tuple[str, str]:  # type: ignore[n
     return token, created["user_id"]
 
 
-async def test_placement_skip_passport_and_thread_ownership(api) -> None:  # type: ignore[no-untyped-def]
+async def test_placement_skip_passport_and_thread_ownership(api, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     token, _ = await learner(api)
     started = await api.client.post("/v1/placement", json={"language": "fr", "path": "skip"}, headers=api.bearer(token))
     assert started.status_code == 201 and started.json()["done"] is True
@@ -48,7 +49,12 @@ async def test_placement_skip_passport_and_thread_ownership(api) -> None:  # typ
     passport = (await api.client.get("/v1/passport", headers=api.bearer(token))).json()
     assert len(passport["bands"]) == 4 and all(b["low80"] < b["mean"] < b["high80"] for b in passport["bands"])
     assert "not an official assessment" in passport["disclaimer"]
-    quick = await api.client.post("/v1/placement", json={"language": "fr", "path": "quick"}, headers=api.bearer(token))
+    body = {"language": "fr", "path": "quick"}
+    unconfigured = await api.client.post("/v1/placement", json=body, headers=api.bearer(token))
+    assert unconfigured.status_code == 503 and "text-to-speech" in unconfigured.json()["detail"]
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")  # the graphs run on the test's scripted models
+    api.state.tts = ScriptedTts()
+    quick = await api.client.post("/v1/placement", json=body, headers=api.bearer(token))
     thread = quick.json()["thread_id"]
     assert quick.json()["prompt"]["kind"] == "item" and "answer" not in json.dumps(quick.json()["prompt"])
     other, _ = await learner(api, "Omar")

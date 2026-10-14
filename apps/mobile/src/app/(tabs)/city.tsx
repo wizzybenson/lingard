@@ -12,6 +12,7 @@ import { npcsAt, unlockedLocations } from "@/world/model";
 import type { Location } from "@/world/types";
 
 const POLL_MS = 2500;
+const PLAN_TIMEOUT_MS = 3 * 60 * 1000; // a day plan normally takes well under a minute
 // Loaded on first render, after the root layout has initialised Skia (CanvasKit on the web).
 const CityCanvas = lazy(() => import("@/world/renderer/CityCanvas").then((m) => ({ default: m.CityCanvas })));
 const LocationArt = lazy(() => import("@/world/renderer/LocationArt").then((m) => ({ default: m.LocationArt })));
@@ -33,10 +34,13 @@ export default function City() {
     setError(null);
     try {
       let session = await api.post<SessionView>("/v1/sessions", { city });
+      const deadline = Date.now() + PLAN_TIMEOUT_MS;
       while (session.status === "planning") {
+        if (Date.now() > deadline) throw new Error(t("city.planningTimeout"));
         await new Promise((r) => setTimeout(r, POLL_MS));
         session = await api.get<SessionView>(`/v1/sessions/${session.id}`);
       }
+      if (session.status === "failed") throw new Error(t("city.planningFailed", { reason: session.error ?? "" }));
       const first = session.scene_ids[0];
       if (first) router.push({ pathname: "/scene/[id]", params: { id: first, session: session.id } });
     } catch (e) {

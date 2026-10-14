@@ -350,6 +350,11 @@ class SqlStore:
                 .on_conflict_do_update(constraint="uq_fsrs_user_item", set_=values)
             )
 
+    async def fail_day_plan(self, session_id: uuid.UUID, reason: str) -> None:
+        async with self._sessions() as db, db.begin():
+            row = await db.get_one(m.Session, session_id)
+            row.plan = {**row.plan, "status": "failed", "error": reason}
+
     async def save_day_plan(self, plan: DayPlan, session_id: uuid.UUID | None = None) -> uuid.UUID:
         async with self._sessions() as db, db.begin():
             if session_id is not None:

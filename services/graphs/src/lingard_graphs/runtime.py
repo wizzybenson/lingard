@@ -55,6 +55,7 @@ class JobRunner:
     """Background graphs keyed by job kind. Each job runs on its own checkpoint thread (resumable after a crash)."""
 
     def __init__(self, deps: GraphDeps, saver: BaseCheckpointSaver[str] | None = None) -> None:
+        self.deps = deps
         self.graphs: dict[str, CompiledStateGraph[Any, Any, Any, Any]] = {
             "day_planner": build_day_planner(deps, saver),
             "night_consolidation": build_night_consolidation(deps, saver),
@@ -66,5 +67,11 @@ class JobRunner:
         kind = job["kind"]
         payload = {k: v for k, v in job.items() if k not in ("kind", "job_id")}
         thread = str(job.get("job_id") or uuid.uuid4())
-        result: dict[str, Any] = await self.graphs[kind].ainvoke(payload, {"configurable": {"thread_id": thread}})
+        try:
+            result: dict[str, Any] = await self.graphs[kind].ainvoke(payload, {"configurable": {"thread_id": thread}})
+        except Exception as exc:
+            if kind == "day_planner" and job.get("session_id"):
+                # The learner is waiting on this session: tell them planning failed instead of leaving it "planning".
+                await self.deps.store.fail_day_plan(uuid.UUID(str(job["session_id"])), type(exc).__name__)
+            raise
         return result

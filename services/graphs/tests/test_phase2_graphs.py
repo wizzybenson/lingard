@@ -3,6 +3,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import pytest
 from langchain_core.messages import BaseMessage
 
 from agent_memory import Query
@@ -228,3 +229,16 @@ async def test_lesson_builder_uses_real_mistakes_games_and_homework(deps: GraphD
     assert lesson.homework.targets == ["fr.grammar.si_imparfait"]
     assert lesson.homework.location_key != "rivemont.vieux_port.apartment_3b"
     assert 5 <= lesson.minutes <= 10 and result["lesson_id"] in store.lessons
+
+
+async def test_failed_day_plan_marks_the_waiting_session(deps: GraphDeps, script: Script) -> None:
+    from lingard_graphs.runtime import JobRunner
+
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    session_id = uuid.uuid4()  # no scripted planner answers, so the LLM call fails
+    with pytest.raises(Exception):  # noqa: B017  (the worker logs and acks whatever the graph raised)
+        await JobRunner(deps).run(
+            {"kind": "day_planner", "user_id": USER, "session_id": session_id, "city": "rivemont"}
+        )
+    assert session_id in store.failed_plans

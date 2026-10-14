@@ -7,7 +7,8 @@ export interface SessionView {
   id: string;
   city: string | null;
   kind: string;
-  status: "planning" | "ready" | "ended";
+  status: "planning" | "ready" | "failed" | "ended";
+  error?: string | null;
   scene_ids: string[];
   notebook: Notebook | null;
 }

@@ -13,6 +13,7 @@ from sqlalchemy import select
 from lingard_api.deps import Db, Principal, State
 from lingard_api.jobs import GRAPH_JOBS, LIVE_JOBS
 from lingard_api.livekit_token import mint_learner_token
+from lingard_api.routes.speech import require_providers
 from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_contracts.scene import SceneContract
 from lingard_db.models import LearnerProfile, Scene, Session, User
@@ -29,8 +30,9 @@ class SessionView(BaseModel):
     id: uuid.UUID
     city: str | None
     kind: str
-    status: Literal["planning", "ready", "ended"]
+    status: Literal["planning", "ready", "failed", "ended"]
     scene_ids: list[uuid.UUID]
+    error: str | None = None
     notebook: dict[str, Any] | None = None
 
 
@@ -75,6 +77,7 @@ async def _owned_session(db: Db, principal: Principal, session_id: uuid.UUID) ->
 
 @router.post("/sessions", response_model=SessionView, status_code=202)
 async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
+    require_providers(state, llm=True)
     row = Session(
         tenant_id=principal.tenant_id,
         user_id=principal.user_id,
@@ -110,6 +113,7 @@ async def get_session(session_id: uuid.UUID, principal: Principal, db: Db) -> Se
         status=plan_status,
         scene_ids=list(scenes),
         notebook=row.plan.get("notebook"),
+        error=row.plan.get("error"),
     )
 
 

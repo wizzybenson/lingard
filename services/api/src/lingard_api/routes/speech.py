@@ -15,8 +15,9 @@ from lingard_contracts.common import Language
 from lingard_exam_packs.items import ItemBank
 from lingard_live.audio import pcm_to_wav, wav_to_pcm
 from lingard_live.languages import load_language
-from lingard_live.settings import LiveSettings, build_stt, build_tts
+from lingard_live.settings import LiveSettings, build_stt, build_tts, tts_providers
 from lingard_live.tts import VoiceSpec
+from lingard_llm.config import any_llm_configured
 
 router = APIRouter(prefix="/v1", tags=["speech"])
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
@@ -89,6 +90,17 @@ async def item_audio(item_id: str, principal: Principal, state: State) -> Respon
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
     return wav_response(pcm)
+
+
+def require_providers(state: AppState, *, llm: bool = False, tts: bool = False) -> None:
+    """503 with what to set, before starting something that would otherwise fail halfway through."""
+    missing = []
+    if llm and not any_llm_configured():
+        missing.append("a language model (ANTHROPIC_API_KEY, OPENAI_API_KEY or GOOGLE_API_KEY)")
+    if tts and state.tts is None and not tts_providers(_live_settings(state)):
+        missing.append("text-to-speech for listening (VOICEBOX_URL, ELEVENLABS_API_KEY or OPENAI_API_KEY)")
+    if missing:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Not configured: " + " and ".join(missing))
 
 
 async def narrate(state: AppState, text: str, language: Language) -> bytes:
