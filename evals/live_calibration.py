@@ -42,7 +42,8 @@ async def score_samples(rows: list[dict[str, Any]]) -> tuple[list[float], list[f
         if pack.scale.type == "points":
             score = float(library.conversion(row["pack"]).to_level(Skill.WRITING, score))
         predicted.append(score)
-        human.append(sum(row["human_scores"]) / len(row["human_scores"]))
+        scores = row.get("human_scores")
+        human.append(sum(scores) / len(scores) if scores else float(row["target_band"]))
         packs.append(row["pack"])
     return predicted, human, packs
 

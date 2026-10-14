@@ -25,6 +25,23 @@ def _rows(folder: Path, pattern: str) -> list[dict[str, Any]]:
     return rows
 
 
+def spearman(a: list[float], b: list[float]) -> float:
+    def ranks(values: list[float]) -> list[float]:
+        order = sorted(range(len(values)), key=values.__getitem__)
+        result = [0.0] * len(values)
+        i = 0
+        while i < len(order):
+            j = i
+            while j + 1 < len(order) and values[order[j + 1]] == values[order[i]]:
+                j += 1
+            for k in range(i, j + 1):
+                result[order[k]] = (i + j) / 2
+            i = j + 1
+        return result
+
+    return statistics.correlation(ranks(a), ranks(b)) if len(a) > 2 else 0.0
+
+
 def quadratic_weighted_kappa(a: list[int], b: list[int], low: int, high: int) -> float:
     n = high - low + 1
     observed = [[0.0] * n for _ in range(n)]
@@ -53,24 +70,35 @@ def quadratic_weighted_kappa(a: list[int], b: list[int], low: int, high: int) ->
     ),
 )
 async def band_calibration(mode: Mode) -> SuiteResult:
-    rows = _rows(ROOT / "evals/datasets/band_calibration", "*.jsonl")
+    everything = _rows(ROOT / "evals/datasets/band_calibration", "*.jsonl")
+    # Synthetic samples (written to a target level, not human-rated) never count toward the gate; in live mode they
+    # only sanity-check that the examiner ranks weak below strong and lands near the intended level.
+    synthetic = [r for r in everything if r.get("origin") == "synthetic"]
+    rows = [r for r in everything if r.get("origin") != "synthetic"]
     gates = [Gate("ielts_mae", "<=", 0.5), Gate("tef_nclc_mae", "<=", 1.0)]
     counts = {
         "ielts_samples": sum(r["pack"] == "ielts_gt" for r in rows),
         "tef_samples": sum(r["pack"] == "tef_canada" for r in rows),
+        "synthetic_samples": len(synthetic),
     }
     if mode == "offline" or not any_llm_configured():
         bad = [r.get("id") for r in rows if len(r.get("human_scores", [])) < 2 or not r.get("consent")]
         notes = [
-            f"{counts} human-rated samples; need ≥ {MIN_CALIBRATION_SAMPLES} per pack and skill (founder input #3)"
+            f"human-rated: {counts['ielts_samples']} IELTS, {counts['tef_samples']} TEF"
+            f" (need ≥ {MIN_CALIBRATION_SAMPLES} per pack and skill);"
+            f" synthetic sanity samples: {counts['synthetic_samples']}"
         ]
         if bad:
             notes.append(f"invalid rows (need ≥2 raters and consent): {bad}")
         return SuiteResult("band_calibration", mode, {k: float(v) for k, v in counts.items()}, [], notes=notes)
     from evals.live_calibration import score_samples
 
-    predicted, human, packs = await score_samples(rows)
     metrics: dict[str, float] = dict(counts)
+    if synthetic:
+        guessed, target, _ = await score_samples(synthetic)
+        metrics["synthetic_mae"] = round(statistics.fmean(abs(p - t) for p, t in zip(guessed, target, strict=True)), 3)
+        metrics["synthetic_rank_corr"] = round(spearman(guessed, target), 3)
+    predicted, human, packs = await score_samples(rows)
     for pack_id, key in (("ielts_gt", "ielts_mae"), ("tef_canada", "tef_nclc_mae")):
         pairs = [(p, h) for p, h, k in zip(predicted, human, packs, strict=True) if k == pack_id]
         if len(pairs) >= MIN_CALIBRATION_SAMPLES:

@@ -78,6 +78,10 @@ bash scripts/check.sh                       # ruff, mypy --strict, all Python te
 cd apps/mobile && npx tsc --noEmit && npx jest
 uv run python -m evals.run                  # offline eval suites (results in evals/results/)
 uv run python -m evals.run --live           # needs provider keys
+uv run python -m tools.voicebench.probe --write-profile   # time the configured STT/TTS/LLM providers (needs keys)
+uv run python -m tools.content_cli.review_golden fr --reviewer NAME   # native review of drafted golden rows
+uv run python -m tools.content_cli.review_golden fr --machine         # LLM review instead (stopgap, needs a key)
+uv run python -m tools.content_cli.art      # regenerate location artwork from the city files
 ```
 
 ## Layout

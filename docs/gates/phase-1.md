@@ -20,6 +20,9 @@ soon as keys are configured.
 - Without speculative drafting: p50 887 ms and p95 1,146 ms, which misses the p50 budget. Speculation is what makes the
   budget, at a cost of 0.47 wasted drafts per turn.
 - Guard p99: 0.27 ms, so it is not a latency factor.
+- To replace the assumptions: put provider keys in `.env`, run `uv run python -m tools.voicebench.probe
+  --write-profile`. It times every configured STT, TTS and fast-tier LLM provider and writes a `measured` profile,
+  which the latency eval then uses automatically.
 
 ## Contract adherence (`evals/suites/contract_adherence.py`)
 
