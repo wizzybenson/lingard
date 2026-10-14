@@ -26,6 +26,8 @@ accuracy number can be honestly measured yet.
 ## To close the gate
 
 1. Founder input #3: 2–3 certified raters (or a budget) to rate ≥ 30 responses per pack and skill.
-2. Have a native speaker review the drafted golden rows (set `"reviewed": true` or fix/delete the row). The suite
-   reports `<lang>_unreviewed`; the gate counts only once that is 0 and ≥ 300 items remain per language.
+2. Have a native speaker review the drafted golden rows:
+   `uv run python -m tools.content_cli.review_golden fr --reviewer NAME` (then `en`). Each row is accepted, corrected,
+   relabelled or deleted, and saved immediately, so a review can stop and resume. The suite reports
+   `<lang>_unreviewed`; the gate counts only once that is 0 and ≥ 300 items remain per language.
 3. Set `ANTHROPIC_API_KEY`, then run `uv run python -m evals.run --live --suite correction_precision --suite band_calibration`.
