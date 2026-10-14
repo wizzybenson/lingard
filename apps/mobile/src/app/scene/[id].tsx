@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, Switch, Text, View } from "react-native";
+import { Pressable, Switch, Text, useWindowDimensions, View } from "react-native";
 
 import type { LiveTicket, SceneView, SessionView } from "@/api/types";
 import { captionOpacity } from "@/live/captions";
@@ -11,6 +11,9 @@ import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
 import { colors } from "@/ui/theme";
 
+// Loaded lazily: on the web, Skia modules must not be evaluated before CanvasKit has loaded (see _layout.tsx).
+const LocationArt = lazy(() => import("@/world/renderer/LocationArt").then((m) => ({ default: m.LocationArt })));
+
 export default function Scene() {
   const { t } = useTranslation();
   const api = useApi();
@@ -19,7 +22,8 @@ export default function Scene() {
   const live = useLiveScene();
   const [headphonesOk, setHeadphonesOk] = useState(false);
   const [showCaptions, setShowCaptions] = useState(true);
-  const band = 6;
+  const { width } = useWindowDimensions();
+  const band = scene.data?.learner_band ?? 4; // unknown band: keep captions fully visible
 
   const start = async () => {
     const ticket = await api.post<LiveTicket>(`/v1/scenes/${id}/live`);
@@ -45,8 +49,15 @@ export default function Scene() {
       <ErrorText message={scene.error ?? live.error} />
       {scene.data && (
         <Card>
+          {scene.data.layer_art.length > 0 && (
+            <Suspense fallback={null}>
+              <LocationArt api={api} layers={scene.data.layer_art} width={Math.min(width, 760) - 64} />
+            </Suspense>
+          )}
+          <Title>{scene.data.location_name}</Title>
+          {scene.data.npc_name ? <Body muted>{t("scene.with", { name: scene.data.npc_name, role: scene.data.npc_role })}</Body> : null}
           <Body muted>{t("scene.goal")}</Body>
-          <Title>{scene.data.learner_goal}</Title>
+          <Body>{scene.data.learner_goal}</Body>
         </Card>
       )}
       {live.status === "idle" && !headphonesOk && (

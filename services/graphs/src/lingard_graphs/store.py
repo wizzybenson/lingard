@@ -127,6 +127,10 @@ class LearnerStore(Protocol):
 
     async def active_days(self, user_id: uuid.UUID) -> list[date]: ...
 
+    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
+        """Any practice (reviews, a lesson, writing, the Accent Studio) keeps the streak, not only live scenes."""
+        ...
+
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID: ...
 
     async def mocks(self, user_id: uuid.UUID) -> list[dict[str, Any]]: ...
@@ -289,6 +293,9 @@ class MemoryStore:
 
     async def active_days(self, user_id: uuid.UUID) -> list[date]:
         return sorted(self.days[user_id])
+
+    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
+        self.days[user_id].add(day)
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID:
         mock_id = uuid.uuid4()

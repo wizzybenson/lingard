@@ -81,6 +81,11 @@ export class ApiClient {
     return (response.status === 204 ? undefined : await response.json()) as T;
   }
 
+  /** A binary resource, such as the data export (web downloads go through a Blob URL). */
+  async blob(path: string): Promise<Blob> {
+    return (await this.checked(path, {})).blob();
+  }
+
   /** A text resource, such as an SVG layer. */
   async text(path: string): Promise<string> {
     return (await this.checked(path, {})).text();

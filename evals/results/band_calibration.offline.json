@@ -8,9 +8,9 @@
   },
   "gates": [],
   "notes": [
-    "{'ielts_samples': 0, 'tef_samples': 0, 'synthetic_samples': 14} human-rated samples; need ≥ 30 per pack and skill (founder input #3)"
+    "human-rated: 0 IELTS, 0 TEF (need ≥ 30 per pack and skill); synthetic sanity samples: 14"
   ],
   "samples": [],
-  "ran_at": "2026-10-14T19:44:58+00:00",
+  "ran_at": "2026-10-14T20:11:30+00:00",
   "status": "INCOMPLETE"
 }

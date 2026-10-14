@@ -1,9 +1,10 @@
-import { router } from "expo-router";
-import { lazy, Suspense, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { lazy, Suspense, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 
-import type { CityEntry, SessionView, WorldView } from "@/api/types";
+import type { CityEntry, SessionView, Today, WorldView } from "@/api/types";
+import { TodayCard } from "@/home/TodayCard";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
@@ -27,6 +28,9 @@ export default function City() {
   const [selected, setSelected] = useState<Location | null>(null);
   const [planning, setPlanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const today = useResource(() => api.get<Today>("/v1/today"), [api]);
+  // Coming back from a goal, a lesson or a scene must show the updated streak and next step.
+  useFocusEffect(useCallback(() => today.reload(), [today.reload]));
   const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
 
   const startDay = async () => {
@@ -52,6 +56,7 @@ export default function City() {
 
   return (
     <Screen>
+      {today.data && <TodayCard today={today.data} onStartStory={() => void startDay()} />}
       <Title>{t("city.choose")}</Title>
       <View style={{ flexDirection: "row", gap: 8 }}>
         {cities.data?.map((c) => (

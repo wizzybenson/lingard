@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Switch, View } from "react-native";
+import { File, Paths } from "expo-file-system";
+import { router } from "expo-router";
+import * as Sharing from "expo-sharing";
+import { Platform, Switch, View } from "react-native";
 
 import type { Profile } from "@/api/types";
 import i18n from "@/i18n";
@@ -15,6 +18,31 @@ export default function Settings() {
   const [error, setError] = useState<string | null>(null);
   const [pin, setPin] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  /** The export is a zip behind auth: download it with the token, then save (web) or open the share sheet (phones). */
+  const exportData = async () => {
+    setError(null);
+    try {
+      if (Platform.OS === "web") {
+        const url = URL.createObjectURL(await api.blob("/v1/me/export"));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "lingard-export.zip";
+        link.click();
+        URL.revokeObjectURL(url);
+      } else {
+        const source = await api.mediaSource("/v1/me/export");
+        const target = new File(Paths.cache, "lingard-export.zip");
+        if (target.exists) target.delete();
+        const file = await File.downloadFileAsync(source.uri, target, { headers: source.headers });
+        await Sharing.shareAsync(file.uri, { mimeType: "application/zip" });
+      }
+      setNotice(t("settings.exported"));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
 
   const update = async (patch: Partial<Profile>) => {
     try {
@@ -33,6 +61,7 @@ export default function Settings() {
     <Screen>
       <Title>{t("settings.title")}</Title>
       <ErrorText message={error} />
+      <Button label={t("settings.goal")} onPress={() => router.push("/goal")} />
       <Card>
         <Body muted>{t("settings.uiLanguage")}</Body>
         <View style={{ flexDirection: "row", gap: 8 }}>
@@ -74,7 +103,8 @@ export default function Settings() {
         <Button label={t("settings.deleteClone")} kind="secondary" onPress={() => void api.request("/v1/voice/clone", { method: "DELETE" }).catch((e: Error) => setError(e.message))} />
       </Card>
       <Card>
-        <Button label={t("settings.export")} kind="secondary" onPress={() => void api.mediaSource("/v1/me/export").then((s) => setError(`Export: ${s.uri}`))} />
+        <Button label={t("settings.export")} kind="secondary" onPress={() => void exportData()} />
+        {notice && <Body muted>{notice}</Body>}
         {!confirmDelete ? (
           <Button label={t("settings.deleteAccount")} kind="danger" onPress={() => setConfirmDelete(true)} />
         ) : (

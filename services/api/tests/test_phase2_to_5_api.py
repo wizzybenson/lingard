@@ -62,8 +62,9 @@ async def test_placement_skip_passport_and_thread_ownership(api, monkeypatch) ->
     assert stolen.status_code == 404
 
 
-async def test_writing_lessons_wallet_and_shop(api) -> None:  # type: ignore[no-untyped-def]
+async def test_writing_lessons_wallet_and_shop(api, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     token, user_id = await learner(api)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")  # scoring runs on the test's scripted models
     bad = await api.client.post(
         "/v1/writing",
         json={"pack": "ielts_gt", "task_id": "nope", "prompt": "p", "text": "t"},

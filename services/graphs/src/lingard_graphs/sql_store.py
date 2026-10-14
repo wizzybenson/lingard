@@ -36,6 +36,10 @@ def _ticket(row: m.WeaknessTicket) -> Ticket:
     )
 
 
+PRACTICE_DAYS_KEPT = 120
+"""Enough history for streaks and the weekly freeze; older practice days are dropped."""
+
+
 class SqlStore:
     def __init__(self, sessions: async_sessionmaker[AsyncSession]) -> None:
         self._sessions = sessions
@@ -534,7 +538,20 @@ class SqlStore:
                     select(m.Session.started_at).where(m.Session.user_id == user_id, m.Session.kind == "live")
                 )
             ).scalars()
-            return sorted({r.date() for r in rows})
+            sessions = {r.date() for r in rows}
+            profile = (
+                await db.execute(select(m.LearnerProfile).where(m.LearnerProfile.user_id == user_id))
+            ).scalar_one_or_none()
+            practised = {date.fromisoformat(d) for d in (profile.settings.get("practice_days", []) if profile else [])}
+            return sorted(sessions | practised)
+
+    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
+        async with self._sessions() as db, db.begin():
+            profile = (
+                await db.execute(select(m.LearnerProfile).where(m.LearnerProfile.user_id == user_id))
+            ).scalar_one()
+            days = sorted({*profile.settings.get("practice_days", []), day.isoformat()})[-PRACTICE_DAYS_KEPT:]
+            profile.settings = {**profile.settings, "practice_days": days}
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID:
         async with self._sessions() as db, db.begin():

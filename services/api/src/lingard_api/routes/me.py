@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from datetime import date
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
@@ -10,6 +11,7 @@ from sqlalchemy import select
 
 from lingard_api import audit
 from lingard_api.deps import Db, Principal
+from lingard_contracts.common import PackId, Skill
 from lingard_db.models import LearnerProfile, User
 
 router = APIRouter(prefix="/v1/me", tags=["me"])
@@ -38,11 +40,15 @@ class ProfileView(BaseModel):
     intensity_cap: Literal["calm", "tense", "heated"]
     l1: str
     language_bands: dict[str, int] = {}
+    exam_dates: dict[str, date] = {}
 
 
 class ProfileUpdate(BaseModel):
     ui_locale: Literal["en", "fr", "ar"] | None = None
-    target_bands: dict[str, dict[str, int]] | None = None
+    target_bands: dict[PackId, dict[Skill, Annotated[int, Field(ge=4, le=10)]]] | None = None
+    """CLB/NCLC level the learner needs per skill (4–10, the range the official conversion tables cover)."""
+    exam_dates: dict[PackId, date | None] | None = None
+    """Booked or planned exam date per pack; null clears it."""
     crs_inputs: dict[str, Any] | None = None
     model_accent: dict[str, str] | None = None
     consents: Consents | None = None
@@ -68,6 +74,7 @@ def _view(user: User, profile: LearnerProfile) -> ProfileView:
         intensity_cap=profile.intensity_cap,
         l1=profile.l1,
         language_bands=dict(profile.settings.get("language_bands", {})),
+        exam_dates={k: date.fromisoformat(v) for k, v in profile.settings.get("exam_dates", {}).items()},
     )
 
 
@@ -82,7 +89,18 @@ async def update_profile(body: ProfileUpdate, principal: Principal, db: Db) -> P
     if body.ui_locale:
         user.ui_locale = body.ui_locale
     if body.target_bands is not None:
-        profile.target_bands = body.target_bands
+        merged = {**(profile.target_bands or DEFAULT_TARGETS)}
+        for pack_id, skills in body.target_bands.items():
+            merged[pack_id] = {**merged.get(pack_id, {}), **{skill.value: level for skill, level in skills.items()}}
+        profile.target_bands = merged
+    if body.exam_dates is not None:
+        dates = dict(profile.settings.get("exam_dates", {}))
+        for pack_id, day in body.exam_dates.items():
+            if day is None:
+                dates.pop(pack_id, None)
+            else:
+                dates[pack_id] = day.isoformat()
+        profile.settings = {**profile.settings, "exam_dates": dates}
     if body.crs_inputs is not None:
         profile.crs_inputs = body.crs_inputs
     if body.model_accent is not None:

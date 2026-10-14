@@ -1,7 +1,8 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { Passport, Wallet } from "@/api/types";
+import type { Passport, Profile, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
@@ -20,6 +21,14 @@ export default function PassportScreen() {
   const api = useApi();
   const passport = useResource(() => api.get<Passport>("/v1/passport"));
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"));
+  const profile = useResource(() => api.get<Profile>("/v1/me"));
+  useFocusEffect(
+    useCallback(() => {
+      passport.reload();
+      wallet.reload();
+      profile.reload();
+    }, [passport.reload, wallet.reload, profile.reload]),
+  );
   return (
     <Screen>
       <Title>{t("passport.title")}</Title>
@@ -36,7 +45,7 @@ export default function PassportScreen() {
           {passport.data.bands.map((band) => (
             <Card key={`${band.pack}-${band.skill}`}>
               <Body muted>
-                {SCALE[band.pack]} · {band.skill}
+                {SCALE[band.pack]} · {t(`skills.${band.skill}`)}
               </Body>
               <Title>
                 {t("passport.predicted")} {band.mean}
@@ -44,6 +53,8 @@ export default function PassportScreen() {
               <Body>{t("passport.range", { low: band.low80, high: band.high80 })}</Body>
               <Body muted>
                 {LEVEL[band.pack]} {levelLabel(band.clb_nclc_low)}–{levelLabel(band.clb_nclc_high)}
+                {profile.data?.target_bands[band.pack]?.[band.skill] !== undefined &&
+                  ` · ${t("passport.target", { level: profile.data.target_bands[band.pack]![band.skill] })}`}
               </Body>
             </Card>
           ))}
@@ -57,6 +68,7 @@ export default function PassportScreen() {
           </Body>
         </Card>
       )}
+      <Button label={t("settings.goal")} kind="secondary" onPress={() => router.push("/goal")} />
       <Button label={t("studio.title")} kind="secondary" onPress={() => router.push("/studio")} />
     </Screen>
   );

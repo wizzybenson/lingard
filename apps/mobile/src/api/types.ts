@@ -21,6 +21,11 @@ export interface SceneView {
   learner_goal: string;
   status: string;
   intensity: string;
+  location_name: string;
+  layer_art: string[];
+  npc_name: string;
+  npc_role: string;
+  learner_band: number | null;
 }
 
 export interface LiveTicket {
@@ -100,4 +105,32 @@ export interface Profile {
   consents: { voice_clone: boolean; audio_retention_extended: boolean; friends_league: boolean };
   intensity_cap: "calm" | "tense" | "heated";
   l1: string;
+  language_bands: Record<string, number>;
+  exam_dates: Record<string, string>;
+}
+
+export type SkillStatus = "met" | "close" | "behind" | "unknown";
+
+export interface Today {
+  streak: number;
+  practised_today: boolean;
+  reviews_due: number;
+  lessons_waiting: number;
+  goals: {
+    pack: string;
+    pack_name: string;
+    exam_date: string | null;
+    days_left: number | null;
+    skills: { skill: string; target: number; level_low: number | null; level_high: number | null; status: SkillStatus }[];
+  }[];
+  next_step: "set_goal" | "placement" | "reviews" | "lesson" | "story";
+}
+
+export interface WritingTask {
+  pack: string;
+  pack_name: string;
+  task_id: string;
+  kind: string;
+  min_words: number;
+  prompts: string[];
 }

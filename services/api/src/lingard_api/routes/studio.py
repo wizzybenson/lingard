@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import uuid
+from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
 from typing import Annotated, Any
@@ -140,6 +141,7 @@ async def shadow(
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, response.json().get("detail", "scoring failed"))
     result: dict[str, Any] = response.json()
 
+    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
     passed = result["intelligibility"] >= PASS_SCORE
     final = passed or attempt >= MAX_ATTEMPTS
     if final:  # one FSRS review per line per session: pass first time = Good, on a retry = Hard, never = Again

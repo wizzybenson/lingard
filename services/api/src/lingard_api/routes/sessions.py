@@ -17,6 +17,7 @@ from lingard_api.routes.speech import require_providers
 from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_contracts.scene import SceneContract
 from lingard_db.models import LearnerProfile, Scene, Session, User
+from lingard_world import load_city
 
 router = APIRouter(prefix="/v1", tags=["sessions"])
 
@@ -46,6 +47,12 @@ class SceneView(BaseModel):
     learner_goal: str
     status: str
     intensity: str
+    location_name: str = ""
+    layer_art: list[str] = []
+    npc_name: str = ""
+    npc_role: str = ""
+    learner_band: int | None = None
+    """The learner's band in the scene's language; captions fade as it rises (SPEC §11)."""
 
 
 class LiveTicket(BaseModel):
@@ -136,11 +143,25 @@ async def end_session(session_id: uuid.UUID, principal: Principal, state: State,
 
 
 @router.get("/scenes/{scene_id}", response_model=SceneView)
-async def get_scene(scene_id: uuid.UUID, principal: Principal, db: Db) -> SceneView:
+async def get_scene(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> SceneView:
     row = await db.get(Scene, scene_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
-    return scene_view(row)
+    view = scene_view(row)
+    city = load_city(state.settings.content_root, view.city)
+    location = city.location(view.location_key)
+    npc = city.npc(view.npc_keys[0]) if view.npc_keys else None
+    profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
+    band = profile.settings.get("language_bands", {}).get(CITY_LANGUAGE[view.city])
+    return view.model_copy(
+        update={
+            "location_name": location.name,
+            "layer_art": list(location.layer_art),
+            "npc_name": npc.name if npc else "",
+            "npc_role": npc.role if npc else "",
+            "learner_band": int(band) if band is not None else None,
+        }
+    )
 
 
 @router.post("/scenes/{scene_id}/live", response_model=LiveTicket)

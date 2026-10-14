@@ -1,12 +1,26 @@
 import "@/i18n";
 
-import { Stack } from "expo-router";
+import { Stack, router, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { AuthProvider } from "@/state/auth";
+import { AuthProvider, useAuth } from "@/state/auth";
+
+const PUBLIC = new Set(["sign-in", "index"]);
+
+/** Every screen except sign-in needs a session. On the web tokens live in memory only, so a reload or a pasted
+ * link lands here signed out and must go to sign-in rather than show "Not signed in". */
+function AuthGate() {
+  const { status } = useAuth();
+  const segments = useSegments();
+  const first = segments[0] ?? "index";
+  useEffect(() => {
+    if ((status === "signedOut" || status === "locked") && !PUBLIC.has(first)) router.replace("/sign-in");
+  }, [status, first]);
+  return null;
+}
 
 export default function RootLayout() {
   const [ready, setReady] = useState(Platform.OS !== "web");
@@ -29,6 +43,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
+          <AuthGate />
           <Stack screenOptions={{ headerShown: false }} />
         </AuthProvider>
       </SafeAreaProvider>

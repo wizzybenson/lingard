@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from lingard_api.routes import admin, auth, economy, glance, learning, me, sessions, speech, studio, voice, world
+from lingard_api.routes import admin, auth, economy, glance, learning, me, sessions, speech, studio, today, voice, world
 from lingard_api.settings import Settings, get_settings
 from lingard_api.state import AppState
 
@@ -35,7 +35,7 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
         allow_methods=["*"],
         allow_headers=["Authorization", "Content-Type"],
     )
-    for module in (auth, me, admin, world, sessions, learning, economy, voice, glance, speech, studio):
+    for module in (auth, me, admin, world, sessions, learning, economy, voice, glance, speech, studio, today):
         app.include_router(module.router)
 
     # Location artwork is original public content (tools/content_cli/art.py), so it needs no sign-in.
