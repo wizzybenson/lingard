@@ -114,14 +114,18 @@ async def cost(mode: Mode) -> SuiteResult:
     config = LLMConfig.load(ROOT / "config" / "llm.yaml")
     sizes, counts = await _measured()
     actor_input = _actor_input_tokens()
-    stacks = list(itertools.product(("anthropic", "openai", "google"), model["speech"]["stt"], model["speech"]["tts"]))
+    # Only providers with a model in every tier can run alone (e.g. OpenAI has no fast-tier model, decision 0009).
+    providers = [
+        p
+        for p in ("anthropic", "openai", "google")
+        if all(any(m.provider == p for m in t.models) for t in config.tiers.values())
+    ]
+    stacks = list(itertools.product(providers, model["speech"]["stt"], model["speech"]["tts"]))
     results = {stack: hourly_cost(sizes, counts, actor_input, model, config, stack) for stack in stacks}
     default = results[DEFAULT_STACK]
     cheapest = min(results, key=lambda s: results[s]["total"])
     metrics: dict[str, float] = {f"default_{k}": v for k, v in default.items()}
-    metrics.update(
-        {f"llm_only_{p}": results[(p, "voicebox", "voicebox")]["total"] for p in ("anthropic", "openai", "google")}
-    )
+    metrics.update({f"llm_only_{p}": results[(p, "voicebox", "voicebox")]["total"] for p in providers})
     metrics["cheapest_total"] = results[cheapest]["total"]
     notes = [
         f"default stack {'+'.join(DEFAULT_STACK)}; cheapest {'+'.join(cheapest)}",

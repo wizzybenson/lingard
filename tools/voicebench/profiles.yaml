@@ -16,3 +16,26 @@ assumed_4g:
   llm_token_ms: {median: 12, sigma: 0.2}
   tts_first_chunk_ms: {median: 170, sigma: 0.3}
   network_ms: {median: 90, sigma: 0.4}        # SPEC §4.2 4G: 150 ms RTT ±30 ms jitter
+measured:
+  status: measured
+  as_of: '2026-10-15'
+  providers:
+    stt_ms: openai
+    tts_first_chunk_ms: elevenlabs
+    llm_first_token_ms: anthropic
+    llm_token_ms: anthropic
+  stt_ms:
+    median: 958.3
+    sigma: 0.052
+  tts_first_chunk_ms:
+    median: 289.1
+    sigma: 0.486
+  llm_first_token_ms:
+    median: 785.0
+    sigma: 0.486
+  llm_token_ms:
+    median: 19.8
+    sigma: 0.11
+  network_ms:
+    median: 45
+    sigma: 0.25

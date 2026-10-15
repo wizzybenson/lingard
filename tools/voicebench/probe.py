@@ -126,8 +126,14 @@ def measured_profile(result: dict[str, Any], assumed: dict[str, Any]) -> dict[st
         stats = first(group)
         profile[stage] = {"median": stats["median"], "sigma": stats["sigma"]} if stats else assumed[stage]
         profile["providers"][stage] = next(iter(result[group]), "assumed")
-    profile["network_ms"] = assumed["network_ms"]
+    profile["network_ms"] = dict(assumed["network_ms"])  # a copy, so the dump has no YAML anchor
     return profile
+
+
+def with_measured(text: str, profile: dict[str, Any]) -> str:
+    """Replaces only the ``measured:`` block, keeping the hand-written assumptions and their comments."""
+    kept = text.split("\nmeasured:", 1)[0].rstrip("\n")
+    return kept + "\n" + yaml.safe_dump({"measured": profile}, sort_keys=False, allow_unicode=True)
 
 
 def main() -> None:
@@ -141,9 +147,9 @@ def main() -> None:
     out = ROOT / "evals" / "results" / "provider_probe.json"
     out.write_text(json.dumps({"as_of": date.today().isoformat(), **result}, indent=2) + "\n")
     if args.write_profile:
-        profiles = yaml.safe_load(PROFILES.read_text())
-        profiles["measured"] = measured_profile(result, profiles["assumed_cloud"])
-        PROFILES.write_text(yaml.safe_dump(profiles, sort_keys=False, allow_unicode=True))
+        text = PROFILES.read_text()
+        assumed = yaml.safe_load(text)["assumed_cloud"]
+        PROFILES.write_text(with_measured(text, measured_profile(result, assumed)))
         print("wrote the 'measured' profile to tools/voicebench/profiles.yaml", file=sys.stderr)
 
 

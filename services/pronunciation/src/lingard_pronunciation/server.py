@@ -48,7 +48,10 @@ def _recognizer() -> PhonemeRecognizer | None:
 
 def _golden() -> GoldenSelf | None:
     key = os.environ.get("ELEVENLABS_API_KEY")
-    return GoldenSelf(None, ElevenLabsSpeechToSpeech(key), MemoryCache()) if key else None
+    if not key:
+        return None
+    model = os.environ.get("ELEVENLABS_STS_MODEL", "eleven_multilingual_sts_v2")
+    return GoldenSelf(None, ElevenLabsSpeechToSpeech(key, model), MemoryCache())
 
 
 def build_app(content_root: Path | None = None) -> FastAPI:

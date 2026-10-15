@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Literal
 
@@ -61,6 +62,37 @@ class TierConfig(BaseModel):
     retries: int = Field(default=1, ge=0, le=5)
 
 
+class CatalogEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    provider: Provider
+    price: Price | None = None
+
+
+class TierDefaults(BaseModel):
+    """One tier in ``config/llm.yaml``: catalog model names in preference order plus per-call settings."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    models: list[str] = Field(min_length=1)
+    effort: Effort | None = None
+    max_tokens: int = Field(default=4096, gt=0)
+    timeout_s: float = Field(default=60, gt=0)
+    retries: int = Field(default=1, ge=0, le=5)
+
+
+class ConfigFile(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    catalog: dict[str, CatalogEntry]
+    tiers: dict[Tier, TierDefaults]
+
+
+def tier_override(tier: str, setting: str, env: Mapping[str, str]) -> str | None:
+    """``LLM_<TIER>_<SETTING>`` from the environment, or ``None`` when unset or blank."""
+    return env.get(f"LLM_{tier.upper()}_{setting}", "").strip() or None
+
+
 class LLMConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -68,8 +100,35 @@ class LLMConfig(BaseModel):
     fixtures_dir: str = "evals/fixtures/llm"
 
     @classmethod
-    def load(cls, path: str | Path) -> LLMConfig:
-        return cls.model_validate(yaml.safe_load(Path(path).read_text()))
+    def load(cls, path: str | Path, env: Mapping[str, str] | None = None) -> LLMConfig:
+        """Reads the catalog and tier defaults; ``LLM_<TIER>_MODELS`` (comma-separated) and ``LLM_<TIER>_EFFORT``
+        in ``env`` (default: the process environment) override a tier's models and effort."""
+        env = os.environ if env is None else env
+        file = ConfigFile.model_validate(yaml.safe_load(Path(path).read_text()))
+        tiers: dict[Tier, TierConfig] = {}
+        for tier, defaults in file.tiers.items():
+            names = tier_override(tier, "MODELS", env)
+            models = [n.strip() for n in names.split(",") if n.strip()] if names else defaults.models
+            unknown = [n for n in models if n not in file.catalog]
+            if unknown:
+                raise ValueError(
+                    f"LLM tier {tier!r} names models missing from the catalog in {path}: {', '.join(unknown)} "
+                    f"(known: {', '.join(file.catalog)})"
+                )
+            effort = tier_override(tier, "EFFORT", env) or defaults.effort
+            specs = [
+                {
+                    "provider": file.catalog[name].provider,
+                    "model": name,
+                    "price": file.catalog[name].price,
+                    "effort": effort,
+                    "max_tokens": defaults.max_tokens,
+                    "timeout_s": defaults.timeout_s,
+                }
+                for name in models
+            ]
+            tiers[tier] = TierConfig.model_validate({"models": specs, "retries": defaults.retries})
+        return cls(tiers=tiers)
 
     def tier(self, tier: Tier) -> TierConfig:
         try:

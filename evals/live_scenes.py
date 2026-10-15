@@ -80,7 +80,8 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
     samples: list[dict[str, object]] = []
     for contract, band, _ in eval_scenes(scene_count):
         runtime = build_scene(contract, content, learner_name="Sam")
-        npc = load_city(content, contract.city).npc(contract.cast[0].npc_key)
+        city = load_city(content, contract.city)
+        npc = city.npc(contract.cast[0].npc_key)
         stt = ScriptedStt()
         session = await LoopbackTransport().open(
             LiveSessionConfig(
@@ -131,6 +132,15 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
                 LearnerTurnEnded(audio=b"\x00\x00" * 32000, speech_start_ms=0, speech_end_ms=2000, eot_decided_ms=2900)
             )
             npc_lines.append(loop.outcomes[-1].npc_text)
+        location = city.location(contract.location_key)
+        # What the actor is given about itself and the place, as the Guard grounds it (lingard_live.scene).
+        grounding = [
+            *contract.approved_facts,
+            *npc.world_facts,
+            f"The character is {npc.name}, {npc.role}.",
+            f"The place is {location.name}, in {runtime.state.city_name}: {location.description}",
+            f"The other speaker is {runtime.state.learner_name}.",
+        ]
         for line in npc_lines:
             if not line:
                 continue
@@ -141,7 +151,7 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
                 [
                     HumanMessage(
                         content=judge_prompt.render(
-                            facts="\n".join([*contract.approved_facts, *npc.world_facts]),
+                            facts="\n".join(grounding),
                             learner_lines=" | ".join(learner_lines),
                             line=line,
                             language_name=LANGUAGE_NAMES[contract.language],

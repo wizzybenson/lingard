@@ -1,0 +1,55 @@
+{
+  "as_of": "2026-10-15",
+  "tts": {
+    "elevenlabs": {
+      "median": 289.1,
+      "p95": 1027.9,
+      "sigma": 0.486
+    },
+    "openai": {
+      "median": 642.2,
+      "p95": 734.1,
+      "sigma": 0.131
+    }
+  },
+  "stt": {
+    "openai": {
+      "median": 958.3,
+      "p95": 1038.2,
+      "sigma": 0.052
+    },
+    "elevenlabs": {
+      "median": 1077.1,
+      "p95": 1445.5,
+      "sigma": 0.162
+    }
+  },
+  "stt_similarity": {
+    "openai": 0.956,
+    "elevenlabs": 0.975
+  },
+  "llm_first_token": {
+    "anthropic": {
+      "median": 785.0,
+      "p95": 2254.0,
+      "sigma": 0.486
+    },
+    "openai": {
+      "median": 1426.7,
+      "p95": 3435.1,
+      "sigma": 0.591
+    }
+  },
+  "llm_token": {
+    "anthropic": {
+      "median": 19.8,
+      "p95": 24.8,
+      "sigma": 0.11
+    },
+    "openai": {
+      "median": 12.3,
+      "p95": 17.4,
+      "sigma": 0.208
+    }
+  }
+}

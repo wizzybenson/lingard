@@ -64,12 +64,26 @@ configured and falls back to the next configured one, so one key per group is en
 
 | Group | Providers, in preference order |
 | --- | --- |
-| Language models (`config/llm.yaml`) | `ANTHROPIC_API_KEY` → `OPENAI_API_KEY` → `GOOGLE_API_KEY` |
+| Language models (`config/llm.yaml`) | per tier, see below |
 | Speech-to-text | `VOICEBOX_URL` → `DEEPGRAM_API_KEY` → `OPENAI_API_KEY` → `ELEVENLABS_API_KEY` |
 | Text-to-speech | `VOICEBOX_URL` → `ELEVENLABS_API_KEY` → `OPENAI_API_KEY` |
 | Voice clone and golden self | `VOICEBOX_URL` or `ELEVENLABS_API_KEY` (golden self: ElevenLabs only) |
 
 Tests never use these keys: a root fixture clears them, so a filled-in `.env` can't make a test call a paid API.
+
+### Choosing models
+
+Every model is set in `.env`; `.env.example` lists the defaults. Leaving a variable blank keeps the default.
+
+- `LLM_FAST_MODELS` (NPCs), `LLM_MID_MODELS` (assessment, planning) and `LLM_FRONTIER_MODELS` (examiners, judges) take
+  catalog names, comma-separated, in preference order. A model is skipped when its provider has no key.
+  `LLM_<TIER>_EFFORT` sets the reasoning effort. New models go in the catalog in `config/llm.yaml` with their price
+  and source, so cost reporting always knows what a call costs.
+- `STT_ORDER` and `TTS_ORDER` set the speech provider preference (JSON lists), and `<PROVIDER>_STT_MODEL`,
+  `<PROVIDER>_TTS_MODEL`, `ELEVENLABS_STS_MODEL` and `LINGARD_PRON_MODEL` set each provider's model.
+
+Defaults (decision 0009): NPCs on `claude-haiku-5-5`, assessment on `claude-sonnet-5-5`, judges and examiners on
+`gpt-6.1-sol`. Opus and Astra are in the catalog but in no tier.
 
 ## Checks
 

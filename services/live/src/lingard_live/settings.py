@@ -32,6 +32,12 @@ class LiveSettings(BaseSettings):
     stt_order: list[str] = ["voicebox", "deepgram", "openai", "elevenlabs"]
     """Preference order; providers without a key or URL are skipped, the rest become the fallback chain."""
     tts_order: list[str] = ["voicebox", "elevenlabs", "openai"]
+    voicebox_stt_model: str = "whisper-turbo"
+    deepgram_stt_model: str = "nova-3"
+    openai_stt_model: str = "gpt-4o-transcribe"
+    elevenlabs_stt_model: str = "scribe_v2"
+    elevenlabs_tts_model: str = "eleven_flash_v2_5"
+    openai_tts_model: str = "gpt-4o-mini-tts"
 
 
 def _secret(value: SecretStr | None) -> str | None:
@@ -42,13 +48,13 @@ def stt_providers(settings: LiveSettings) -> dict[str, SttProvider]:
     """Every speech-to-text provider that has a key or URL, in preference order."""
     available: dict[str, SttProvider] = {}
     if settings.voicebox_url:
-        available["voicebox"] = VoiceboxStt(settings.voicebox_url)
+        available["voicebox"] = VoiceboxStt(settings.voicebox_url, settings.voicebox_stt_model)
     if key := _secret(settings.deepgram_api_key):
-        available["deepgram"] = DeepgramStt(key)
+        available["deepgram"] = DeepgramStt(key, settings.deepgram_stt_model)
     if key := _secret(settings.openai_api_key):
-        available["openai"] = OpenAIStt(key)
+        available["openai"] = OpenAIStt(key, settings.openai_stt_model)
     if key := _secret(settings.elevenlabs_api_key):
-        available["elevenlabs"] = ElevenLabsStt(key)
+        available["elevenlabs"] = ElevenLabsStt(key, settings.elevenlabs_stt_model)
     return {name: available[name] for name in settings.stt_order if name in available}
 
 
@@ -71,9 +77,9 @@ def tts_providers(settings: LiveSettings) -> dict[str, TtsProvider]:
         available["voicebox"] = VoiceboxTts(settings.voicebox_url)
     overrides = load_overrides(settings.voices_config)
     if key := _secret(settings.elevenlabs_api_key):
-        available["elevenlabs"] = ElevenLabsTts(key, voices=overrides.get("elevenlabs"))
+        available["elevenlabs"] = ElevenLabsTts(key, settings.elevenlabs_tts_model, voices=overrides.get("elevenlabs"))
     if key := _secret(settings.openai_api_key):
-        available["openai"] = OpenAITts(key, voices=overrides.get("openai"))
+        available["openai"] = OpenAITts(key, settings.openai_tts_model, voices=overrides.get("openai"))
     return {name: available[name] for name in settings.tts_order if name in available}
 
 

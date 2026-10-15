@@ -26,6 +26,8 @@ def _no_real_providers(monkeypatch: pytest.MonkeyPatch) -> None:
     """Tests never reach a paid provider, even with a filled-in .env on the machine (CI never calls one either)."""
     for variable in PROVIDER_VARIABLES:
         monkeypatch.delenv(variable, raising=False)
+    for variable in [v for v in os.environ if v.startswith("LLM_")]:  # model overrides: tests see the shipped tiers
+        monkeypatch.delenv(variable)
 
 
 TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", "postgresql+psycopg://lingard:lingard@localhost:55432/lingard")

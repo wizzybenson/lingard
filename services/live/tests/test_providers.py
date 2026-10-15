@@ -5,7 +5,7 @@ import httpx
 import pytest
 from pydantic import SecretStr
 
-from lingard_live.settings import LiveSettings, build_stt
+from lingard_live.settings import LiveSettings, build_stt, stt_providers, tts_providers
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt
 from lingard_live.tts import ElevenLabsTts
 from lingard_live.voices import OPENAI_VOICES, gender_of, pick
@@ -34,6 +34,15 @@ def test_stt_chain_uses_only_configured_providers_in_preference_order() -> None:
     custom = _settings(openai_api_key="o", deepgram_api_key="d")
     custom.stt_order = ["openai", "deepgram"]
     assert _chain(build_stt(custom)) == ["openai", "deepgram"]
+
+
+def test_speech_models_come_from_settings(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEEPGRAM_STT_MODEL", "nova-2")
+    monkeypatch.setenv("ELEVENLABS_TTS_MODEL", "eleven_turbo_v2_5")
+    settings = _settings(deepgram_api_key="d", elevenlabs_api_key="e")
+    assert stt_providers(settings)["deepgram"]._model == "nova-2"  # type: ignore[attr-defined]
+    assert stt_providers(settings)["elevenlabs"]._model == "scribe_v2", "unset keeps the default"  # type: ignore[attr-defined]
+    assert tts_providers(settings)["elevenlabs"]._model == "eleven_turbo_v2_5"  # type: ignore[attr-defined]
 
 
 def _fake(monkeypatch: pytest.MonkeyPatch, handler: httpx.MockTransport) -> None:

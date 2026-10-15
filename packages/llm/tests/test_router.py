@@ -38,12 +38,28 @@ def router_with(models: dict[str, ScriptedChatModel], cfg: LLMConfig) -> tuple[L
     return LLMRouter(cfg, factory=factory, sink=sink), sink
 
 
-async def test_shipped_config_maps_tiers_to_current_claude_models() -> None:
+async def test_shipped_config_tier_order() -> None:
     cfg = LLMConfig.load(ROOT / "config/llm.yaml")
     assert cfg.tier("fast").models[0].model == "claude-haiku-5-5"
     assert cfg.tier("mid").models[0].model == "claude-sonnet-5-5"
-    assert cfg.tier("frontier").models[0].model == "claude-opus-5-5"
+    assert cfg.tier("frontier").models[0].model == "gpt-6.1-sol"
+    assert "openai" not in {s.provider for s in cfg.tier("fast").models}, "NPCs run on Haiku, never gpt-6-luna"
+    assert not {s.model for t in cfg.tiers.values() for s in t.models} & {"claude-opus-5-5", "gpt-6-astra"}
     assert all(s.price and s.price.source_url and s.price.as_of for t in cfg.tiers.values() for s in t.models)
+
+
+def test_tier_models_and_effort_come_from_the_environment() -> None:
+    env = {"LLM_FAST_MODELS": " gpt-6-luna, claude-haiku-5-5 ", "LLM_FAST_EFFORT": "medium", "LLM_MID_MODELS": ""}
+    cfg = LLMConfig.load(ROOT / "config/llm.yaml", env=env)
+    fast = cfg.tier("fast")
+    assert [(s.model, s.provider, s.effort) for s in fast.models] == [
+        ("gpt-6-luna", "openai", "medium"),
+        ("claude-haiku-5-5", "anthropic", "medium"),
+    ]
+    assert fast.retries == 0 and fast.models[0].max_tokens == 1024 and fast.models[0].price is not None
+    assert cfg.tier("mid") == LLMConfig.load(ROOT / "config/llm.yaml", env={}).tier("mid"), "blank keeps the default"
+    with pytest.raises(ValueError, match=r"missing from the catalog.*gpt-9"):
+        LLMConfig.load(ROOT / "config/llm.yaml", env={"LLM_FRONTIER_MODELS": "gpt-6.1-sol,gpt-9"})
 
 
 async def test_text_records_usage_with_prompt_version_and_cost() -> None:
@@ -135,16 +151,16 @@ def test_only_providers_with_keys_are_used(monkeypatch: pytest.MonkeyPatch) -> N
         monkeypatch.delenv(variable, raising=False)
     router = LLMRouter(cfg)
     with pytest.raises(RuntimeError, match="set one of ANTHROPIC_API_KEY, GOOGLE_API_KEY, OPENAI_API_KEY"):
-        router.specs("fast")
+        router.specs("mid")
 
     monkeypatch.setenv("GOOGLE_API_KEY", "g-test")
     assert [s.provider for s in router.specs("mid")] == ["google"]
     assert router.primary_provider("fast") == "google"
 
     monkeypatch.setenv("OPENAI_API_KEY", "o-test")
-    assert [s.model for s in router.specs("frontier")] == ["gpt-6-astra", "gemini-3.1-pro-preview"]
+    assert [s.model for s in router.specs("frontier")] == ["gpt-6.1-sol", "gemini-3.1-pro-preview"]
     monkeypatch.setenv("ANTHROPIC_API_KEY", " ")  # blank counts as unset
-    assert router.primary_provider("fast") == "openai"
+    assert router.primary_provider("mid") == "openai"
 
 
 def test_custom_factories_see_every_provider() -> None:

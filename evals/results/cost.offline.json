@@ -3,13 +3,12 @@
   "mode": "offline",
   "metrics": {
     "default_llm_mid": 0.1665,
-    "default_llm_frontier": 0.1023,
+    "default_llm_frontier": 0.0511,
     "default_llm_fast": 0.0029,
     "default_stt": 0.026,
     "default_tts": 0.336,
-    "default_total": 0.6337,
-    "llm_only_anthropic": 0.2717,
-    "llm_only_openai": 0.4251,
+    "default_total": 0.5826,
+    "llm_only_anthropic": 0.2206,
     "llm_only_google": 0.1348,
     "cheapest_total": 0.1348
   },
@@ -66,11 +65,38 @@
     {
       "stack": "anthropic+voicebox+voicebox",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.0,
       "tts": 0.0,
-      "total": 0.2717
+      "total": 0.2206
+    },
+    {
+      "stack": "anthropic+elevenlabs+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.0511,
+      "llm_fast": 0.0029,
+      "stt": 0.0185,
+      "tts": 0.0,
+      "total": 0.2391
+    },
+    {
+      "stack": "anthropic+deepgram+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.0511,
+      "llm_fast": 0.0029,
+      "stt": 0.026,
+      "tts": 0.0,
+      "total": 0.2466
+    },
+    {
+      "stack": "anthropic+openai+voicebox",
+      "llm_mid": 0.1665,
+      "llm_frontier": 0.0511,
+      "llm_fast": 0.0029,
+      "stt": 0.03,
+      "tts": 0.0,
+      "total": 0.2506
     },
     {
       "stack": "google+voicebox+openai",
@@ -82,15 +108,6 @@
       "total": 0.2776
     },
     {
-      "stack": "anthropic+elevenlabs+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
-      "llm_fast": 0.0029,
-      "stt": 0.0185,
-      "tts": 0.0,
-      "total": 0.2902
-    },
-    {
       "stack": "google+elevenlabs+openai",
       "llm_mid": 0.068,
       "llm_frontier": 0.0588,
@@ -98,24 +115,6 @@
       "stt": 0.0185,
       "tts": 0.1428,
       "total": 0.2961
-    },
-    {
-      "stack": "anthropic+deepgram+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
-      "llm_fast": 0.0029,
-      "stt": 0.026,
-      "tts": 0.0,
-      "total": 0.2977
-    },
-    {
-      "stack": "anthropic+openai+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
-      "llm_fast": 0.0029,
-      "stt": 0.03,
-      "tts": 0.0,
-      "total": 0.3017
     },
     {
       "stack": "google+deepgram+openai",
@@ -138,74 +137,38 @@
     {
       "stack": "anthropic+voicebox+openai",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.0,
       "tts": 0.1428,
-      "total": 0.4145
-    },
-    {
-      "stack": "openai+voicebox+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0,
-      "tts": 0.0,
-      "total": 0.4251
+      "total": 0.3634
     },
     {
       "stack": "anthropic+elevenlabs+openai",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.0185,
       "tts": 0.1428,
-      "total": 0.433
+      "total": 0.3819
     },
     {
       "stack": "anthropic+deepgram+openai",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.026,
       "tts": 0.1428,
-      "total": 0.4405
-    },
-    {
-      "stack": "openai+elevenlabs+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0185,
-      "tts": 0.0,
-      "total": 0.4436
+      "total": 0.3894
     },
     {
       "stack": "anthropic+openai+openai",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.03,
       "tts": 0.1428,
-      "total": 0.4445
-    },
-    {
-      "stack": "openai+deepgram+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.026,
-      "tts": 0.0,
-      "total": 0.4511
-    },
-    {
-      "stack": "openai+openai+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.03,
-      "tts": 0.0,
-      "total": 0.4551
+      "total": 0.3934
     },
     {
       "stack": "google+voicebox+elevenlabs",
@@ -244,114 +207,42 @@
       "total": 0.5008
     },
     {
-      "stack": "openai+voicebox+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0,
-      "tts": 0.1428,
-      "total": 0.5679
-    },
-    {
-      "stack": "openai+elevenlabs+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0185,
-      "tts": 0.1428,
-      "total": 0.5864
-    },
-    {
-      "stack": "openai+deepgram+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.026,
-      "tts": 0.1428,
-      "total": 0.5939
-    },
-    {
-      "stack": "openai+openai+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.03,
-      "tts": 0.1428,
-      "total": 0.5979
-    },
-    {
       "stack": "anthropic+voicebox+elevenlabs",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.0,
       "tts": 0.336,
-      "total": 0.6077
+      "total": 0.5566
     },
     {
       "stack": "anthropic+elevenlabs+elevenlabs",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.0185,
       "tts": 0.336,
-      "total": 0.6262
+      "total": 0.5751
     },
     {
       "stack": "anthropic+deepgram+elevenlabs",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.026,
       "tts": 0.336,
-      "total": 0.6337
+      "total": 0.5826
     },
     {
       "stack": "anthropic+openai+elevenlabs",
       "llm_mid": 0.1665,
-      "llm_frontier": 0.1023,
+      "llm_frontier": 0.0511,
       "llm_fast": 0.0029,
       "stt": 0.03,
       "tts": 0.336,
-      "total": 0.6377
-    },
-    {
-      "stack": "openai+voicebox+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0,
-      "tts": 0.336,
-      "total": 0.7611
-    },
-    {
-      "stack": "openai+elevenlabs+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.0185,
-      "tts": 0.336,
-      "total": 0.7796
-    },
-    {
-      "stack": "openai+deepgram+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.026,
-      "tts": 0.336,
-      "total": 0.7871
-    },
-    {
-      "stack": "openai+openai+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.2557,
-      "llm_fast": 0.0029,
-      "stt": 0.03,
-      "tts": 0.336,
-      "total": 0.7911
+      "total": 0.5866
     }
   ],
-  "ran_at": "2026-10-14T20:57:21+00:00",
+  "ran_at": "2026-10-15T04:30:32+00:00",
   "status": "PASS"
 }
