@@ -39,7 +39,6 @@ export default function Studio() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setResults({});
     if (!language) return;
     api
       .get<StudioLine[]>(`/v1/studio/items?language=${language}`)

@@ -1,5 +1,4 @@
 import { router, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { LessonRow } from "@/api/types";
@@ -11,7 +10,7 @@ export default function School() {
   const { t } = useTranslation();
   const api = useApi();
   const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"));
-  useFocusEffect(useCallback(() => lessons.reload(), [lessons.reload]));
+  useFocusEffect(lessons.reload);
   return (
     <Screen>
       <Title>{t("school.title")}</Title>

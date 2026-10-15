@@ -1,8 +1,12 @@
-/** Typed API client: bearer auth, one shared refresh in flight, rotation of the refresh token. */
+/** Typed API client: bearer auth, one shared refresh in flight, rotation of the refresh token.
+ *
+ * On the web the refresh token never reaches JavaScript: the API keeps it in an HttpOnly cookie scoped to /v1/auth
+ * (decision 0008), and the access token lives only in memory, so a reload calls `resume()` to get a new one. */
 
 export interface Tokens {
   accessToken: string;
-  refreshToken: string;
+  /** Null on the web, where the browser holds it as an HttpOnly cookie. */
+  refreshToken: string | null;
   pinChangeRequired: boolean;
 }
 
@@ -25,7 +29,7 @@ type Fetch = typeof fetch;
 
 interface TokenResponse {
   access_token: string;
-  refresh_token: string;
+  refresh_token: string | null;
   pin_change_required: boolean;
 }
 
@@ -45,23 +49,30 @@ export class ApiClient {
     private readonly store: TokenStore,
     private readonly fetchImpl: Fetch = (input, init) => fetch(input, init), // browsers reject an unbound fetch
     private readonly onSignedOut: () => void = () => {},
+    private readonly cookieAuth = false,
   ) {}
 
   private async raw(path: string, init: RequestInit, token?: string): Promise<Response> {
     const headers = new Headers(init.headers);
     if (token) headers.set("Authorization", `Bearer ${token}`);
     if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
+    if (this.cookieAuth && path.startsWith("/v1/auth/")) {
+      headers.set("X-Lingard-Client", "web");
+      return this.fetchImpl(`${this.baseUrl}${path}`, { ...init, headers, credentials: "include" });
+    }
     return this.fetchImpl(`${this.baseUrl}${path}`, { ...init, headers });
   }
 
   private async refresh(): Promise<Tokens | null> {
     this.refreshing ??= (async () => {
       const current = await this.store.load();
-      if (!current) return null;
-      const response = await this.raw("/v1/auth/refresh", {
-        method: "POST",
-        body: JSON.stringify({ refresh_token: current.refreshToken }),
-      });
+      if (!this.cookieAuth && !current?.refreshToken) return null;
+      const response = await acrossTabs(() =>
+        this.raw("/v1/auth/refresh", {
+          method: "POST",
+          body: current?.refreshToken ? JSON.stringify({ refresh_token: current.refreshToken }) : undefined,
+        }),
+      );
       if (!response.ok) {
         await this.store.clear();
         this.onSignedOut();
@@ -74,6 +85,11 @@ export class ApiClient {
       this.refreshing = null;
     });
     return this.refreshing;
+  }
+
+  /** After a web reload: trade the HttpOnly cookie for a fresh access token, or null when there is no live session. */
+  resume(): Promise<Tokens | null> {
+    return this.refresh().catch(() => null);
   }
 
   async request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -94,7 +110,7 @@ export class ApiClient {
   private async checked(path: string, init: RequestInit): Promise<Response> {
     let tokens = await this.store.load();
     let response = await this.raw(path, init, tokens?.accessToken);
-    if (response.status === 401 && tokens) {
+    if (response.status === 401 && (tokens || this.cookieAuth)) {
       tokens = await this.refresh();
       if (!tokens) throw new ApiError(401, "Please sign in again.");
       response = await this.raw(path, init, tokens.accessToken);
@@ -170,4 +186,11 @@ export class ApiClient {
       this.onSignedOut();
     }
   }
+}
+
+/** Tabs share one refresh cookie, and replaying a rotated token revokes the session, so web refreshes take turns.
+ * The next tab then sends the cookie the previous one rotated into. */
+function acrossTabs(work: () => Promise<Response>): Promise<Response> {
+  const locks = (globalThis.navigator as Navigator | undefined)?.locks;
+  return locks ? locks.request("lingard.refresh", work) : work();
 }

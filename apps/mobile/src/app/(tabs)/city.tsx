@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 
@@ -31,7 +31,7 @@ export default function City() {
   const [error, setError] = useState<string | null>(null);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
   // Coming back from a goal, a lesson or a scene must show the updated streak and next step.
-  useFocusEffect(useCallback(() => today.reload(), [today.reload]));
+  useFocusEffect(today.reload);
   useEffect(() => {
     if (!today.data) return;
     const { title, body } = reminderText(t, today.data);

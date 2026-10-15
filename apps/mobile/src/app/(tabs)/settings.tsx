@@ -5,10 +5,9 @@ import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { Platform, Switch, View } from "react-native";
 
-import type { Profile } from "@/api/types";
+import type { Profile, Today } from "@/api/types";
 import { applyLocale, UI_LOCALES } from "@/i18n";
 import { currentReminder, REMINDER_TIMES, reminderText, remindersSupported, setReminder, type ReminderTime } from "@/state/reminders";
-import type { Today } from "@/api/types";
 import { useAuth } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from "@/ui/kit";

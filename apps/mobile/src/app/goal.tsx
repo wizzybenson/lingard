@@ -1,6 +1,6 @@
 /** Goal setting: which exam, when, and the CLB/NCLC level needed per skill. Everything else is measured against it. */
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -23,12 +23,14 @@ export default function Goal() {
   const [targets, setTargets] = useState<Record<string, Record<string, number>>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [loadedFrom, setLoadedFrom] = useState<Profile | null>(null);
 
-  useEffect(() => {
-    if (!profile.data) return;
+  // Start the form from the saved profile whenever a fresh one arrives (adjusting state during render, not in an effect).
+  if (profile.data && profile.data !== loadedFrom) {
+    setLoadedFrom(profile.data);
     setDates(profile.data.exam_dates);
     setTargets(profile.data.target_bands);
-  }, [profile.data]);
+  }
 
   const save = async () => {
     const bad = Object.values(dates).find((d) => d && !ISO_DATE.test(d));

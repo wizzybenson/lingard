@@ -23,12 +23,15 @@ export default function PassportScreen() {
   const profile = useResource(() => api.get<Profile>("/v1/me"));
   const cities = useCities();
   const packOf = (pack: string) => cities.data?.find((c) => c.pack === pack);
+  const { reload: reloadPassport } = passport;
+  const { reload: reloadWallet } = wallet;
+  const { reload: reloadProfile } = profile;
   useFocusEffect(
     useCallback(() => {
-      passport.reload();
-      wallet.reload();
-      profile.reload();
-    }, [passport.reload, wallet.reload, profile.reload]),
+      reloadPassport();
+      reloadWallet();
+      reloadProfile();
+    }, [reloadPassport, reloadWallet, reloadProfile]),
   );
   return (
     <Screen>

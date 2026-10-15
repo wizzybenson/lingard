@@ -32,8 +32,9 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
     app.add_middleware(
         CORSMiddleware,
         allow_origins=config.cors_origins,
+        allow_credentials=True,  # the web refresh cookie (routes/auth.py)
         allow_methods=["*"],
-        allow_headers=["Authorization", "Content-Type"],
+        allow_headers=["Authorization", "Content-Type", "X-Lingard-Client"],
     )
     for module in (auth, me, admin, world, sessions, learning, economy, voice, glance, speech, studio, today):
         app.include_router(module.router)

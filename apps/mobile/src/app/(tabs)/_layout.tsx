@@ -7,6 +7,7 @@ import { applyLocale } from "@/i18n";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/state/auth";
+import { Loading, Screen } from "@/ui/kit";
 import { colors } from "@/ui/theme";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
@@ -27,6 +28,7 @@ export default function TabsLayout() {
     // The learner's chosen interface language follows them across devices.
     if (status === "signedIn") void api.get<Profile>("/v1/me").then((p) => applyLocale(p.ui_locale)).catch(() => undefined);
   }, [status, api]);
+  if (status === "booting") return <Screen><Loading /></Screen>; // the web is still trading its cookie for a token
   if (status !== "signedIn") return <Redirect href="/sign-in" />;
   if (pinChangeRequired) return <Redirect href="/change-pin" />;
   return (

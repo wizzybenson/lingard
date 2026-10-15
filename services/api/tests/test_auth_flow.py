@@ -168,3 +168,68 @@ async def test_curriculum_review_admin_flow(api) -> None:  # type: ignore[no-unt
     assert off.json()["reviewed"] is False
     playable = await api.state.curriculum.nodes("fr", kinds=["grammar"], band=7)
     assert "fr.grammar.si_imparfait" not in {n.key for n in playable}
+
+
+WEB = {"X-Lingard-Client": "web"}
+
+
+async def test_web_refresh_token_is_an_httponly_cookie(api) -> None:  # type: ignore[no-untyped-def]
+    await api.admin_token()
+    signed_in = await api.client.post("/v1/auth/sign-in", json={"display_name": "Founder", "pin": PIN}, headers=WEB)
+    assert signed_in.status_code == 200 and signed_in.json()["refresh_token"] is None
+    cookie = signed_in.headers["set-cookie"].lower()
+    assert "lingard_refresh=" in cookie and "httponly" in cookie and "samesite=strict" in cookie
+    assert "path=/v1/auth" in cookie
+
+    # a reload: no body, only the cookie the browser kept
+    first = api.client.cookies.get("lingard_refresh")
+    reloaded = await api.client.post("/v1/auth/refresh", headers=WEB)
+    assert reloaded.status_code == 200 and reloaded.json()["refresh_token"] is None
+    assert api.client.cookies.get("lingard_refresh") not in (None, first), "the cookie rotates like the token"
+    access = reloaded.json()["access_token"]
+    assert (await api.client.get("/v1/me", headers=api.bearer(access))).status_code == 200
+
+    signed_out = await api.client.post("/v1/auth/sign-out", headers={**WEB, **api.bearer(access)})
+    assert signed_out.status_code == 204 and api.client.cookies.get("lingard_refresh") is None
+    assert (await api.client.post("/v1/auth/refresh", headers=WEB)).status_code == 401
+
+
+async def test_cookie_alone_cannot_refresh(api) -> None:  # type: ignore[no-untyped-def]
+    """Without the custom header (which a cross-site page can't send past CORS) the cookie is ignored."""
+    await api.admin_token()
+    await api.client.post("/v1/auth/sign-in", json={"display_name": "Founder", "pin": PIN}, headers=WEB)
+    assert api.client.cookies.get("lingard_refresh")
+    assert (await api.client.post("/v1/auth/refresh")).status_code == 401
+
+
+async def test_failed_web_refresh_clears_the_cookie(api) -> None:  # type: ignore[no-untyped-def]
+    await api.admin_token()
+    await api.client.post("/v1/auth/sign-in", json={"display_name": "Founder", "pin": PIN}, headers=WEB)
+    api.client.cookies.clear()
+    api.client.cookies.set("lingard_refresh", "x" * 40)
+    failed = await api.client.post("/v1/auth/refresh", headers=WEB)
+    cleared = failed.headers["set-cookie"].lower()
+    assert failed.status_code == 401 and "lingard_refresh=" in cleared
+    assert "max-age=0" in cleared and "path=/v1/auth" in cleared
+
+
+async def test_cors_allows_credentials_and_the_client_header(api) -> None:  # type: ignore[no-untyped-def]
+    preflight = await api.client.options(
+        "/v1/auth/refresh",
+        headers={
+            "Origin": "http://localhost:8081",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "x-lingard-client",
+        },
+    )
+    assert preflight.headers["access-control-allow-credentials"] == "true"
+    assert "x-lingard-client" in preflight.headers["access-control-allow-headers"].lower()
+    evil = await api.client.options(
+        "/v1/auth/refresh",
+        headers={
+            "Origin": "https://evil.example",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "x-lingard-client",
+        },
+    )
+    assert "access-control-allow-origin" not in evil.headers

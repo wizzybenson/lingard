@@ -1,6 +1,6 @@
 /** Runs an interactive placement or mock: one prompt at a time, strictly as the server sends them (no hints). */
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, View } from "react-native";
 
@@ -11,18 +11,23 @@ import { PlayButton } from "@/live/PlayButton";
 import { Recorder } from "@/live/Recorder";
 import { Body, Button, Card, ErrorText, Field, Screen, Title } from "@/ui/kit";
 
+function sectionOf(step: StepView | null): string {
+  const prompt = step?.prompt;
+  return prompt && "section" in prompt ? (prompt.section ?? "") : "";
+}
+
 export default function Thread() {
   const { t } = useTranslation();
   const api = useApi();
   const params = useLocalSearchParams<{ id: string; first?: string; language?: string }>();
   const language: "fr" | "en" = params.language === "en" ? "en" : "fr";
-  const [step, setStep] = useState<StepView | null>(params.first ? (JSON.parse(params.first) as StepView) : null);
+  const [step, setStep] = useState<StepView | null>(() => (params.first ? (JSON.parse(params.first) as StepView) : null));
   const [text, setText] = useState("");
   const [cloneConsent, setCloneConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [now, setNow] = useState(Date.now());
-  const sectionStart = useRef<{ section: string; at: number }>({ section: "", at: Date.now() });
+  const [now, setNow] = useState(() => Date.now());
+  const [sectionStart, setSectionStart] = useState(() => ({ section: sectionOf(step), at: Date.now() }));
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -30,10 +35,9 @@ export default function Thread() {
   }, []);
 
   const prompt = step?.prompt ?? null;
-  const section = prompt && "section" in prompt ? (prompt.section ?? "") : "";
-  if (section && sectionStart.current.section !== section) sectionStart.current = { section, at: Date.now() };
+  const section = sectionOf(step);
   const minutes = prompt && "minutes" in prompt && typeof prompt.minutes === "number" ? prompt.minutes : null;
-  const elapsedS = Math.round((now - sectionStart.current.at) / 1000);
+  const elapsedS = Math.round((now - sectionStart.at) / 1000);
 
   const send = async (value: unknown) => {
     setBusy(true);
@@ -42,6 +46,11 @@ export default function Thread() {
       const next = await api.post<StepView>(`/v1/threads/${params.id}/answer`, { value });
       setText("");
       setStep(next);
+      const nextSection = sectionOf(next);
+      if (nextSection && nextSection !== sectionStart.section) {
+        // eslint-disable-next-line react-hooks/purity -- runs in the answer handler after the await, not during render
+        setSectionStart({ section: nextSection, at: Date.now() });
+      }
       if (next.done) router.replace("/(tabs)/passport");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -55,7 +64,7 @@ export default function Thread() {
 
   return (
     <Screen>
-      {minutes !== null && <Body muted>{t("exam.timeLeft", { time: clock(remaining(sectionStart.current.at, minutes, now)) })}</Body>}
+      {minutes !== null && <Body muted>{t("exam.timeLeft", { time: clock(remaining(sectionStart.at, minutes, now)) })}</Body>}
       <ErrorText message={error} />
       {prompt.kind === "item" && (
         <Card>

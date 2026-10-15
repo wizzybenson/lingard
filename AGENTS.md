@@ -53,7 +53,7 @@ uv run pytest -m integration              # needs: docker compose up -d postgres
 uv run ruff check . && uv run ruff format --check .
 uv run mypy packages services             # --strict is configured in pyproject.toml
 docker compose up -d                      # local stack (postgres+pgvector, redis, SeaweedFS "objects", langfuse, livekit)
-cd apps/mobile && npm test && npx tsc --noEmit
+cd apps/mobile && npm test && npx tsc --noEmit && npm run lint
 ```
 
 ## Code standards

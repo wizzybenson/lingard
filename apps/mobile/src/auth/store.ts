@@ -12,7 +12,7 @@ export const PIN_REVERIFY_DAYS = 30;
 const memory = new Map<string, string>();
 
 async function getItem(key: string): Promise<string | null> {
-  if (Platform.OS === "web") return memory.get(key) ?? null; // web keeps tokens in memory only
+  if (Platform.OS === "web") return memory.get(key) ?? null; // web: access token only, the refresh token is a cookie
   return SecureStore.getItemAsync(key);
 }
 

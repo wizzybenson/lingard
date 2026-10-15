@@ -54,6 +54,15 @@ class Settings(BaseSettings):
     livekit_api_key: str = "devkey"
     livekit_api_secret: SecretStr = SecretStr("secret")
     cors_origins: list[str] = ["http://localhost:8081", "http://localhost:19006"]
+    """The web app's origins. It must be same-site with the API so the SameSite=Strict refresh cookie is sent."""
+    refresh_cookie_secure: bool | None = None
+    """``Secure`` flag on the web refresh cookie; unset → on everywhere except local/test (plain http)."""
+
+    @property
+    def refresh_cookie_is_secure(self) -> bool:
+        if self.refresh_cookie_secure is not None:
+            return self.refresh_cookie_secure
+        return self.env not in ("local", "test")
 
     def prod_safe(self) -> None:
         if self.env in ("staging", "prod") and self.jwt_secret.get_secret_value().startswith("local-dev-only"):

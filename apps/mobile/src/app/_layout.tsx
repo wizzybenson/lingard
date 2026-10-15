@@ -10,8 +10,8 @@ import { AuthProvider, useAuth } from "@/state/auth";
 
 const PUBLIC = new Set(["sign-in", "index"]);
 
-/** Every screen except sign-in needs a session. On the web tokens live in memory only, so a reload or a pasted
- * link lands here signed out and must go to sign-in rather than show "Not signed in". */
+/** Every screen except sign-in needs a session. A reload or pasted link without one (or with a stale PIN) lands here
+ * signed out and must go to sign-in rather than show "Not signed in". */
 function AuthGate() {
   const { status } = useAuth();
   const segments = useSegments();

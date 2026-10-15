@@ -8,21 +8,22 @@ const ART_WIDTH = 800;
 const ART_HEIGHT = 500;
 
 export function LocationArt({ api, layers, width }: { api: ApiClient; layers: string[]; width: number }) {
-  const [svgs, setSvgs] = useState<SkSVG[]>([]);
   const key = layers.join("|");
+  const [loaded, setLoaded] = useState<{ key: string; svgs: SkSVG[] }>({ key: "", svgs: [] });
   useEffect(() => {
     let live = true;
-    setSvgs([]);
     Promise.all(layers.map((layer) => api.text(`/v1/art/${layer}`)))
       .then((sources) => {
-        if (live) setSvgs(sources.map((source) => Skia.SVG.MakeFromString(source)).filter((s): s is SkSVG => s !== null));
+        const svgs = sources.map((source) => Skia.SVG.MakeFromString(source)).filter((s): s is SkSVG => s !== null);
+        if (live) setLoaded({ key, svgs });
       })
-      .catch(() => live && setSvgs([])); // art is decoration: a missing file just leaves the card plain
+      .catch(() => live && setLoaded({ key, svgs: [] })); // art is decoration: a missing file just leaves the card plain
     return () => {
       live = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, key]);
+  const svgs = loaded.key === key ? loaded.svgs : [];
   if (svgs.length === 0) return null;
   const scale = width / ART_WIDTH;
   const height = ART_HEIGHT * scale;

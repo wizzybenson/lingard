@@ -21,15 +21,27 @@ interface AuthValue {
 
 const AuthContext = createContext<AuthValue | null>(null);
 const DEVICE_LABEL = `${Platform.OS} device`;
+const WEB = Platform.OS === "web";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("booting");
   const [pinChangeRequired, setPinChangeRequired] = useState(false);
-  const api = useMemo(() => new ApiClient(API_URL, secureTokenStore, undefined, () => setStatus("signedOut")), []);
+  const api = useMemo(
+    () => new ApiClient(API_URL, secureTokenStore, undefined, () => setStatus("signedOut"), WEB),
+    [],
+  );
 
   useEffect(() => {
+    if (WEB) {
+      // The refresh cookie survives a reload; the server enforces the 30-day PIN rule when it is used.
+      void api.resume().then((tokens) => {
+        if (tokens) setPinChangeRequired(tokens.pinChangeRequired);
+        setStatus(tokens ? "signedIn" : "signedOut");
+      });
+      return;
+    }
     void secureTokenStore.load().then((tokens) => setStatus(tokens ? "locked" : "signedOut"));
-  }, []);
+  }, [api]);
 
   const accept = useCallback(async (tokens: Tokens) => {
     await markPinVerified();

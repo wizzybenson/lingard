@@ -1,20 +1,32 @@
-"""``/v1/auth``: sign-in, invite redemption, refresh, sign-out, PIN change, device sessions."""
+"""``/v1/auth``: sign-in, invite redemption, refresh, sign-out, PIN change, device sessions.
+
+Phones keep the refresh token in the OS keychain. Browsers have no equivalent that page scripts can't read, so a client
+sending ``X-Lingard-Client: web`` gets the refresh token as an ``HttpOnly`` cookie instead of in the body. Cookie
+refreshes require that header too: a cross-site page can only add it after a CORS preflight, which the origin allowlist
+refuses, and ``SameSite=Strict`` keeps other sites from sending the cookie at all (decision 0008).
+"""
 
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, Cookie, Header, HTTPException, Request, Response, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from lingard_api.auth.pin import WeakPinError
 from lingard_api.auth.provider import AuthError, SignInRequest, TokenPair
 from lingard_api.deps import Db, PendingPrincipal, Principal, State, client_ip
+from lingard_api.state import AppState
 from lingard_db.models import DeviceSession
 
 router = APIRouter(prefix="/v1/auth", tags=["auth"])
+
+REFRESH_COOKIE = "lingard_refresh"
+WEB_CLIENT = "web"
 
 Pin = Field(min_length=6, max_length=6, pattern=r"^\d{6}$")
 
@@ -30,7 +42,8 @@ class RedeemBody(SignInBody):
 
 
 class RefreshBody(BaseModel):
-    refresh_token: str = Field(min_length=20, max_length=200)
+    refresh_token: str | None = Field(default=None, min_length=20, max_length=200)
+    """Phones send it here; the web sends nothing and relies on the cookie."""
 
 
 class ChangePinBody(BaseModel):
@@ -41,7 +54,8 @@ class ChangePinBody(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     access_expires_at: datetime
-    refresh_token: str
+    refresh_token: str | None
+    """``None`` for web clients, which receive it as an HttpOnly cookie."""
     session_id: uuid.UUID
     user_id: uuid.UUID
     role: str
@@ -59,6 +73,36 @@ class DeviceSessionView(BaseModel):
     current: bool
 
 
+ClientKind = Annotated[str | None, Header(alias="X-Lingard-Client")]
+
+
+def _issue(pair: TokenPair, client: str | None, response: Response, state: AppState) -> TokenResponse:
+    """Phones get the refresh token in the body; the web gets it as a cookie its scripts can't read."""
+    body = TokenResponse.of(pair)
+    if client != WEB_CLIENT:
+        return body
+    response.set_cookie(
+        REFRESH_COOKIE,
+        pair.refresh_token,
+        max_age=state.settings.refresh_token_days * 86_400,
+        path=router.prefix,
+        secure=state.settings.refresh_cookie_is_secure,
+        httponly=True,
+        samesite="strict",
+    )
+    return body.model_copy(update={"refresh_token": None})
+
+
+def _forget(response: Response, state: AppState) -> None:
+    response.delete_cookie(
+        REFRESH_COOKIE,
+        path=router.prefix,
+        secure=state.settings.refresh_cookie_is_secure,
+        httponly=True,
+        samesite="strict",
+    )
+
+
 def _fail(exc: AuthError | WeakPinError | ValueError) -> HTTPException:
     if isinstance(exc, AuthError):
         return HTTPException(exc.status, str(exc))
@@ -66,38 +110,60 @@ def _fail(exc: AuthError | WeakPinError | ValueError) -> HTTPException:
 
 
 @router.post("/sign-in", response_model=TokenResponse)
-async def sign_in(body: SignInBody, request: Request, state: State) -> TokenResponse:
+async def sign_in(
+    body: SignInBody, request: Request, response: Response, state: State, client: ClientKind = None
+) -> TokenResponse:
     try:
         pair = await state.auth.sign_in(
             SignInRequest(body.display_name, body.pin, body.device_label, client_ip(request))
         )
     except AuthError as exc:
         raise _fail(exc) from exc
-    return TokenResponse.of(pair)
+    return _issue(pair, client, response, state)
 
 
 @router.post("/redeem-invite", response_model=TokenResponse, status_code=201)
-async def redeem_invite(body: RedeemBody, request: Request, state: State) -> TokenResponse:
+async def redeem_invite(
+    body: RedeemBody, request: Request, response: Response, state: State, client: ClientKind = None
+) -> TokenResponse:
     try:
         pair = await state.auth.redeem_invite(
             body.invite_code, body.display_name, body.pin, body.device_label, client_ip(request)
         )
     except (AuthError, WeakPinError, ValueError) as exc:
         raise _fail(exc) from exc
-    return TokenResponse.of(pair)
+    return _issue(pair, client, response, state)
 
 
 @router.post("/refresh", response_model=TokenResponse)
-async def refresh(body: RefreshBody, request: Request, state: State) -> TokenResponse:
+async def refresh(
+    request: Request,
+    response: Response,
+    state: State,
+    body: RefreshBody | None = None,
+    client: ClientKind = None,
+    cookie: Annotated[str | None, Cookie(alias=REFRESH_COOKIE)] = None,
+) -> TokenResponse | JSONResponse:
+    token = body.refresh_token if body else None
+    if token is None and client == WEB_CLIENT:
+        token = cookie
+    if token is None:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Not signed in")
     try:
-        return TokenResponse.of(await state.auth.refresh(body.refresh_token, client_ip(request)))
+        pair = await state.auth.refresh(token, client_ip(request))
     except AuthError as exc:
-        raise _fail(exc) from exc
+        if client != WEB_CLIENT:
+            raise _fail(exc) from exc
+        failed = JSONResponse({"detail": str(exc)}, status_code=exc.status)
+        _forget(failed, state)  # a dead cookie would only fail again on the next reload
+        return failed
+    return _issue(pair, client, response, state)
 
 
 @router.post("/sign-out", status_code=204)
-async def sign_out(principal: PendingPrincipal, state: State) -> None:
+async def sign_out(principal: PendingPrincipal, response: Response, state: State) -> None:
     await state.auth.sign_out(principal.session_id)
+    _forget(response, state)
 
 
 @router.post("/change-pin", status_code=204)

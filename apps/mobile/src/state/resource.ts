@@ -29,7 +29,8 @@ export function useResource<T>(load: () => Promise<T>, deps: unknown[] = []): Re
       .finally(() => {
         if (mine === generation.current) setLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // The caller's deps decide when to reload, like useEffect's own list.
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
   }, deps);
   useEffect(run, [run]);
   return { data, error, loading, reload: run };
