@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, status
@@ -85,6 +85,24 @@ async def _owned_session(db: Db, principal: Principal, session_id: uuid.UUID) ->
 @router.post("/sessions", response_model=SessionView, status_code=202)
 async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
     require_providers(state, llm=True)
+    since = datetime.now(UTC) - timedelta(minutes=state.settings.plan_reuse_minutes)
+    pending = (
+        await db.execute(
+            select(Session)
+            .where(
+                Session.user_id == principal.user_id,
+                Session.city == body.city,
+                Session.kind == body.kind,
+                Session.ended_at.is_(None),
+                Session.started_at > since,
+                Session.plan["status"].as_string() == "planning",
+            )
+            .order_by(Session.started_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if pending is not None:  # a second tap, or the screen was reopened: don't plan (and pay for) the day twice
+        return SessionView(id=pending.id, city=pending.city, kind=pending.kind, status="planning", scene_ids=[])
     row = Session(
         tenant_id=principal.tenant_id,
         user_id=principal.user_id,

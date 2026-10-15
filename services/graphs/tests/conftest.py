@@ -45,7 +45,10 @@ def script() -> Script:
 @pytest.fixture
 async def deps(script: Script) -> GraphDeps:
     model = ScriptedChatModel(responder=script)
-    tiers = {t: {"retries": 0, "models": [{"provider": "scripted", "model": "s"}]} for t in ("fast", "mid", "frontier")}
+    tiers = {
+        t: {"retries": 0, "models": [{"provider": "scripted", "model": "s"}]}
+        for t in ("fast", "mid", "compile", "frontier")
+    }
 
     def factory(spec: ModelSpec) -> BaseChatModel:
         return model

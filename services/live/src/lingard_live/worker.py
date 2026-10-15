@@ -30,6 +30,8 @@ from lingard_live.scene import build_scene
 from lingard_live.settings import LiveSettings, build_stt, build_tts
 from lingard_llm import LLMConfig, LLMRouter, PromptRegistry
 
+READ_BLOCK_MS = 5000
+"""How long a worker waits for a job; the socket read timeout must outlast it (redis-py 8 times out sooner)."""
 logger = logging.getLogger(__name__)
 JOBS_STREAM = "live_jobs"
 GROUP = "live-workers"
@@ -112,11 +114,17 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
             await session.close()
 
 
+def _log_failure(task: asyncio.Task[None]) -> None:
+    if not task.cancelled() and (error := task.exception()) is not None:
+        logger.error("live scene failed", exc_info=error)
+
+
 async def main() -> None:
     load_dotenv()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
     telemetry.setup("live")
     settings = LiveSettings()
-    redis = Redis.from_url(settings.redis_url, decode_responses=True)
+    redis = Redis.from_url(settings.redis_url, decode_responses=True, socket_timeout=READ_BLOCK_MS / 1000 + 5)
     try:
         await redis.xgroup_create(JOBS_STREAM, GROUP, id="0", mkstream=True)
     except Exception:  # group exists
@@ -124,7 +132,7 @@ async def main() -> None:
     consumer = f"live-{uuid.uuid4().hex[:6]}"
     running: set[asyncio.Task[None]] = set()
     while True:
-        raw = await redis.xreadgroup(GROUP, consumer, {JOBS_STREAM: ">"}, count=1, block=5000)
+        raw = await redis.xreadgroup(GROUP, consumer, {JOBS_STREAM: ">"}, count=1, block=READ_BLOCK_MS)
         entries = cast(list[tuple[str, list[tuple[str, dict[str, str]]]]], raw or [])
         for _, messages in entries:
             for message_id, fields in messages:
@@ -132,6 +140,7 @@ async def main() -> None:
                 task = asyncio.create_task(run_job(job, settings, redis))
                 running.add(task)
                 task.add_done_callback(running.discard)
+                task.add_done_callback(_log_failure)
                 await redis.xack(JOBS_STREAM, GROUP, message_id)
 
 

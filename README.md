@@ -34,6 +34,7 @@ docker compose up -d postgres redis livekit objects
 uv run python -m lingard_api.cli migrate
 uv run python -m lingard_api.cli seed                     # curriculum graph for both languages
 uv run python -m lingard_api.cli bootstrap-admin --name <you>   # prompts for a 6-digit PIN
+uv run python -m lingard_api.cli reset-pin --name <you>         # forgot it: sets a new one (prompted)
 uv run uvicorn lingard_api.main:app --host 127.0.0.1 --port 58000
 ```
 
@@ -76,7 +77,8 @@ Tests never use these keys: a root fixture clears them, so a filled-in `.env` ca
 Every model is set in `.env`; `.env.example` lists the defaults. Leaving a variable blank keeps the default.
 
 - `LLM_FAST_MODELS` (NPCs), `LLM_GUARD_MODELS` (the Contract Guard's claim check), `LLM_MID_MODELS` (assessment,
-  planning) and `LLM_FRONTIER_MODELS` (examiners, judges) take catalog names, comma-separated, in preference order. A model is skipped when its provider has no key.
+  planning), `LLM_COMPILE_MODELS` (scene compiling, waited on when a day starts) and `LLM_FRONTIER_MODELS` (examiners,
+  judges) take catalog names, comma-separated, in preference order. A model is skipped when its provider has no key.
   `LLM_<TIER>_EFFORT` sets the reasoning effort. New models go in the catalog in `config/llm.yaml` with their price
   and source, so cost reporting always knows what a call costs.
 - `STT_ORDER` and `TTS_ORDER` set the speech provider preference (JSON lists), and `<PROVIDER>_STT_MODEL`,

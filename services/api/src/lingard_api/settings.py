@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     jwt_issuer: str = "lingard"
     access_token_minutes: int = 15
     refresh_token_days: int = 60
+    plan_reuse_minutes: int = 10
+    """Starting a day while one is still being planned for the same city returns that plan (up to this age)."""
     pin_reverify_days: int = 30
 
     argon2_time_cost: int = 3

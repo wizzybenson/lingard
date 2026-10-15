@@ -34,6 +34,9 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     jobs = api.state.jobs
     assert isinstance(jobs, MemoryJobQueue)
     assert jobs.jobs[-1][0] == GRAPH_JOBS and jobs.jobs[-1][1]["kind"] == "day_planner"
+    queued = len(jobs.jobs)
+    again = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
+    assert again.json()["id"] == session_id and len(jobs.jobs) == queued, "a plan in progress is reused, not redone"
 
     from lingard_contracts.scene import SceneContract
 

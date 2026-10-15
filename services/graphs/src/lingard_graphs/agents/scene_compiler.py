@@ -122,10 +122,10 @@ class SceneCompiler:
             targets="\n".join(describe_target(n) for n in nodes),
             language_name=LANGUAGE_NAME[language],
         )
-        messages = self._router.messages("frontier", system, "Design the scene now.")
+        messages = self._router.messages("compile", system, "Design the scene now.")
         issues: list[ContractIssue] = []
         for _ in range(self._attempts):
-            draft = await self._router.structured("frontier", self._prompt, SceneDraft, messages, trace_id=trace_id)
+            draft = await self._router.structured("compile", self._prompt, SceneDraft, messages, trace_id=trace_id)
             contract = SceneContract(
                 city=brief.city,
                 location_key=brief.location_key,

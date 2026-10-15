@@ -233,3 +233,13 @@ async def test_cors_allows_credentials_and_the_client_header(api) -> None:  # ty
         },
     )
     assert "access-control-allow-origin" not in evil.headers
+
+
+async def test_operator_reset_pin_replaces_it_and_signs_out_devices(api) -> None:  # type: ignore[no-untyped-def]
+    await api.admin_token("Founder", "613470")
+    await api.state.auth.operator_reset_pin("founder", "502817")
+    assert (await api.sign_in("Founder", "613470")).status_code == 401
+    assert (await api.sign_in("Founder", "502817")).status_code == 200
+    async with api.state.sessions() as db:
+        actions = (await db.execute(select(AuditLog.action))).scalars().all()
+    assert "pin_reset_by_operator" in actions

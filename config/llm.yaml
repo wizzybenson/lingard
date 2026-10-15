@@ -58,6 +58,12 @@ tiers:
     max_tokens: 8192
     timeout_s: 60
     retries: 1
+  compile:                # Scene Compiler: the learner waits for it when starting a day, so less effort than frontier
+    models: [gpt-6.1-sol, claude-sonnet-5-5, gemini-3.1-pro-preview]
+    effort: medium
+    max_tokens: 16000
+    timeout_s: 120
+    retries: 1
   frontier:               # examiners, judges, golden review
     models: [gpt-6.1-sol, claude-sonnet-5-5, gemini-3.1-pro-preview]
     effort: high

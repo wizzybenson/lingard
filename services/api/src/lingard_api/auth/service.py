@@ -338,6 +338,28 @@ class PinAuthService:
             )
             audit.record(db, "pin_changed", actor_id=user.id, tenant_id=user.tenant_id)
 
+    async def operator_reset_pin(self, display_name: str, pin: str) -> uuid.UUID:
+        """From the CLI only (someone with server access): sets a new PIN, clears lockout, revokes every device."""
+        ensure_strong(pin)
+        async with self._sessions() as db, db.begin():
+            tenant = await self.default_tenant(db)
+            user = await self._user_by_name(db, tenant.id, display_name)
+            if user is None:
+                raise AuthError("No such user", status=404)
+            user.pin_hash = self._hasher.hash(pin)
+            user.must_change_pin = False
+            user.failed_pin_attempts = 0
+            user.lockout_level = 0
+            user.locked_until = None
+            user.requires_admin_reset = False
+            await db.execute(
+                update(DeviceSession)
+                .where(DeviceSession.user_id == user.id, DeviceSession.revoked_at.is_(None))
+                .values(revoked_at=_now(), revoked_reason="operator_reset")
+            )
+            audit.record(db, "pin_reset_by_operator", actor_id=user.id, tenant_id=tenant.id, target=str(user.id))
+            return user.id
+
     async def admin_reset_pin(self, admin: AccessClaims, user_id: uuid.UUID) -> str:
         """Issues a one-time PIN, clears lockout, revokes every device, forces a change at next sign-in."""
         pin = generate_pin()

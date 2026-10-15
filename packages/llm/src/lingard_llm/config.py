@@ -10,7 +10,7 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
-Tier = Literal["fast", "guard", "mid", "frontier"]
+Tier = Literal["fast", "guard", "mid", "compile", "frontier"]
 Provider = Literal["anthropic", "openai", "google", "scripted", "recorded"]
 
 PROVIDER_ENV: dict[str, str] = {

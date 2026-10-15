@@ -26,6 +26,8 @@ from lingard_graphs.graphs.turn_assessment import TurnState, build_turn_assessme
 from lingard_graphs.runtime import GRAPH_JOBS, JobRunner, RedisHints, build_deps
 from lingard_graphs.settings import GraphSettings
 
+READ_BLOCK_MS = 5000
+"""How long a worker waits for a job; the socket read timeout must outlast it (redis-py 8 times out sooner)."""
 logger = logging.getLogger(__name__)
 JOB_GROUP = "graph-workers"
 
@@ -37,7 +39,7 @@ async def consume_jobs(redis: Redis, runner: JobRunner, consumer: str) -> None:
         if "BUSYGROUP" not in str(exc):
             raise
     while True:
-        raw = await redis.xreadgroup(JOB_GROUP, consumer, {GRAPH_JOBS: ">"}, count=4, block=5000)
+        raw = await redis.xreadgroup(JOB_GROUP, consumer, {GRAPH_JOBS: ">"}, count=4, block=READ_BLOCK_MS)
         entries = cast(list[tuple[str, list[tuple[str, dict[str, str]]]]], raw or [])
         for _, messages in entries:
             for message_id, fields in messages:
@@ -55,7 +57,7 @@ async def main() -> None:
     telemetry.setup("graphs")
     settings = GraphSettings()
     engine = make_engine(settings.database_url)
-    redis = Redis.from_url(settings.redis_url, decode_responses=True)
+    redis = Redis.from_url(settings.redis_url, decode_responses=True, socket_timeout=READ_BLOCK_MS / 1000 + 5)
     deps = build_deps(settings, engine, RedisHints(redis))
     name = f"graphs-{uuid.uuid4().hex[:6]}"
     async with checkpointer(settings.database_url) as saver:

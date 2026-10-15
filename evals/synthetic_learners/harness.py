@@ -108,7 +108,8 @@ class LearnerOutcome:
 async def build_deps() -> GraphDeps:
     model = ScriptedChatModel(responder=oracle)
     tiers = {
-        t: {"retries": 0, "models": [{"provider": "scripted", "model": "oracle"}]} for t in ("fast", "mid", "frontier")
+        t: {"retries": 0, "models": [{"provider": "scripted", "model": "oracle"}]}
+        for t in ("fast", "mid", "compile", "frontier")
     }
 
     def factory(spec: ModelSpec) -> BaseChatModel:
