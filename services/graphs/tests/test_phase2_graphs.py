@@ -10,9 +10,9 @@ from agent_memory import Query
 from lingard_contracts.assessment import ErrorTag, Span, TargetEvidence, UtteranceAssessment
 from lingard_contracts.events import TurnEvent
 from lingard_graphs.deps import GraphDeps
-from lingard_graphs.graphs.day_planner import build_day_planner
-from lingard_graphs.graphs.lesson_builder import build_lesson_builder
-from lingard_graphs.graphs.night_consolidation import build_night_consolidation, world_namespace
+from lingard_graphs.graphs.day_planner import PlanState, build_day_planner
+from lingard_graphs.graphs.lesson_builder import LessonState, build_lesson_builder
+from lingard_graphs.graphs.night_consolidation import NightState, build_night_consolidation, world_namespace
 from lingard_graphs.pedagogy.tickets import Example, Ticket
 from lingard_graphs.store import MemoryStore, SceneRecord
 from lingard_llm.testing import message_text
@@ -64,7 +64,7 @@ async def test_day_planner_builds_three_valid_scenes_with_ticket_share(deps: Gra
         day - timedelta(days=day.toordinal() % _npc_settings(deps, "rivemont", 6))
     )  # rotation starts at the flat
     session_id = uuid.uuid4()
-    result = await build_day_planner(deps).ainvoke({"user_id": USER, "session_id": session_id, "city": "rivemont"})
+    result = await build_day_planner(deps).ainvoke(PlanState(user_id=USER, session_id=session_id, city="rivemont"))
     plan = result["plan"]
     assert len(plan.scenes) == 3 and len(result["contracts"]) == 3
     assert 0.4 <= plan.ticket_share() <= 0.6
@@ -93,8 +93,12 @@ async def test_day_planner_rotates_through_every_unlocked_district(deps: GraphDe
     planner = build_day_planner(deps)
     visited = set()
     for offset in range(_npc_settings(deps, "rivemont", 6)):
-        deps.clock = lambda offset=offset: datetime(2026, 11, 2, 9, tzinfo=UTC) + timedelta(days=offset)
-        result = await planner.ainvoke({"user_id": USER, "session_id": uuid.uuid4(), "city": "rivemont"})
+
+        def clock(offset: int = offset) -> datetime:
+            return datetime(2026, 11, 2, 9, tzinfo=UTC) + timedelta(days=offset)
+
+        deps.clock = clock
+        result = await planner.ainvoke(PlanState(user_id=USER, session_id=uuid.uuid4(), city="rivemont"))
         visited |= {s.location_key.rsplit(".", 1)[0] for s in result["plan"].scenes}
     assert visited == {"rivemont.vieux_port", "rivemont.saint_roch"}
 
@@ -174,7 +178,7 @@ async def test_night_consolidation_notebook_world_memory_and_rewards(deps: Graph
         "story_flags": {"deposit_dispute": "ongoing"},
         "relationships": [{"npc_key": "landlord_martin", "affinity_delta": -0.1, "summary": "Disputed the deposit."}],
     }
-    result = await build_night_consolidation(deps).ainvoke({"user_id": USER, "session_id": session_id})
+    result = await build_night_consolidation(deps).ainvoke(NightState(user_id=USER, session_id=session_id))
     notebook = result["notebook"]
     assert [c.learner_said for c in notebook.corrections] == ["si je refuserais"], "unconfirmed tags never shown"
     assert notebook.corrections[0].explanation.startswith("Après")
@@ -187,7 +191,7 @@ async def test_night_consolidation_notebook_world_memory_and_rewards(deps: Graph
     assert [m.item.content for m in memories] == ["Disputed the deposit."]
     dumped = json.dumps([m.item.model_dump(mode="json") for m in memories])
     assert "si_imparfait" not in dumped and "refuserais" not in dumped, "world memory never holds pedagogy"
-    again = await build_night_consolidation(deps).ainvoke({"user_id": USER, "session_id": session_id})
+    again = await build_night_consolidation(deps).ainvoke(NightState(user_id=USER, session_id=session_id))
     assert again["coins_awarded"] == 0, "rewards are idempotent per scene and day"
 
 
@@ -218,7 +222,7 @@ async def test_lesson_builder_uses_real_mistakes_games_and_homework(deps: GraphD
         ],
     }
     result = await build_lesson_builder(deps).ainvoke(
-        {"user_id": USER, "node_key": "fr.grammar.si_imparfait", "city": "rivemont"}
+        LessonState(user_id=USER, node_key="fr.grammar.si_imparfait", city="rivemont")
     )
     lesson = result["lesson"]
     assert [e.learner_said for e in lesson.examples] == ["Si j'aurais le temps, je viendrais."]

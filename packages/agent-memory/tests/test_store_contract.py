@@ -17,7 +17,7 @@ PEDAGOGY = ("user", "u1", "pedagogy")
 
 
 def item(ns: tuple[str, ...], text: str, kind: MemoryKind = MemoryKind.EPISODIC, **kw: object) -> MemoryItem:
-    return MemoryItem(namespace=ns, kind=kind, content=text, embedding=EMBED.embed(text), **kw)  # type: ignore[arg-type]
+    return MemoryItem(namespace=ns, kind=kind, content=text, embedding=EMBED.embed(text), **kw)
 
 
 @pytest.fixture(params=["memory", "postgres"])

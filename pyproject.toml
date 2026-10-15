@@ -79,6 +79,26 @@ known-first-party = ["lingard_*", "agent_memory", "voicebench", "evals"]
 python_version = "3.12"
 strict = true
 plugins = ["pydantic.mypy"]
+# Every member has a tests/conftest.py. Resolving files against the src/ roots first and then the repo
+# root gives tests unique names (services.api.tests.conftest) while src keeps its real import names.
+explicit_package_bases = true
+mypy_path = [
+    "$MYPY_CONFIG_FILE_DIR/packages/agent-memory/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/contracts/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/curriculum/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/db/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/economy/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/exam_packs/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/llm/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/storage/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/telemetry/src",
+    "$MYPY_CONFIG_FILE_DIR/packages/world/src",
+    "$MYPY_CONFIG_FILE_DIR/services/api/src",
+    "$MYPY_CONFIG_FILE_DIR/services/graphs/src",
+    "$MYPY_CONFIG_FILE_DIR/services/live/src",
+    "$MYPY_CONFIG_FILE_DIR/services/pronunciation/src",
+    "$MYPY_CONFIG_FILE_DIR",
+]
 
 [[tool.mypy.overrides]]
 module = ["livekit.*", "fsrs.*", "langfuse.*", "argon2.*", "numpy.*", "scipy.*", "opentelemetry.exporter.*", "langchain_openai.*", "boto3.*", "botocore.*", "torch.*", "transformers.*", "av.*"]

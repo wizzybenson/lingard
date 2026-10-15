@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import BaseModel
 
 from lingard_llm.config import LLMConfig, ModelSpec
@@ -119,7 +119,7 @@ def test_prompt_registry_latest_and_pins(tmp_path: Path) -> None:
 
 
 async def test_recorded_model_replays_and_records(tmp_path: Path) -> None:
-    messages = [HumanMessage(content="Bonjour")]
+    messages: list[BaseMessage] = [HumanMessage(content="Bonjour")]
     replay = RecordedChatModel(fixtures_dir=tmp_path)
     with pytest.raises(MissingFixtureError):
         await replay.ainvoke(messages)

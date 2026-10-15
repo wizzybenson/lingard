@@ -20,7 +20,7 @@ def test_seed_bank_loads_both_packs_and_spans_bands() -> None:
     bank = ItemBank.load(ROOT / "content")
     for pack in ("ielts_gt", "tef_canada"):
         for skill in (Skill.READING, Skill.LISTENING):
-            items = bank.select(pack, skill)  # type: ignore[arg-type]
+            items = bank.select(pack, skill)
             assert len(items) >= 12
             assert {int(i.band) for i in items} >= {4, 5, 6, 7, 8, 9, 10}
 

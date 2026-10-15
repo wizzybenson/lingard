@@ -49,7 +49,7 @@ def test_ticket_lifecycle_open_close_reopen_lesson() -> None:
     assert ticket.interventions[-1] != ticket.interventions[0], "reopen switches intervention"
     for day, ctx in ((6, "a"), (7, "b"), (7, "c")):
         record_success(ticket, Success(T0 + timedelta(days=day), ctx), rules)
-    assert ticket.status == "closed"
+    assert ticket.status == "closed"  # type: ignore[comparison-overlap]  # mypy keeps the "reopened" narrowing
     _, events = record_error(ticket, key, Example(T0 + timedelta(days=9), "x", "y"), 0.7, [], rules)
     assert [e.kind for e in events] == ["reopened", "lesson_needed"]
 

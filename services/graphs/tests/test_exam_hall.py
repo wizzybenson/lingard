@@ -4,12 +4,13 @@ from pathlib import Path
 from typing import Any
 
 from langchain_core.messages import BaseMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
 from lingard_exam_packs.items import ItemBank
 from lingard_graphs.deps import GraphDeps
-from lingard_graphs.graphs.exam_hall import build_exam_hall
+from lingard_graphs.graphs.exam_hall import ExamState, build_exam_hall
 from lingard_graphs.store import MemoryStore
 from lingard_llm.testing import message_text
 
@@ -59,8 +60,8 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
     script.handlers["speaking examiner"] = criteria_scores(8)
     bank = ItemBank.load(ROOT / "content")
     graph = build_exam_hall(deps, bank, InMemorySaver())
-    config = {"configurable": {"thread_id": "mock-1"}}
-    result = await graph.ainvoke({"user_id": USER, "pack": "tef_canada"}, config)
+    config: RunnableConfig = {"configurable": {"thread_id": "mock-1"}}
+    result = await graph.ainvoke(ExamState(user_id=USER, pack="tef_canada"), config)
     sections_seen: list[str] = []
     late_answers = 0
     while result.get("__interrupt__"):

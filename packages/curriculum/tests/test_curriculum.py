@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from lingard_contracts.common import Skill
+from lingard_contracts.common import Language, Skill
 from lingard_curriculum.conjugation import FrenchConjugator
 from lingard_curriculum.graph import CurriculumGraph, InMemoryCurriculumGraph
 from lingard_curriculum.models import CurriculumNode
@@ -17,8 +17,8 @@ CONTENT = Path(__file__).resolve().parents[3] / "content"
 
 
 @pytest.mark.parametrize("language", ["fr", "en"])
-def test_seed_loads_and_every_grammar_node_has_a_lesson(language: str) -> None:
-    bundle = load_seed(CONTENT, language)  # type: ignore[arg-type]
+def test_seed_loads_and_every_grammar_node_has_a_lesson(language: Language) -> None:
+    bundle = load_seed(CONTENT, language)
     kinds = {n.kind for n in bundle.nodes}
     assert kinds == {"cando", "function", "grammar", "lexset", "pron", "tasktype", "conj_cell"}
     assert lesson_gaps(bundle) == []
@@ -38,7 +38,7 @@ def test_auto_requires_and_task_exercises() -> None:
 
 def test_every_band_4_to_10_has_speaking_requirements_in_both_languages() -> None:
     for language in ("fr", "en"):
-        bundle = load_seed(CONTENT, language)  # type: ignore[arg-type]
+        bundle = load_seed(CONTENT, language)
         for band in range(4, 11):
             cando = f"{language}.cando.speaking.{'nclc' if language == 'fr' else 'clb'}{band}"
             assert any(e.from_key == cando and e.kind == "requires" for e in bundle.edges), cando

@@ -52,7 +52,7 @@ async def deps(script: Script) -> GraphDeps:
 
     curriculum = InMemoryCurriculumGraph()
     for language in ("fr", "en"):
-        await seed_graph(curriculum, load_seed(ROOT / "content", language))  # type: ignore[arg-type]
+        await seed_graph(curriculum, load_seed(ROOT / "content", language))
     store = MemoryStore()
     store.profiles[USER] = LearnerProfileView(
         user_id=USER,

@@ -5,12 +5,13 @@ from pathlib import Path
 from typing import Any
 
 from langchain_core.messages import BaseMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
 from lingard_exam_packs.items import ItemBank, band_to_logit
 from lingard_graphs.deps import GraphDeps
-from lingard_graphs.graphs.placement import build_placement
+from lingard_graphs.graphs.placement import PlacementState, build_placement
 from lingard_graphs.store import MemoryStore
 
 from .conftest import USER, Script
@@ -45,9 +46,9 @@ async def run_placement(deps: GraphDeps, script: Script, true_band: float, speak
     }
     bank = ItemBank.load(ROOT / "content")
     graph = build_placement(deps, bank, InMemorySaver())
-    config = {"configurable": {"thread_id": f"placement-{true_band}"}}
+    config: RunnableConfig = {"configurable": {"thread_id": f"placement-{true_band}"}}
     rng = random.Random(11)
-    result = await graph.ainvoke({"user_id": USER, "language": "fr", "path": "quick"}, config)
+    result = await graph.ainvoke(PlacementState(user_id=USER, language="fr", path="quick"), config)
     prompts_seen: list[str] = []
     for _ in range(80):
         pending = result.get("__interrupt__")
@@ -94,7 +95,7 @@ async def test_skip_path_uses_wide_priors(deps: GraphDeps) -> None:
     bank = ItemBank.load(ROOT / "content")
     graph = build_placement(deps, bank, InMemorySaver())
     result = await graph.ainvoke(
-        {"user_id": USER, "language": "en", "path": "skip"}, {"configurable": {"thread_id": "skip"}}
+        PlacementState(user_id=USER, language="en", path="skip"), {"configurable": {"thread_id": "skip"}}
     )
     assert result["status"] == "done" and result["start_district"] == "ashford.station_quarter"
     store = deps.store

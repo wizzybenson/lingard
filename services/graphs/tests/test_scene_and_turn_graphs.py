@@ -9,7 +9,7 @@ from lingard_contracts.planning import SceneBrief
 from lingard_graphs.agents.assessor import locate
 from lingard_graphs.agents.scene_compiler import CompileError, SceneCompiler
 from lingard_graphs.deps import GraphDeps, MemoryHints
-from lingard_graphs.graphs.turn_assessment import build_turn_assessment
+from lingard_graphs.graphs.turn_assessment import TurnState, build_turn_assessment
 from lingard_graphs.store import MemoryStore, SceneRecord
 from lingard_llm.testing import message_text
 
@@ -149,7 +149,7 @@ async def test_turn_assessment_filters_tags_checks_and_updates_evidence(deps: Gr
     script.handlers["Independent check"] = lambda m: {"is_error": True, "confidence": 0.95}
     graph = build_turn_assessment(deps)
     first = event(scene.scene_id, "Bon, si je refuserais votre offre, je vais au tribunal.")
-    result = await graph.ainvoke({"event": first})
+    result = await graph.ainvoke(TurnState(event=first))
     assessment = result["assessment"]
     assert [t.node_key for t in assessment.error_tags] == ["fr.grammar.si_imparfait", "fr.grammar.negation"]
     top = assessment.error_tags[0]
@@ -163,12 +163,12 @@ async def test_turn_assessment_filters_tags_checks_and_updates_evidence(deps: Gr
     assert "fr.grammar.si_imparfait" in await store.fsrs(USER)
 
     second = event(scene.scene_id, "Alors si je refuserais encore, vous gardez tout ?")
-    result = await graph.ainvoke({"event": second})
+    result = await graph.ainvoke(TurnState(event=second))
     assert "opened:fr.grammar.si_imparfait" in result["ticket_events"]
     assert "fr.grammar.si_imparfait" in await store.tickets(USER)
 
     calls_before = len(script.calls)
-    again = await graph.ainvoke({"event": second})
+    again = await graph.ainvoke(TurnState(event=second))
     assert again["skip"] is True and len(script.calls) == calls_before, "redelivered event is a no-op"
 
 
@@ -184,7 +184,7 @@ async def test_steering_hint_every_four_turns_without_corrections(deps: GraphDep
     hints = deps.hints
     assert isinstance(hints, MemoryHints)
     for i in range(4):
-        await graph.ainvoke({"event": event(scene.scene_id, f"Je voudrais mon dépôt, numéro {i}.")})
+        await graph.ainvoke(TurnState(event=event(scene.scene_id, f"Je voudrais mon dépôt, numéro {i}.")))
         if i < 3:
             assert str(scene.scene_id) not in hints.hints
     hint = hints.hints[str(scene.scene_id)]
@@ -205,7 +205,7 @@ async def test_errors_far_above_band_do_not_open_tickets(deps: GraphDeps, script
     }
     graph = build_turn_assessment(deps)
     for i in range(3):
-        await graph.ainvoke({"event": event(scene.scene_id, f"Bon, la loi a été voté hier, numéro {i}.")})
+        await graph.ainvoke(TurnState(event=event(scene.scene_id, f"Bon, la loi a été voté hier, numéro {i}.")))
     store = deps.store
     assert isinstance(store, MemoryStore)
     assert far not in await store.tickets(USER, active_only=False)
