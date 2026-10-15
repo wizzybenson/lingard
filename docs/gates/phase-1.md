@@ -1,6 +1,7 @@
 # Phase 1 gate: one French street (Rivemont)
 
-**Verdict: PASS offline. Live (2026-10-15): targets elicited PASS; latency and fact violations FAIL.** The offline column comes from harnesses
+**Verdict: PASS offline. Live (2026-10-15): targets elicited PASS; latency and fact violations FAIL (fact violations
+down from 119 material lines to 32 with the claim check and rich scenes, decision 0012).** The offline column comes from harnesses
 with scripted providers. The live column uses real providers (OpenAI, ElevenLabs, Anthropic keys from 2026-10-15)
 through the simulated loop; a real LiveKit room and network are still not measured.
 
@@ -8,8 +9,8 @@ through the simulated loop; a real LiveKit room and network are still not measur
 | --- | --- | --- |
 | First audio p50 ≤ 800 ms | **334 ms** (95% CI 279–436) | **FAIL: 1,448 ms** (CI 1,303–1,712): OpenAI STT + Haiku + ElevenLabs |
 | First audio p95 ≤ 1,300 ms | **657 ms** | **FAIL: 2,384 ms**, same providers |
-| 0 fact violations over 50 scenes | **0 of 500 planted violations leaked**, over 50 scenes | **FAIL: 143 of 446 NPC lines** (119 material) |
-| Targets elicited ≥ 85% | not measurable offline (needs a real actor) | **PASS: 50 of 50 (100%)** |
+| 0 fact violations over 50 scenes | **0 of 500 planted violations leaked**, over 50 scenes | **FAIL: 32 material of 449 NPC lines** (39 with colour); was 119 of 446 before decision 0012 |
+| Targets elicited ≥ 85% | not measurable offline (needs a real actor) | **PASS: 96%** (100% before decision 0012) |
 
 ## Latency (`evals/suites/latency.py`, using `tools/voicebench`)
 
@@ -23,6 +24,23 @@ through the simulated loop; a real LiveKit room and network are still not measur
 - To replace the assumptions: put provider keys in `.env`, run `uv run python -m tools.voicebench.probe
   --write-profile`. It times every configured STT, TTS and fast-tier LLM provider and writes a `measured` profile,
   which the latency eval then uses automatically.
+
+### Claim check latency (decision 0012)
+
+Probe (`--runs 10`, later the same day; providers were slower than in the morning): claim check 1,133 ms median,
+fast-tier first token 1,322 ms, OpenAI STT 1,176 ms, ElevenLabs TTS 286 ms. Bench on that profile, 60 turns:
+
+| Configuration | First audio p50 | p95 |
+| --- | --- | --- |
+| No claim check | 2,225 ms | 3,209 ms |
+| Claim check, nothing covering it | 2,762 ms | 3,850 ms |
+| Claim check + hesitation after 300 ms (uncached TTS) | 2,511 ms | 3,404 ms |
+| Claim check + hesitation after 300 ms, stock lines pre-warmed | 2,340 ms | 2,959 ms |
+| **Claim check + hesitation after 150 ms, pre-warmed (default)** | **2,190 ms** | **2,860 ms** |
+
+With the stock lines pre-synthesised at scene start (the worker does this while the opening line plays), the claim
+check costs no measurable first-audio latency; the price is a hesitation on about two thirds of replies. The latency
+gate still fails for the reasons below (STT and the NPC's first token).
 
 ### Measured providers, 2026-10-15
 
@@ -47,6 +65,31 @@ the STT median for an assumed Deepgram batch figure of 350 ms gives p50 853 ms, 
 Deepgram is not measured (no key); a streaming STT path is the next step if its batch latency is not enough.
 
 ## Contract adherence (`evals/suites/contract_adherence.py`)
+
+### Live, 2026-10-15, claim check and rich scenes (decision 0012)
+
+Same harness and models as below, plus: scenes compiled live by `scene_compiler` v2 (17–18 approved facts each,
+median 18), `npc_actor` v3, the Contract Guard's claim check on the `guard` tier (`claude-haiku-5-5`, `claim_check`
+v1), the hesitation filler, and `fact_judge` v3 (grades material vs colour). 50 scenes each.
+
+| Run | NPC lines | Material violations | All violations | Targets | Sentences withheld / repaired | Check p50 / p95 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Before (decision 0011) | 446 | 119 | 143 | 100% | n/a | n/a |
+| 1: guard thinking on | 450 | 13 | 19 | 98% | 244 / 2 of 1,595 | 1,100 / 2,146 ms |
+| 2: guard thinking off | 449 | **32** | 39 | **96%** | 16 / 64 of 986 | 947 / 1,643 ms |
+
+- Run 1 looked best but was mostly luck: with thinking on, Haiku spent its 200-token budget reasoning and often
+  returned no answer, which the checker treats as unsupported, so it withheld 15% of all sentences, most of them
+  harmless (questions, acknowledgements, restated facts: 22 of 25 sampled pass when re-checked without thinking).
+  Withholding that much breaks conversations, so run 2 (thinking off, `LLM_GUARD_THINKING=false`) is the shipped
+  configuration.
+- Run 2 misses are subtler than before: a proposal stated as done ("I've kept $240"), a fact made stricter or more
+  specific, an invented sign or object. 72% of replies' first sentence needed a check, and the hesitation played on
+  72% of replies (a short "Mm…"/"Hmm…").
+- Still failing the gate (0). Next, measured offline against this run's judged lines before spending on another
+  50-scene run: a stricter `claim_check` v2 (contradiction, "stated as done", unlisted objects), and Haiku with
+  thinking on at a larger token budget. Not run: the Anthropic account ran out of credit during this work.
+- The run stores every judged line (clean ones too) so Guard changes can be scored offline.
 
 ### Live, 2026-10-15 (`evals/results/contract_adherence.live.json`, decision 0011)
 

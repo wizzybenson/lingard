@@ -9,6 +9,8 @@ activity:
   npc_chars_per_turn: 140          # one or two short spoken sentences
   history_tokens_per_turn: 45      # learner + NPC line added to the actor's context each turn
   actor_cached_share: 0.8          # persona/contract prefix served from the prompt cache after the first turn
+  claim_checks_per_turn: 1.5       # NPC sentences per reply that need the Guard's claim check (decision 0012)
+  claim_context_tokens: 120        # recent dialogue + the sentence, per check
   sessions_per_hour: 1             # day planning, night consolidation and lesson building are charged once per hour
 # Speech prices, USD. Per minute of learner audio (STT) or per 1,000 characters of NPC speech (TTS).
 speech:
@@ -33,7 +35,9 @@ output_floor_tokens:
   narrative_keeper: 250
   coach_notebook: 350
   lesson_builder: 600
+  claim_check: 12                  # mostly "OK"; a FIX answer is a sentence
 # Share of each prompt's input served from the prompt cache. utterance_assessor@v2 keeps everything except the turn
 # itself (NPC line, transcript, targets: ~5% of the prompt) above its cache breakpoint.
 cached_share:
   utterance_assessor: 0.95
+  claim_check: 0.0                 # assumed uncached until live usage shows cache reads

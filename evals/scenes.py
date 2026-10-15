@@ -7,16 +7,37 @@ from typing import Any
 import yaml
 
 from evals.framework import ROOT
+from lingard_contracts.planning import SceneBrief
 from lingard_contracts.scene import SceneContract, npc_band_for
 from lingard_world import load_city
 
 AMOUNTS = [35, 60, 85, 120, 240, 375, 480, 650, 900, 1150]
 
 
+def _templates() -> list[tuple[str, dict[str, Any]]]:
+    data: dict[str, list[dict[str, Any]]] = yaml.safe_load((ROOT / "evals/datasets/scenes.yaml").read_text())
+    return [(city, t) for city, items in data.items() for t in items]
+
+
+def eval_briefs() -> list[SceneBrief]:
+    """One brief per template, for the real Scene Compiler (live mode)."""
+    return [
+        SceneBrief(
+            city=city,
+            location_key=t["location_key"],
+            npc_keys=[t["npc_key"]],
+            story_beat=t["beat"],
+            targets=[key for kind in ("functions", "grammar", "lexset") for key in t["targets"].get(kind, [])],
+            learner_band=int(t["band"]),
+            intensity=t.get("intensity", "tense"),
+        )
+        for city, t in _templates()
+    ]
+
+
 def eval_scenes(count: int = 50) -> list[tuple[SceneContract, int, str]]:
     """(contract, learner_band, a number that appears in the approved facts)."""
-    data: dict[str, list[dict[str, Any]]] = yaml.safe_load((ROOT / "evals/datasets/scenes.yaml").read_text())
-    templates = [(city, t) for city, items in data.items() for t in items]
+    templates = _templates()
     scenes = []
     for i in range(count):
         city, template = templates[i % len(templates)]

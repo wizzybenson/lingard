@@ -8,14 +8,15 @@ from langchain_core.messages import BaseMessage
 
 from lingard_contracts.live import BargeIn, Closed, LearnerTurnEnded, LiveSessionConfig, TurnPolicy
 from lingard_live.actor import NpcActor
+from lingard_live.claims import ScriptedClaimChecker
 from lingard_live.events import MemoryBus
-from lingard_live.guard import ContractGuard
+from lingard_live.guard import ClaimCheck, ClaimChecker, ContractGuard
 from lingard_live.languages import LanguageIdentifier, load_language
 from lingard_live.loop import LiveLoop, SceneIdentity
 from lingard_live.scene import SceneRuntime
 from lingard_live.stt import ScriptedStt, Transcript
 from lingard_live.transport import LoopbackSession, LoopbackTransport
-from lingard_live.tts import ScriptedTts
+from lingard_live.tts import CachingTts, ScriptedTts
 from lingard_llm import LLMConfig, LLMRouter, ModelSpec, PromptRegistry
 from lingard_llm.testing import ScriptedChatModel, message_text
 
@@ -40,6 +41,8 @@ async def build(
     llm_first_token_s: float = 0.0,
     stt_delay_ms: int = 0,
     tts_delay_ms: int = 0,
+    claims: ClaimChecker | None = None,
+    filler_after_ms: float | None = None,
 ) -> tuple[LiveLoop, LoopbackSession, MemoryBus, ScriptedChatModel, ScriptedTts]:
     model = ScriptedChatModel(responder=responder, first_token_delay_s=llm_first_token_s, token_delay_s=0.005)
     config = LLMConfig.model_validate(
@@ -69,7 +72,7 @@ async def build(
         state=runtime.state,
         identity=SceneIdentity(user_id=uuid.uuid4(), session_id=uuid.uuid4(), trace_id=uuid.uuid4(), learner_band=6),
         actor=NpcActor(router, prompt),
-        guard=ContractGuard(LanguageIdentifier(languages)),
+        guard=ContractGuard(LanguageIdentifier(languages), claims=claims),
         guard_ctx=runtime.guard_ctx,
         language=runtime.language,
         identifier=LanguageIdentifier(languages),
@@ -77,6 +80,7 @@ async def build(
         tts=tts,
         publisher=bus,
         hints=bus,
+        filler_after_ms=filler_after_ms,
     )
     return loop, session, bus, model, tts
 
@@ -229,3 +233,70 @@ async def test_resumed_speech_discards_speculation_without_side_effects(runtime:
     await task
     assert [o.learner_text for o in loop.outcomes] == ["Je voudrais récupérer mon dépôt complet."]
     assert "steer gently" in message_text(model.calls[-1][0])
+
+
+async def test_unsupported_claims_are_repaired_or_withheld_and_never_played(runtime: SceneRuntime) -> None:
+    claims = ScriptedClaimChecker(
+        {
+            "Le bail dit que vous devez repeindre.": ClaimCheck(supported=False, repair="Je dois relire le bail."),
+            "Il faut un formulaire bleu.": ClaimCheck(supported=False),
+        }
+    )
+    replies = iter(["Hmm. Le bail dit que vous devez repeindre.", "Il faut un formulaire bleu."])
+    loop, session, _bus, _model, _tts = await build(
+        runtime, lambda m: next(replies), ["Je viens pour mon dépôt.", "Et pour le dossier ?"], claims=claims
+    )
+    await loop.handle_turn(turn())
+    await loop.handle_turn(turn())
+
+    npc = [text for speaker, text in session.captions if speaker == "npc"]
+    assert npc[:2] == ["Hmm.", "Je dois relire le bail."], "the repair replaces the invented rule"
+    assert npc[2] in runtime.language.unsure, "a fully withheld reply falls back to an in-character 'not sure'"
+    assert "Il faut un formulaire bleu." not in npc
+    assert [r.verdict.value for r in loop.outcomes[-1].guard_results] == ["block"]
+    assert loop.outcomes[-1].guard_results[0].reasons == ("unsupported_claim",)
+    assert runtime.guard_ctx.said[-1] == npc[2] and runtime.guard_ctx.heard[-1] == "Et pour le dossier ?"
+
+
+async def test_claim_check_overlaps_audio_synthesis(runtime: SceneRuntime) -> None:
+    """A 300 ms check against 250 ms to the first audio chunk adds ~50 ms, not 300."""
+    claims = ScriptedClaimChecker(delay_ms=300)
+    loop, _session, _bus, _model, _tts = await build(
+        runtime, lambda m: "Le plombier passera demain matin.", ["Bonjour."], tts_delay_ms=250, claims=claims
+    )
+    await loop.handle_turn(turn())
+    first_audio = loop.outcomes[-1].timing.first_audio_ms
+    assert first_audio is not None and first_audio < 450, first_audio
+    assert loop.outcomes[-1].guard_results[0].claim_ms is not None
+
+
+async def test_a_slow_first_check_is_covered_by_a_hesitation(runtime: SceneRuntime) -> None:
+    claims = ScriptedClaimChecker(delay_ms=400)
+    loop, session, _bus, _model, _tts = await build(
+        runtime,
+        lambda m: "Le plombier passera demain matin.",
+        ["Bonjour.", "Et après ?"],
+        claims=claims,
+        filler_after_ms=100,
+    )
+    await loop.handle_turn(turn())
+    npc = [text for speaker, text in session.captions if speaker == "npc"]
+    assert npc[0] in runtime.language.fillers and npc[1] == "Le plombier passera demain matin."
+    timing = loop.outcomes[-1].timing
+    assert timing.filler and timing.first_audio_ms is not None and timing.first_audio_ms < 300
+
+    claims.delay_ms = 0
+    await loop.handle_turn(turn())
+    assert not loop.outcomes[-1].timing.filler, "a fast check needs no hesitation"
+
+
+async def test_prewarm_puts_stock_lines_in_the_tts_cache(runtime: SceneRuntime) -> None:
+    loop, _session, _bus, _model, tts = await build(runtime, lambda m: "D'accord.", [])
+    caching = CachingTts(tts)
+    loop.tts = caching
+    await loop.prewarm()
+    language = runtime.language
+    assert set(tts.spoken) == {*language.fillers, *language.unsure, *language.clarify}
+    async for _ in caching.stream(language.fillers[0], loop.voice):
+        pass
+    assert caching.hits == 1

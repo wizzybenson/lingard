@@ -38,7 +38,7 @@ KIND_FIELD = {"function": "functions", "grammar": "grammar", "lexset": "lexset",
 class SceneDraft(BaseModel):
     learner_goal: str
     elicitation: list[ElicitationTactic]
-    approved_facts: list[str] = Field(min_length=1, max_length=8)
+    approved_facts: list[str] = Field(min_length=1)
     success_conditions: list[str] = Field(min_length=1, max_length=4)
     evidence_required: list[EvidenceSpec] = Field(default_factory=list)
     exits: list[Exit] = Field(min_length=1, max_length=4)
@@ -71,13 +71,17 @@ class SceneCompiler:
         prompts: PromptRegistry,
         curriculum: CurriculumGraph,
         content_root: Path,
+        *,
+        facts_range: tuple[int, int],
         max_attempts: int = 3,
     ) -> None:
+        """``facts_range``: (min, max) approved facts per scene, from the ``scenes`` pedagogy config."""
         self._router = router
         self._prompt = prompts.get("scene_compiler")
         self._curriculum = curriculum
         self._content = content_root
         self._attempts = max_attempts
+        self._facts_range = facts_range
 
     async def _nodes(self, keys: list[str]) -> list[CurriculumNode]:
         nodes = []
@@ -107,6 +111,9 @@ class SceneCompiler:
             personality=npc.personality,
             speech_style=npc.speech_style,
             world_facts="; ".join(npc.world_facts),
+            visible="; ".join(f"{h.label}: {h.text}" for h in location.hotspots if h.text) or "nothing written",
+            facts_min=self._facts_range[0],
+            facts_max=self._facts_range[1],
             learner_band=brief.learner_band,
             scale_name=LANGUAGE_SCALE[language],
             intensity=brief.intensity,
@@ -143,6 +150,7 @@ class SceneCompiler:
                 learner_band=brief.learner_band,
                 intensity_cap=brief.intensity,
                 known_nodes={n.key for n in nodes},
+                facts_range=self._facts_range,
             )
             if not issues:
                 return contract

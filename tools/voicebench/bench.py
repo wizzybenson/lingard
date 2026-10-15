@@ -19,14 +19,16 @@ from langchain_core.language_models import BaseChatModel
 
 from lingard_contracts.live import LearnerTurnEnded, LiveSessionConfig, SpeculativeTurn, TurnPolicy
 from lingard_live.actor import NpcActor
+from lingard_live.claims import ScriptedClaimChecker
 from lingard_live.events import MemoryBus
 from lingard_live.guard import ContractGuard
 from lingard_live.languages import LanguageIdentifier, load_language
 from lingard_live.loop import LiveLoop, SceneIdentity
 from lingard_live.scene import build_scene
+from lingard_live.settings import LiveSettings
 from lingard_live.stt import ScriptedStt, Transcript
 from lingard_live.transport import LoopbackTransport
-from lingard_live.tts import ScriptedTts
+from lingard_live.tts import CachingTts, ScriptedTts
 from lingard_llm import LLMConfig, LLMRouter, ModelSpec, PromptRegistry
 from lingard_llm.testing import ScriptedChatModel
 from tools.voicebench.stats import bootstrap_ci, percentile
@@ -38,11 +40,16 @@ HESITATION_RATE = 0.35
 REPLIES = {
     "fr": [
         "D'accord, je vois. Et le mur, alors ?",
-        "Hmm. Vous savez, ce n'est pas si simple.",
-        "Bon. On peut en parler.",
+        "Le peintre passera la semaine prochaine. Vous serez là le matin ?",
+        "Bon. On peut en parler, mais je garde une partie pour les travaux.",
     ],
-    "en": ["Right, I see. And the wall, then?", "Hmm. It's not that simple, you know.", "Fine. We can talk about it."],
+    "en": [
+        "Right, I see. And the wall, then?",
+        "The builder can come next week. Will you be in the morning?",
+        "Fine. We can talk about it, but I'm keeping some for the work.",
+    ],
 }
+"""Mixed on purpose: some first sentences only recombine known words (no claim check), others add new ones."""
 LEARNER = {"fr": "Je voudrais en parler, s'il vous plaît.", "en": "I'd like to talk about it, please."}
 
 
@@ -53,6 +60,7 @@ class BenchReport:
     no_speculation_ms: list[float] = field(default_factory=list)
     guard_ms: list[float] = field(default_factory=list)
     wasted_drafts: int = 0
+    fillers: int = 0
     notes: list[str] = field(default_factory=list)
 
     def metrics(self) -> dict[str, float]:
@@ -69,6 +77,7 @@ class BenchReport:
             "no_speculation_p95_ms": round(percentile(self.no_speculation_ms, 95)),
             "wasted_drafts_per_turn": round(self.wasted_drafts / len(self.first_audio_ms), 3),
             "guard_p99_ms": round(percentile(self.guard_ms, 99), 3),
+            "filler_rate": round(self.fillers / (len(self.first_audio_ms) + len(self.no_speculation_ms)), 3),
         }
 
 
@@ -80,8 +89,20 @@ def _sampler(profile: dict[str, Any], rng: random.Random) -> Callable[[str], flo
     return draw
 
 
-async def run_bench(*, mode: str, turns: int, profile_name: str | None = None, seed: int = 7) -> BenchReport:
-    """``profile_name`` defaults to ``measured`` (written by ``tools.voicebench.probe``) when present."""
+async def run_bench(
+    *,
+    mode: str,
+    turns: int,
+    profile_name: str | None = None,
+    seed: int = 7,
+    claim_check: bool = True,
+    filler_after_ms: float | None = None,
+) -> BenchReport:
+    """``profile_name`` defaults to ``measured`` (written by ``tools.voicebench.probe``) when present.
+    ``claim_check`` runs the Guard's claim check with the profile's ``claim_check_ms`` latency; ``filler_after_ms``
+    defaults to the live setting (``FILLER_AFTER_MS``)."""
+    if filler_after_ms is None:
+        filler_after_ms = LiveSettings().filler_after_ms
     report = BenchReport()
     if mode == "live":
         report.notes.append("live latency needs provider keys and a LiveKit room; see docs/gates/phase-1.md")
@@ -132,15 +153,19 @@ async def run_bench(*, mode: str, turns: int, profile_name: str | None = None, s
             state=runtime.state,
             identity=SceneIdentity(uuid.uuid4(), uuid.uuid4(), uuid.uuid4(), band),
             actor=NpcActor(router, prompt),
-            guard=ContractGuard(identifier),
+            guard=ContractGuard(
+                identifier, claims=ScriptedClaimChecker(delay_ms=draw("claim_check_ms")) if claim_check else None
+            ),
             guard_ctx=runtime.guard_ctx,
             language=runtime.language,
             identifier=identifier,
             stt=ScriptedStt([Transcript(LEARNER[contract.language], 0.95, "sim")], delay_ms=int(draw("stt_ms"))),
-            tts=ScriptedTts(first_chunk_delay_ms=int(draw("tts_first_chunk_ms"))),
+            tts=CachingTts(ScriptedTts(first_chunk_delay_ms=int(draw("tts_first_chunk_ms")))),  # as build_tts wraps it
             publisher=bus,
             hints=bus,
+            filler_after_ms=filler_after_ms,
         )
+        await loop.prewarm()  # the worker does this while the opening line plays
         end = LearnerTurnEnded(
             audio=b"\x00\x00" * 40000, speech_start_ms=0, speech_end_ms=2500, eot_decided_ms=2500 + EOT_MS
         )
@@ -162,4 +187,5 @@ async def run_bench(*, mode: str, turns: int, profile_name: str | None = None, s
         if outcome.timing.first_audio_ms is not None:
             target.append(outcome.timing.first_audio_ms + downlink)
         report.guard_ms.extend(outcome.timing.guard_ms)
+        report.fillers += outcome.timing.filler
     return report

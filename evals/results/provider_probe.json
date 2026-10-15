@@ -2,54 +2,49 @@
   "as_of": "2026-10-15",
   "tts": {
     "elevenlabs": {
-      "median": 289.1,
-      "p95": 1027.9,
-      "sigma": 0.486
-    },
-    "openai": {
-      "median": 642.2,
-      "p95": 734.1,
-      "sigma": 0.131
+      "median": 286.4,
+      "p95": 931.3,
+      "sigma": 0.367
     }
   },
   "stt": {
     "openai": {
-      "median": 958.3,
-      "p95": 1038.2,
-      "sigma": 0.052
+      "median": 1176.1,
+      "p95": 1352.4,
+      "sigma": 0.119
     },
     "elevenlabs": {
-      "median": 1077.1,
-      "p95": 1445.5,
-      "sigma": 0.162
+      "median": 915.0,
+      "p95": 1343.8,
+      "sigma": 0.168
     }
   },
   "stt_similarity": {
-    "openai": 0.956,
-    "elevenlabs": 0.975
+    "openai": 0.913,
+    "elevenlabs": 0.942
   },
   "llm_first_token": {
     "anthropic": {
-      "median": 785.0,
-      "p95": 2254.0,
-      "sigma": 0.486
-    },
-    "openai": {
-      "median": 1426.7,
-      "p95": 3435.1,
-      "sigma": 0.591
+      "median": 1321.9,
+      "p95": 2248.6,
+      "sigma": 0.346
     }
   },
   "llm_token": {
     "anthropic": {
-      "median": 19.8,
-      "p95": 24.8,
-      "sigma": 0.11
-    },
-    "openai": {
-      "median": 12.3,
-      "p95": 17.4,
-      "sigma": 0.208
+      "median": 20.5,
+      "p95": 28.0,
+      "sigma": 0.272
     }
+  },
+  "claim_check": {
+    "anthropic": {
+      "median": 1133.2,
+      "p95": 1604.0,
+      "sigma": 0.278
+    }
+  },
+  "errors": {
+    "tts:openai": "ReadTimeout('')"
   }
 }

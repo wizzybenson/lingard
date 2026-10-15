@@ -3,7 +3,7 @@
 # Each tier lists catalog models in preference order. A model is used only when its provider's key is set
 # (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY), so any one key is enough; the first configured one wins.
 # Override any tier from the environment without editing this file (see .env.example):
-#   LLM_FAST_MODELS=claude-haiku-5-5,claude-sonnet-5-5     LLM_FAST_EFFORT=low
+#   LLM_FAST_MODELS=claude-haiku-5-5,claude-sonnet-5-5     LLM_FAST_EFFORT=low     LLM_GUARD_THINKING=false
 # Every name must be in the catalog below, so cost reporting always has a price for it.
 #
 # Prices: first-party API rates, USD per million tokens.
@@ -45,6 +45,13 @@ tiers:
     max_tokens: 1024
     timeout_s: 8
     retries: 0            # a retry costs more latency than a fallback
+  guard:                  # Contract Guard claim check: one short answer per NPC sentence, live plane (decision 0012)
+    models: [claude-haiku-5-5, gemini-3.1-flash-lite]
+    effort: low
+    thinking: false        # with thinking on, Haiku spent the budget reasoning and often returned no answer
+    max_tokens: 200
+    timeout_s: 5           # the claim checker's own deadline (CLAIM_CHECK_DEADLINE_S) is what binds
+    retries: 0
   mid:                    # assessment, planning, lessons
     models: [claude-sonnet-5-5, gpt-6.1-sol, gemini-3.8-flash]
     effort: medium

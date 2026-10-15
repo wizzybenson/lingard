@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[4]
 
 
 class LiveSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", env_parse_none_str="")
 
     redis_url: str = "redis://localhost:56379/0"
     livekit_url: str = "ws://localhost:57880"
@@ -38,6 +38,17 @@ class LiveSettings(BaseSettings):
     elevenlabs_stt_model: str = "scribe_v2"
     elevenlabs_tts_model: str = "eleven_flash_v2_5"
     openai_tts_model: str = "gpt-4o-mini-tts"
+    claim_check: bool = True
+    """Contract Guard claim check on the ``guard`` LLM tier (decision 0012)."""
+    claim_check_deadline_s: float = 2.5
+    """A check slower than this withholds its sentence."""
+    claim_check_context_lines: int = 8
+    """Recent lines per speaker the check sees."""
+    claim_free_words: int = 6
+    """Sentences up to this many words (or questions) made only of grounded words skip the check."""
+    filler_after_ms: float | None = 150
+    """Say a hesitation if the first sentence is still being checked this long after it is ready; empty = never."""
+    """Sentences up to this many words (or questions) made only of grounded words skip the check."""
 
 
 def _secret(value: SecretStr | None) -> str | None:

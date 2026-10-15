@@ -41,7 +41,8 @@ class ActorState:
 def render_system(prompt: Prompt, state: ActorState) -> str:
     contract, persona = state.contract, state.persona
     language = contract.language
-    facts = "\n".join(f"- {f}" for f in [*contract.approved_facts, *persona.world_facts])
+    visible = [f"{h.label}: {h.text}" for h in state.location.hotspots if h.text]
+    facts = "\n".join(f"- {f}" for f in [*contract.approved_facts, *persona.world_facts, *visible])
     tactics = "\n".join(f"- {t.tactic}" for t in contract.elicitation) or "- Just be yourself."
     exits = "; ".join(f"{e.trigger} → {e.consequence}" for e in contract.exits)
     style = contract.correction_style

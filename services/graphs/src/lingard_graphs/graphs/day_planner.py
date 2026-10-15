@@ -71,7 +71,14 @@ def pack_alignment(pack: ExamPack, targets: list[str]) -> list[str]:
 def build_day_planner(
     deps: GraphDeps, checkpointer: BaseCheckpointSaver[str] | None = None
 ) -> CompiledStateGraph[PlanState, Any, PlanState, PlanState]:
-    compiler = SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root)
+    scenes = deps.pedagogy.scenes
+    compiler = SceneCompiler(
+        deps.router,
+        deps.prompts,
+        deps.curriculum,
+        deps.content_root,
+        facts_range=(scenes.approved_facts_min, scenes.approved_facts_max),
+    )
     beats_prompt = deps.prompts.get("story_beats")
     rules = deps.pedagogy
 

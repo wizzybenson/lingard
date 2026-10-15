@@ -33,6 +33,13 @@ def good_draft(_: list[BaseMessage]) -> dict[str, Any]:
             "Le dépôt était de 900 dollars",
             "Le mur du salon a une fissure",
             "Le bail a pris fin le 30 septembre",
+            "Martin veut garder 300 dollars pour réparer la fissure",
+            "Martin n'a pas encore de devis du peintre",
+            "Le bail prévoit que le dépôt est rendu dans les trente jours",
+            "Martin rend le reste du dépôt par chèque",
+            "Il n'y a pas eu d'état des lieux écrit à l'entrée",
+            "Martin accepte de discuter du montant",
+            "Martin ne sait pas combien le peintre demandera",
         ],
         "success_conditions": ["Le locataire fait une contre-proposition"],
         "evidence_required": [{"target": "fr.grammar.si_imparfait", "min_uses": 1}],
@@ -40,6 +47,17 @@ def good_draft(_: list[BaseMessage]) -> dict[str, Any]:
         "max_turns": 16,
         "mood": "defensive",
     }
+
+
+def compiler(deps: GraphDeps) -> SceneCompiler:
+    rules = deps.pedagogy.scenes
+    return SceneCompiler(
+        deps.router,
+        deps.prompts,
+        deps.curriculum,
+        deps.content_root,
+        facts_range=(rules.approved_facts_min, rules.approved_facts_max),
+    )
 
 
 def brief() -> SceneBrief:
@@ -57,7 +75,7 @@ def brief() -> SceneBrief:
 
 async def test_compiler_builds_a_valid_contract(deps: GraphDeps, script: Script) -> None:
     script.handlers["You design one scene"] = good_draft
-    contract = await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    contract = await compiler(deps).compile(brief())
     assert contract.npc_language_band == 7 and contract.cast[0].voice_id == "fr_m_58_martin"
     assert contract.targets.grammar == ["fr.grammar.si_imparfait"]
     assert contract.accent_variety == ["fr-FR-standard"]
@@ -76,14 +94,32 @@ async def test_compiler_feeds_issues_back_then_succeeds(deps: GraphDeps, script:
         return draft
 
     script.handlers["You design one scene"] = flaky
-    await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    await compiler(deps).compile(brief())
     assert len(attempts) == 2
+
+
+async def test_compiler_asks_again_for_a_thin_scene(deps: GraphDeps, script: Script) -> None:
+    seen: list[str] = []
+    systems: list[str] = []
+
+    def thin_then_rich(messages: list[BaseMessage]) -> dict[str, Any]:
+        draft = good_draft(messages)
+        seen.append(message_text(messages[-2]))
+        systems.append(message_text(messages[0]))
+        if len(seen) == 1:
+            draft["approved_facts"] = draft["approved_facts"][:3]
+        return draft
+
+    script.handlers["You design one scene"] = thin_then_rich
+    contract = await compiler(deps).compile(brief())
+    assert "thin_facts" in seen[1] and len(contract.approved_facts) >= deps.pedagogy.scenes.approved_facts_min
+    assert "Bail du 1er octobre" in systems[0], "the compiler sees what is written in the place"
 
 
 async def test_compiler_rejects_unreviewed_targets(deps: GraphDeps) -> None:
     await deps.curriculum.unmark_reviewed("fr.grammar.si_imparfait")
     with pytest.raises(CompileError):
-        await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+        await compiler(deps).compile(brief())
 
 
 def test_locate_requires_real_span() -> None:
@@ -137,7 +173,7 @@ def event(scene_id: uuid.UUID, text: str) -> TurnEvent:
 
 async def setup_scene(deps: GraphDeps, script: Script) -> SceneRecord:
     script.handlers["You design one scene"] = good_draft
-    contract = await SceneCompiler(deps.router, deps.prompts, deps.curriculum, deps.content_root).compile(brief())
+    contract = await compiler(deps).compile(brief())
     record = SceneRecord(scene_id=contract.scene_id, user_id=USER, session_id=uuid.uuid4(), contract=contract)
     await deps.store.save_scene(record)
     return record

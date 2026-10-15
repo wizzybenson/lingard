@@ -13,6 +13,7 @@ def test_measured_profile_uses_preferred_providers_and_keeps_network_assumed() -
         "tts": {"elevenlabs": {"median": 150.0, "p95": 200.0, "sigma": 0.25}},
         "llm_first_token": {},
         "llm_token": {},
+        "claim_check": {"anthropic": {"median": 900.0, "p95": 1500.0, "sigma": 0.3}},
     }
     profile = measured_profile(result, ASSUMED)
     assert profile["status"] == "measured"
@@ -22,7 +23,9 @@ def test_measured_profile_uses_preferred_providers_and_keeps_network_assumed() -
         "tts_first_chunk_ms": "elevenlabs",
         "llm_first_token_ms": "assumed",
         "llm_token_ms": "assumed",
+        "claim_check_ms": "anthropic",
     }
+    assert profile["claim_check_ms"] == {"median": 900.0, "sigma": 0.3}
     assert profile["llm_first_token_ms"] == ASSUMED["llm_first_token_ms"]
     assert profile["network_ms"] == ASSUMED["network_ms"]
 

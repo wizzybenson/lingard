@@ -10,7 +10,7 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
-Tier = Literal["fast", "mid", "frontier"]
+Tier = Literal["fast", "guard", "mid", "frontier"]
 Provider = Literal["anthropic", "openai", "google", "scripted", "recorded"]
 
 PROVIDER_ENV: dict[str, str] = {
@@ -51,6 +51,8 @@ class ModelSpec(BaseModel):
     model: str
     max_tokens: int = Field(default=4096, gt=0)
     effort: Effort | None = None
+    thinking: bool = True
+    """False turns a model's own reasoning off where the provider allows it (short, latency-critical answers)."""
     timeout_s: float = Field(default=60, gt=0)
     price: Price | None = None
 
@@ -76,6 +78,7 @@ class TierDefaults(BaseModel):
 
     models: list[str] = Field(min_length=1)
     effort: Effort | None = None
+    thinking: bool = True
     max_tokens: int = Field(default=4096, gt=0)
     timeout_s: float = Field(default=60, gt=0)
     retries: int = Field(default=1, ge=0, le=5)
@@ -101,8 +104,8 @@ class LLMConfig(BaseModel):
 
     @classmethod
     def load(cls, path: str | Path, env: Mapping[str, str] | None = None) -> LLMConfig:
-        """Reads the catalog and tier defaults; ``LLM_<TIER>_MODELS`` (comma-separated) and ``LLM_<TIER>_EFFORT``
-        in ``env`` (default: the process environment) override a tier's models and effort."""
+        """Reads the catalog and tier defaults; ``LLM_<TIER>_MODELS`` (comma-separated), ``LLM_<TIER>_EFFORT`` and
+        ``LLM_<TIER>_THINKING`` in ``env`` (default: the process environment) override a tier's settings."""
         env = os.environ if env is None else env
         file = ConfigFile.model_validate(yaml.safe_load(Path(path).read_text()))
         tiers: dict[Tier, TierConfig] = {}
@@ -116,12 +119,15 @@ class LLMConfig(BaseModel):
                     f"(known: {', '.join(file.catalog)})"
                 )
             effort = tier_override(tier, "EFFORT", env) or defaults.effort
+            thinking_env = tier_override(tier, "THINKING", env)
+            thinking = defaults.thinking if thinking_env is None else thinking_env.lower() in {"1", "true", "on"}
             specs = [
                 {
                     "provider": file.catalog[name].provider,
                     "model": name,
                     "price": file.catalog[name].price,
                     "effort": effort,
+                    "thinking": thinking,
                     "max_tokens": defaults.max_tokens,
                     "timeout_s": defaults.timeout_s,
                 }

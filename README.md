@@ -75,12 +75,14 @@ Tests never use these keys: a root fixture clears them, so a filled-in `.env` ca
 
 Every model is set in `.env`; `.env.example` lists the defaults. Leaving a variable blank keeps the default.
 
-- `LLM_FAST_MODELS` (NPCs), `LLM_MID_MODELS` (assessment, planning) and `LLM_FRONTIER_MODELS` (examiners, judges) take
-  catalog names, comma-separated, in preference order. A model is skipped when its provider has no key.
+- `LLM_FAST_MODELS` (NPCs), `LLM_GUARD_MODELS` (the Contract Guard's claim check), `LLM_MID_MODELS` (assessment,
+  planning) and `LLM_FRONTIER_MODELS` (examiners, judges) take catalog names, comma-separated, in preference order. A model is skipped when its provider has no key.
   `LLM_<TIER>_EFFORT` sets the reasoning effort. New models go in the catalog in `config/llm.yaml` with their price
   and source, so cost reporting always knows what a call costs.
 - `STT_ORDER` and `TTS_ORDER` set the speech provider preference (JSON lists), and `<PROVIDER>_STT_MODEL`,
   `<PROVIDER>_TTS_MODEL`, `ELEVENLABS_STS_MODEL` and `LINGARD_PRON_MODEL` set each provider's model.
+- `CLAIM_CHECK`, `CLAIM_CHECK_DEADLINE_S`, `CLAIM_CHECK_CONTEXT_LINES`, `CLAIM_FREE_WORDS` and `FILLER_AFTER_MS` tune
+  the claim check and the hesitation that covers it (decision 0012).
 
 Defaults (decision 0009): NPCs on `claude-haiku-5-5`, assessment on `claude-sonnet-5-5`, judges and examiners on
 `gpt-6.1-sol`. Opus and Astra are in the catalog but in no tier.

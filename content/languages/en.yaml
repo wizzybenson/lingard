@@ -7,6 +7,11 @@ other_language_reply:
 clarify:
   - "Sorry? Could you say that again?"
   - "Sorry, I didn't quite catch that."
+unsure:  # said when the Guard withholds an NPC's whole reply as unsupported (decision 0012)
+  - "I'm not sure about that, I'd have to check."
+  - "Good question. I don't know offhand, I'll find out."
+question_marks: ["?"]  # a sentence ending in one is a question (claim-check pre-filter)
+fillers: ["Hmm…", "Well…", "Right…", "Let's see…", "So…"]  # said while the first sentence of a reply is still being checked (decision 0012)
 backchannels: ["Mm.", "Yeah?", "Right…", "Go on."]
 abbreviations: ["Mr.", "Mrs.", "Ms.", "Dr.", "St.", "e.g.", "i.e.", "etc.", "approx."]
 tutor_markers:

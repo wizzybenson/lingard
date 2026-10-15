@@ -74,7 +74,7 @@ def oracle(messages: list[BaseMessage]) -> str:
                 "elicitation": [
                     {"target": t, "tactic": f"Make {t} natural to use"} for t in targets if ".pron." not in t
                 ],
-                "approved_facts": ["It is a weekday"],
+                "approved_facts": [f"Scene fact {i}" for i in range(load_pedagogy().scenes.approved_facts_min)],
                 "success_conditions": ["done"],
                 "evidence_required": [],
                 "exits": [{"key": "end", "trigger": "done", "consequence": "next"}],

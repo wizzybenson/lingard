@@ -20,6 +20,7 @@ from lingard_contracts.common import CITY_LOCALE
 from lingard_contracts.live import LiveSessionConfig, personalised_turn_policy
 from lingard_contracts.scene import SceneContract
 from lingard_live.actor import NpcActor
+from lingard_live.claims import LlmClaimChecker
 from lingard_live.events import RedisBus
 from lingard_live.guard import ContractGuard
 from lingard_live.languages import LanguageIdentifier, load_language
@@ -58,7 +59,18 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
     languages = [load_language(settings.content_root, "fr"), load_language(settings.content_root, "en")]
     identifier = LanguageIdentifier(languages)
     router = LLMRouter(LLMConfig.load(settings.llm_config))
-    actor = NpcActor(router, PromptRegistry(settings.prompts_root).get("npc_actor"))
+    prompts = PromptRegistry(settings.prompts_root)
+    actor = NpcActor(router, prompts.get("npc_actor"))
+    claims = (
+        LlmClaimChecker(
+            router,
+            prompts.get("claim_check"),
+            deadline_s=settings.claim_check_deadline_s,
+            context_lines=settings.claim_check_context_lines,
+        )
+        if settings.claim_check
+        else None
+    )
     policy = personalised_turn_policy(job.learner_band, job.intra_pauses_ms)
     transport = LiveKitTransport(
         settings.livekit_url, settings.livekit_api_key, settings.livekit_api_secret.get_secret_value()
@@ -79,7 +91,7 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
         state=runtime.state,
         identity=SceneIdentity(job.user_id, job.session_id, job.trace_id, job.learner_band),
         actor=actor,
-        guard=ContractGuard(identifier),
+        guard=ContractGuard(identifier, claims=claims, claim_free_words=settings.claim_free_words),
         guard_ctx=runtime.guard_ctx,
         language=runtime.language,
         identifier=identifier,
@@ -87,12 +99,16 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
         tts=build_tts(settings),
         publisher=bus,
         hints=bus,
+        filler_after_ms=settings.filler_after_ms,
     )
     with telemetry.span("live.scene", trace_id=str(job.trace_id), scene=str(job.contract.scene_id)):
+        warm = asyncio.create_task(loop.prewarm())  # alongside the opening line, never before it
         try:
             await loop.opening()
             await loop.run()
         finally:
+            warm.cancel()
+            await asyncio.gather(warm, return_exceptions=True)
             await session.close()
 
 

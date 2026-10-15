@@ -43,6 +43,8 @@ def default_factory(spec: ModelSpec) -> BaseChatModel:
         }
         if spec.effort:
             kwargs["effort"] = spec.effort
+        if not spec.thinking:
+            kwargs["thinking"] = {"type": "disabled"}  # Haiku 5.5 accepts this at effort high or below
         return ChatAnthropic(**kwargs)
     if spec.provider == "openai":
         from langchain_openai import ChatOpenAI

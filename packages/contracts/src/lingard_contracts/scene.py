@@ -102,15 +102,25 @@ def validate_contract(
     learner_band: int,
     intensity_cap: Intensity = "heated",
     known_nodes: set[str] | None = None,
+    facts_range: tuple[int, int] | None = None,
 ) -> list[ContractIssue]:
     """Semantic checks beyond the schema. An empty list means the contract may be played.
 
-    ``known_nodes`` (reviewed curriculum keys) is optional so the check also runs offline in tests.
+    ``known_nodes`` (reviewed curriculum keys) is optional so the check also runs offline in tests. ``facts_range``
+    (min, max approved facts; config ``scenes`` in pedagogy.yaml) is checked when given.
     """
     issues: list[ContractIssue] = []
 
     def issue(code: str, message: str) -> None:
         issues.append(ContractIssue(code=code, message=message))
+
+    if facts_range is not None:
+        low, high = facts_range
+        count = len(contract.approved_facts)
+        if count < low:
+            issue("thin_facts", f"{count} approved facts; at least {low} are needed so the NPC never has to invent")
+        elif count > high:
+            issue("too_many_facts", f"{count} approved facts; at most {high}")
 
     targets = contract.targets.all()
     if not targets:

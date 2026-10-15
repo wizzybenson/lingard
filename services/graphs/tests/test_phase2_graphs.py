@@ -30,7 +30,7 @@ def draft_for(messages: list[BaseMessage]) -> dict[str, Any]:
         "elicitation": [
             {"target": t, "tactic": f"Create a situation that needs {t}"} for t in targets if ".pron." not in t
         ],
-        "approved_facts": ["Le café ouvre à 7 h"],
+        "approved_facts": [f"Fait numéro {i} de la scène" for i in range(1, 13)],
         "success_conditions": ["Le problème est réglé"],
         "evidence_required": [],
         "exits": [{"key": "done", "trigger": "resolved", "consequence": "the day goes on"}],

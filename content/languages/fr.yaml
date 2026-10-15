@@ -8,6 +8,11 @@ other_language_reply:
 clarify:
   - "Pardon ? Vous pouvez répéter ?"
   - "Excusez-moi, je n'ai pas bien compris."
+unsure:  # said when the Guard withholds an NPC's whole reply as unsupported (decision 0012)
+  - "Ça, je ne sais pas, il faudrait que je vérifie."
+  - "Bonne question. Je ne suis pas sûr, je vais me renseigner."
+question_marks: ["?"]  # a sentence ending in one is a question (claim-check pre-filter)
+fillers: ["Mm…", "Alors…", "Bon…", "Voyons…", "Euh…"]  # said while the first sentence of a reply is still being checked (decision 0012)
 backchannels: ["Mm.", "Oui ?", "D'accord…", "Je vous écoute."]
 abbreviations: ["M.", "Mme", "Mlle", "Dr", "St", "Ste", "av.", "bd", "etc.", "p. ex."]
 tutor_markers:

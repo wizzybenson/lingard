@@ -13,7 +13,7 @@ import contextlib
 import logging
 import time
 import uuid
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field
 
 import lingard_telemetry as telemetry
@@ -54,6 +54,8 @@ class TurnTiming:
     first_audio_ms: float | None = None
     total_ms: float = 0
     speculative: bool = False
+    filler: bool = False
+    """A hesitation played while the first sentence was still being checked."""
 
 
 @dataclass
@@ -87,6 +89,33 @@ class Prepared:
     hint: str | None = None
 
 
+Spoken = tuple[str, AsyncIterator[AudioChunk]]
+"""A sentence to speak and its audio."""
+
+
+class Prefetch:
+    """Synthesises a sentence into a buffer before it is cleared to play; cancelled if the Guard changes it."""
+
+    def __init__(self, audio: AsyncIterator[AudioChunk]) -> None:
+        self._chunks: asyncio.Queue[AudioChunk | None] = asyncio.Queue()
+        self._task = asyncio.create_task(self._run(audio))
+
+    async def _run(self, audio: AsyncIterator[AudioChunk]) -> None:
+        try:
+            async for chunk in audio:
+                await self._chunks.put(chunk)
+        finally:
+            await self._chunks.put(None)
+
+    async def chunks(self) -> AsyncIterator[AudioChunk]:
+        while (chunk := await self._chunks.get()) is not None:
+            yield chunk
+        await self._task  # re-raises a synthesis error
+
+    def cancel(self) -> None:
+        self._task.cancel()
+
+
 class LiveLoop:
     def __init__(
         self,
@@ -104,7 +133,10 @@ class LiveLoop:
         publisher: TurnPublisher,
         hints: HintSource,
         gate: GatePolicy | None = None,
+        filler_after_ms: float | None = None,
     ) -> None:
+        """``filler_after_ms``: if a reply's first sentence is still held by the claim check this long after it was
+        screened, the NPC says a hesitation (``LanguageConfig.fillers``) first; ``None`` never does."""
         self.session = session
         self.state = state
         self.identity = identity
@@ -118,6 +150,7 @@ class LiveLoop:
         self.publisher = publisher
         self.hints = hints
         self.gate = gate or GatePolicy()
+        self.filler_after_ms = filler_after_ms
         self.outcomes: list[TurnOutcome] = []
         self.pauses: list[int] = []
         self.learner_turns = 0
@@ -134,6 +167,14 @@ class LiveLoop:
     @property
     def scene_id(self) -> str:
         return str(self.state.contract.scene_id)
+
+    async def prewarm(self) -> None:
+        """Synthesise the stock lines (hesitations, "not sure", "pardon?") in this NPC's voice, so a caching TTS
+        can play them without a provider round trip when they are needed."""
+        language = self.language
+        for line in dict.fromkeys([*language.fillers, *language.unsure, *language.clarify]):
+            async for _ in self.tts.stream(line, self.voice):
+                pass
 
     # ---- event loop ----------------------------------------------------------------------------------------------
 
@@ -255,14 +296,19 @@ class LiveLoop:
     ) -> Prepared:
         prepared = Prepared(transcript, decision, status, timing)
 
-        async def one() -> AsyncIterator[str]:
-            yield line
+        async def one() -> AsyncIterator[Spoken]:
+            yield line, self.tts.stream(line, self.voice)
 
         prepared.producer = asyncio.create_task(self._synthesise(prepared, one()))
         return prepared
 
     async def _produce(self, prepared: Prepared, tokens: AsyncIterator[str], started: float) -> None:
+        """Rules screen each sentence as it completes (a blocked sentence never reaches TTS). The claim check then runs
+        while earlier sentences play and the screened sentence's audio is prefetched, so it costs only what exceeds
+        the time to that sentence's first audio chunk. Prefetched audio plays only once the check confirms it."""
         timing = prepared.timing
+        pending: asyncio.Queue[tuple[GuardResult, asyncio.Task[GuardResult], Prefetch | None] | None] = asyncio.Queue()
+        tasks: list[Prefetch | asyncio.Task[GuardResult]] = []
 
         async def timed() -> AsyncIterator[str]:
             async for token in tokens:
@@ -270,31 +316,78 @@ class LiveLoop:
                     timing.first_token_ms = (time.perf_counter() - started) * 1000
                 yield token
 
-        async def guarded() -> AsyncIterator[str]:
-            async for sentence in split_stream(timed(), SentenceSplitter(self.language.abbreviations)):
-                if timing.first_sentence_ms is None:
-                    timing.first_sentence_ms = (time.perf_counter() - started) * 1000
-                result = await self.guard.check(sentence, self.guard_ctx)
+        async def split() -> None:
+            try:
+                async for sentence in split_stream(timed(), SentenceSplitter(self.language.abbreviations)):
+                    if timing.first_sentence_ms is None:
+                        timing.first_sentence_ms = (time.perf_counter() - started) * 1000
+                    screened = await self.guard.screen(sentence, self.guard_ctx)
+                    timing.guard_ms.append(screened.elapsed_ms)
+                    confirm = asyncio.create_task(self.guard.confirm(screened, self.guard_ctx))
+                    prefetch = None
+                    if self.guard.will_check_claims(screened, self.guard_ctx):
+                        prefetch = Prefetch(self.tts.stream(screened.text, self.voice))
+                        tasks.append(prefetch)
+                    tasks.append(confirm)
+                    await pending.put((screened, confirm, prefetch))
+            finally:
+                await pending.put(None)
+
+        async def guarded() -> AsyncIterator[Spoken]:
+            first = True
+            while (item := await pending.get()) is not None:
+                screened, confirm, prefetch = item
+                if first and prefetch is not None and self.filler_after_ms is not None:
+                    done, _ = await asyncio.wait({confirm}, timeout=self.filler_after_ms / 1000)
+                    if not done:
+                        filler = self.language.pick(self.language.fillers)
+                        timing.filler = True
+                        yield filler, self.tts.stream(filler, self.voice)
+                first = False
+                result = await confirm
                 prepared.guard_results.append(result)
-                timing.guard_ms.append(result.elapsed_ms)
                 if result.verdict is Verdict.BLOCK:
                     logger.info("guard blocked sentence (%s)", ",".join(result.reasons))
+                    if prefetch is not None:
+                        prefetch.cancel()
                     continue
-                yield result.text
+                if prefetch is not None and result.text == screened.text:
+                    yield result.text, prefetch.chunks()
+                    continue
+                if prefetch is not None:
+                    prefetch.cancel()
+                yield result.text, self.tts.stream(result.text, self.voice)
 
-        await self._synthesise(prepared, guarded(), fallback=self.language.pick(self.language.clarify))
-
-    async def _synthesise(self, prepared: Prepared, sentences: AsyncIterator[str], fallback: str | None = None) -> None:
+        splitter = asyncio.create_task(split())
         try:
-            async for sentence in sentences:
+            await self._synthesise(prepared, guarded(), fallback=lambda: self._fallback(prepared))
+        finally:
+            splitter.cancel()
+            for task in tasks:
+                task.cancel()
+            await asyncio.gather(splitter, return_exceptions=True)
+
+    def _fallback(self, prepared: Prepared) -> str:
+        withheld_claim = any(
+            r.verdict is Verdict.BLOCK and {"unsupported_claim", "claim_check_timeout"} & set(r.reasons)
+            for r in prepared.guard_results
+        )
+        return self.language.pick(self.language.unsure if withheld_claim else self.language.clarify)
+
+    async def _synthesise(
+        self, prepared: Prepared, spoken: AsyncIterator[Spoken], fallback: Callable[[], str] | None = None
+    ) -> None:
+        try:
+            async for sentence, audio in spoken:
                 prepared.sentences.append(sentence)
                 await prepared.audio.put(sentence)
-                async for chunk in self.tts.stream(sentence, self.voice):
+                async for chunk in audio:
                     await prepared.audio.put(chunk)
             if not prepared.sentences and fallback:
-                prepared.sentences.append(fallback)
-                await prepared.audio.put(fallback)
-                async for chunk in self.tts.stream(fallback, self.voice):
+                line = fallback()
+                prepared.sentences.append(line)
+                await prepared.audio.put(line)
+                async for chunk in self.tts.stream(line, self.voice):
                     await prepared.audio.put(chunk)
         finally:
             await prepared.audio.put(None)
@@ -327,6 +420,7 @@ class LiveLoop:
             npc_text = " ".join(prepared.sentences)
             if prepared.status == "npc":
                 self.state.dialogue.append(DialogueTurn(self.state.persona.key, npc_text))
+                self.guard_ctx.admit_npc_text(npc_text)
                 self._publish_npc(npc_text)
             timing.total_ms = (time.perf_counter() - committed_at) * 1000
             status = "ok" if prepared.status == "npc" else prepared.status
@@ -344,6 +438,7 @@ class LiveLoop:
         await self._speak(prepared, committed_at)
         npc_text = " ".join(prepared.sentences)
         self.state.dialogue.append(DialogueTurn(self.state.persona.key, npc_text))
+        self.guard_ctx.admit_npc_text(npc_text)
         self._publish_npc(npc_text)
         outcome = TurnOutcome("", npc_text, "ok", timing, prepared.guard_results)
         self.outcomes.append(outcome)

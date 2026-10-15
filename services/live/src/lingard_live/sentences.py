@@ -6,6 +6,12 @@ import re
 from collections.abc import AsyncIterator
 
 _BOUNDARY = re.compile(r'([.!?…]+["»”)]?)(\s+)')
+_COMPLETE = re.compile(r'[.!?…]+["»”)]?\s*$')
+
+
+def is_complete(sentence: str) -> bool:
+    """Ends the way a sentence ends (used to reject a truncated Guard repair)."""
+    return bool(_COMPLETE.search(sentence))
 
 
 class SentenceSplitter:

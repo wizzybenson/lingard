@@ -7,6 +7,7 @@ assumed_cloud:
   llm_first_token_ms: {median: 380, sigma: 0.3}  # fast tier, cached actor prefix
   llm_token_ms: {median: 12, sigma: 0.2}
   tts_first_chunk_ms: {median: 170, sigma: 0.3}
+  claim_check_ms: {median: 400, sigma: 0.3}   # Guard claim check, guard tier, one-token answer
   network_ms: {median: 45, sigma: 0.25}       # one way, learner ↔ server
 assumed_4g:
   status: assumption
@@ -15,6 +16,7 @@ assumed_4g:
   llm_first_token_ms: {median: 380, sigma: 0.3}
   llm_token_ms: {median: 12, sigma: 0.2}
   tts_first_chunk_ms: {median: 170, sigma: 0.3}
+  claim_check_ms: {median: 400, sigma: 0.3}
   network_ms: {median: 90, sigma: 0.4}        # SPEC §4.2 4G: 150 ms RTT ±30 ms jitter
 measured:
   status: measured
@@ -24,18 +26,22 @@ measured:
     tts_first_chunk_ms: elevenlabs
     llm_first_token_ms: anthropic
     llm_token_ms: anthropic
+    claim_check_ms: anthropic
   stt_ms:
-    median: 958.3
-    sigma: 0.052
+    median: 1176.1
+    sigma: 0.119
   tts_first_chunk_ms:
-    median: 289.1
-    sigma: 0.486
+    median: 286.4
+    sigma: 0.367
   llm_first_token_ms:
-    median: 785.0
-    sigma: 0.486
+    median: 1321.9
+    sigma: 0.346
   llm_token_ms:
-    median: 19.8
-    sigma: 0.11
+    median: 20.5
+    sigma: 0.272
+  claim_check_ms:
+    median: 1133.2
+    sigma: 0.278
   network_ms:
     median: 45
     sigma: 0.25

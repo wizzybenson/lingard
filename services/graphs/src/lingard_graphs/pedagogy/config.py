@@ -41,6 +41,11 @@ class Director(_Frozen):
     ticket_ageing_per_day: float
 
 
+class Scenes(_Frozen):
+    approved_facts_min: int
+    approved_facts_max: int
+
+
 class Steering(_Frozen):
     every_learner_turns: int
     max_hint_chars: int
@@ -61,6 +66,7 @@ class Pedagogy(_Frozen):
     bkt: Bkt
     tickets: Tickets
     director: Director
+    scenes: Scenes
     steering: Steering
     corrections: Corrections
     bands: Bands

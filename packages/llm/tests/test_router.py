@@ -182,3 +182,12 @@ def test_assessor_prompt_keeps_the_turn_out_of_the_cached_prefix() -> None:
     )  # fmt: skip
     assert "NODES" in prefix and "TRANSCRIPT" not in prefix and "NPC-LINE" not in prefix
     assert "TRANSCRIPT" in per_call
+
+
+def test_guard_tier_answers_without_thinking_and_the_environment_can_change_it() -> None:
+    cfg = LLMConfig.load(ROOT / "config/llm.yaml", env={})
+    assert cfg.tier("guard").models[0].model == "claude-haiku-5-5"
+    assert not any(s.thinking for s in cfg.tier("guard").models)
+    assert all(s.thinking for s in cfg.tier("fast").models)
+    on = LLMConfig.load(ROOT / "config/llm.yaml", env={"LLM_GUARD_THINKING": "true"})
+    assert all(s.thinking for s in on.tier("guard").models)

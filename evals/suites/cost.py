@@ -19,6 +19,7 @@ from evals.framework import ROOT, Gate, Mode, SuiteResult, suite
 from evals.scenes import eval_scenes
 from evals.synthetic_learners.harness import build_deps, live_days
 from evals.synthetic_learners.learner import default_cohort
+from lingard_contracts.common import LANGUAGE_NAME
 from lingard_live.actor import build_messages
 from lingard_live.scene import build_scene
 from lingard_llm import LLMConfig, PromptRegistry
@@ -60,6 +61,19 @@ def _actor_input_tokens() -> float:
     return sum(sizes) / len(sizes)
 
 
+def _claim_input_tokens() -> float:
+    """The claim check's grounding plus a few lines of dialogue and the sentence (decision 0012)."""
+    prompt = PromptRegistry(ROOT / "prompts").get("claim_check")
+    sizes = []
+    for contract, _, _ in eval_scenes(12):
+        ctx = build_scene(contract, ROOT / "content", learner_name="Sam").guard_ctx
+        system = prompt.render(
+            facts="\n".join(f"- {f}" for f in ctx.grounding), language_name=LANGUAGE_NAME[contract.language]
+        )
+        sizes.append(len(system) / 4)
+    return sum(sizes) / len(sizes)
+
+
 def _model(config: LLMConfig, tier: str, provider: str) -> ModelSpec:
     return next(m for m in config.tier(tier).models if m.provider == provider)  # type: ignore[arg-type]
 
@@ -71,6 +85,7 @@ def hourly_cost(
     model: dict[str, Any],
     config: LLMConfig,
     stack: tuple[str, str, str],
+    claim_input: float = 0,
 ) -> dict[str, float]:
     activity, speech = model["activity"], model["speech"]
     floors: dict[str, int] = model["output_floor_tokens"]
@@ -101,6 +116,16 @@ def hourly_cost(
     breakdown["llm_fast"] += turns * cost_usd(
         actor.price, int(actor_in), floors["npc_actor"], int(actor_in * activity["actor_cached_share"])
     )
+    if claim_input:
+        checker = _model(config, "guard", llm)
+        claim_in = claim_input + activity["claim_context_tokens"]
+        breakdown["llm_guard"] += (
+            turns
+            * activity["claim_checks_per_turn"]
+            * cost_usd(
+                checker.price, int(claim_in), floors["claim_check"], int(claim_input * cached.get("claim_check", 0))
+            )
+        )
     minutes = turns * activity["learner_speech_seconds_per_turn"] / 60
     breakdown["stt"] = minutes * speech["stt"][stt]["per_minute"]
     breakdown["tts"] = turns * activity["npc_chars_per_turn"] / 1000 * speech["tts"][tts]["per_1k_chars"]
@@ -121,7 +146,8 @@ async def cost(mode: Mode) -> SuiteResult:
         if all(any(m.provider == p for m in t.models) for t in config.tiers.values())
     ]
     stacks = list(itertools.product(providers, model["speech"]["stt"], model["speech"]["tts"]))
-    results = {stack: hourly_cost(sizes, counts, actor_input, model, config, stack) for stack in stacks}
+    claim_input = _claim_input_tokens()
+    results = {stack: hourly_cost(sizes, counts, actor_input, model, config, stack, claim_input) for stack in stacks}
     default = results[DEFAULT_STACK]
     cheapest = min(results, key=lambda s: results[s]["total"])
     metrics: dict[str, float] = {f"default_{k}": v for k, v in default.items()}
@@ -131,7 +157,7 @@ async def cost(mode: Mode) -> SuiteResult:
         f"default stack {'+'.join(DEFAULT_STACK)}; cheapest {'+'.join(cheapest)}",
         f"activity assumptions as_of {model['activity']['as_of']} ({model['activity']['status']})",
         "per-call tokens: " + ", ".join(f"{n} {s['input']:.0f}→{s['output']:.0f}" for n, s in sorted(sizes.items())),
-        f"actor prompt ≈ {actor_input:.0f} tokens before history",
+        f"actor prompt ≈ {actor_input:.0f} tokens before history; claim check ≈ {claim_input:.0f} before dialogue",
     ]
     samples = [{"stack": "+".join(s), **results[s]} for s in sorted(results, key=lambda s: results[s]["total"])]
     return SuiteResult("cost", mode, metrics, [Gate("default_total", "<=", 1.0)], notes=notes, samples=samples)

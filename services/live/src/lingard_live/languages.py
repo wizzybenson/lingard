@@ -23,7 +23,12 @@ class LanguageConfig(BaseModel):
     function_words: list[str]
     other_language_reply: list[str]
     clarify: list[str]
+    unsure: list[str]
+    """The NPC's reply when the Guard withheld every sentence of it as an unsupported claim."""
     backchannels: list[str]
+    fillers: list[str]
+    """Hesitations the NPC says when its first sentence is still held by the claim check."""
+    question_marks: list[str]
     abbreviations: list[str]
     tutor_markers: list[str]
     character_break_markers: list[str]

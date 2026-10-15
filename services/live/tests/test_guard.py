@@ -1,8 +1,16 @@
 import time
+from pathlib import Path
 
 import pytest
+from langchain_core.messages import BaseMessage
 
-from lingard_live.guard import ContractGuard, GuardContext, Verdict
+from lingard_live.claims import LlmClaimChecker, ScriptedClaimChecker, parse_answer
+from lingard_live.guard import ClaimCheck, ContractGuard, GuardContext, Verdict
+from lingard_live.languages import LanguageIdentifier
+from lingard_llm import LLMConfig, LLMRouter, ModelSpec, PromptRegistry
+from lingard_llm.testing import ScriptedChatModel, message_text
+
+ROOT = Path(__file__).resolve().parents[3]
 
 
 @pytest.mark.parametrize(
@@ -80,3 +88,103 @@ async def test_rule_path_is_well_under_50ms(guard: ContractGuard, guard_ctx: Gua
     per_sentence_ms = (time.perf_counter() - started) * 1000 / len(sentences)
     assert per_sentence_ms < 50
     assert per_sentence_ms < 5, f"rule path regressed: {per_sentence_ms:.2f} ms/sentence"
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("OK", ClaimCheck(supported=True)),
+        ("ok.\n", ClaimCheck(supported=True)),
+        ("FIX: Je dois vérifier.", ClaimCheck(supported=False, repair="Je dois vérifier.")),
+        ('FIX: "I\'d have to check."', ClaimCheck(supported=False, repair="I'd have to check.")),
+        ("FIX: NONE", ClaimCheck(supported=False)),
+        ("The sentence is fine", ClaimCheck(supported=False)),
+        ("", ClaimCheck(supported=False)),
+    ],
+)
+def test_claim_answers_parse(raw: str, expected: ClaimCheck) -> None:
+    assert parse_answer(raw) == expected
+
+
+def _identifier() -> LanguageIdentifier:
+    from lingard_live.languages import load_language
+
+    return LanguageIdentifier([load_language(ROOT / "content", "fr"), load_language(ROOT / "content", "en")])
+
+
+async def test_claim_repair_must_pass_the_rules_too(guard_ctx: GuardContext) -> None:
+    claims = ScriptedClaimChecker(
+        {
+            "Il faut signer ici.": ClaimCheck(supported=False, repair="Il faut signer avant le 3 mai."),
+            "Le formulaire est gratuit.": ClaimCheck(supported=False, repair="Je ne sais pas, il faut vérifier."),
+            "Le formulaire est bleu.": ClaimCheck(supported=False, repair="Ah, le"),
+        }
+    )
+    guard = ContractGuard(_identifier(), claims=claims)
+    blocked = await guard.check("Il faut signer ici.", guard_ctx)
+    assert blocked.verdict is Verdict.BLOCK and blocked.reasons == ("unsupported_claim",)
+    repaired = await guard.check("Le formulaire est gratuit.", guard_ctx)
+    assert (repaired.verdict, repaired.text) == (Verdict.REWRITE, "Je ne sais pas, il faut vérifier.")
+    fragment = await guard.check("Le formulaire est bleu.", guard_ctx)
+    assert fragment.verdict is Verdict.BLOCK, "a truncated repair is never spoken"
+    rules_first = await guard.check("Je vous rends 450 dollars.", guard_ctx)
+    assert rules_first.verdict is Verdict.BLOCK and "Je vous rends 450 dollars." not in claims.checked
+
+
+async def test_llm_claim_checker_grounds_on_the_scene_and_blocks_on_timeout(guard_ctx: GuardContext) -> None:
+    model = ScriptedChatModel(queue=["FIX: Je ne sais pas.", "OK"])
+
+    def factory(spec: ModelSpec) -> ScriptedChatModel:
+        return model
+
+    config = LLMConfig.model_validate(
+        {"tiers": {"guard": {"retries": 0, "models": [{"provider": "scripted", "model": "g"}]}}}
+    )
+    checker = LlmClaimChecker(
+        LLMRouter(config, factory=factory),
+        PromptRegistry(ROOT / "prompts").get("claim_check"),
+        deadline_s=2,
+        context_lines=8,
+    )
+    guard_ctx.admit_learner_text("Je veux mon dépôt.")
+    result = await checker.check("Le dépôt est rendu sous dix jours.", guard_ctx)
+    assert result == ClaimCheck(supported=False, repair="Je ne sais pas.")
+    system, user = (message_text(m) for m in model.calls[0])
+    assert "Le dépôt était de 900 dollars" in system and "Martin Lefebvre" in system and "French" in system
+    assert "Je veux mon dépôt." in user and user.endswith("Le dépôt est rendu sous dix jours.")
+
+    def slow_answer(messages: list[BaseMessage]) -> str:
+        time.sleep(0.2)
+        return "OK"
+
+    model.responder = slow_answer
+    slow = LlmClaimChecker(
+        LLMRouter(config, factory=factory),
+        PromptRegistry(ROOT / "prompts").get("claim_check"),
+        deadline_s=0.05,
+        context_lines=8,
+    )
+    assert await slow.check("Mm.", guard_ctx) == ClaimCheck(supported=False, timed_out=True)
+
+
+@pytest.mark.parametrize(
+    ("sentence", "needs"),
+    [
+        ("D'accord.", False),
+        ("Mm, la fissure ?", False),
+        ("Le dépôt était de 900 dollars ?", False),
+        ("Le formulaire est gratuit.", True),
+        ("C'est le plombier qui décide.", True),
+        ("Le dépôt, le mur, la fissure, le bail : je vois bien tout ça.", True),
+    ],
+)
+def test_only_sentences_that_could_add_a_claim_are_checked(guard_ctx: GuardContext, sentence: str, needs: bool) -> None:
+    assert guard_ctx.needs_claim_check(sentence, 6) is needs
+
+
+def test_learner_and_npc_words_become_known(guard_ctx: GuardContext) -> None:
+    assert guard_ctx.needs_claim_check("Le serrurier ?", 6)
+    guard_ctx.admit_learner_text("J'ai appelé un serrurier.")
+    assert not guard_ctx.needs_claim_check("Le serrurier ?", 6)
+    guard_ctx.admit_npc_text("Il faut un formulaire.")
+    assert not guard_ctx.needs_claim_check("Un formulaire ?", 6)

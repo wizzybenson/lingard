@@ -100,3 +100,13 @@ def test_npc_band_cap() -> None:
     assert npc_band_for(6) == 7
     assert npc_band_for(10) == 10
     assert npc_band_for(12) == 10
+
+
+def test_fact_count_is_checked_against_the_configured_range() -> None:
+    data = spec_example()
+    assert "thin_facts" in codes(data, facts_range=(10, 18))
+    assert "thin_facts" not in codes(data), "no range given: not checked"
+    data["approved_facts"] = [f"Fact {i}" for i in range(20)]
+    assert "too_many_facts" in codes(data, facts_range=(10, 18))
+    data["approved_facts"] = data["approved_facts"][:12]
+    assert not {"thin_facts", "too_many_facts"} & codes(data, facts_range=(10, 18))

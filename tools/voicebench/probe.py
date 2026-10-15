@@ -3,7 +3,8 @@
 Times every configured provider on the real critical path of a turn, in both languages:
 - text-to-speech: time to the first audio chunk of an NPC line;
 - speech-to-text: transcribing that synthesised line (also a rough accuracy check against the script);
-- fast LLM tier: time to the first token of the NPC actor prompt for an eval scene, and the per-token rate.
+- fast LLM tier: time to the first token of the NPC actor prompt for an eval scene, and the per-token rate;
+- guard LLM tier: one Contract Guard claim check of an NPC sentence that needs one.
 
 ``--write-profile`` stores the medians of the preferred providers as the ``measured`` profile in profiles.yaml, which
 the ``latency`` eval then uses instead of the planning assumptions. Network latency stays assumed (it depends on the
@@ -30,6 +31,7 @@ import yaml
 from dotenv import load_dotenv
 
 from lingard_live.actor import build_messages
+from lingard_live.claims import LlmClaimChecker
 from lingard_live.languages import load_language
 from lingard_live.scene import build_scene
 from lingard_live.settings import LiveSettings, stt_providers, tts_providers
@@ -44,6 +46,10 @@ LINES = {
     "en": "Hello! The rent is due on the first of the month, and the deposit is nine hundred pounds.",
 }
 LEARNER = {"fr": "Bonjour, je viens pour l'appartement.", "en": "Hi, I'm here about the flat."}
+CLAIMS = {
+    "fr": "Il faut remplir le formulaire bleu à l'accueil.",
+    "en": "You need to fill in the blue form at the desk.",
+}
 
 
 def _stats(samples: list[float]) -> dict[str, float]:
@@ -57,7 +63,15 @@ def _stats(samples: list[float]) -> dict[str, float]:
 
 async def probe(runs: int) -> dict[str, Any]:
     settings = LiveSettings()
-    out: dict[str, Any] = {"tts": {}, "stt": {}, "stt_similarity": {}, "llm_first_token": {}, "llm_token": {}}
+    out: dict[str, Any] = {
+        "tts": {},
+        "stt": {},
+        "stt_similarity": {},
+        "llm_first_token": {},
+        "llm_token": {},
+        "claim_check": {},
+        "errors": {},
+    }
     audio: dict[str, bytes] = {}
     for name, tts in tts_providers(settings).items():
         times = []
@@ -65,12 +79,17 @@ async def probe(runs: int) -> dict[str, Any]:
             language = ("fr", "en")[i % 2]
             narrator = load_language(settings.content_root, language).narrator_voice
             started, first, pcm = time.perf_counter(), None, b""
-            async for chunk in tts.stream(LINES[language], VoiceSpec(voice_id=narrator, language=language)):
-                first = first or time.perf_counter()
-                pcm += chunk.pcm
+            try:
+                async for chunk in tts.stream(LINES[language], VoiceSpec(voice_id=narrator, language=language)):
+                    first = first or time.perf_counter()
+                    pcm += chunk.pcm
+            except Exception as exc:  # one failing provider must not lose the others' measurements
+                out["errors"][f"tts:{name}"] = repr(exc)
+                break
             times.append(((first or time.perf_counter()) - started) * 1000)
             audio.setdefault(language, pcm)
-        out["tts"][name] = _stats(times)
+        if times:
+            out["tts"][name] = _stats(times)
     for name, stt in stt_providers(settings).items():
         times, scores = [], []
         for i in range(runs):
@@ -78,7 +97,13 @@ async def probe(runs: int) -> dict[str, Any]:
             if language not in audio:
                 continue
             started = time.perf_counter()
-            result = await stt.transcribe(audio[language], load_language(settings.content_root, language).stt_locale)
+            try:
+                result = await stt.transcribe(
+                    audio[language], load_language(settings.content_root, language).stt_locale
+                )
+            except Exception as exc:
+                out["errors"][f"stt:{name}"] = repr(exc)
+                break
             times.append((time.perf_counter() - started) * 1000)
             scores.append(difflib.SequenceMatcher(None, result.text.lower(), LINES[language].lower()).ratio())
         if times:
@@ -88,11 +113,13 @@ async def probe(runs: int) -> dict[str, Any]:
 
     config = LLMConfig.load(ROOT / "config" / "llm.yaml")
     prompt = PromptRegistry(ROOT / "prompts").get("npc_actor")
+    claim_prompt = PromptRegistry(ROOT / "prompts").get("claim_check")
     scenes = eval_scenes(6)
     for provider in (p for p in PROVIDER_ENV if provider_configured(p)):
         router = LLMRouter(config, available=functools.partial(operator.eq, provider))
         first_times, token_times = [], []
-        for i in range(runs):
+        tier_providers = {t: {spec.provider for spec in config.tier(t).models} for t in ("fast", "guard")}
+        for i in range(runs if provider in tier_providers["fast"] else 0):
             contract, _, _ = scenes[i % len(scenes)]
             runtime = build_scene(contract, ROOT / "content", learner_name="Sam")
             messages = build_messages(prompt, runtime.state, provider, LEARNER[contract.language], None)
@@ -107,6 +134,23 @@ async def probe(runs: int) -> dict[str, Any]:
         if first_times:
             out["llm_first_token"][provider] = _stats(first_times)
             out["llm_token"][provider] = _stats(token_times)
+        checker = LlmClaimChecker(
+            router,
+            claim_prompt,
+            deadline_s=settings.claim_check_deadline_s,
+            context_lines=settings.claim_check_context_lines,
+        )
+        claim_times = []
+        for i in range(runs if provider in tier_providers["guard"] else 0):
+            contract, _, _ = scenes[i % len(scenes)]
+            runtime = build_scene(contract, ROOT / "content", learner_name="Sam")
+            runtime.guard_ctx.admit_learner_text(LEARNER[contract.language])
+            started = time.perf_counter()
+            verdict = await checker.check(CLAIMS[contract.language], runtime.guard_ctx)
+            if not verdict.timed_out:
+                claim_times.append((time.perf_counter() - started) * 1000)
+        if claim_times:
+            out["claim_check"][provider] = _stats(claim_times)
     return out
 
 
@@ -114,7 +158,7 @@ def measured_profile(result: dict[str, Any], assumed: dict[str, Any]) -> dict[st
     """The preferred provider per stage (first in each result group, which keeps preference order)."""
 
     def first(group: str) -> dict[str, float] | None:
-        return next(iter(result[group].values()), None)
+        return next(iter(result.get(group, {}).values()), None)
 
     profile: dict[str, Any] = {"status": "measured", "as_of": date.today().isoformat(), "providers": {}}
     for stage, group in (
@@ -122,10 +166,11 @@ def measured_profile(result: dict[str, Any], assumed: dict[str, Any]) -> dict[st
         ("tts_first_chunk_ms", "tts"),
         ("llm_first_token_ms", "llm_first_token"),
         ("llm_token_ms", "llm_token"),
+        ("claim_check_ms", "claim_check"),
     ):
         stats = first(group)
         profile[stage] = {"median": stats["median"], "sigma": stats["sigma"]} if stats else assumed[stage]
-        profile["providers"][stage] = next(iter(result[group]), "assumed")
+        profile["providers"][stage] = next(iter(result.get(group, {})), "assumed")
     profile["network_ms"] = dict(assumed["network_ms"])  # a copy, so the dump has no YAML anchor
     return profile
 
