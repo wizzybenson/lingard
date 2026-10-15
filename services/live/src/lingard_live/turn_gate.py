@@ -2,6 +2,7 @@
 """Transcript quality gate: rejects empty, garbled, echoed or implausible turns before the actor sees them.
 
 Adapted: thresholds are an explicit ``GatePolicy`` instead of global settings, and echo candidates are plain strings.
+The low-entropy check counts distinct characters instead of their share of the text, which dropped long fluent turns.
 Language-agnostic by design (no hard-coded phrases).
 """
 
@@ -56,7 +57,9 @@ def is_low_entropy(text: str) -> bool:
         return True
     compact = re.sub(r"\s+", "", text)
     if len(compact) >= 8:
-        if len(set(compact)) / len(compact) <= 0.2:
+        # An absolute count, not a share of the length: any long sentence reuses a ~30-letter alphabet, so a ratio
+        # threshold rejected every fluent turn over ~130 characters. "hahaha" has two distinct characters.
+        if len(set(compact)) <= 3:
             return True
         counts = Counter(compact).values()
         entropy = -sum((c / len(compact)) * math.log2(c / len(compact)) for c in counts)

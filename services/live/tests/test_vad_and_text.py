@@ -1,3 +1,5 @@
+import pytest
+
 from lingard_contracts.live import (
     BargeIn,
     LearnerSpeechResumed,
@@ -8,7 +10,7 @@ from lingard_contracts.live import (
 )
 from lingard_live.audio import silence, tone
 from lingard_live.sentences import SentenceSplitter
-from lingard_live.turn_gate import validate_turn
+from lingard_live.turn_gate import is_low_entropy, normalize_semantic_text, validate_turn
 from lingard_live.vad import Endpointer
 
 
@@ -90,6 +92,31 @@ def test_turn_gate_rejects_echo_and_noise_accepts_real_turns() -> None:
         validate_turn("Je voudrais récupérer mon dépôt", confidence=0.9, speech_ms=2500, recent_npc_lines=npc).status
         == "accepted"
     )
+
+
+LONG_TURNS = [
+    "Bonjour Nadia, merci de me recevoir. Je viens préparer une entrevue pour un poste de réceptionniste, parce que "
+    "j'ai déjà travaillé dans le service à la clientèle.",
+    "Je pourrais dire que je salue d'abord le client, puis je demande à la personne au téléphone de patienter un "
+    "instant. Est-ce que cette réponse montre bien mon sens de l'organisation ?",
+    "Well, I suppose if the council had asked the people who actually live on Station Road before drawing up the "
+    "plans, most of these objections would never have come up in the first place, would they?",
+]
+
+
+@pytest.mark.parametrize("text", LONG_TURNS)
+def test_long_fluent_turns_are_not_low_entropy(text: str) -> None:
+    """A long sentence reuses the alphabet; that is language, not noise. Fluent learners must never be dropped."""
+    assert not is_low_entropy(normalize_semantic_text(text))
+    words = len(text.split())
+    assert validate_turn(text, confidence=0.9, speech_ms=words * 450, recent_npc_lines=[]).status == "accepted"
+
+
+@pytest.mark.parametrize(
+    "noise", ["aaaaaaaaaaaa", "hahahahahahaha", "ok ok ok ok", "mmmmmm hmmmm mmmm", "la la la la la"]
+)
+def test_repetitive_noise_is_low_entropy(noise: str) -> None:
+    assert is_low_entropy(normalize_semantic_text(noise))
 
 
 def test_speculation_fires_at_40_percent_of_eot_and_is_cancelled_by_resumed_speech() -> None:

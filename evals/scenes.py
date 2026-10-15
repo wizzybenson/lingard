@@ -26,7 +26,8 @@ def eval_scenes(count: int = 50) -> list[tuple[SceneContract, int, str]]:
         elicitation = [
             {
                 "target": key,
-                "tactic": f"Steer the talk so the newcomer naturally needs {key.split('.')[-1].replace('_', ' ')}",
+                "tactic": template.get("tactics", {}).get(key)
+                or f"Steer the talk so the newcomer naturally needs {key.split('.')[-1].replace('_', ' ')}",
             }
             for kind in ("functions", "grammar", "lexset")
             for key in targets.get(kind, [])

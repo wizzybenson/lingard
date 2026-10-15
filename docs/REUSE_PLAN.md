@@ -21,7 +21,7 @@ services/
     audit.py                 LIFT  ← services/audit_service.py, models/audit.py
     media_urls.py            ADAPT HMAC signed short-lived audio URLs ← bedside_session_service.py
   live/                      NEW   VoiceTransport impl (bake-off winner), Actor, Contract Guard
-    turn_gate.py             LIFT  ← realtime/policy.py (quality gates, echo similarity)
+    turn_gate.py             LIFT  ← realtime/policy.py (quality gates, echo similarity; low-entropy check fixed 2026-10-15)
     tts/                     ADAPT ← services/speech_service.py (ABC, OpenAI, ElevenLabs, Fallback);
                                    + voicebox adapter NEW; cache moves to synthesis_cache
     stt/                     NEW   (Simupatient has no standalone STT adapter)

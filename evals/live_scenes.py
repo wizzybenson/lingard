@@ -22,7 +22,7 @@ from lingard_curriculum.graph import InMemoryCurriculumGraph
 from lingard_curriculum.packs import PackLibrary
 from lingard_curriculum.seed import load_seed, seed_graph
 from lingard_graphs.deps import GraphDeps, MemoryHints
-from lingard_graphs.graphs.turn_assessment import build_turn_assessment
+from lingard_graphs.graphs.turn_assessment import TurnState, build_turn_assessment
 from lingard_graphs.pedagogy.config import load_pedagogy
 from lingard_graphs.store import LearnerProfileView, MemoryStore, SceneRecord
 from lingard_live.actor import NpcActor
@@ -38,6 +38,8 @@ from lingard_llm import LLMConfig, LLMRouter, PromptRegistry
 from lingard_world import load_city
 
 LANGUAGE_NAMES = {"fr": "French", "en": "English"}
+LEARNER_MS_PER_WORD = 450
+"""About 2.2 words a second, an intermediate learner's pace; well above the gate's 180 ms/word plausibility floor."""
 
 
 async def _assessment_deps(router: LLMRouter, prompts: PromptRegistry) -> tuple[GraphDeps, uuid.UUID]:
@@ -75,6 +77,8 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
     learner_prompt, judge_prompt = prompts.get("sim_learner"), prompts.get("fact_judge")
     deps, user_id = await _assessment_deps(router, prompts)
     graph: CompiledStateGraph[Any, Any, Any, Any] = build_turn_assessment(deps)
+    hint_store = deps.hints
+    assert isinstance(hint_store, MemoryHints)
     lines = violations = leaks = tutor = 0
     elicited = required = 0
     samples: list[dict[str, object]] = []
@@ -93,6 +97,7 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
                 policy=TurnPolicy(eot_ms=900),
             )
         )
+        await deps.store.save_scene(SceneRecord(contract.scene_id, user_id, uuid.uuid4(), contract))
         bus = MemoryBus()
         loop = LiveLoop(
             session=session,
@@ -106,9 +111,10 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
             stt=stt,
             tts=ScriptedTts(),
             publisher=bus,
-            hints=bus,
+            hints=hint_store,  # as in production: turn_assessment's steering hints reach the next NPC reply
         )
         history: list[BaseMessage] = []
+        assessed = hints = 0
         opening = await loop.opening()
         npc_lines = [opening.npc_text]
         learner_lines: list[str] = []
@@ -128,16 +134,30 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
             history.append(AIMessage(content=said))
             learner_lines.append(said)
             stt.queue.append(Transcript(said, 0.95, "sim"))
+            speech_ms = max(len(said.split()) * LEARNER_MS_PER_WORD, 1000)  # the gate rejects implausibly fast speech
             await loop.handle_turn(
-                LearnerTurnEnded(audio=b"\x00\x00" * 32000, speech_start_ms=0, speech_end_ms=2000, eot_decided_ms=2900)
+                LearnerTurnEnded(
+                    audio=b"\x00\x00" * 16 * speech_ms,
+                    speech_start_ms=0,
+                    speech_end_ms=speech_ms,
+                    eot_decided_ms=speech_ms + 900,
+                )
             )
             npc_lines.append(loop.outcomes[-1].npc_text)
+            # Production assesses each turn as it is published (lingard_graphs.worker); here it runs before the next
+            # learner line, so a hint is ready one reply sooner than it might be live.
+            for event in bus.events[assessed:]:
+                if event.speaker == "learner":
+                    result = await graph.ainvoke(TurnState(event=event.model_copy(update={"user_id": user_id})))
+                    hints += bool(result.get("hint"))
+            assessed = len(bus.events)
         location = city.location(contract.location_key)
         # What the actor is given about itself and the place, as the Guard grounds it (lingard_live.scene).
         grounding = [
             *contract.approved_facts,
             *npc.world_facts,
-            f"The character is {npc.name}, {npc.role}.",
+            f"The character is {npc.name}, {npc.role}. Background: {npc.backstory}",
+            f"What the other speaker wants here: {contract.learner_goal}",
             f"The place is {location.name}, in {runtime.state.city_name}: {location.description}",
             f"The other speaker is {runtime.state.learner_name}.",
         ]
@@ -165,14 +185,14 @@ async def run_live_scenes(scene_count: int) -> SuiteResult:
             tutor += verdict.tutor_like
             if verdict.violation or not verdict.language_ok or verdict.tutor_like:
                 samples.append({"scene": str(contract.scene_id), "line": line, "judge": verdict.reason})
-        await deps.store.save_scene(SceneRecord(contract.scene_id, user_id, uuid.uuid4(), contract))
-        for event in bus.events:
-            if event.speaker == "learner":
-                await graph.ainvoke({"event": event.model_copy(update={"user_id": user_id})})
         evidence = [e for a in await deps.store.assessments_for_scene(contract.scene_id) for e in a.target_evidence]
         for spec in contract.evidence_required:
             required += 1
-            elicited += sum(1 for e in evidence if e.node_key == spec.target) >= spec.min_uses
+            uses = sum(1 for e in evidence if e.node_key == spec.target)
+            elicited += uses >= spec.min_uses
+            samples.append(
+                {"scene": str(contract.scene_id), "npc": npc.key, "target": spec.target, "uses": uses, "hints": hints}
+            )
     return SuiteResult(
         suite="contract_adherence",
         mode="live",

@@ -1,6 +1,6 @@
 # Phase 1 gate: one French street (Rivemont)
 
-**Verdict: PASS offline; FAIL on measured provider latency (2026-10-15).** The offline column comes from harnesses
+**Verdict: PASS offline. Live (2026-10-15): targets elicited PASS; latency and fact violations FAIL.** The offline column comes from harnesses
 with scripted providers. The live column uses real providers (OpenAI, ElevenLabs, Anthropic keys from 2026-10-15)
 through the simulated loop; a real LiveKit room and network are still not measured.
 
@@ -8,8 +8,8 @@ through the simulated loop; a real LiveKit room and network are still not measur
 | --- | --- | --- |
 | First audio p50 ≤ 800 ms | **334 ms** (95% CI 279–436) | **FAIL: 1,448 ms** (CI 1,303–1,712): OpenAI STT + Haiku + ElevenLabs |
 | First audio p95 ≤ 1,300 ms | **657 ms** | **FAIL: 2,384 ms**, same providers |
-| 0 fact violations over 50 scenes | **0 of 500 planted violations leaked**, over 50 scenes | not measured |
-| Targets elicited ≥ 85% | not measurable offline (needs a real actor) | not measured |
+| 0 fact violations over 50 scenes | **0 of 500 planted violations leaked**, over 50 scenes | **FAIL: 143 of 446 NPC lines** (119 material) |
+| Targets elicited ≥ 85% | not measurable offline (needs a real actor) | **PASS: 50 of 50 (100%)** |
 
 ## Latency (`evals/suites/latency.py`, using `tools/voicebench`)
 
@@ -47,6 +47,24 @@ the STT median for an assumed Deepgram batch figure of 350 ms gives p50 853 ms, 
 Deepgram is not measured (no key); a streaming STT path is the next step if its batch latency is not enough.
 
 ## Contract adherence (`evals/suites/contract_adherence.py`)
+
+### Live, 2026-10-15 (`evals/results/contract_adherence.live.json`, decision 0011)
+
+NPC `claude-haiku-5-5` with `npc_actor` v2; simulated learner and assessor `claude-sonnet-5-5`; judge `gpt-6.1-sol`
+with `fact_judge` v2, given what the actor is given (facts, world facts, name, role, background, place, learner goal).
+50 scenes, 446 NPC lines, 6.44 USD.
+
+- **Targets elicited: 50 of 50 (100%)**, gate ≥ 85%. Two steering hints fired; the concrete tactics did most of it.
+- Language leaks 0; tutor-like lines 1 (0.2%).
+- **Fact violations: 143 lines (32%)**, gate 0. A severity pass on the flagged lines: 119 material (77 invented
+  requirements or procedures, 15 availability or stock, 10 prices, numbers or times, 10 places, 7 other) and 25
+  harmless colour. The NPC fills gaps the 3–6 scripted facts leave in an 8-turn service conversation with plausible
+  procedures, which is exactly what could mislead a learner.
+- The Contract Guard is rules only: it blocks new numbers, names and dates, not invented procedures. SPEC §10 calls for
+  "rules + small classifier"; the classifier was never built. That, richer procedural facts in contracts, or a
+  different NPC model are the options; none is chosen yet.
+- Earlier runs (decision 0011): the old harness dropped most learner turns (a turn-gate bug and 2 s fake audio), so
+  scenes were short and hid both the elicitation ability and the invention rate.
 
 - 50 scenes from `evals/scenes.py`, cycling through all 18 NPCs in both cities, with 500 violations planted in NPC
   lines (facts outside the approved set, language leaks, tutor-speak, character breaks) and 700 clean lines. A planted

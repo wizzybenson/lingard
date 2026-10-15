@@ -1,0 +1,1112 @@
+{
+  "suite": "contract_adherence",
+  "mode": "live",
+  "metrics": {
+    "scenes": 50,
+    "npc_lines": 446,
+    "fact_violations_leaked": 143,
+    "language_leaks": 0,
+    "tutor_like_rate": 0.0022,
+    "targets_elicited_rate": 1.0
+  },
+  "gates": [
+    {
+      "metric": "fact_violations_leaked",
+      "op": "==",
+      "threshold": 0
+    },
+    {
+      "metric": "language_leaks",
+      "op": "==",
+      "threshold": 0
+    },
+    {
+      "metric": "targets_elicited_rate",
+      "op": ">=",
+      "threshold": 0.85
+    },
+    {
+      "metric": "tutor_like_rate",
+      "op": "<=",
+      "threshold": 0.1
+    }
+  ],
+  "notes": [
+    "NPC claude-haiku-5-5 (npc_actor v2), assessor/sim learner claude-sonnet-5-5, judge gpt-6.1-sol (fact_judge v2)",
+    "run as 5 parallel shards of 10 scenes on 2026-10-15; 6.44 USD; see decision 0011"
+  ],
+  "samples": [
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "line": "Hum. Je ne me souviens pas de cette fissure à l'entrée. Le mur est comme il est, et le bail dit que le locataire doit rendre le logement en bon état. Qu'est-ce que vous auriez fait à ma place, Sam?",
+      "judge": "La nouvelle affirmation « le bail dit que le locataire doit rendre le logement en bon état » n'est ni autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "line": "Un état des lieux d'entrée, oui, c'est une bonne idée. Moi, je n'ai pas de papier avec la fissure écrite dessus. Vous, vous avez une copie du vôtre?",
+      "judge": "Martin affirme : « Moi, je n'ai pas de papier avec la fissure écrite dessus. » Cette absence de document n'est ni un fait autorisé ni une reprise des propos de Sam."
+    },
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "line": "Une facture, je n'en ai pas encore. Je n'ai pas fait faire le travail. Le mur est petit, mais il faut un peintre, et je ne sais pas combien il demande. Vous pouvez me dire ce que vous pensez être juste, Sam?",
+      "judge": "Nouvelles affirmations non autorisées : Martin n’a pas encore de facture, n’a pas fait réaliser les travaux, le mur est petit et un peintre est nécessaire. Seule la petite taille de la fissure est établie, pas celle du mur."
+    },
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "line": "D'accord, on attendra le devis. Mais je vous préviens, Sam, le bail est clair : le locataire rend le logement en bon état. Je ne vais pas garder tout le dépôt sans raison. Le peintre, je le contacterai cette semaine, et vous recevrez ma réponse par courriel.",
+      "judge": "La phrase « le bail est clair : le locataire rend le logement en bon état » ajoute une obligation précise du bail, absente des faits autorisés et des propos de Sam."
+    },
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "line": "Un stylo, oui, j'en ai un dans le tiroir de la cuisine. Vous pouvez m'écrire l'adresse sur ce papier. Mais vérifiez-la bien, Sam, je ne veux pas me tromper.",
+      "judge": "Martin affirme avoir un stylo dans le tiroir de la cuisine : sa possession et son emplacement sont des faits nouveaux non autorisés."
+    },
+    {
+      "scene": "584d8344-4a56-495b-815e-46cfe0c204aa",
+      "npc": "landlord_martin",
+      "target": "fr.grammar.si_imparfait",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "77c26d06-58d6-43cf-9a9f-6c1f3bcde339",
+      "line": "Le menu du jour, je ne peux pas vous dire exactement ce qu'il y a aujourd'hui, c'est sur l'ardoise près de la porte. Vous voulez que je vous apporte votre café d'abord ? Et vous avez envie de manger quelque chose de léger, avec mal à la tête ?",
+      "judge": "La réplique affirme que le contenu du menu du jour est indiqué sur une ardoise près de la porte, ce qui n'est ni un fait autorisé ni une information reprise de Sam."
+    },
+    {
+      "scene": "77c26d06-58d6-43cf-9a9f-6c1f3bcde339",
+      "line": "Le café, c'est rapide, je vous l'apporte tout de suite. Demandez au serveur quand il revient, il pourra vous le dire.",
+      "judge": "La réplique affirme que le café est rapide à préparer et qu’un serveur va revenir et pourra fournir le renseignement demandé, faits non autorisés."
+    },
+    {
+      "scene": "77c26d06-58d6-43cf-9a9f-6c1f3bcde339",
+      "line": "Je ne sais pas exactement, désolée. Quand vous sortez, regardez autour de vous, vous la verrez sûrement vite. Et n'oubliez pas, elle ferme à midi !",
+      "judge": "« Vous la verrez sûrement vite » affirme que la boulangerie sera rapidement visible en sortant du café, ce qui n'est pas un fait autorisé."
+    },
+    {
+      "scene": "77c26d06-58d6-43cf-9a9f-6c1f3bcde339",
+      "line": "Il est encore tôt, mais je n'ai pas l'heure exacte sous les yeux. Regardez sur votre téléphone, il est sûrement juste là. Votre café arrive, attendez un petit moment.",
+      "judge": "« Il est encore tôt » affirme un renseignement sur l’heure actuelle qui ne figure pas parmi les faits autorisés et n’a pas été donné par Sam."
+    },
+    {
+      "scene": "77c26d06-58d6-43cf-9a9f-6c1f3bcde339",
+      "npc": "cafe_chloe",
+      "target": "fr.grammar.questions",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "a64a2ce1-e316-4db9-8c5a-60c2f86ccf00",
+      "line": "Bonjour, bienvenue à la caisse. Je suis Karim, je m'occupe des comptes. Qu'est-ce que je peux faire pour vous aujourd'hui ?",
+      "judge": "« Je m'occupe des comptes » affirme une responsabilité professionnelle qui ne figure pas parmi les faits autorisés et n'est pas reprise des propos de Sam."
+    },
+    {
+      "scene": "a64a2ce1-e316-4db9-8c5a-60c2f86ccf00",
+      "line": "Oui, c'est possible si la facture est à votre adresse actuelle. Vous pouvez venir demain entre 9 h et 17 h, du lundi au vendredi. Pour la carte, elle arrive par la poste, donc vous la recevrez plus tard. Est-ce que vous avez déjà une facture à votre nom, par exemple d'électricité ou d'internet ?",
+      "judge": "La réplique affirme qu’une facture à l’adresse actuelle de Sam permettra d’ouvrir le compte. L’acceptation de ce document comme justificatif d’adresse n’est pas un fait autorisé."
+    },
+    {
+      "scene": "a64a2ce1-e316-4db9-8c5a-60c2f86ccf00",
+      "line": "Ce n'est pas un problème si vous attendez un peu. Mais il vous faut un justificatif d'adresse pour ouvrir le compte. Est-ce que votre contrat d'internet arrive bientôt, ou est-ce que vous pouvez demander une facture à votre propriétaire ?",
+      "judge": "« Ce n'est pas un problème si vous attendez un peu » affirme qu'un délai pour fournir le justificatif d'adresse est acceptable, ce qui n'est pas un fait autorisé ni repris de Sam."
+    },
+    {
+      "scene": "a64a2ce1-e316-4db9-8c5a-60c2f86ccf00",
+      "npc": "bank_karim",
+      "target": "fr.grammar.conditionnel_present",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "3af0bb75-7b76-4795-b835-e76a98e421e3",
+      "npc": "conseillere_nadia",
+      "target": "fr.grammar.passe_compose_avoir",
+      "uses": 20,
+      "hints": 0
+    },
+    {
+      "scene": "af05f244-0a00-4907-a32e-7bbd032c70c6",
+      "line": "Bonjour. D'accord, je peux regarder ça. Vous avez votre carte d'assurance maladie avec vous ? Il me la faut pour le dossier, c'est obligatoire à chaque visite.",
+      "judge": "« Il me la faut pour le dossier » ajoute que la carte d'assurance maladie est nécessaire pour le dossier, ce qui n'est pas précisé dans les faits autorisés."
+    },
+    {
+      "scene": "af05f244-0a00-4907-a32e-7bbd032c70c6",
+      "line": "D'accord, monsieur Tremblay, je note le 514-555-0187. Mais attention, la clinique n'ouvre pas avant 8 h, donc il faudra appeler à partir de 8 h. Demain, si vous avez besoin, vous pouvez aussi venir directement à l'accueil.",
+      "judge": "« Il faudra appeler à partir de 8 h » ajoute une règle non fournie sur les horaires d'appel. Les heures d'ouverture de la clinique ne déterminent pas les heures où l'on peut téléphoner."
+    },
+    {
+      "scene": "af05f244-0a00-4907-a32e-7bbd032c70c6",
+      "npc": "receptionniste_julien",
+      "target": "fr.grammar.futur_simple",
+      "uses": 13,
+      "hints": 0
+    },
+    {
+      "scene": "9c1074ab-9f09-4696-bf70-1c8dd87865fd",
+      "line": "Oui, c'est bien ça, vous avez le bon ordre. Par contre, le grain exact, vérifiez sur l'emballage, je ne connais pas tous les détails de nos rouleaux par cœur. Et une fois l'enduit appliqué, il faut combien de temps avant de poncer, à votre avis?",
+      "judge": "L'expression « nos rouleaux » introduit la présence de papier de verre en rouleaux dans la quincaillerie, un fait non autorisé et non mentionné par Sam."
+    },
+    {
+      "scene": "9c1074ab-9f09-4696-bf70-1c8dd87865fd",
+      "line": "Ah, le papier de verre, je ne sais pas exactement où il est rangé dans le magasin, il faudrait demander à mon employé, il est dans l'arrière-boutique. Par contre, la spatule, c'est facile, elle est dans l'allée des outils à main, juste à votre droite en entrant. Vous la voyez?",
+      "judge": "La localisation de la spatule « dans l’allée des outils à main, juste à votre droite en entrant » est une nouvelle affirmation, ni autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "9c1074ab-9f09-4696-bf70-1c8dd87865fd",
+      "line": "Non, vous ne pouvez pas aller dans l'arrière-boutique, c'est pas pour les clients. Je vais l'appeler, attendez un moment. Pendant ce temps, prenez le pot d'enduit, il est juste là, à côté des pinceaux. Et dites-moi, vous avez déjà réparé un mur avant, vous?",
+      "judge": "Deux nouvelles affirmations non autorisées : l’arrière-boutique n’est pas accessible aux clients et le pot d’enduit se trouve juste à côté des pinceaux."
+    },
+    {
+      "scene": "9c1074ab-9f09-4696-bf70-1c8dd87865fd",
+      "line": "Bien, vous avez tout compris. Alors prenez aussi le papier de verre, mon employé va vous le montrer quand il arrive. Et si vous avez encore une question avant de payer, dites-le-moi.",
+      "judge": "La réplique affirme que l’employé va arriver et montrer le papier de verre à Sam, ce qui n’est ni autorisé ni repris des propos de Sam."
+    },
+    {
+      "scene": "9c1074ab-9f09-4696-bf70-1c8dd87865fd",
+      "npc": "quincaillier_denis",
+      "target": "fr.grammar.imperatif",
+      "uses": 1,
+      "hints": 1
+    },
+    {
+      "scene": "7d08cd67-e28c-4861-ac0e-872a329c1b5b",
+      "line": "Trois minutes demandent en effet de la discipline, mais elles sont bien réelles, et le conseil les respecte scrupuleusement. Quel est celui que vous tenez le plus à présenter mardi ?",
+      "judge": "L’affirmation « le conseil les respecte scrupuleusement » ajoute que le conseil fait strictement respecter les trois minutes de parole, ce qui n’est ni un fait autorisé ni une reprise des propos de Sam."
+    },
+    {
+      "scene": "7d08cd67-e28c-4861-ac0e-872a329c1b5b",
+      "npc": "fonctionnaire_sophie",
+      "target": "fr.grammar.subjonctif_present",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "f15b8591-6957-4bd7-bd3d-d7b4e7b1a534",
+      "npc": "bibliothecaire_antoine",
+      "target": "fr.grammar.connecteurs_logiques",
+      "uses": 15,
+      "hints": 0
+    },
+    {
+      "scene": "a3a1fe63-4956-40b7-b391-309124133702",
+      "npc": "journaliste_emilie",
+      "target": "fr.grammar.plus_que_parfait",
+      "uses": 11,
+      "hints": 0
+    },
+    {
+      "scene": "b962db86-915e-40b7-9807-eab3adabd215",
+      "line": "Ah, hello, love. You must be the new tenant for Flat 2A. Come in, mind the step. I'm Graham. What can I do for you?",
+      "judge": "The line claims Sam is the new tenant of Flat 2A and implies there is a step to watch out for ('mind the step'). Neither fact is provided or echoed."
+    },
+    {
+      "scene": "b962db86-915e-40b7-9807-eab3adabd215",
+      "line": "Right, damp. Let's have a look, then. The agreement says the bathroom, mind, which is where I know there's a patch. The bedroom's a different matter, love. Show me where it is.",
+      "judge": "The claim that the agreement specifies the bathroom is new: it is neither an allowed fact nor echoed from Sam."
+    },
+    {
+      "scene": "b962db86-915e-40b7-9807-eab3adabd215",
+      "line": "Hmm. Right, I see it. Look, love, I'm not saying no. But the agreement only mentions the bathroom, so I've got to be careful. What would you do, if you were me? Would you just stand there and pay for it yourself?",
+      "judge": "The claim that \"the agreement only mentions the bathroom\" is new and is neither an allowed fact nor echoed from Sam."
+    },
+    {
+      "scene": "b962db86-915e-40b7-9807-eab3adabd215",
+      "line": "Hm. You've got a point about the money, I'll give you that. But don't go telling me what the law says, love, I've been doing this a long time. Let's sort it sensibly. What's your rent again, for this place?",
+      "judge": "\"I've been doing this a long time\" claims a long history of being a landlord, which is not an allowed fact or echoed from Sam."
+    },
+    {
+      "scene": "b962db86-915e-40b7-9807-eab3adabd215",
+      "npc": "landlord_graham",
+      "target": "en.grammar.second_conditional",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "Morning! Busy one today, sorry about the wait. What can I get you?",
+      "judge": "“Sorry about the wait” claims Sam has already had to wait, which is not an established fact."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "Two weeks, that's great. Welcome to Ashford! I'm afraid I can't tell you about the parks, I've been too busy behind this counter to explore much. Maybe ask the lads at the station, or look it up on your phone. Are you here for work or for study?",
+      "judge": "The claim \"I've been too busy behind this counter to explore much\" adds an unlisted fact about Siobhan's past activities."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "Ah, it's a long story, but mostly I fell for Ashford when I came over for a weekend and never went back. Anyway, that's a lot of questions from me. The bakery next door shuts at noon, so you'd want to be quick.",
+      "judge": "Siobhan claims she visited Ashford for a weekend and never went back, adding unlisted details about her past."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "I don't know what they do in the bakery, you'll have to pop in and see for yourself. It's just gone quarter past eight, so you've got plenty of time before noon. Would you like anything to eat with your coffee?",
+      "judge": "The claim \"It's just gone quarter past eight\" introduces a current time not listed among the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "That'll be 35 pounds for the flat white... sorry, I mean the large latte, that's 35 pounds. Card or cash?",
+      "judge": "The claim that a large latte costs 35 pounds is new; only the price of a flat white is specified."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "line": "Ha, I know, it sounds steep! Would you like to pay by card or cash?",
+      "judge": "Offering payment by card or cash introduces the new claim that the café accepts both payment methods."
+    },
+    {
+      "scene": "574442aa-1b52-4cbe-91d3-334b69e31a1b",
+      "npc": "cafe_siobhan",
+      "target": "en.grammar.questions",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "line": "Your passport is perfect for photo ID. For proof of address, I'm afraid I don't know exactly which documents we accept, so please check the list on our website or ask a colleague at the desk. You still need proof of address, though, so it's a good idea to bring something with your name and your current address on it. Do you have any post from your new home with you?",
+      "judge": "“Your passport is perfect for photo ID” newly confirms that Sam’s passport is acceptable identification at this bank. The allowed facts require photo ID but do not specify which documents the bank accepts."
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "line": "I'm not completely sure about that one, so it's best to check with a colleague before you come back, or look at the list on our website. A letter from a phone company is a common type of document, but I can't say for certain that we accept it. Is the letter recent, and does it show your full name and your address?",
+      "judge": "The phrase 'the list on our website' introduces a claim that the bank's website has a document list, which is neither listed among the allowed facts nor echoed from Sam."
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "line": "Thank you for waiting. I've spoken to my colleague at the desk, and she'll come and help you with the next steps shortly. Could you have a seat over there for a moment, please?",
+      "judge": "New claims: Daniel has spoken to a colleague at the desk, and that colleague will come shortly to help Sam with the next steps."
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "line": "I'm not sure about anything else, I'm afraid. My colleague at the desk will be able to tell you exactly what is needed. Did you bring a debit card or any cash with you today?",
+      "judge": "The line newly claims that a colleague is at the desk and can tell Sam exactly what is needed to open the account."
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "line": "I don't know whether she'll need to see it, so it's best to ask her when she comes over. You don't have to leave it at home, though, so you can keep it with you. Do you know how you would like to receive your new card, by post or to collect it here?",
+      "judge": "The line introduces branch collection as an option for receiving the new card, although the stated fact is that it arrives by post. It also asserts that Sam does not have to leave his home-country bank card at home, an unlisted rule."
+    },
+    {
+      "scene": "72f0745f-4fce-4ab9-9732-9e2ee5f09ca6",
+      "npc": "bank_daniel",
+      "target": "en.grammar.modals_obligation",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "095e3642-6705-4280-a198-54de0c4591c3",
+      "line": "Right then, a dental clinic is a good place to start. Making appointments and greeting people is exactly what this job needs. Have you practised any answers for the interview yet, or is this your first time thinking about it?",
+      "judge": "The claim that making appointments and greeting people is exactly what this job needs introduces specific job requirements not stated in the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "095e3642-6705-4280-a198-54de0c4591c3",
+      "line": "Right then, that's a good example, and you stayed calm. What did you do next, after you explained about the emergency? Did he calm down, or did you need to do something more to help him?",
+      "judge": "The claim \"you stayed calm\" describes Sam's past behaviour but is not listed among the allowed facts or stated by Sam."
+    },
+    {
+      "scene": "095e3642-6705-4280-a198-54de0c4591c3",
+      "line": "Right then, that's a really strong answer. You listened, you offered him water, and you gave him a choice. Interviewers like hearing that. Now, when you tell this story on Thursday, how would you start it? Try saying the first sentence to me.",
+      "judge": "“You listened” claims an event in Sam’s interaction with the patient that was not stated by Sam or included among the allowed facts."
+    },
+    {
+      "scene": "095e3642-6705-4280-a198-54de0c4591c3",
+      "line": "Yes, that's a good start, and it's clear. Just one small thing: \"he had waited\" is the usual way to say it, because the waiting happened before you spoke. Try the whole story again with that, then tell me what the outcome was in one sentence.",
+      "judge": "No new world facts are introduced. The line corrects the verb tense to \"he had waited\" and explains its use, so it is tutor-like and entirely in English."
+    },
+    {
+      "scene": "095e3642-6705-4280-a198-54de0c4591c3",
+      "npc": "adviser_priya",
+      "target": "en.grammar.present_perfect",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "a52a066d-1130-4c25-a9e0-b8b7d8763c81",
+      "npc": "receptionist_tom",
+      "target": "en.grammar.future_forms",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "line": "Damp in the bedroom, that's a nuisance, mate. Lots of people come in with that one. The damp treatment kit is £14.99, that's the one I'd point you to, and it's on the shelf just there. Tell me, is the wall black with mould, or more like a patch that's gone wet and bubbly?",
+      "judge": "New claims: \"Lots of people come in with that one\" asserts past customer visits about bedroom damp, and \"it's on the shelf just there\" asserts the kit's availability and location in the shop."
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "line": "Right you are, I'll get you a scraper off the rack. As for a mask, I'd say yes, love, especially with old paint flaking off, it's not something you want in your lungs. I don't know the exact spec for what's needed, so check the packet when you pick one up. What's the wall like behind that bubbling, do you know if the damp is coming up from the floor or in from outside?",
+      "judge": "“I'll get you a scraper off the rack” introduces the unlisted claim that the shop has a scraper stocked on a rack."
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "line": "Good plan, love, check that downpipe first, it's often the culprit. We do stock sealant, but I'd want to see what your gap looks like before I hand you the right one, so bring the tube or tell me what you find.",
+      "judge": "The claim \"We do stock sealant\" introduces shop stock availability that is not listed among the allowed facts or stated by Sam."
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "line": "Good idea, love, sort the essentials first. The kit is the main thing, so if you're short, that's the one to keep. The scraper's usually cheap, and the mask you can grab afterwards if you need to. Let me know what the total comes to and we'll see where you are.",
+      "judge": "“The scraper's usually cheap” introduces an unlisted claim about the scraper's price."
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "line": "Right you are, love, let's get it rung through. Pop them on the counter for me. The kit's £14.99, so you're looking at a fair bit more for the scraper and mask, so we'll see what the till says.",
+      "judge": "The claim that the scraper and mask will cost 'a fair bit more' is a new price claim not established by the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "79acccf8-ecd6-4cde-b34f-368f2b1399dc",
+      "npc": "hardware_ron",
+      "target": "en.grammar.modals_obligation",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "9caa0a5f-18d2-4864-9598-5a7eab07baa5",
+      "line": "Thank you, that is a clear point to put to the committee. I'm afraid I can't register you myself from here, so I can't add your name to the list today. The Town Hall is open from 9 am to 5 pm, Monday to Friday, and you must register by Monday noon. Please check the registration form with the officer at the front desk, as I don't know which documents you will need. Would you like me to explain what you can say in your three minutes?",
+      "judge": "The claim \"I can't register you myself from here, so I can't add your name to the list today\" introduces an unlisted restriction on registration."
+    },
+    {
+      "scene": "9caa0a5f-18d2-4864-9598-5a7eab07baa5",
+      "line": "I'm afraid I don't know where the accident figures are published, so I can't point you to them. The best place to ask would be the council's website or the officer at the front desk at the Town Hall, who can tell you what is available. Your idea to check with the school is a good one too. If you do speak on Tuesday, it would help to say clearly which parts you saw yourself and which you heard from other parents.",
+      "judge": "The line introduces an officer at the Town Hall's front desk and claims that this officer can tell Sam what accident figures are available; neither fact is provided or echoed."
+    },
+    {
+      "scene": "9caa0a5f-18d2-4864-9598-5a7eab07baa5",
+      "line": "That is a sensible plan. Please go to the Town Hall during opening hours, which are 9 am to 5 pm, Monday to Friday, so there is time before Monday noon. The officer at the front desk can register you and tell you what else you need to bring.",
+      "judge": "The new claim is: \"The officer at the front desk can register you and tell you what else you need to bring.\" This asserts an unlisted front-desk officer and registration procedure."
+    },
+    {
+      "scene": "9caa0a5f-18d2-4864-9598-5a7eab07baa5",
+      "npc": "council_margaret",
+      "target": "en.grammar.passive_voice",
+      "uses": 14,
+      "hints": 0
+    },
+    {
+      "scene": "b2115e67-9aed-4fdd-a4a7-ff0c9d9228e9",
+      "npc": "librarian_femi",
+      "target": "en.grammar.linking_words",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "e13279e6-5ff9-4702-90bb-e094bbe4caf2",
+      "line": "Hi, you must be the person who got in touch about the rent story. Thanks for coming in. Grab a seat, mind the pile of old papers, and tell me, what's your situation with your flat at the moment?",
+      "judge": "The line claims that Sam previously got in touch about the rent story, an event not listed in the allowed facts or echoed from Sam's lines."
+    },
+    {
+      "scene": "e13279e6-5ff9-4702-90bb-e094bbe4caf2",
+      "line": "Cutting back on eating out and travel is a real sacrifice, and it sounds like nobody warned you how fast things would change.",
+      "judge": "The claim that nobody warned Sam how fast things would change is not an allowed fact or echoed from Sam's statements."
+    },
+    {
+      "scene": "e13279e6-5ff9-4702-90bb-e094bbe4caf2",
+      "npc": "reporter_lucy",
+      "target": "en.grammar.past_perfect",
+      "uses": 11,
+      "hints": 0
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Bonjour. Vous êtes Sam, c'est ça? Je suis Martin Lefebvre, le propriétaire. Vous venez pour le dépôt de garantie, je suppose. Entrez, mais faites attention, le plancher du salon grince.",
+      "judge": "La nouvelle affirmation « le plancher du salon grince » n’est ni autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Très bien. Nous allons regarder ensemble, c'est normal. Le bail a pris fin le 30 septembre, et je vérifie chaque pièce avant de rendre quoi que ce soit. Venez au salon, s'il vous plaît. Vous voyez cette fissure dans le mur? Elle était là quand vous êtes arrivé?",
+      "judge": "« Je vérifie chaque pièce avant de rendre quoi que ce soit » introduit une procédure de vérification préalable au remboursement qui ne figure pas parmi les faits autorisés."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Ah, bon. Vous avez gardé une copie? Montrez-moi ça. Moi, je n'ai pas le papier sous les yeux maintenant. Dans ce cas, on verra la suite après. Et le reste de l'appartement, la cuisine, la salle de bain, vous les avez laissés propres?",
+      "judge": "La réplique suppose que l’appartement comporte une cuisine et une salle de bain, pièces qui ne figurent ni dans les faits autorisés ni dans les propos de Sam."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Merci, je regarde. Oui, la fissure est notée ici, c'est vrai. Bon. Mais il y a quand même des trous dans le mur de la chambre, et la porte du placard ne ferme plus bien. Ça, ce n'est pas l'usure normale, ça. Qu'est-ce que vous en pensez?",
+      "judge": "La présence de trous « dans le mur de la chambre » est une nouvelle précision : Sam mentionne des trous de vis pour les étagères, mais ne les situe pas dans la chambre."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Des petits trous de vis, d'accord. Mais la porte, vous dites qu'elle ne fermait pas bien au début. Ça ne figure pas sur votre papier, ça. Donc, si je retiens 60 dollars pour les réparations, qu'est-ce que vous feriez à ma place?",
+      "judge": "« Ça ne figure pas sur votre papier » affirme que le problème de fermeture de la porte n’est pas mentionné dans l’état des lieux, ce qui n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Quinze dollars pour le placard, ce n'est pas sérieux. Une porte qui ne ferme plus, il faut la reposer, ça prend du temps et du bois. Je ne peux pas vous rendre le dépôt aujourd'hui avec une offre pareille. Vous pouvez me dire combien vous pensez que ça coûte, vous, pour boucher les trous et réparer la porte?",
+      "judge": "La réplique affirme que la porte du placard doit être reposée et que cette réparation nécessite du bois, ce qui n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "line": "Quarante dollars, c'est mieux. Vous êtes libre cet après-midi, pour revenir avec moi au troisième étage?",
+      "judge": "« Revenir avec moi au troisième étage » introduit une localisation au troisième étage, absente des faits autorisés et des propos de Sam."
+    },
+    {
+      "scene": "9f0e3d5d-ab37-4b91-85a3-bc5150d3d0dc",
+      "npc": "landlord_martin",
+      "target": "fr.grammar.si_imparfait",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "Non, elle est juste à côté, vous la voyez en sortant. Mais attention, elle ferme à midi. Il est quelle heure maintenant, à votre montre ?",
+      "judge": "« Vous la voyez en sortant » ajoute que la boulangerie est visible à la sortie du café, ce qui n’est pas un fait autorisé ni repris de Sam."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "Oui, c'est ça, il vous reste une demi-heure. Allez-y vite, et revenez ensuite prendre votre café ! Il est encore chaud.",
+      "judge": "« Il est encore chaud » affirme que le café de Sam est encore chaud, un fait non autorisé et non repris des propos de Sam."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "pardon, je ne peux pas vous donner le prix exact, je n'ai pas la carte devant moi. Regardez le tableau derrière le comptoir, il est indiqué.",
+      "judge": "La réplique affirme que le tableau est derrière le comptoir et que le prix du café y est indiqué, deux faits non autorisés et non repris des propos de Sam."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "Un sac pour le café ? Mais vous pouvez aussi boire le café ici, il sera encore bon quand vous revenez !",
+      "judge": "La réplique affirme que Sam peut boire son café sur place (« vous pouvez aussi boire le café ici »), une possibilité non établie par les faits autorisés ni énoncée par Sam."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "Parfait, je le garde au chaud pour vous ! Allez vite à la boulangerie, il ne reste que quelques minutes. Vous payez en revenant, d'accord ?",
+      "judge": "La réplique affirme qu’il ne reste que quelques minutes avant la fermeture de la boulangerie, alors que Sam a indiqué trente minutes."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "line": "Ah non, la boulangerie, c'est seulement du pain et des gâteaux ! Pour les médicaments, il faut demander à la pharmacie, ou regarder sur internet. Mais dépêchez-vous, il ne reste plus beaucoup de temps avant midi !",
+      "judge": "La réplique affirme que la boulangerie vend seulement du pain et des gâteaux, et donc pas de médicaments : cette information sur ses produits n’est ni autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "5d3382d5-bdd2-433b-89e2-264923663f04",
+      "npc": "cafe_chloe",
+      "target": "fr.grammar.questions",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "bc07fb36-a072-4979-acb6-2cd0763ed99c",
+      "line": "Je suis Karim, je m'occupe des nouveaux arrivants. Qu'est-ce qui vous amène aujourd'hui?",
+      "judge": "« Je m'occupe des nouveaux arrivants » affirme une spécialisation professionnelle qui ne figure pas parmi les faits autorisés et n'est pas reprise des propos de Sam."
+    },
+    {
+      "scene": "bc07fb36-a072-4979-acb6-2cd0763ed99c",
+      "line": "Oui, vous pouvez demander à votre ami. Pour la lettre et la facture sans lui, je ne sais pas si c'est accepté, il faut le demander à la caisse. Pour le rendez-vous, vous pouvez appeler la caisse ou venir directement pendant les heures d'ouverture. Quel type de compte vous intéresse, un compte simple ou un compte pour nouvel arrivant?",
+      "judge": "« Pour le rendez-vous, vous pouvez appeler la caisse ou venir directement pendant les heures d'ouverture » introduit une procédure de prise de rendez-vous qui ne figure pas parmi les faits autorisés et n'est pas reprise des propos de Sam."
+    },
+    {
+      "scene": "bc07fb36-a072-4979-acb6-2cd0763ed99c",
+      "line": "Mardi ou mercredi à midi, je ne peux pas vous confirmer l'horaire aujourd'hui. Il faut appeler la caisse ou demander à l'accueil. Si votre ami peut venir, il faut qu'il apporte sa facture d'électricité et sa lettre. Est-ce que vous avez déjà votre passeport avec vous?",
+      "judge": "« Si votre ami peut venir, il faut qu'il apporte sa facture d'électricité et sa lettre » impose une exigence documentaire non autorisée. Sam a proposé ces documents, mais n'a pas affirmé qu'ils étaient obligatoires."
+    },
+    {
+      "scene": "bc07fb36-a072-4979-acb6-2cd0763ed99c",
+      "npc": "bank_karim",
+      "target": "fr.grammar.conditionnel_present",
+      "uses": 11,
+      "hints": 0
+    },
+    {
+      "scene": "bbd140f0-ddae-43cb-a4d4-4fa36e08547d",
+      "line": "Oui, vous pouvez les écrire, surtout si ça montre que vous êtes motivé. Mais mettez-les plutôt à la fin, après votre expérience à l'hôtel. Pour le poste de réceptionniste, c'est l'expérience qui compte le plus. Vous avez apporté votre CV aujourd'hui ?",
+      "judge": "La phrase « Pour le poste de réceptionniste, c'est l'expérience qui compte le plus » affirme un critère de recrutement propre à ce poste qui n'est ni autorisé ni rapporté par Sam."
+    },
+    {
+      "scene": "bbd140f0-ddae-43cb-a4d4-4fa36e08547d",
+      "line": "Oui, donnez-le-moi, je le regarde tout de suite. Une deuxième copie, ce n'est pas grave, mais pour l'entrevue, il faudra en imprimer au moins deux. Vous avez aussi une pièce d'identité avec vous ?",
+      "judge": "La phrase « pour l'entrevue, il faudra en imprimer au moins deux » ajoute une exigence non autorisée : apporter au moins deux copies imprimées du CV à l'entrevue."
+    },
+    {
+      "scene": "bbd140f0-ddae-43cb-a4d4-4fa36e08547d",
+      "line": "Votre carte de résident, c'est une bonne pièce d'identité, donc ça ira pour aujourd'hui. Pour le passeport, je ne suis pas sûre de ce qu'il faut exactement pour l'entrevue, il vaut mieux demander à l'employeur ou vérifier sur le site du centre. Pour votre CV, je le regarde maintenant. Vous avez travaillé combien d'heures par semaine à l'hôtel ?",
+      "judge": "La phrase « Votre carte de résident, c'est une bonne pièce d'identité, donc ça ira pour aujourd'hui » affirme qu'elle est acceptée pour le rendez-vous, ce qui n'est pas précisé dans les faits autorisés."
+    },
+    {
+      "scene": "bbd140f0-ddae-43cb-a4d4-4fa36e08547d",
+      "npc": "conseillere_nadia",
+      "target": "fr.grammar.passe_compose_avoir",
+      "uses": 19,
+      "hints": 0
+    },
+    {
+      "scene": "58151424-365e-42ce-9a77-ad3ad773f63b",
+      "line": "D'accord, merci. Demain et après-demain, je n'ai rien de libre avec un médecin de famille. Le prochain rendez-vous disponible est mardi à 15 h. Par contre, le délai est d'environ trois semaines pour un rendez-vous de famille, donc mardi, c'est déjà une bonne chance. Est-ce que mardi à 15 h vous convient ?",
+      "judge": "La phrase « Demain et après-demain, je n'ai rien de libre avec un médecin de famille » ajoute une indisponibilité pour ces deux jours qui ne figure pas dans les faits autorisés."
+    },
+    {
+      "scene": "58151424-365e-42ce-9a77-ad3ad773f63b",
+      "line": "C'est tout pour le dossier. Votre rendez-vous est donc mardi à 15 h. Est-ce que vous aurez le temps de venir ce jour-là, ou est-ce que mardi ne vous convient pas finalement ?",
+      "judge": "« C'est tout pour le dossier » affirme qu'aucune autre information n'est nécessaire pour le dossier, ce qui n'est ni autorisé ni repris des propos de l'autre interlocuteur."
+    },
+    {
+      "scene": "58151424-365e-42ce-9a77-ad3ad773f63b",
+      "line": "Jeudi matin à 8 h, c'est possible, mais je ne peux pas vous garantir de la place. Les consultations sans rendez-vous ont lieu de 8 h à 11 h, et la salle d'attente est souvent pleine le matin. Donc, si vous pouvez, venez mardi à 14 h 50. Vous avez bien noté mon conseil ?",
+      "judge": "L'affirmation « la salle d'attente est souvent pleine le matin » ne figure pas parmi les faits autorisés et n'est pas reprise des propos de l'autre interlocuteur."
+    },
+    {
+      "scene": "58151424-365e-42ce-9a77-ad3ad773f63b",
+      "npc": "receptionniste_julien",
+      "target": "fr.grammar.futur_simple",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "185eeebf-b945-4661-b9c5-46c213a7c968",
+      "line": "Oui, regarde, la spatule et l'enduit sont ici, ensemble, pour 60 dollars. Par contre, la bande de renfort, je ne sais pas exactement si elle est incluse.",
+      "judge": "La phrase « la spatule et l'enduit sont ici, ensemble » ajoute une localisation des articles qui n'est pas autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "185eeebf-b945-4661-b9c5-46c213a7c968",
+      "line": "Bien sûr, prends-en une dans le rayon, c'est toujours mieux d'en avoir une de trop que de s'arrêter en plein travail. Par contre, pour le prix de la bande, je ne peux pas te le dire, ils te le diront à la caisse. Tu as une perceuse à la maison, au cas où tu doives fixer autre chose au mur?",
+      "judge": "« Prends-en une dans le rayon » affirme qu’une bande de renfort est disponible dans un rayon, ce qui n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "185eeebf-b945-4661-b9c5-46c213a7c968",
+      "line": "Du papier à poncer, oui, il te faudra un grain fin pour finir après le séchage. Par contre, je ne sais pas exactement quel grain on a en stock, va voir au rayon peinture ou demande à la caisse. Et tu as déjà pensé à la peinture pour le mur, ou tu comptes laisser le mur tel quel?",
+      "judge": "« Va voir au rayon peinture » introduit l’existence d’un rayon peinture dans la quincaillerie, ce qui n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "185eeebf-b945-4661-b9c5-46c213a7c968",
+      "npc": "quincaillier_denis",
+      "target": "fr.grammar.imperatif",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "c7853781-5c99-4d2f-8db8-7597eeca5bc2",
+      "line": "Je comprends votre point de vue, et la sécurité est effectivement au cœur du projet. Pour bien le défendre devant le conseil, qu'est-ce que vous voudriez exactement que la ville change dans ce projet ?",
+      "judge": "« La sécurité est effectivement au cœur du projet » affirme une priorité du projet qui ne figure pas parmi les faits autorisés et n’est pas énoncée par Sam."
+    },
+    {
+      "scene": "c7853781-5c99-4d2f-8db8-7597eeca5bc2",
+      "line": "Votre proposition est claire, et elle mérite d'être présentée au conseil. Sachez que chaque intervenant dispose de trois minutes de parole, alors il faudra choisir l'essentiel : la barrière et les feux, par exemple. Le projet coûte 60 mille dollars, et le conseil devra aussi tenir compte de ce budget. Avez-vous déjà pensé à la façon de présenter cela en trois minutes ?",
+      "judge": "L'affirmation « le conseil devra aussi tenir compte de ce budget » ajoute une obligation du conseil qui ne figure pas parmi les faits autorisés et n'est pas énoncée par Sam."
+    },
+    {
+      "scene": "c7853781-5c99-4d2f-8db8-7597eeca5bc2",
+      "line": "Votre raisonnement est bien construit, et l'argument sur les économies à long terme peut vraiment peser. Pour le chiffre sur les accidents, vous devrez indiquer la source, sinon le conseil risque de ne pas vous croire. Et pour le budget, vous pourriez comparer les 60 mille dollars avec le coût des accidents évités. Vous avez déjà une idée de ce chiffre ?",
+      "judge": "« Pour le chiffre sur les accidents, vous devrez indiquer la source » ajoute une obligation de citer la source à la consultation, qui ne figure pas parmi les faits autorisés et n’a pas été énoncée par Sam."
+    },
+    {
+      "scene": "c7853781-5c99-4d2f-8db8-7597eeca5bc2",
+      "line": "Très bien, c'est une bonne démarche. Pour vous inscrire à la consultation de mardi à 19 h dans la salle du conseil, il faut vous inscrire avant lundi midi. Vous pouvez le faire à l'hôtel de ville, qui est ouvert de 8 h 30 à 16 h 30 du lundi au vendredi. Est-ce que vous pourrez passer nous voir cette semaine ?",
+      "judge": "La phrase « Vous pouvez le faire à l'hôtel de ville » affirme que l'inscription peut se faire sur place, une procédure qui n'est pas indiquée dans les faits autorisés ni explicitement affirmée par Sam."
+    },
+    {
+      "scene": "c7853781-5c99-4d2f-8db8-7597eeca5bc2",
+      "npc": "fonctionnaire_sophie",
+      "target": "fr.grammar.subjonctif_present",
+      "uses": 15,
+      "hints": 0
+    },
+    {
+      "scene": "cde91c87-37c9-49a7-957c-26612b9bdb9a",
+      "npc": "bibliothecaire_antoine",
+      "target": "fr.grammar.connecteurs_logiques",
+      "uses": 14,
+      "hints": 0
+    },
+    {
+      "scene": "e8ca84ea-abb8-4e15-923e-d6803bf6fb30",
+      "line": "Bonjour ! Vous êtes venu pour le témoignage sur les loyers, c'est ça ? Asseyez-vous, je termine juste mon café. Vous avez une histoire avec votre propriétaire, ou c'est plutôt une question générale ?",
+      "judge": "« Je termine juste mon café » affirme qu’Émilie est en train de finir son café, un fait non autorisé et non repris des propos de Sam."
+    },
+    {
+      "scene": "e8ca84ea-abb8-4e15-923e-d6803bf6fb30",
+      "line": "Ah, pardon, je me suis mal exprimée. Mes notes disent 60 dollars, mais il faut vérifier ça avec votre bail. Donc il vous a dit qu'il avait rénové tout l'appartement, et la salle de bain était quand même en mauvais état ? Que s'est-il passé ensuite, quand vous lui avez signalé le problème ?",
+      "judge": "« Mes notes disent 60 dollars » affirme que les notes d’Émilie contiennent ce montant, ce qui n’est ni un fait autorisé ni une reprise des propos de Sam."
+    },
+    {
+      "scene": "e8ca84ea-abb8-4e15-923e-d6803bf6fb30",
+      "line": "Oui, envoyez-les-moi, ce serait une vraie preuve pour l'article. Mon adresse courriel est sur le site du journal, ou vous pouvez passer à la rédaction avant 18 h. Et dites-moi, est-ce que vous voulez que votre nom reste anonyme dans l'article ?",
+      "judge": "L’affirmation « Mon adresse courriel est sur le site du journal » est un nouveau fait non autorisé et non repris des propos de Sam."
+    },
+    {
+      "scene": "e8ca84ea-abb8-4e15-923e-d6803bf6fb30",
+      "npc": "journaliste_emilie",
+      "target": "fr.grammar.plus_que_parfait",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Ah, you must be Sam. Come in, love, mind the step. I'm Graham. Is it the bathroom you wanted to talk about?",
+      "judge": "'Mind the step' introduces a new claim that there is a step to watch out for, which is not listed or echoed from Sam."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Right, the damp. I know about the bathroom, love, it's on the list. But you're telling me it's in the bedroom now? Show me, and I'll have a look before I say anything.",
+      "judge": "The claim that the bathroom damp is already 'on the list' is new and is neither an allowed fact nor echoed from Sam."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Right, let's have a look then. Black patches, you say. Mind the carpet, it's a bit lifted by the door. Has the wall been wet to touch, or is it just the marks you've noticed?",
+      "judge": "The new claim is that the carpet is a bit lifted by the door."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Mornings after nine, right. I'll ring my man today and let you know the day before, love, so you're not caught out. Don't worry about the rent for now, but I'll need to know about the deposit when you leave. It was sixty pounds, and I'll be checking the flat then.",
+      "judge": "Introduces an unprovided move-out procedure: Graham will need information about the deposit and will inspect the flat when Sam leaves."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Well, that's a fair question, love. The damp's my job to sort, it's in the agreement. But I can't say about your things until I've seen the damage, and I'd have to check the agreement for that. As for the deposit, I'd only keep what's fair for damage you've caused, not for damp that was there already. Have you got a photo of the wall? That'd help me see what I'm dealing with.",
+      "judge": "New claims: the agreement makes fixing damp Graham's responsibility (\"The damp's my job to sort, it's in the agreement\"), and his deposit policy is to retain money only for tenant-caused damage, not pre-existing damp."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "line": "Use the email on the tenancy, love, that's the right one. I don't know another address for you, so stick with that. I'll get my man to ring you about the day, and you can send the photos when you're ready.",
+      "judge": "Claims that the email address on the tenancy is the correct one to use, which is not an allowed fact or echoed from Sam."
+    },
+    {
+      "scene": "74ef2e09-d5b5-4fe7-83e9-546a7ec21392",
+      "npc": "landlord_graham",
+      "target": "en.grammar.second_conditional",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "3be780bd-d873-457c-b331-ac72c01bd7ce",
+      "line": "Morning! Busy one today, sorry about the wait. What can I get you?",
+      "judge": "'Sorry about the wait' claims that Sam has already had to wait, which is not established by the allowed facts or Sam's lines."
+    },
+    {
+      "scene": "3be780bd-d873-457c-b331-ac72c01bd7ce",
+      "line": "A flat white's 60 pence, by the way, if that's what you fancy. For a walk, I'm not sure of the best spot, you'd have to ask around or check online. Are you here for the day or staying a while?",
+      "judge": "The claim that a flat white costs 60 pence contradicts the fixed price of 60 pounds. Sam mentions sixty pence but does not establish it as the coffee's price."
+    },
+    {
+      "scene": "3be780bd-d873-457c-b331-ac72c01bd7ce",
+      "line": "You can pay here at the counter, before I bring it over. Grab a seat by the window if you like, I'll bring it across in a minute.",
+      "judge": "Introduces new claims that payment can be made at the counter before the coffee is brought over and that there is seating by a window."
+    },
+    {
+      "scene": "3be780bd-d873-457c-b331-ac72c01bd7ce",
+      "line": "No mistake, I'm afraid, it really is 60 pounds for a flat white. I know it sounds like a lot, so if you'd rather have something else, you're welcome to choose again. Or if you'd like to keep it, just let me know and I'll get it made.",
+      "judge": "“You're welcome to choose again” introduces an unlisted café policy allowing the customer to change their order."
+    },
+    {
+      "scene": "3be780bd-d873-457c-b331-ac72c01bd7ce",
+      "npc": "cafe_siobhan",
+      "target": "en.grammar.questions",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "line": "I'm not sure a school letter is enough, I don't know the exact rules on that. You could check the list of accepted documents on our website, or I can ask a colleague. Do you have anything else with your name and address on it, like a bill or a letter from the council?",
+      "judge": "The line introduces the new claim that the bank's website has a list of accepted documents."
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "line": "Thank you, Mr Mendez. I've noted your name. Apart from your passport and the phone bill, I don't know for certain what else is needed, so I'd check with my colleague before you go. Is the bill in your name and at your current address?",
+      "judge": "“I've noted your name” is a new claim that Daniel has already recorded the speaker's name, an event not listed or echoed from the other speaker."
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "line": "I'm sorry, I don't know whether the rental contract or the school letter is accepted on its own. My colleague can tell you that, so I'll ask him for you. If you bring both to the branch, that should cover it, but please check with him first.",
+      "judge": "The claim \"If you bring both to the branch, that should cover it\" introduces an unsupported policy that the rental contract and school letter together should satisfy the bank's document requirements."
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "line": "Please wait here for a moment, Mr Mendez, and my colleague will come to you. Have a seat if you like, and I'll bring your documents over to him.",
+      "judge": "The claim that a colleague will come to the customer is a new claim about how service works at the branch, not an allowed fact or an echo of the other speaker."
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "line": "Keep it with you for now, Mr Mendez. My colleague will need to see it when he comes over, so you can show it to him then.",
+      "judge": "The line introduces a new procedural claim that the colleague will need to inspect the passport when he comes over."
+    },
+    {
+      "scene": "a57706db-6525-44a9-8d48-2d88fde0207f",
+      "npc": "bank_daniel",
+      "target": "en.grammar.modals_obligation",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "b3b77322-2993-49bb-8b8b-72da1d4523ad",
+      "line": "Leeds is a fair way from Ashford, so I can see why a closer job makes sense. Right then, for the interview, have you got a covering letter ready yet, or is that still to do?",
+      "judge": "The claim that Leeds is a fair way from Ashford is not listed among the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "b3b77322-2993-49bb-8b8b-72da1d4523ad",
+      "npc": "adviser_priya",
+      "target": "en.grammar.present_perfect",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "91abc081-c182-497c-a53b-25d67f76d8ad",
+      "line": "Wednesday might be possible, but I can't check the full diary from here, so I'd need to look when you call. Just so you know, a routine appointment usually takes about two weeks to get, so it's best to let us know early if you need to move it. Is there anything else you need today, or would you like to bring your passport and bank letter tomorrow?",
+      "judge": "The claim \"I can't check the full diary from here\" introduces an unsupported restriction on the receptionist's access to the appointment diary."
+    },
+    {
+      "scene": "91abc081-c182-497c-a53b-25d67f76d8ad",
+      "npc": "receptionist_tom",
+      "target": "en.grammar.future_forms",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "05ac5bdd-d590-4680-b235-095ed3040c4a",
+      "line": "Yes, you're right, mate, clean it first. Get a stiff brush and scrub off the loose bits, then let the wall dry out properly. The black spots are mould, so wear some gloves and don't breathe it in, yeah? Once it's dry, I've got a damp treatment kit for £14.99, and it comes with a stain block you can put over the top. Have you got a ladder at home, or do you need to hire one?",
+      "judge": "The claim that the damp treatment kit comes with a stain block is not among the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "05ac5bdd-d590-4680-b235-095ed3040c4a",
+      "line": "Yeah, we've got brushes and gloves, love, just along the wall by the paint. I don't know what's in the mould spray off the top of my head, so check the label on the bottle for what it's made of before you use it, mate. The kit and a brush together come to 60 pounds, if you want the lot in one go. Are you planning to do the cleaning this weekend, or sooner?",
+      "judge": "The line introduces unlisted claims that the shop stocks brushes and gloves and that they are located along the wall by the paint."
+    },
+    {
+      "scene": "05ac5bdd-d590-4680-b235-095ed3040c4a",
+      "line": "I'm not sure about the gloves, love. Gloves are cheap enough, so grab a pair while you're by the paint.",
+      "judge": "The line implies that gloves are available to pick up by the paint, introducing an unlisted stock and location claim."
+    },
+    {
+      "scene": "05ac5bdd-d590-4680-b235-095ed3040c4a",
+      "line": "Good plan, mate. Read the label before you buy it, and if the bit about what's in it puts you off, ask one of the lads at the counter. Once you've got the kit, the brush and the gloves, bring them up and we'll sort you out. Will you be doing the wall on your own, or is someone helping you?",
+      "judge": "“One of the lads at the counter” introduces the new claim that the shop has staff at a counter, which is neither an allowed fact nor echoed from Sam."
+    },
+    {
+      "scene": "05ac5bdd-d590-4680-b235-095ed3040c4a",
+      "npc": "hardware_ron",
+      "target": "en.grammar.modals_obligation",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "9b638761-93fc-44cb-bfb9-98b6a39b8c69",
+      "line": "That sounds like a sensible order. Moving some spaces to the side streets is a proposal the committee will want to hear, so do make it clearly. Remember, you only have three minutes, so I would suggest writing your main points down before Tuesday. Is there anything else you would like to know about registering?",
+      "judge": "The claim that a committee will want to hear the proposal to move parking spaces to side streets is not an allowed fact or echoed from Sam."
+    },
+    {
+      "scene": "9b638761-93fc-44cb-bfb9-98b6a39b8c69",
+      "line": "I'm sorry, I don't know how the order of speakers is decided, or whether speakers are told in advance. That is something the front desk or the consultation team would be able to tell you when you register. If you ask them, they should be able to give you a clear answer.",
+      "judge": "Claims that the front desk or consultation team can explain how speaker order is decided and whether speakers are notified in advance when Sam registers; this institutional capability is not established by the allowed facts or Sam's lines."
+    },
+    {
+      "scene": "9b638761-93fc-44cb-bfb9-98b6a39b8c69",
+      "line": "I'm sure the consultation team will be able to tell you when you register. Just remember that your three minutes start as soon as you are called, so it is worth practising your points out loud beforehand. Is there anything else I can help you with today?",
+      "judge": "New claims: the consultation team will be able to tell Sam the speaking order when he registers, and each speaker's three minutes start as soon as they are called."
+    },
+    {
+      "scene": "9b638761-93fc-44cb-bfb9-98b6a39b8c69",
+      "line": "Thank you, Sam. That is a good plan. Please keep to your three minutes, as the chair will be strict about time. I hope you find the front desk helpful when you call in, and I wish you well on Tuesday.",
+      "judge": "The new claim \"the chair will be strict about time\" is not listed among the allowed facts or echoed from Sam."
+    },
+    {
+      "scene": "9b638761-93fc-44cb-bfb9-98b6a39b8c69",
+      "npc": "council_margaret",
+      "target": "en.grammar.passive_voice",
+      "uses": 13,
+      "hints": 0
+    },
+    {
+      "scene": "949daae1-9248-4011-bc95-7947ad410a2e",
+      "npc": "librarian_femi",
+      "target": "en.grammar.linking_words",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "4740347f-a4fb-43e9-967b-f3e9cb529e7e",
+      "line": "Hi, you must be here for the interview. Sorry about the mess, I've been buried in old editions all morning. Grab a seat, and tell me, how long have you been renting your place?",
+      "judge": "Lucy claims she has been buried in old editions all morning, a new claim about her activities earlier that day that is neither listed nor echoed from Sam."
+    },
+    {
+      "scene": "4740347f-a4fb-43e9-967b-f3e9cb529e7e",
+      "line": "Three years in the flat, and two before that in a shared house. So you've seen a few landlords and a few rent increases by now. Tell me, what happened with your rent before this year's rise? Did it go up at all in the earlier years?",
+      "judge": "The claim that Sam has 'seen a few landlords' is not an allowed fact or something Sam stated. The rental durations and earlier rent increases are echoed from Sam."
+    },
+    {
+      "scene": "4740347f-a4fb-43e9-967b-f3e9cb529e7e",
+      "line": "Two months to say it was legal and that his lawyer agreed? And now everyone's just given up. Did you or your neighbours ever ask the council or a housing charity to look into it, or did you keep it between the building and the owner?",
+      "judge": "Claims that the lawyer agreed the rise was legal and that everyone has given up. Sam only said the owner had discussed it with his lawyer and that he thought most neighbours had given up."
+    },
+    {
+      "scene": "4740347f-a4fb-43e9-967b-f3e9cb529e7e",
+      "npc": "reporter_lucy",
+      "target": "en.grammar.past_perfect",
+      "uses": 13,
+      "hints": 0
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Bonjour. Vous êtes Sam, c'est bien ça? Vous venez pour le dépôt de garantie, je suppose. Le bail a pris fin le 30 septembre, donc on peut régler ça aujourd'hui.",
+      "judge": "« On peut régler ça aujourd'hui » affirme que le règlement du dépôt est possible aujourd'hui, une disponibilité non autorisée par les faits et non reprise des propos de Sam."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Je comprends. Mais un mur, ça ne se répare pas tout seul. Si c'était là avant, il fallait le signaler par écrit à l'époque, et je n'ai rien reçu. Vous avez pris des photos quand vous êtes entré dans l'appartement?",
+      "judge": "La réplique invente une obligation de signaler la fissure par écrit à l’époque et affirme que Martin n’a reçu aucun signalement, deux faits non autorisés."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Bien sûr, elle est là, dans le coin du salon, près de la fenêtre. Elle n'est pas grande, mais elle est visible. Si vous aviez pris des photos, ça aurait été plus simple pour nous deux. Qu'est-ce que vous proposez pour le mur, Sam? Vous voulez payer la réparation, ou on partage le coût?",
+      "judge": "La réplique ajoute que la fissure se trouve « dans le coin du salon, près de la fenêtre », un emplacement non autorisé et non mentionné par Sam."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Partager, pourquoi pas. Mais je ne vais pas vous rendre quoi que ce soit avant d'avoir un devis pour le mur. Un menuisier, c'est mon métier depuis trente ans, je sais ce que ça coûte à peu près, mais je veux le voir sur papier.",
+      "judge": "Il impose une condition non autorisée : aucun remboursement avant l'obtention d'un devis pour le mur. Il affirme aussi être menuisier depuis trente ans, alors que le fait autorisé indique qu'il a été menuisier pendant trente ans."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Le devis, je peux le demander, mais je ne sais pas encore combien de temps ça prendra. Vous avez déjà votre adresse, Sam, c'est sur le bail. Et si le devis est trop cher, on en reparle, oui. Mais dites-moi, si vous étiez à ma place, vous rendriez le dépôt sans rien voir?",
+      "judge": "La réplique affirme que l’adresse de Sam figure sur le bail, ce qui n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "line": "Bon, allons voir ça. Venez dans le salon, la fissure est là, près de la fenêtre. Regardez bien, elle part du coin du plafond. Si le devis est raisonnable, on verra. Mais je ne signe rien aujourd'hui.",
+      "judge": "La fissure est « près de la fenêtre » et « part du coin du plafond » : ces précisions sur son emplacement ne sont ni autorisées ni reprises des propos de Sam."
+    },
+    {
+      "scene": "fcd6e689-2040-43a3-84d8-f25e40144aa8",
+      "npc": "landlord_martin",
+      "target": "fr.grammar.si_imparfait",
+      "uses": 10,
+      "hints": 0
+    },
+    {
+      "scene": "d6b070bd-1eb3-43cb-ab62-fdef04bf38a9",
+      "line": "Un café, très bien ! Je vous l'apporte tout de suite. Pour la pharmacie, je ne suis pas sûre de l'adresse exacte, je ne suis pas du quartier depuis très longtemps... Vous cherchez quelque chose de précis, ou juste une pharmacie pour aujourd'hui ?",
+      "judge": "La déclaration « je ne suis pas du quartier depuis très longtemps » ajoute un fait non autorisé sur l'histoire personnelle de Chloé."
+    },
+    {
+      "scene": "d6b070bd-1eb3-43cb-ab62-fdef04bf38a9",
+      "line": "Il est encore tôt, je pense qu'il est environ dix heures, mais regardez l'heure sur votre téléphone pour être sûr. Le café ouvre à 7 h et ferme à 18 h, donc vous avez le temps. Vous êtes venu à Rivemont pour travailler, ou pour visiter ?",
+      "judge": "« Il est encore tôt » et « je pense qu'il est environ dix heures » introduisent une heure actuelle non fournie dans les faits autorisés ni par Sam."
+    },
+    {
+      "scene": "d6b070bd-1eb3-43cb-ab62-fdef04bf38a9",
+      "line": "Moi, je suis là depuis dix ans, j'ai ouvert le café à ce moment-là. Avant, j'ai travaillé cinq ans à Lyon. Et votre travail, c'est dans quel domaine ?",
+      "judge": "« J’ai ouvert le café à ce moment-là » affirme que Chloé a ouvert le café il y a dix ans, ce qui ne figure pas dans les faits autorisés et n’est pas repris des propos de Sam."
+    },
+    {
+      "scene": "d6b070bd-1eb3-43cb-ab62-fdef04bf38a9",
+      "line": "Ah, bonne question ! Je connais bien le quartier, mais je ne suis pas allée à la pharmacie souvent, alors je ne me souviens pas de l'adresse. Je suis désolée, je ne veux pas vous donner une mauvaise information. Vous avez déjà pris quelque chose pour votre tête ?",
+      "judge": "« Je ne suis pas allée à la pharmacie souvent » ajoute un fait non autorisé sur les visites passées de Chloé à la pharmacie."
+    },
+    {
+      "scene": "d6b070bd-1eb3-43cb-ab62-fdef04bf38a9",
+      "npc": "cafe_chloe",
+      "target": "fr.grammar.questions",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "af4bd91c-db50-4743-8f2d-b713a4775b66",
+      "line": "Bonjour. Oui, bien sûr, on peut ouvrir un compte pour vous. Pour recevoir votre salaire, il faut un compte à votre nom, et je vous conseille de regarder avec moi quel type de compte vous convient.",
+      "judge": "La phrase « Pour recevoir votre salaire, il faut un compte à votre nom » ajoute une condition qui ne figure pas parmi les faits autorisés et n'est pas reprise des propos de Sam."
+    },
+    {
+      "scene": "af4bd91c-db50-4743-8f2d-b713a4775b66",
+      "line": "Votre contrat de location, c'est un document qui peut servir pour l'adresse. Par contre, je ne suis pas certain que celui-là soit accepté s'il n'est pas seulement à votre nom. Avez-vous une facture, par exemple d'électricité ou de téléphone, à votre nom ?",
+      "judge": "La phrase « Votre contrat de location, c'est un document qui peut servir pour l'adresse » ajoute qu'un contrat de location peut servir de justificatif d'adresse, ce qui n'est pas un fait autorisé."
+    },
+    {
+      "scene": "af4bd91c-db50-4743-8f2d-b713a4775b66",
+      "line": "Je comprends. Malheureusement, je n'ai pas de liste écrite à vous donner ici, et je ne connais pas tous les documents demandés pour ouvrir le compte.",
+      "judge": "La déclaration « je n'ai pas de liste écrite à vous donner ici » ajoute une information non autorisée sur la disponibilité d'une liste de documents dans cette agence."
+    },
+    {
+      "scene": "af4bd91c-db50-4743-8f2d-b713a4775b66",
+      "npc": "bank_karim",
+      "target": "fr.grammar.conditionnel_present",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "83c55ee2-fccc-4756-93fc-f15fc0fe8f85",
+      "npc": "conseillere_nadia",
+      "target": "fr.grammar.passe_compose_avoir",
+      "uses": 18,
+      "hints": 0
+    },
+    {
+      "scene": "d2cb7622-e90a-40a9-ae27-d2152b4efb43",
+      "npc": "receptionniste_julien",
+      "target": "fr.grammar.futur_simple",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "9976a39b-520a-4a9b-8724-541eeca867ea",
+      "line": "Bien sûr, je vais te montrer. Les brosses sont au fond du magasin, à droite, près des peintures, mais je ne suis pas sûr que ce soit toujours au même endroit, alors demande à mon collègue si tu ne trouves pas. Pour le ponçage, l'enduit sèche en vingt-quatre heures, donc attends une journée complète avant de poncer.",
+      "judge": "La réplique affirme que les brosses sont au fond du magasin, à droite, près des peintures : cet emplacement n’est ni un fait autorisé ni une information donnée par Sam."
+    },
+    {
+      "scene": "9976a39b-520a-4a9b-8724-541eeca867ea",
+      "line": "Un masque anti-poussière, c'est ce qu'il te faut, pour le ponçage. Pour l'emplacement exact, je ne suis pas sûr, alors demande à mon collègue, il connaît mieux le rayon. Tu as déjà poncé un mur avant, toi?",
+      "judge": "Denis affirme que son collègue connaît mieux le rayon, ce qui est une nouvelle information non autorisée."
+    },
+    {
+      "scene": "9976a39b-520a-4a9b-8724-541eeca867ea",
+      "npc": "quincaillier_denis",
+      "target": "fr.grammar.imperatif",
+      "uses": 2,
+      "hints": 1
+    },
+    {
+      "scene": "2ee79a53-d39a-4e7d-9c82-27501be2f288",
+      "line": "Je comprends très bien votre demande. Une piste séparée de la circulation, c'est en effet un point important pour le conseil. Le projet passerait rue des Remparts, et il coûte 85 mille dollars. Avez-vous déjà préparé ce que vous allez dire pendant vos trois minutes, ou souhaitez-vous que nous en parlions un peu plus ?",
+      "judge": "La phrase « Une piste séparée de la circulation, c'est en effet un point important pour le conseil » attribue au conseil une priorité non établie. Sam a seulement indiqué que ce point était indispensable pour lui."
+    },
+    {
+      "scene": "2ee79a53-d39a-4e7d-9c82-27501be2f288",
+      "line": "Votre argument est clair, et c'est justement ce que le conseil aime entendre : un coût raisonnable, mais à condition que les travaux soient terminés à temps. Je vous conseille de bien l'expliquer dans vos trois minutes, car le conseil va sûrement poser la question du calendrier. Pour vous inscrire, il faut le faire avant lundi midi, n'oubliez pas.",
+      "judge": "Affirmations nouvelles : « c'est justement ce que le conseil aime entendre » et « le conseil va sûrement poser la question du calendrier ». Les préférences du conseil et cette question annoncée ne figurent pas parmi les faits autorisés ni dans les propos de Sam."
+    },
+    {
+      "scene": "2ee79a53-d39a-4e7d-9c82-27501be2f288",
+      "line": "Je vous conseille de proposer un calendrier précis, même approximatif, car cela montre que vous avez réfléchi au problème. Le conseil appréciera une proposition concrète, surtout si elle tient compte de l'hiver que vous avez mentionné. Par contre, je ne peux pas vous dire quelle est la meilleure date pour les travaux, cela dépend des services techniques. Avez-vous déjà une idée de la période que vous souhaiteriez ?",
+      "judge": "La phrase « cela dépend des services techniques » affirme que la date des travaux dépend des services techniques, une nouvelle information sur le fonctionnement des institutions qui n’est ni autorisée ni reprise des propos de Sam."
+    },
+    {
+      "scene": "2ee79a53-d39a-4e7d-9c82-27501be2f288",
+      "line": "Vous avez raison de le souligner, la rue des Remparts est au cœur du projet. Votre argument sur la sécurité sera sûrement entendu par le conseil. Vous pourriez appuyer ce point avec des exemples précis de votre quartier, par exemple des situations que vous avez vécues vous-même. Est-ce que vous circulez à vélo sur cette rue tous les jours ?",
+      "judge": "La phrase « Votre argument sur la sécurité sera sûrement entendu par le conseil » affirme une réaction du conseil qui ne figure pas parmi les faits autorisés et n'est pas reprise des propos de Sam."
+    },
+    {
+      "scene": "2ee79a53-d39a-4e7d-9c82-27501be2f288",
+      "npc": "fonctionnaire_sophie",
+      "target": "fr.grammar.subjonctif_present",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "2555af49-53ad-4759-b050-51bc7156fdac",
+      "npc": "bibliothecaire_antoine",
+      "target": "fr.grammar.connecteurs_logiques",
+      "uses": 11,
+      "hints": 0
+    },
+    {
+      "scene": "e2062786-f9c5-4d1f-a81e-ff040e48740b",
+      "line": "Très bien, demandez-lui d'abord, c'est tout à fait normal. Demain, ça me va, la rédaction est ouverte de 9 h à 18 h. Et si elle accepte, dites-lui que son nom pourra aussi rester anonyme.",
+      "judge": "« Son nom pourra aussi rester anonyme » étend la possibilité d’anonymat à la collègue de Sam, alors que le fait autorisé concerne uniquement Sam."
+    },
+    {
+      "scene": "e2062786-f9c5-4d1f-a81e-ff040e48740b",
+      "npc": "journaliste_emilie",
+      "target": "fr.grammar.plus_que_parfait",
+      "uses": 9,
+      "hints": 0
+    },
+    {
+      "scene": "277fc246-b31f-4388-9287-dd64b2f64465",
+      "line": "Morning. You must be Sam, from the flat. Come in, love, mind the step. What's the problem then?",
+      "judge": "'Mind the step' introduces a new layout claim: there is a step at the entrance."
+    },
+    {
+      "scene": "277fc246-b31f-4388-9287-dd64b2f64465",
+      "line": "Right, damp. I know about the bathroom, that's on the agreement, and I've had a look at it. The bedroom though, I didn't know about that. Show me, love.",
+      "judge": "New claims: the bathroom damp is recorded on the agreement, and Graham has already inspected it."
+    },
+    {
+      "scene": "277fc246-b31f-4388-9287-dd64b2f64465",
+      "line": "Well, I can't give you a day yet, love. I've got to ring the man first and see when he's free. I'll let you know by the end of the week. And while I think of it, the deposit was 85 pounds, so when you move out we'll be looking at any marks on the walls too, so keep that in mind.",
+      "judge": "The claim that wall marks will be inspected when Sam moves out introduces a new end-of-tenancy procedure not established by the allowed facts or Sam's lines."
+    },
+    {
+      "scene": "277fc246-b31f-4388-9287-dd64b2f64465",
+      "line": "Yes, I can text you, love. Just make sure you send me your number again so I've got the right one.",
+      "judge": "'Send me your number again' implies Sam previously gave Graham their phone number, an event not established by the allowed facts or Sam's lines."
+    },
+    {
+      "scene": "277fc246-b31f-4388-9287-dd64b2f64465",
+      "npc": "landlord_graham",
+      "target": "en.grammar.second_conditional",
+      "uses": 7,
+      "hints": 0
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "A flat white is 85 pence. Would you like that one, or something else?",
+      "judge": "The claim that a flat white costs 85 pence contradicts the allowed fact that it costs 85 pounds."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "Oh, lovely, you're after a walk! I don't really know the walks round here, to be honest, I'm more of a coffee person than a hiker. Have you asked the people at the station? They'd know better. Is it a long walk you want, or just a quick stroll?",
+      "judge": "'They'd know better' introduces the unsupported claim that people at the station know more about local walks."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "Oh, the station's just across the road from us, so it's really close. You can't miss it. Do you want anything with your flat white, maybe a pastry or a slice of cake? The bakery next door shuts at noon, so you'd want to be quick if you fancy something from there.",
+      "judge": "Offering a pastry or a slice of cake implies these items are available at the café, which is not an allowed fact."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "I don't have a clock on me, sorry, but it's still quite early, so I'd say the bakery's open for a while yet. Just check the sign on their door to be sure. Your coffee's nearly ready, so you can take it to the table by the window if you like.",
+      "judge": "New claims: it is still quite early, the bakery is currently open and will remain open for a while, and Sam's coffee is nearly ready."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "Yes, it should be on the door of the bakery, next door to us. You'll see it as soon as you go outside. Your flat white's just coming up now, so pop over to the window and I'll bring it across.",
+      "judge": "The claim that Sam will see the bakery's sign as soon as he goes outside is a new, unlisted detail about its visibility."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "That's a good idea, yes. The people at the station will know the local walks much better than me. Enjoy your coffee, and I hope you find a lovely route for your stroll.",
+      "judge": "The new claim is that the people at the station know the local walks much better than Siobhan does."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "Oh, you can stay as long as you like, love, we're not going to chase you out. Just keep an eye on the time, because we close at 17:00 in the evening.",
+      "judge": "The claim that Sam can stay as long as he likes and will not be chased out introduces an unlisted café policy. The 17:00 closing time is allowed."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "line": "Sorry, I don't actually know where our toilet is for customers, it's not somewhere I usually think about. If you ask the person at the counter when they bring your coffee, they'll tell you. Is your coffee okay at the window?",
+      "judge": "The line introduces an unlisted service procedure: a person at the counter will bring Sam's coffee and tell Sam where the toilet is."
+    },
+    {
+      "scene": "1332b4b1-89b5-4926-90e1-4de6e9a6ec4e",
+      "npc": "cafe_siobhan",
+      "target": "en.grammar.questions",
+      "uses": 8,
+      "hints": 0
+    },
+    {
+      "scene": "3c935b1a-84d2-4543-9a45-994c8a4f9035",
+      "line": "I'm afraid I don't know the full list of what counts as proof of address, so please check the information on our website or ask the staff at the front desk before you come back. I can tell you that you still need proof of address, and the card arrives by post, so it's important the address is right. Do you have a bill with your name and address on it at the moment?",
+      "judge": "The line introduces the unlisted claim that the branch has staff at a front desk."
+    },
+    {
+      "scene": "3c935b1a-84d2-4543-9a45-994c8a4f9035",
+      "npc": "bank_daniel",
+      "target": "en.grammar.modals_obligation",
+      "uses": 6,
+      "hints": 0
+    },
+    {
+      "scene": "c7a602bc-840e-4438-bb86-fa4719bf6915",
+      "npc": "adviser_priya",
+      "target": "en.grammar.present_perfect",
+      "uses": 12,
+      "hints": 0
+    },
+    {
+      "scene": "63f4e2a8-d6fe-4c90-8040-e6cf0c6c2bc7",
+      "line": "Your passport is fine for photo ID. For proof of address, I'm not sure whether a rental contract is accepted, so please check that with the practice before you come in. Can you confirm you'll be able to make it on Tuesday at 3 pm, or would you need another day if that doesn't work?",
+      "judge": "“Your passport is fine for photo ID” newly claims that the practice accepts Sam’s passport as photo ID; the allowed facts only state that photo ID is required."
+    },
+    {
+      "scene": "63f4e2a8-d6fe-4c90-8040-e6cf0c6c2bc7",
+      "line": "Thank you, that's helpful. Just so you know, if you cancel, please call before 6.30 pm, as the surgery closes then, and that way someone else can have the slot. Is there anything else I can help you with today?",
+      "judge": "Introduces a new cancellation procedure: asking patients to call before 6.30 pm if they cancel. The closing time is allowed, but this cancellation instruction is not listed."
+    },
+    {
+      "scene": "63f4e2a8-d6fe-4c90-8040-e6cf0c6c2bc7",
+      "line": "Good, that's sensible to bring extra. Your appointment is noted for Tuesday at 3 pm, so I'll see you then. Goodbye, and take care.",
+      "judge": "“Your appointment is noted for Tuesday at 3 pm” newly claims that the appointment has been recorded, which is not established by the allowed facts or the other speaker's lines."
+    },
+    {
+      "scene": "63f4e2a8-d6fe-4c90-8040-e6cf0c6c2bc7",
+      "npc": "receptionist_tom",
+      "target": "en.grammar.future_forms",
+      "uses": 7,
+      "hints": 0
+    }
+  ],
+  "ran_at": "2026-10-15T06:25:39+00:00",
+  "status": "FAIL"
+}
