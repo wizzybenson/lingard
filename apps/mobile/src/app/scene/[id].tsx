@@ -93,8 +93,43 @@ export default function Scene() {
       </Screen>
     );
   }
+  // While live, talking and leaving stay pinned under the captions instead of scrolling away as they grow.
+  const controls = live.status === "live" && (
+    <>
+      {!live.openMic && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("scene.pushToTalk")}
+          onPressIn={() => void live.talk(true)}
+          onPressOut={() => void live.talk(false)}
+          style={({ pressed }) => ({
+            minHeight: 96,
+            borderRadius: 48,
+            backgroundColor: colors.accent,
+            opacity: pressed ? 0.85 : 1,
+            transform: [{ scale: pressed ? 0.97 : 1 }],
+            alignItems: "center",
+            justifyContent: "center",
+          })}
+        >
+          <Text style={{ color: colors.accentInk, fontSize: 18, fontWeight: "600" }}>{t("scene.pushToTalk")}</Text>
+        </Pressable>
+      )}
+      <View style={{ flexDirection: "row", gap: space(1) }}>
+        {live.openMic && (
+          <View style={{ flex: 1 }}>
+            <Button label={t("scene.pause")} kind="secondary" onPress={() => void live.setOpenMic(false)} />
+          </View>
+        )}
+        <View style={{ flex: 1 }}>
+          <Button label={t("scene.end")} kind="secondary" busy={moving} onPress={() => void next()} />
+        </View>
+      </View>
+    </>
+  );
+
   return (
-    <Screen back onBack={back}>
+    <Screen back onBack={back} footer={controls || undefined} followContent={live.status === "live"}>
       <ErrorText message={scene.error} onRetry={scene.reload} />
       {scene.data && (
         <Card>
@@ -149,27 +184,6 @@ export default function Scene() {
               ))}
             </Card>
           )}
-          {!live.openMic && (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("scene.pushToTalk")}
-              onPressIn={() => void live.talk(true)}
-              onPressOut={() => void live.talk(false)}
-              style={({ pressed }) => ({
-                minHeight: 96,
-                borderRadius: 48,
-                backgroundColor: colors.accent,
-                opacity: pressed ? 0.85 : 1,
-                transform: [{ scale: pressed ? 0.97 : 1 }],
-                alignItems: "center",
-                justifyContent: "center",
-              })}
-            >
-              <Text style={{ color: colors.accentInk, fontSize: 18, fontWeight: "600" }}>{t("scene.pushToTalk")}</Text>
-            </Pressable>
-          )}
-          {live.openMic && <Button label={t("scene.pause")} kind="secondary" onPress={() => void live.setOpenMic(false)} />}
-          <Button label={t("scene.end")} kind="secondary" busy={moving} onPress={() => void next()} />
         </>
       )}
       {live.status === "ended" && (

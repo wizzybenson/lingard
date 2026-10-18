@@ -1,7 +1,7 @@
 /** Small UI kit: one-thumb friendly sizes (≥ 48 px targets), accessible labels everywhere. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -17,7 +17,7 @@ import {
   View,
   type TextInputProps,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors, MAX_WIDTH, space } from "./theme";
 
@@ -36,10 +36,16 @@ interface ScreenProps {
   onBack?: () => void;
   /** Pull to refresh (scrolling screens only). */
   onRefresh?: () => Promise<unknown> | void;
+  /** Controls pinned under the scrolling content, always in reach (a live scene's Leave and Hold to talk). */
+  footer?: ReactNode;
+  /** Keep the newest content in view as it grows (live captions). */
+  followContent?: boolean;
 }
 
-export function Screen({ children, scroll = true, back = false, onBack, onRefresh }: ScreenProps) {
+export function Screen({ children, scroll = true, back = false, onBack, onRefresh, footer, followContent = false }: ScreenProps) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const scroller = useRef<ScrollView>(null);
   const [refreshing, setRefreshing] = useState(false);
   const refresh = onRefresh
     ? () => {
@@ -67,6 +73,8 @@ export function Screen({ children, scroll = true, back = false, onBack, onRefres
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         {scroll ? (
           <ScrollView
+            ref={scroller}
+            onContentSizeChange={followContent ? () => scroller.current?.scrollToEnd({ animated: true }) : undefined}
             contentContainerStyle={styles.scroll}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
@@ -77,6 +85,7 @@ export function Screen({ children, scroll = true, back = false, onBack, onRefres
         ) : (
           body
         )}
+        {footer && <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, space(2)) }]}>{footer}</View>}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -173,6 +182,17 @@ const styles = StyleSheet.create({
   bar: { width: "100%", maxWidth: MAX_WIDTH, alignSelf: "center", paddingHorizontal: space(1), minHeight: 44, justifyContent: "center" },
   backButton: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", minHeight: 44, paddingRight: space(1) },
   backText: { fontSize: 17, color: colors.accent },
+  footer: {
+    width: "100%",
+    maxWidth: MAX_WIDTH,
+    alignSelf: "center",
+    paddingHorizontal: space(2),
+    paddingTop: space(1),
+    gap: space(1),
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    backgroundColor: colors.paper,
+  },
   title: { fontSize: 26, fontWeight: "700", color: colors.ink },
   text: { fontSize: 16, lineHeight: 22, color: colors.ink },
   card: { backgroundColor: colors.card, borderRadius: 14, padding: space(2), gap: space(1), borderWidth: 1, borderColor: colors.border },
