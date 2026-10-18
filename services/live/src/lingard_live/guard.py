@@ -201,9 +201,10 @@ class ContractGuard:
         stray_time = [t for t in tokens if t in ctx.temporal_words and t not in ctx.allowed_words]
         if stray_time:
             block.append(f"off_contract_date:{','.join(stray_time)}")
+        known = ctx.allowed_names | ctx.allowed_words | ctx.common_capitalised
         for match in _CAPITALISED.finditer(sentence):
-            name = _fold(match.group(1))
-            if name not in ctx.allowed_names and name not in ctx.allowed_words and name not in ctx.common_capitalised:
+            # Hyphenated names ("Vieux-Port", "Jean-Marc") are matched whole but stored word by word.
+            if not all(_fold(part) in known for part in words(match.group(1))):
                 block.append(f"off_contract_name:{match.group(1)}")
 
         floor = zipf_floor(ctx.contract.npc_language_band)

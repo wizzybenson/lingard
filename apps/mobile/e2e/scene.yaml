@@ -1,0 +1,30 @@
+# Live scene, end to end (paid: planning, NPC model, TTS, STT). Starts today's story, joins, waits for the NPC to speak.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- scrollUntilVisible:
+    element: "Start today's story"
+    direction: UP
+- tapOn: "Start today's story"
+- extendedWaitUntil:
+    visible: "Your goal"
+    timeout: 180000
+- takeScreenshot: 11-scene
+- tapOn: "Continue"
+- tapOn: "Start talking"
+- runFlow:
+    when:
+      visible: "Allow"
+    commands:
+      - tapOn: "Allow"
+- extendedWaitUntil:
+    visible: "Leave"
+    timeout: 30000
+- takeScreenshot: 12-scene-live
+- extendedWaitUntil:
+    visible: "— .*"
+    timeout: 30000
+- takeScreenshot: 13-npc-spoke
+- waitForAnimationToEnd:
+    timeout: 15000
+- takeScreenshot: 14-scene-after

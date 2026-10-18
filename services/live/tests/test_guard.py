@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[3]
         "Cette fissure, je la vois bien.",
         "Monsieur, le bail a pris fin le 1er octobre.",
         "Je possède trois appartements ici, vous savez.",
+        "Bienvenue au Vieux-Port, monsieur.",  # hyphenated district name (blocked live on 2026-10-18)
         "Mm.",
     ],
 )
@@ -35,6 +36,7 @@ async def test_on_contract_sentences_pass(guard: ContractGuard, guard_ctx: Guard
         ("Je vous rends 450 dollars, pas plus.", "off_contract_number"),
         ("J'ai repeint le mur en mai dernier.", "off_contract_date"),
         ("Mon avocat, Maître Dubois, s'en occupera.", "off_contract_name"),
+        ("Voyez avec Jean-Marc Dubois demain.", "off_contract_name"),
         ("Sorry, I think you should pay for the wall.", "wrong_language"),
         ("Attention, on dit « si j'avais », pas « si j'aurais ».", "tutor"),
         ("En tant qu'intelligence artificielle, je ne peux pas.", "character_break"),
