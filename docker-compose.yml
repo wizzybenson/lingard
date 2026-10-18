@@ -32,7 +32,7 @@ services:
     volumes: [objectdata:/data, ./infra/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro]
 
   livekit:
-    image: livekit/livekit-server:v1.9.0
+    image: livekit/livekit-server:v1.13.10
     # node-ip/ports must match what clients can reach: ICE candidates carry them verbatim.
     # A phone on the Wi-Fi needs the computer's LAN address: LIVEKIT_NODE_IP=192.168.x.y docker compose up -d livekit
     command: --dev --bind 0.0.0.0 --node-ip ${LIVEKIT_NODE_IP:-127.0.0.1}

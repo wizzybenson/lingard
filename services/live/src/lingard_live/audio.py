@@ -4,10 +4,23 @@ from __future__ import annotations
 
 import io
 import wave
+from collections.abc import AsyncIterator
 
 import numpy as np
 
 from lingard_contracts.live import SAMPLE_RATE
+
+
+async def whole_samples(chunks: AsyncIterator[bytes]) -> AsyncIterator[bytes]:
+    """16-bit PCM from a network byte stream. HTTP chunks can split a sample in two, and a frame needs whole samples,
+    so an odd trailing byte waits for the next chunk."""
+    carry = b""
+    async for data in chunks:
+        data, carry = carry + data, b""
+        if len(data) % 2:
+            data, carry = data[:-1], data[-1:]
+        if data:
+            yield data
 
 
 def resample(pcm: bytes, src_rate: int, dst_rate: int = SAMPLE_RATE) -> bytes:

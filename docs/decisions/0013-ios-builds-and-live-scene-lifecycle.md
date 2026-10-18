@@ -43,6 +43,23 @@ The Expo dev log held about 290,000 lines, almost all from one evening:
 - The interface is light-only (`userInterfaceStyle: light`, dark status bar). The palette has no dark variant, and
   "automatic" gave white status-bar text on the paper background in iOS dark mode. A dark theme is future work.
 
+## Addendum 2026-10-18: "negotiation timed out" on every scene
+
+Reproduced without AI or an NPC: a probe page with two browser participants publishing a generated tone to a throwaway
+room failed the same way. Every publish hit "negotiation timed out" after 15 s, followed by a full rejoin, forever.
+Turning off `singlePeerConnection` changed nothing.
+
+- **Cause.** `livekit-client` 2.22.4 treats a publish as negotiated only when the server's answer carries an offer id
+  newer than the one it sent. `livekit-server` v1.9.0 predates offer ids, so its answers (sent 2 ms after the offer,
+  per the server log) never matched. The client waited out its 15 s deadline and reconnected, every time.
+- **Fix.** `livekit-server` v1.13.10 (current release, pinned in `docker-compose.yml`). The same probe now connects in
+  0.3 s and publishes in 1 s, both sides subscribe, and there were no negotiation errors in 45 s. The worker's Python
+  SDK (`livekit` 1.1.20) also connects, publishes and subscribes against v1.13.10.
+- **Second bug, found in the same scene.** The NPC crashed on its first line: ElevenLabs streams 16-bit PCM in HTTP
+  chunks that can split a sample, and `rtc.AudioFrame` rejects an odd byte count. `audio.whole_samples` now carries the
+  odd byte over to the next chunk for every streamed provider (it was done inline for OpenAI only). Test:
+  `test_elevenlabs_stream_never_splits_a_sample`.
+
 ## Not verified here
 
 - Verified: a Debug Simulator build succeeds (122 pods), installs on an iPhone 17 Pro Simulator (iOS 26.4), loads the

@@ -1,5 +1,6 @@
 import functools
 import json
+from collections.abc import AsyncIterator
 
 import httpx
 import pytest
@@ -7,7 +8,7 @@ from pydantic import SecretStr
 
 from lingard_live.settings import LiveSettings, build_stt, stt_providers, tts_providers
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt
-from lingard_live.tts import ElevenLabsTts
+from lingard_live.tts import ElevenLabsTts, VoiceSpec
 from lingard_live.voices import OPENAI_VOICES, gender_of, pick
 
 PCM = b"\x00\x01" * 1600
@@ -101,6 +102,28 @@ async def test_elevenlabs_maps_logical_voices_to_account_voices(monkeypatch: pyt
     assert await tts.voice_for("fr_f_46_nadia") == "v-f1"
     assert await tts.voice_for("fr_f_41_chloe") == "pinned"
     assert fetches == ["/v1/voices"], "the voice list is fetched once"
+
+
+async def test_elevenlabs_stream_never_splits_a_sample(monkeypatch: pytest.MonkeyPatch) -> None:
+    """HTTP chunks can end mid-sample; an odd byte count crashed the NPC's first line (2026-10-18)."""
+    pcm = bytes(range(200))  # 100 samples
+    sizes = [3, 7, 1, 50, 139]  # odd cuts, as the network delivers them
+
+    async def body() -> AsyncIterator[bytes]:
+        start = 0
+        for size in sizes:
+            yield pcm[start : start + size]
+            start += size
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/voices":
+            return httpx.Response(200, json={"voices": [{"voice_id": "v-f1", "labels": {"gender": "female"}}]})
+        return httpx.Response(200, content=body())
+
+    _fake(monkeypatch, httpx.MockTransport(handle))
+    chunks = [c.pcm async for c in ElevenLabsTts("k").stream("Bonjour", VoiceSpec("fr_f_41_chloe", "fr"))]
+    assert all(len(c) % 2 == 0 and c for c in chunks)
+    assert b"".join(chunks) == pcm
 
 
 def test_openai_voices_follow_gender_and_stay_stable() -> None:

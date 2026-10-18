@@ -17,7 +17,7 @@ from typing import Protocol
 import httpx
 
 from lingard_contracts.live import SAMPLE_RATE, AudioChunk
-from lingard_live.audio import chunked, resample, silence, tone, wav_to_pcm
+from lingard_live.audio import chunked, resample, silence, tone, wav_to_pcm, whole_samples
 from lingard_live.voices import OPENAI_VOICES, gender_of, pick
 
 logger = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ class ElevenLabsTts:
         ):
             response.raise_for_status()
             offset = 0
-            async for data in response.aiter_bytes():
+            async for data in whole_samples(response.aiter_bytes()):
                 yield AudioChunk(pcm=data, timestamp_ms=offset)
                 offset += len(data) * 1000 // (2 * SAMPLE_RATE)
 
@@ -127,11 +127,7 @@ class OpenAITts:
             client.stream("POST", self.URL, headers={"Authorization": f"Bearer {self._key}"}, json=body) as response,
         ):
             response.raise_for_status()
-            carry = b""
-            async for data in response.aiter_bytes():
-                data, carry = carry + data, b""
-                if len(data) % 2:
-                    data, carry = data[:-1], data[-1:]
+            async for data in whole_samples(response.aiter_bytes()):
                 yield AudioChunk(pcm=resample(data, self.SOURCE_RATE))
 
 
