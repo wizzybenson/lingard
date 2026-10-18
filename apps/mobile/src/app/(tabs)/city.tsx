@@ -39,6 +39,15 @@ export default function City() {
     void refreshReminderText(title, body).catch(() => undefined);
   }, [today.data, t]);
   const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
+  // Plan today's story ahead, so "Start" opens it at once. The server reuses a day that is still planning or not
+  // played yet, so this never plans twice; it stops once the learner has practised today.
+  const plannedAhead = useRef<string | null>(null);
+  useEffect(() => {
+    const next = today.data;
+    if (!city || !next || next.next_step !== "story" || next.practised_today || plannedAhead.current === city) return;
+    plannedAhead.current = city;
+    void api.post<SessionView>("/v1/sessions", { city }).catch(() => (plannedAhead.current = null));
+  }, [api, city, today.data]);
   // The content column is at most MAX_WIDTH wide with space(2) padding; the card inside adds another space(2).
   const column = Math.min(width, MAX_WIDTH) - space(4);
   // A stable size object: the map rebuilds its skyline paths whenever this changes.

@@ -91,8 +91,11 @@ class LearnerStore(Protocol):
 
     async def save_fsrs(self, user_id: uuid.UUID, item_key: str, card: dict[str, Any]) -> None: ...
 
-    async def save_day_plan(self, plan: DayPlan, session_id: uuid.UUID | None = None) -> uuid.UUID:
-        """Store the plan on ``session_id`` (marking it ready) or on a new session; returns the session id."""
+    async def save_day_plan(
+        self, plan: DayPlan, session_id: uuid.UUID | None = None, *, complete: bool = True
+    ) -> uuid.UUID:
+        """Store the plan on ``session_id`` (marking it ready) or on a new session; returns the session id.
+        ``complete=False``: the first scene is playable while the rest of the day is still being compiled."""
         ...
 
     async def fail_day_plan(self, session_id: uuid.UUID, reason: str) -> None:
@@ -155,6 +158,7 @@ class MemoryStore:
     fsrs_by_user: dict[uuid.UUID, dict[str, dict[str, Any]]] = field(default_factory=lambda: defaultdict(dict))
     plans: dict[uuid.UUID, DayPlan] = field(default_factory=dict)
     failed_plans: dict[uuid.UUID, str] = field(default_factory=dict)
+    incomplete_plans: set[uuid.UUID] = field(default_factory=set)
     worlds: dict[tuple[uuid.UUID, str], dict[str, Any]] = field(default_factory=dict)
     relationships: dict[tuple[uuid.UUID, str], tuple[float, str]] = field(default_factory=dict)
     notebooks: dict[tuple[uuid.UUID, uuid.UUID], dict[str, Any]] = field(default_factory=dict)
@@ -241,9 +245,15 @@ class MemoryStore:
     async def save_fsrs(self, user_id: uuid.UUID, item_key: str, card: dict[str, Any]) -> None:
         self.fsrs_by_user[user_id][item_key] = card
 
-    async def save_day_plan(self, plan: DayPlan, session_id: uuid.UUID | None = None) -> uuid.UUID:
+    async def save_day_plan(
+        self, plan: DayPlan, session_id: uuid.UUID | None = None, *, complete: bool = True
+    ) -> uuid.UUID:
         plan_id = session_id or uuid.uuid4()
         self.plans[plan_id] = plan
+        if complete:
+            self.incomplete_plans.discard(plan_id)
+        else:
+            self.incomplete_plans.add(plan_id)
         return plan_id
 
     async def fail_day_plan(self, session_id: uuid.UUID, reason: str) -> None:

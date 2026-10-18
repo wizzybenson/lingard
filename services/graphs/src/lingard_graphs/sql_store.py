@@ -359,13 +359,15 @@ class SqlStore:
             row = await db.get_one(m.Session, session_id)
             row.plan = {**row.plan, "status": "failed", "error": reason}
 
-    async def save_day_plan(self, plan: DayPlan, session_id: uuid.UUID | None = None) -> uuid.UUID:
+    async def save_day_plan(
+        self, plan: DayPlan, session_id: uuid.UUID | None = None, *, complete: bool = True
+    ) -> uuid.UUID:
         async with self._sessions() as db, db.begin():
             if session_id is not None:
                 existing = await db.get_one(m.Session, session_id)
                 if existing.user_id != plan.user_id:
                     raise PermissionError("session belongs to another user")
-                existing.plan = {**plan.model_dump(mode="json"), "status": "ready"}
+                existing.plan = {**plan.model_dump(mode="json"), "status": "ready", "complete": complete}
                 return existing.id
             row = m.Session(
                 tenant_id=await self._tenant(db, plan.user_id),

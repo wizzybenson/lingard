@@ -1,3 +1,4 @@
+import asyncio
 import json
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -72,6 +73,45 @@ async def test_day_planner_builds_three_valid_scenes_with_ticket_share(deps: Gra
     assert not set(landlord.ticket_targets), "tickets failed at the landlord's are never re-tried there"
     saved = [s for s in store.scenes.values() if s.session_id == session_id]
     assert len(saved) == 3 and store.plans[session_id] == plan
+    assert session_id not in store.incomplete_plans, "the day is marked complete once every scene is in"
+
+
+async def test_day_is_playable_from_the_first_compiled_scene(
+    deps: GraphDeps, script: Script, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The learner waits for one scene, not three: the rest compile while the first is played."""
+    from lingard_graphs.agents.scene_compiler import SceneCompiler
+
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    script.handlers["director of an ongoing life story"] = lambda m: {"beats": ["One.", "Two.", "Three."]}
+    script.handlers["You design one scene"] = draft_for
+    release = asyncio.Event()
+    calls = 0
+    compile_scene = SceneCompiler.compile
+
+    async def staggered(self: SceneCompiler, *args: Any, **kwargs: Any) -> Any:
+        nonlocal calls
+        calls += 1
+        if calls > 1:
+            await release.wait()  # the other scenes are still "compiling"
+        return await compile_scene(self, *args, **kwargs)
+
+    monkeypatch.setattr(SceneCompiler, "compile", staggered)
+    session_id = uuid.uuid4()
+    run = asyncio.create_task(
+        build_day_planner(deps).ainvoke(PlanState(user_id=USER, session_id=session_id, city="rivemont"))
+    )
+    for _ in range(200):
+        if session_id in store.plans:
+            break
+        await asyncio.sleep(0.01)
+    playable = [s for s in store.scenes.values() if s.session_id == session_id]
+    assert len(playable) == 1 and session_id in store.incomplete_plans, "ready after the first scene"
+    release.set()
+    await run
+    assert len([s for s in store.scenes.values() if s.session_id == session_id]) == 3
+    assert session_id not in store.incomplete_plans
 
 
 def _npc_settings(deps: GraphDeps, city_key: str, band: int) -> int:

@@ -10,6 +10,8 @@ export interface SessionView {
   status: "planning" | "ready" | "failed" | "ended";
   error?: string | null;
   scene_ids: string[];
+  /** Every scene of the day is compiled; a ready day can start before that. */
+  complete: boolean;
   notebook: Notebook | null;
 }
 

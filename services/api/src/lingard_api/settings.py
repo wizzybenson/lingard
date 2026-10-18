@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     refresh_token_days: int = 60
     plan_reuse_minutes: int = 10
     """Starting a day while one is still being planned for the same city returns that plan (up to this age)."""
+    ready_plan_reuse_hours: int = 12
+    """A day planned ahead (the app prepares one when the city opens) and not played yet is reused up to this age."""
     pin_reverify_days: int = 30
 
     argon2_time_cost: int = 3

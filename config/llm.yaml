@@ -53,7 +53,7 @@ tiers:
     timeout_s: 5           # the claim checker's own deadline (CLAIM_CHECK_DEADLINE_S) is what binds
     retries: 0
   mid:                    # assessment, planning, lessons
-    models: [claude-sonnet-5-5, gpt-6.1-sol, gemini-3.8-flash]
+    models: [gpt-6.1-sol, claude-sonnet-5-5, gemini-3.8-flash]  # OpenAI first (founder, 2026-10-18)
     effort: medium
     max_tokens: 8192
     timeout_s: 60

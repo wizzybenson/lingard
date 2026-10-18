@@ -78,10 +78,23 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     assert body["learner_goal"] == "Récupérer votre dépôt de garantie"
     assert "targets" not in body and "elicitation" not in body and "si_imparfait" not in scene.text
 
+    from lingard_db.models import Session
+
+    async with api.state.sessions() as db:  # the planner has handed over the first scene; more are coming
+        await db.execute(
+            update(Session).where(Session.id == uuid.UUID(session_id)).values(plan={"status": "ready", "complete": False})
+        )
+        await db.commit()
+    ahead = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
+    assert ahead.json()["id"] == session_id and len(jobs.jobs) == queued, "a day planned ahead is reused until played"
+    assert ahead.json()["status"] == "ready" and ahead.json()["complete"] is False
+
     live = await api.client.post(f"/v1/scenes/{contract.scene_id}/live", headers=api.bearer(token))
     assert live.status_code == 200 and live.json()["token"].count(".") == 2
     stream, payload = jobs.jobs[-1]
     assert stream == LIVE_JOBS and payload["contract"]["targets"]["grammar"] == ["fr.grammar.si_imparfait"]
+    played = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
+    assert played.json()["id"] != session_id, "once a scene of the day is played, starting plans a new day"
 
     other = await api.client.post("/v1/admin/users", json={"display_name": "Lina"}, headers=api.bearer(token))
     lina = (await api.sign_in("Lina", other.json()["one_time_pin"])).json()

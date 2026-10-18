@@ -41,7 +41,8 @@ def router_with(models: dict[str, ScriptedChatModel], cfg: LLMConfig) -> tuple[L
 async def test_shipped_config_tier_order() -> None:
     cfg = LLMConfig.load(ROOT / "config/llm.yaml")
     assert cfg.tier("fast").models[0].model == "claude-haiku-5-5"
-    assert cfg.tier("mid").models[0].model == "claude-sonnet-5-5"
+    assert cfg.tier("mid").models[0].model == "gpt-6.1-sol"  # OpenAI first (founder, 2026-10-18)
+    assert cfg.tier("compile").models[0].model == "gpt-6.1-sol" and cfg.tier("compile").models[0].effort == "medium"
     assert cfg.tier("frontier").models[0].model == "gpt-6.1-sol"
     assert "openai" not in {s.provider for s in cfg.tier("fast").models}, "NPCs run on Haiku, never gpt-6-luna"
     assert not {s.model for t in cfg.tiers.values() for s in t.models} & {"claude-opus-5-5", "gpt-6-astra"}

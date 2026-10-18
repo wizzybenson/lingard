@@ -11,6 +11,9 @@ import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, goBack, Loading, Screen, Title } from "@/ui/kit";
 import { colors, MAX_WIDTH, space } from "@/ui/theme";
 
+const NEXT_SCENE_POLL_MS = 2000;
+const NEXT_SCENE_TIMEOUT_MS = 3 * 60 * 1000;
+
 // Loaded lazily: on the web, Skia modules must not be evaluated before CanvasKit has loaded (see _layout.tsx).
 const LocationArt = lazy(() => import("@/world/renderer/LocationArt").then((m) => ({ default: m.LocationArt })));
 
@@ -33,6 +36,7 @@ export default function Scene() {
   const [showCaptions, setShowCaptions] = useState(true);
   const [moving, setMoving] = useState(false);
   const [moveError, setMoveError] = useState<string | null>(null);
+  const [preparingNext, setPreparingNext] = useState(false);
   const { width } = useWindowDimensions();
   const band = scene.data?.learner_band ?? 4; // unknown band: keep captions fully visible
 
@@ -51,8 +55,7 @@ export default function Scene() {
     try {
       await live.leave();
       if (!session) return goBack();
-      const view = await api.get<SessionView>(`/v1/sessions/${session}`);
-      const following = view.scene_ids[view.scene_ids.indexOf(id) + 1];
+      const following = await followingScene(session);
       if (following) router.replace({ pathname: "/scene/[id]", params: { id: following, session } });
       else {
         await api.post(`/v1/sessions/${session}/end`);
@@ -62,6 +65,20 @@ export default function Scene() {
       setMoveError(e instanceof Error ? e.message : String(e));
     } finally {
       setMoving(false);
+      setPreparingNext(false);
+    }
+  };
+
+  /** The day's next scene. Later scenes compile while the first is played, so wait for one rather than end the day. */
+  const followingScene = async (sessionId: string): Promise<string | null> => {
+    const deadline = Date.now() + NEXT_SCENE_TIMEOUT_MS;
+    for (;;) {
+      const view = await api.get<SessionView>(`/v1/sessions/${sessionId}`);
+      const following = view.scene_ids[view.scene_ids.indexOf(id) + 1];
+      if (following) return following;
+      if (view.complete || view.status !== "ready" || Date.now() > deadline) return null;
+      setPreparingNext(true);
+      await new Promise((r) => setTimeout(r, NEXT_SCENE_POLL_MS));
     }
   };
 
@@ -160,6 +177,12 @@ export default function Scene() {
           <Body>{t("scene.ended")}</Body>
           <Button label={t("app.continue")} busy={moving} onPress={() => void next()} />
         </Card>
+      )}
+      {preparingNext && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: space(1) }} accessibilityLiveRegion="polite">
+          <ActivityIndicator color={colors.accent} />
+          <Body>{t("scene.preparingNext")}</Body>
+        </View>
       )}
       <ErrorText message={moveError} onRetry={() => void next()} />
     </Screen>

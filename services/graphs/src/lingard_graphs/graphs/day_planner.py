@@ -1,4 +1,6 @@
-"""``day_planner`` graph (SPEC §11): learner model → targets → story beats → compiled scenes → persisted plan."""
+"""``day_planner`` graph (SPEC §11): learner model → targets → story beats → compiled scenes → persisted plan.
+
+Scenes compile in parallel and are saved as each one finishes, so the day is playable from the first scene."""
 
 from __future__ import annotations
 
@@ -198,20 +200,30 @@ def build_day_planner(
             )
             for slot, beat in zip(state.slots, state.beats, strict=True)
         ]
-        results = await asyncio.gather(
-            *(compiler.compile(b, trace_id=state.trace_id) for b in briefs), return_exceptions=True
-        )
-        contracts = []
-        for brief, result in zip(briefs, results, strict=True):
-            if isinstance(result, SceneContract):
-                contracts.append(result)
-            elif isinstance(result, CompileError):
-                logger.warning("scene at %s dropped: %s", brief.location_key, result)
-            elif isinstance(result, BaseException):
-                raise result
+        plan = DayPlan(user_id=state.user_id, city=state.city, scenes=briefs, lessons=state.lessons)
+        # A resumed run (worker restart) keeps the scenes already handed to the learner instead of compiling twice.
+        if saved := await deps.store.scenes_for_session(state.session_id):
+            return {"contracts": [s.contract for s in saved], "plan": plan}
+        # The learner waits only for the first scene: each one is saved as soon as it compiles, and the session is
+        # playable from the first. The rest finish while that scene is being played.
+        tasks = {asyncio.ensure_future(compiler.compile(b, trace_id=state.trace_id)): b for b in briefs}
+        contracts: list[SceneContract] = []
+        try:
+            for done in asyncio.as_completed(tasks):
+                try:
+                    contract = await done
+                except CompileError as error:
+                    logger.warning("scene dropped: %s", error)
+                    continue
+                await deps.store.save_scene(SceneRecord(contract.scene_id, state.user_id, state.session_id, contract))
+                if not contracts:
+                    await deps.store.save_day_plan(plan, state.session_id, complete=False)
+                contracts.append(contract)
+        finally:
+            for task in tasks:
+                task.cancel()
         if not contracts:
             raise CompileError([])
-        plan = DayPlan(user_id=state.user_id, city=state.city, scenes=briefs, lessons=state.lessons)
         return {"contracts": contracts, "plan": plan}
 
     async def validate(state: PlanState) -> dict[str, Any]:
@@ -225,10 +237,9 @@ def build_day_planner(
         return {}
 
     async def persist_day_plan(state: PlanState) -> dict[str, Any]:
+        """The scenes are already saved (``compile_scenes``); this marks the day complete."""
         assert state.plan is not None
-        session_id = await deps.store.save_day_plan(state.plan, state.session_id)
-        for contract in state.contracts:
-            await deps.store.save_scene(SceneRecord(contract.scene_id, state.user_id, session_id, contract))
+        await deps.store.save_day_plan(state.plan, state.session_id, complete=True)
         return {}
 
     graph = StateGraph(PlanState)

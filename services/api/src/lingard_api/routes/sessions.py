@@ -33,6 +33,8 @@ class SessionView(BaseModel):
     kind: str
     status: Literal["planning", "ready", "failed", "ended"]
     scene_ids: list[uuid.UUID]
+    complete: bool = False
+    """Every scene of the day is compiled. A ready day may start before this: later scenes keep arriving."""
     error: str | None = None
     notebook: dict[str, Any] | None = None
 
@@ -82,11 +84,10 @@ async def _owned_session(db: Db, principal: Principal, session_id: uuid.UUID) ->
     return row
 
 
-@router.post("/sessions", response_model=SessionView, status_code=202)
-async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
-    require_providers(state, llm=True)
-    since = datetime.now(UTC) - timedelta(minutes=state.settings.plan_reuse_minutes)
-    pending = (
+async def _reusable_day(db: Db, principal: Principal, body: StartSessionBody, state: State) -> Session | None:
+    """The newest unended day for this city that is still planning, or planned and not played yet."""
+    now = datetime.now(UTC)
+    latest = (
         await db.execute(
             select(Session)
             .where(
@@ -94,15 +95,30 @@ async def start_session(body: StartSessionBody, principal: Principal, state: Sta
                 Session.city == body.city,
                 Session.kind == body.kind,
                 Session.ended_at.is_(None),
-                Session.started_at > since,
-                Session.plan["status"].as_string() == "planning",
+                Session.started_at > now - timedelta(hours=state.settings.ready_plan_reuse_hours),
+                Session.plan["status"].as_string().in_(("planning", "ready")),
             )
             .order_by(Session.started_at.desc())
             .limit(1)
         )
     ).scalar_one_or_none()
-    if pending is not None:  # a second tap, or the screen was reopened: don't plan (and pay for) the day twice
-        return SessionView(id=pending.id, city=pending.city, kind=pending.kind, status="planning", scene_ids=[])
+    if latest is None:
+        return None
+    if latest.plan.get("status") == "planning":
+        fresh = latest.started_at > now - timedelta(minutes=state.settings.plan_reuse_minutes)
+        return latest if fresh else None
+    played = (
+        await db.execute(select(Scene.id).where(Scene.session_id == latest.id, Scene.status != "planned").limit(1))
+    ).scalar_one_or_none()
+    return None if played else latest
+
+
+@router.post("/sessions", response_model=SessionView, status_code=202)
+async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
+    require_providers(state, llm=True)
+    if (reusable := await _reusable_day(db, principal, body, state)) is not None:
+        # A second tap, a reopened screen, or a day the app planned ahead: don't plan (and pay for) the day twice.
+        return await get_session(reusable.id, principal, db)
     row = Session(
         tenant_id=principal.tenant_id,
         user_id=principal.user_id,
@@ -137,6 +153,8 @@ async def get_session(session_id: uuid.UUID, principal: Principal, db: Db) -> Se
         kind=row.kind,
         status=plan_status,
         scene_ids=list(scenes),
+        # Plans saved before incremental planning have no flag and were always whole.
+        complete=plan_status in ("ended", "failed") or bool(row.plan.get("complete", plan_status == "ready")),
         notebook=row.plan.get("notebook"),
         error=row.plan.get("error"),
     )
