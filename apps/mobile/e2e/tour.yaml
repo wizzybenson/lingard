@@ -3,9 +3,9 @@ appId: app.lingard
 ---
 - runFlow: sign-in.yaml
 - scrollUntilVisible:
-    element: "Café du Quai"
+    element: "Café du Quai.*"
     direction: DOWN
-- tapOn: "Café du Quai"
+- tapOn: "Café du Quai.*"
 - takeScreenshot: 02-city-location
 - tapOn: "Phone, tab.*"
 - takeScreenshot: 03-phone

@@ -130,6 +130,10 @@ class LearnerStore(Protocol):
 
     async def active_days(self, user_id: uuid.UUID) -> list[date]: ...
 
+    async def days_lived(self, user_id: uuid.UUID, city: str) -> int:
+        """Story days finished in ``city``: progress through the story, independent of the calendar."""
+        ...
+
     async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
         """Any practice (reviews, a lesson, writing, the Accent Studio) keeps the streak, not only live scenes."""
         ...
@@ -159,6 +163,7 @@ class MemoryStore:
     plans: dict[uuid.UUID, DayPlan] = field(default_factory=dict)
     failed_plans: dict[uuid.UUID, str] = field(default_factory=dict)
     incomplete_plans: set[uuid.UUID] = field(default_factory=set)
+    lived: dict[tuple[uuid.UUID, str], int] = field(default_factory=dict)
     worlds: dict[tuple[uuid.UUID, str], dict[str, Any]] = field(default_factory=dict)
     relationships: dict[tuple[uuid.UUID, str], tuple[float, str]] = field(default_factory=dict)
     notebooks: dict[tuple[uuid.UUID, uuid.UUID], dict[str, Any]] = field(default_factory=dict)
@@ -303,6 +308,9 @@ class MemoryStore:
 
     async def active_days(self, user_id: uuid.UUID) -> list[date]:
         return sorted(self.days[user_id])
+
+    async def days_lived(self, user_id: uuid.UUID, city: str) -> int:
+        return self.lived.get((user_id, city), 0)
 
     async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
         self.days[user_id].add(day)

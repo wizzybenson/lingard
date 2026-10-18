@@ -96,7 +96,16 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     stream, payload = jobs.jobs[-1]
     assert stream == LIVE_JOBS and payload["contract"]["targets"]["grammar"] == ["fr.grammar.si_imparfait"]
     played = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
-    assert played.json()["id"] != session_id, "once a scene of the day is played, starting plans a new day"
+    next_day = played.json()["id"]
+    assert next_day != session_id, "once a scene of the day is played, starting plans a new day"
+
+    planned = len(jobs.jobs)
+    ended = await api.client.post(f"/v1/sessions/{session_id}/end", headers=api.bearer(token))
+    assert ended.json()["status"] == "ended"
+    kinds = [payload["kind"] for _, payload in jobs.jobs[planned:]]
+    assert kinds == ["night_consolidation"], "the next day is already planning, so ending reuses it"
+    world = await api.client.get("/v1/world/rivemont", headers=api.bearer(token))
+    assert world.json()["days_lived"] == 1, "progress through the story, not calendar days"
 
     other = await api.client.post("/v1/admin/users", json={"display_name": "Lina"}, headers=api.bearer(token))
     lina = (await api.sign_in("Lina", other.json()["one_time_pin"])).json()

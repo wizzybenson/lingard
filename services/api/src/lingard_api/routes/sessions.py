@@ -17,6 +17,7 @@ from lingard_api.routes.speech import require_providers
 from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_contracts.scene import SceneContract
 from lingard_db.models import LearnerProfile, Scene, Session, User
+from lingard_llm.config import any_llm_configured
 from lingard_world import load_city
 
 router = APIRouter(prefix="/v1", tags=["sessions"])
@@ -84,18 +85,17 @@ async def _owned_session(db: Db, principal: Principal, session_id: uuid.UUID) ->
     return row
 
 
-async def _reusable_day(db: Db, principal: Principal, body: StartSessionBody, state: State) -> Session | None:
-    """The newest unended day for this city that is still planning, or planned and not played yet."""
-    now = datetime.now(UTC)
+async def _reusable_day(db: Db, user_id: uuid.UUID, city: str, kind: str, state: State) -> Session | None:
+    """The newest unended day for this city that is still planning, or planned and not played yet. A planned day
+    waits for the learner however long they take: the story follows progress, not the calendar."""
     latest = (
         await db.execute(
             select(Session)
             .where(
-                Session.user_id == principal.user_id,
-                Session.city == body.city,
-                Session.kind == body.kind,
+                Session.user_id == user_id,
+                Session.city == city,
+                Session.kind == kind,
                 Session.ended_at.is_(None),
-                Session.started_at > now - timedelta(hours=state.settings.ready_plan_reuse_hours),
                 Session.plan["status"].as_string().in_(("planning", "ready")),
             )
             .order_by(Session.started_at.desc())
@@ -105,7 +105,8 @@ async def _reusable_day(db: Db, principal: Principal, body: StartSessionBody, st
     if latest is None:
         return None
     if latest.plan.get("status") == "planning":
-        fresh = latest.started_at > now - timedelta(minutes=state.settings.plan_reuse_minutes)
+        # A plan that has been "planning" this long was lost (worker restart); plan afresh.
+        fresh = latest.started_at > datetime.now(UTC) - timedelta(minutes=state.settings.plan_reuse_minutes)
         return latest if fresh else None
     played = (
         await db.execute(select(Scene.id).where(Scene.session_id == latest.id, Scene.status != "planned").limit(1))
@@ -113,17 +114,15 @@ async def _reusable_day(db: Db, principal: Principal, body: StartSessionBody, st
     return None if played else latest
 
 
-@router.post("/sessions", response_model=SessionView, status_code=202)
-async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
-    require_providers(state, llm=True)
-    if (reusable := await _reusable_day(db, principal, body, state)) is not None:
-        # A second tap, a reopened screen, or a day the app planned ahead: don't plan (and pay for) the day twice.
-        return await get_session(reusable.id, principal, db)
+async def _plan_day(db: Db, state: State, tenant_id: uuid.UUID, user_id: uuid.UUID, city: str, kind: str) -> Session:
+    """The day to play next in ``city``: one already planned and unplayed, or a new one queued for planning."""
+    if (reusable := await _reusable_day(db, user_id, city, kind, state)) is not None:
+        return reusable  # a second tap, a reopened screen, or a day planned ahead: never plan (and pay) twice
     row = Session(
-        tenant_id=principal.tenant_id,
-        user_id=principal.user_id,
-        kind=body.kind,
-        city=body.city,
+        tenant_id=tenant_id,
+        user_id=user_id,
+        kind=kind,
+        city=city,
         started_at=datetime.now(UTC),
         plan={"status": "planning"},
     )
@@ -131,15 +130,16 @@ async def start_session(body: StartSessionBody, principal: Principal, state: Sta
     await db.commit()
     await state.jobs.enqueue(
         GRAPH_JOBS,
-        {
-            "kind": "day_planner",
-            "user_id": principal.user_id,
-            "session_id": row.id,
-            "city": body.city,
-            "trace_id": row.trace_id,
-        },
+        {"kind": "day_planner", "user_id": user_id, "session_id": row.id, "city": city, "trace_id": row.trace_id},
     )
-    return SessionView(id=row.id, city=row.city, kind=row.kind, status="planning", scene_ids=[])
+    return row
+
+
+@router.post("/sessions", response_model=SessionView, status_code=202)
+async def start_session(body: StartSessionBody, principal: Principal, state: State, db: Db) -> SessionView:
+    require_providers(state, llm=True)
+    row = await _plan_day(db, state, principal.tenant_id, principal.user_id, body.city, body.kind)
+    return await get_session(row.id, principal, db)
 
 
 @router.get("/sessions/{session_id}", response_model=SessionView)
@@ -175,6 +175,10 @@ async def end_session(session_id: uuid.UUID, principal: Principal, state: State,
                 "trace_id": row.trace_id,
             },
         )
+        if row.kind == "live" and row.city and any_llm_configured():
+            # The next story day is planned now, after consolidation (jobs run in order), so it is ready when the
+            # learner is: finishing a day unlocks the next one, whatever the time.
+            await _plan_day(db, state, principal.tenant_id, principal.user_id, row.city, row.kind)
     return await get_session(session_id, principal, db)
 
 

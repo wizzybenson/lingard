@@ -183,6 +183,7 @@ export type NodeKey4 = string;
 export type TargetEvidence = TargetEvidence1[];
 export type TurnEventId = string;
 export type City5 = "ashford" | "rivemont";
+export type DaysLived = number;
 export type Key2 = string;
 export type Description1 = string;
 export type Key3 = string;
@@ -194,6 +195,8 @@ export type X = number;
 export type Y = number;
 export type Hotspots = Hotspot[];
 export type Key4 = string;
+export type Kind2 =
+  ("home" | "cafe" | "bank" | "clinic" | "library" | "town_hall" | "newspaper" | "shop" | "job_centre") | null;
 export type LayerArt = string[];
 export type Name2 = string;
 export type X1 = number;
@@ -573,6 +576,7 @@ export interface TargetEvidence1 {
  */
 export interface WorldView {
   city: City5;
+  days_lived?: DaysLived;
   districts: Districts;
   hour: Hour;
   name: Name4;
@@ -598,6 +602,7 @@ export interface Location {
   description: Description1;
   hotspots?: Hotspots;
   key: Key4;
+  kind?: Kind2;
   layer_art?: LayerArt;
   name: Name2;
   x?: X1;

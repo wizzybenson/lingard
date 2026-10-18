@@ -6,11 +6,12 @@ import * as Sharing from "expo-sharing";
 import { Platform, Switch, View } from "react-native";
 
 import type { Profile, Today } from "@/api/types";
-import { applyLocale, UI_LOCALES } from "@/i18n";
+import { applyLocale, currentLocale, UI_LOCALES } from "@/i18n";
 import { currentReminder, REMINDER_TIMES, reminderText, remindersSupported, setReminder, type ReminderTime } from "@/state/reminders";
 import { useAuth } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from "@/ui/kit";
+import { Body, Button, Card, ErrorText, Field, ListRow, Loading, Screen, Section, Segmented } from "@/ui/kit";
+import { colors, space } from "@/ui/theme";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -65,101 +66,133 @@ export default function Settings() {
     }
   };
 
-  if (!profile.data) return <Screen><Loading /></Screen>;
+  if (!profile.data) {
+    return (
+      <Screen title={t("settings.title")}>
+        <Loading />
+      </Screen>
+    );
+  }
   const consents = profile.data.consents;
   const toggle = (key: keyof Profile["consents"]) => void update({ consents: { ...consents, [key]: !consents[key] } });
 
+  const pad = { paddingHorizontal: space(2), paddingBottom: space(2) };
+  const reminderKey = (time: ReminderTime | null) => (time ? `${time.hour}:${String(time.minute).padStart(2, "0")}` : "off");
+  const consentSwitch = (key: keyof Profile["consents"], label: string) => (
+    <Switch value={consents[key]} onValueChange={() => toggle(key)} accessibilityLabel={label} trackColor={{ true: colors.accent }} />
+  );
+
   return (
-    <Screen>
-      <Title>{t("settings.title")}</Title>
+    <Screen title={t("settings.title")}>
       <ErrorText message={error} />
-      <Button label={t("settings.goal")} onPress={() => router.push("/goal")} />
-      {remindersSupported && (
-        <Card>
-          <Body muted>{t("reminders.title")}</Body>
-          <View style={{ flexDirection: "row", gap: 6 }}>
-            <View style={{ flex: 1 }}>
-              <Button compact label={t("reminders.off")} kind={reminder === null ? "primary" : "secondary"} onPress={() => void chooseReminder(null)} />
-            </View>
-            {REMINDER_TIMES.map((time) => (
-              <View key={`${time.hour}:${time.minute}`} style={{ flex: 1 }}>
-                <Button
-                  compact
-                  label={`${time.hour}:${String(time.minute).padStart(2, "0")}`}
-                  kind={reminder?.hour === time.hour && reminder.minute === time.minute ? "primary" : "secondary"}
-                  onPress={() => void chooseReminder(time)}
-                />
-              </View>
-            ))}
-          </View>
-        </Card>
-      )}
-      <Card>
-        <Body muted>{t("settings.uiLanguage")}</Body>
-        <View style={{ flexDirection: "row", gap: 8 }}>
-          {UI_LOCALES.map(({ code, label }) => (
-            <View key={code} style={{ flex: 1 }}>
-              <Button
-                label={label}
-                kind={profile.data?.ui_locale === code ? "primary" : "secondary"}
-                onPress={() => {
-                  applyLocale(code);
-                  void update({ ui_locale: code });
-                }}
-              />
-            </View>
-          ))}
-        </View>
-      </Card>
-      <Card>
-        <Body muted>{t("settings.intensity")}</Body>
-        {(["calm", "tense", "heated"] as const).map((level) => (
-          <Button key={level} label={t(`settings.${level}`)} kind={profile.data?.intensity_cap === level ? "primary" : "secondary"} onPress={() => void update({ intensity_cap: level })} />
-        ))}
-      </Card>
-      <Card>
-        {(
-          [
-            ["voice_clone", "settings.voiceCloneConsent"],
-            ["friends_league", "settings.league"],
-            ["audio_retention_extended", "settings.keepAudio"],
-          ] as const
-        ).map(([key, label]) => (
-          <View key={key} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Switch value={consents[key]} onValueChange={() => toggle(key)} accessibilityLabel={t(label)} />
-            <View style={{ flex: 1 }}>
-              <Body>{t(label)}</Body>
-            </View>
-          </View>
-        ))}
-        <Button label={t("settings.deleteClone")} kind="secondary" onPress={() => void api.request("/v1/voice/clone", { method: "DELETE" }).catch((e: Error) => setError(e.message))} />
-      </Card>
-      <Card>
-        <Button label={t("settings.export")} kind="secondary" onPress={() => void exportData()} />
-        {notice && <Body muted>{notice}</Body>}
-        {!confirmDelete ? (
-          <Button label={t("settings.deleteAccount")} kind="danger" onPress={() => setConfirmDelete(true)} />
-        ) : (
-          <>
-            <Field label={t("pin.current")} value={pin} onChangeText={(v) => setPin(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
-            <Button
-              label={t("settings.deleteAccount")}
-              kind="danger"
-              disabled={pin.length !== 6}
-              onPress={() => void api.post("/v1/me/delete", { pin }).then(() => signOut()).catch((e: Error) => setError(e.message))}
-            />
-            <Button
-              label={t("app.cancel")}
-              kind="secondary"
-              onPress={() => {
-                setConfirmDelete(false);
-                setPin("");
+      <Section>
+        <ListRow icon="flag" title={t("settings.goal")} onPress={() => router.push("/goal")} />
+      </Section>
+
+      <Section title={t("settings.preferences")}>
+        <View>
+          <ListRow icon="language" title={t("settings.uiLanguage")} />
+          <View style={pad}>
+            <Segmented
+              options={UI_LOCALES.map(({ code, label }) => ({ value: code, label }))}
+              value={profile.data.ui_locale ?? currentLocale()}
+              onChange={(code) => {
+                applyLocale(code);
+                void update({ ui_locale: code });
               }}
             />
-          </>
+          </View>
+        </View>
+        <View>
+          <ListRow icon="pulse" title={t("settings.intensity")} />
+          <View style={pad}>
+            <Segmented
+              options={(["calm", "tense", "heated"] as const).map((level) => ({ value: level, label: t(`settings.${level}`) }))}
+              value={profile.data.intensity_cap}
+              onChange={(level) => void update({ intensity_cap: level })}
+            />
+          </View>
+        </View>
+        {remindersSupported && (
+          <View>
+            <ListRow icon="notifications" title={t("reminders.title")} />
+            <View style={pad}>
+              <Segmented
+                options={[
+                  { value: "off", label: t("reminders.off") },
+                  ...REMINDER_TIMES.map((time) => ({ value: reminderKey(time), label: reminderKey(time) })),
+                ]}
+                value={reminderKey(reminder)}
+                onChange={(key) => void chooseReminder(REMINDER_TIMES.find((time) => reminderKey(time) === key) ?? null)}
+              />
+            </View>
+          </View>
         )}
-        <Button label={t("settings.signOut")} kind="secondary" onPress={() => void signOut()} />
-      </Card>
+      </Section>
+
+      <Section title={t("settings.privacy")}>
+        <ListRow
+          icon="mic-circle"
+          title={t("settings.voiceClone")}
+          subtitle={t("settings.voiceCloneHint")}
+          trailing={consentSwitch("voice_clone", t("settings.voiceCloneConsent"))}
+        />
+        <ListRow
+          icon="people"
+          title={t("settings.leagueTitle")}
+          subtitle={t("settings.leagueHint")}
+          trailing={consentSwitch("friends_league", t("settings.league"))}
+        />
+        <ListRow
+          icon="time"
+          title={t("settings.keepAudioTitle")}
+          subtitle={t("settings.keepAudioHint")}
+          trailing={consentSwitch("audio_retention_extended", t("settings.keepAudio"))}
+        />
+        <ListRow
+          icon="trash"
+          title={t("settings.deleteClone")}
+          onPress={() => void api.request("/v1/voice/clone", { method: "DELETE" }).catch((e: Error) => setError(e.message))}
+        />
+      </Section>
+
+      <Section title={t("settings.account")} footer={notice ?? undefined}>
+        <ListRow icon="download" title={t("settings.export")} onPress={() => void exportData()} />
+        <ListRow icon="log-out" title={t("settings.signOut")} onPress={() => void signOut()} />
+        <ListRow icon="warning" title={t("settings.deleteAccount")} onPress={() => setConfirmDelete(true)} />
+      </Section>
+
+      {confirmDelete && (
+        <Card tone="danger">
+          <Body>{t("settings.deleteConfirm")}</Body>
+          <Field
+            label={t("pin.current")}
+            value={pin}
+            onChangeText={(v) => setPin(v.replace(/\D/g, "").slice(0, 6))}
+            keyboardType="number-pad"
+            secureTextEntry
+          />
+          <Button
+            label={t("settings.deleteAccount")}
+            kind="danger"
+            disabled={pin.length !== 6}
+            onPress={() =>
+              void api
+                .post("/v1/me/delete", { pin })
+                .then(() => signOut())
+                .catch((e: Error) => setError(e.message))
+            }
+          />
+          <Button
+            label={t("app.cancel")}
+            kind="ghost"
+            onPress={() => {
+              setConfirmDelete(false);
+              setPin("");
+            }}
+          />
+        </Card>
+      )}
     </Screen>
   );
 }

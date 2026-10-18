@@ -32,7 +32,8 @@ class Consents(BaseModel):
 class ProfileView(BaseModel):
     display_name: str
     role: str
-    ui_locale: Literal["en", "fr", "ar"]
+    ui_locale: Literal["en", "fr", "ar"] | None
+    """None until the learner chooses; the app then shows the device language and saves it."""
     target_bands: dict[str, dict[str, int]]
     crs_inputs: dict[str, Any]
     model_accent: dict[str, str]

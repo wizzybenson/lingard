@@ -60,10 +60,7 @@ async def test_day_planner_builds_three_valid_scenes_with_ticket_share(deps: Gra
         "beats": ["Beat one.", "Beat two.", "Beat three."]
     }
     script.handlers["You design one scene"] = draft_for
-    day = datetime(2026, 11, 2, 9, tzinfo=UTC)
-    deps.clock = lambda: (
-        day - timedelta(days=day.toordinal() % _npc_settings(deps, "rivemont", 6))
-    )  # rotation starts at the flat
+    # Story day 1 (nothing lived yet): the rotation starts at the flat.
     session_id = uuid.uuid4()
     result = await build_day_planner(deps).ainvoke(PlanState(user_id=USER, session_id=session_id, city="rivemont"))
     plan = result["plan"]
@@ -130,14 +127,13 @@ def _npc_settings(deps: GraphDeps, city_key: str, band: int) -> int:
 async def test_day_planner_rotates_through_every_unlocked_district(deps: GraphDeps, script: Script) -> None:
     script.handlers["director of an ongoing life story"] = lambda m: {"beats": ["One.", "Two.", "Three."]}
     script.handlers["You design one scene"] = draft_for
+    store = deps.store
+    assert isinstance(store, MemoryStore)
     planner = build_day_planner(deps)
     visited = set()
-    for offset in range(_npc_settings(deps, "rivemont", 6)):
-
-        def clock(offset: int = offset) -> datetime:
-            return datetime(2026, 11, 2, 9, tzinfo=UTC) + timedelta(days=offset)
-
-        deps.clock = clock
+    # The rotation follows story days lived in the city, not the calendar: the clock never moves here.
+    for lived in range(_npc_settings(deps, "rivemont", 6)):
+        store.lived[(USER, "rivemont")] = lived
         result = await planner.ainvoke(PlanState(user_id=USER, session_id=uuid.uuid4(), city="rivemont"))
         visited |= {s.location_key.rsplit(".", 1)[0] for s in result["plan"].scenes}
     assert visited == {"rivemont.vieux_port", "rivemont.saint_roch"}

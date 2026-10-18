@@ -14,6 +14,7 @@ districts:
     description: Le quartier d'arrivée, entre le fleuve et la vieille ville ; on y loue son premier logement.
     locations:
       - key: rivemont.vieux_port.apartment_3b
+        kind: home
         name: Appartement 3B, 14 rue des Remparts
         description: Un deux-pièces lumineux au troisième étage, avec une petite fissure dans le mur du salon.
         x: 0.22
@@ -24,6 +25,7 @@ districts:
           - {key: crack, kind: object, label: La fissure, x: 0.3, y: 0.4, text: "Une fissure fine d'environ vingt centimètres."}
           - {key: lease, kind: object, label: Le bail, x: 0.75, y: 0.7, text: "Bail du 1er octobre au 30 septembre. Dépôt : 900 $."}
       - key: rivemont.vieux_port.cafe_quai
+        kind: cafe
         name: Café du Quai
         description: Un petit café face au fleuve, tenu par Chloé depuis dix ans.
         x: 0.55
@@ -34,6 +36,7 @@ districts:
           - {key: menu, kind: sign, label: Le menu, x: 0.8, y: 0.3, text: "Café 3,25 $ · Croissant 2,75 $ · Soupe du jour 6,50 $"}
           - {key: notice_board, kind: sign, label: Tableau d'affichage, x: 0.15, y: 0.35, text: "Cherche colocataire, quartier Saint-Roch. Cours de français du soir à l'École du Vieux-Port."}
       - key: rivemont.vieux_port.banque
+        kind: bank
         name: Caisse populaire du Vieux-Port
         description: Une agence bancaire de quartier où l'on ouvre son premier compte canadien.
         x: 0.78
@@ -49,6 +52,7 @@ districts:
     description: "Le quartier des commerces et du travail : on y cherche un emploi, un médecin et de quoi réparer."
     locations:
       - key: rivemont.saint_roch.centre_emploi
+        kind: job_centre
         name: Centre d'emploi Saint-Roch
         description: Un bureau au rez-de-chaussée, plein de dépliants, où l'on prépare son CV et ses entrevues.
         x: 0.25
@@ -59,6 +63,7 @@ districts:
           - {key: offres, kind: sign, label: Offres de la semaine, x: 0.2, y: 0.3, text: "Commis d'épicerie (temps partiel) · Réceptionniste bilingue · Aide-cuisinier. Entrevues le jeudi."}
           - {key: atelier, kind: sign, label: Atelier CV, x: 0.8, y: 0.35, text: "Atelier CV : mardi 14 h, gratuit, sur inscription."}
       - key: rivemont.saint_roch.clinique
+        kind: clinic
         name: Clinique médicale Saint-Roch
         description: Une clinique de quartier avec une salle d'attente toujours pleine le matin.
         x: 0.6
@@ -68,6 +73,7 @@ districts:
           - {key: julien, kind: npc, label: Julien Roy, npc_key: receptionniste_julien, x: 0.5, y: 0.55}
           - {key: affiche, kind: sign, label: Affiche, x: 0.2, y: 0.35, text: "Sans rendez-vous : de 8 h à 11 h. Apportez votre carte d'assurance maladie."}
       - key: rivemont.saint_roch.quincaillerie
+        kind: shop
         name: Quincaillerie Bouchard
         description: Une vieille quincaillerie familiale où l'on trouve de tout, des vis aux conseils.
         x: 0.8
@@ -84,6 +90,7 @@ districts:
     description: "Le quartier civique, sur la colline : on y défend ses idées, on y lit le journal et on y règle ses démarches."
     locations:
       - key: rivemont.haute_ville.hotel_de_ville
+        kind: town_hall
         name: Hôtel de ville de Rivemont
         description: Un grand bâtiment de pierre où se tiennent les consultations publiques et les démarches administratives.
         x: 0.3
@@ -93,6 +100,7 @@ districts:
           - {key: sophie, kind: npc, label: Sophie Lavoie, npc_key: fonctionnaire_sophie, x: 0.5, y: 0.55}
           - {key: consultation, kind: sign, label: Avis de consultation, x: 0.2, y: 0.3, text: "Consultation publique : projet de piste cyclable rue des Remparts. Mardi 19 h, salle du conseil."}
       - key: rivemont.haute_ville.bibliotheque
+        kind: library
         name: Bibliothèque Gabrielle-Roy
         description: La bibliothèque municipale, avec une salle où se tient chaque mois un débat citoyen.
         x: 0.62
@@ -102,6 +110,7 @@ districts:
           - {key: antoine, kind: npc, label: Antoine Girard, npc_key: bibliothecaire_antoine, x: 0.45, y: 0.5}
           - {key: debat, kind: sign, label: Débat du mois, x: 0.78, y: 0.3, text: "Débat citoyen : faut-il limiter les loyers dans le Vieux-Port ? Premier jeudi du mois, 18 h 30."}
       - key: rivemont.haute_ville.echo
+        kind: newspaper
         name: Rédaction de L'Écho de Rivemont
         description: Les bureaux du journal local, encombrés de piles de journaux et de tasses de café.
         x: 0.82

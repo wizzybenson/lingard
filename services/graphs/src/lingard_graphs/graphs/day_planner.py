@@ -50,7 +50,9 @@ class PlanState(BaseModel):
     mastery: dict[str, MasteryState] = {}
     tickets: dict[str, Ticket] = {}
     settings: list[tuple[str, str]] = []
-    """(location_key, npc_key) pairs available today."""
+    """(location_key, npc_key) pairs available on this story day."""
+    day: int = 0
+    """Story days already lived in this city: the plan is for day ``day + 1`` (progress, not the calendar)."""
     slots: list[Slot] = []
     beats: list[str] = []
     contracts: list[SceneContract] = []
@@ -102,6 +104,7 @@ def build_day_planner(
         tickets = {k: t for k, t in (await deps.store.tickets(state.user_id)).items() if k.startswith(f"{language}.")}
         return {
             "profile": profile,
+            "day": await deps.store.days_lived(state.user_id, state.city),
             "band": band,
             "mastery": await deps.store.all_mastery(state.user_id),
             "tickets": tickets,
@@ -138,8 +141,8 @@ def build_day_planner(
             fresh.append(Candidate(node.key, (1 - p) * weight))
         fresh += reviews
         count = min(rules.director.scenes_per_day, len(state.settings))
-        # Rotate by day so every unlocked district gets visited, not only the first one in content order.
-        offset = today.toordinal() % len(state.settings) if state.settings else 0
+        # Rotate by story day so every unlocked district gets visited, not only the first one in content order.
+        offset = state.day % len(state.settings) if state.settings else 0
         rotated = state.settings[offset:] + state.settings[:offset]
         chosen_settings = [loc for loc, _ in rotated[:count]]
         slots = plan_targets(ticket_candidates, fresh, chosen_settings, rules.director)

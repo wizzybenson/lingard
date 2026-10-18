@@ -50,8 +50,7 @@ export default function Goal() {
 
   if (!profile.data || !cities.data) return <Screen back><Loading /></Screen>;
   return (
-    <Screen back>
-      <Title>{t("goal.title")}</Title>
+    <Screen back title={t("goal.title")}>
       <Body muted>{t("goal.intro")}</Body>
       {cities.data.map(({ pack, pack_name }) => {
         const chosen = dates[pack] !== undefined;

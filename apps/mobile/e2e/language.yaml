@@ -1,0 +1,38 @@
+# The interface follows the learner's language: chosen on the sign-in screen, kept after signing in.
+appId: app.lingard
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "Settings, tab.*"
+    commands:
+      - tapOn: "Settings, tab.*"
+      - scrollUntilVisible:
+          element: "Sign out"
+          direction: DOWN
+      - tapOn: "Sign out"
+- extendedWaitUntil:
+    visible: "(Welcome to Lingard|Bienvenue dans Lingard)"
+    timeout: 15000
+- takeScreenshot: 31-sign-in
+- tapOn: "Français"
+- assertVisible: "Bienvenue dans Lingard"
+- takeScreenshot: 32-sign-in-fr
+- tapOn:
+    id: "sign-in-name"
+- eraseText
+- inputText: ${MAESTRO_LINGARD_TEST_NAME}
+- pressKey: Enter          # Return moves to the PIN field
+- eraseText
+- inputText: ${MAESTRO_LINGARD_TEST_PIN}
+- extendedWaitUntil:
+    visible: "On va où aujourd.hui.*"
+    timeout: 30000
+- takeScreenshot: 33-city-fr
+- scrollUntilVisible:
+    element: "Lieux"
+    direction: DOWN
+- takeScreenshot: 34-city-fr-places
+- tapOn: "Réglages, tab.*"
+- tapOn: "English"
+- assertVisible: "Settings"

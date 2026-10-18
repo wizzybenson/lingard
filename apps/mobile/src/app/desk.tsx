@@ -68,8 +68,7 @@ export default function Desk() {
   };
 
   return (
-    <Screen back>
-      <Title>{t("writing.title")}</Title>
+    <Screen back title={t("writing.title")}>
       {tasks.data.map((option, i) => (
         <Button key={`${option.pack}-${option.task_id}`} label={label(option)} kind={i === choice.task ? "primary" : "secondary"} onPress={() => setChoice({ task: i, prompt: 0 })} />
       ))}

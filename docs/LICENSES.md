@@ -14,6 +14,7 @@ memory. Lingard's own licence is still the founder's decision. Nothing below for
 | `certifi`, `orjson` (part), `pathspec` | MPL-2.0 | server / tooling | File-level copyleft: only applies if those files are modified |
 | `node-forge` | BSD-3-Clause OR GPL-2.0 | app tooling (Expo CLI) | Dual-licensed: we use it under BSD-3-Clause |
 | Redis 7.4+ | RSALv2 / SSPLv1 (/ AGPLv3 from 8.0) | **avoided**: replaced by Valkey ([0007](decisions/0007-valkey-instead-of-redis.md)) | n/a |
+| Fraunces, Inter fonts (`@expo-google-fonts/*`) | SIL Open Font License 1.1 | app (bundled typefaces, decision 0016) | Bundling in the app is allowed. Keep the OFL notice in the app's licences screen or store listing; don't sell the fonts on their own |
 | espeak / espeak-ng | GPL-3.0 | **avoided**: not a dependency (phonemisation uses our own lexicons in `content/pronunciation/`) | n/a |
 
 ## Permissive (no action beyond keeping notices)

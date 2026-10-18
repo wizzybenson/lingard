@@ -6,7 +6,7 @@ import uuid
 from datetime import UTC, date, datetime
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -532,6 +532,20 @@ class SqlStore:
             bands = dict(profile.settings.get("language_bands", {}))
             bands[language] = band
             profile.settings = {**profile.settings, "language_bands": bands}
+
+    async def days_lived(self, user_id: uuid.UUID, city: str) -> int:
+        async with self._sessions() as db:
+            finished = (
+                select(func.count())
+                .select_from(m.Session)
+                .where(
+                    m.Session.user_id == user_id,
+                    m.Session.city == city,
+                    m.Session.kind == "live",
+                    m.Session.ended_at.is_not(None),
+                )
+            )
+            return int((await db.execute(finished)).scalar_one())
 
     async def active_days(self, user_id: uuid.UUID) -> list[date]:
         async with self._sessions() as db:

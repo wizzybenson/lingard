@@ -19,10 +19,15 @@ class Hotspot(Strict):
     text: str | None = None
 
 
+LocationKind = Literal["home", "cafe", "bank", "clinic", "library", "town_hall", "newspaper", "shop", "job_centre"]
+"""What sort of place it is, the same in every city and language; the app picks its icon from this."""
+
+
 class Location(Strict):
     key: str
     name: str
     description: str
+    kind: LocationKind | None = None
     layer_art: list[str] = Field(default_factory=list)
     hotspots: list[Hotspot] = Field(default_factory=list)
     x: float = Field(default=0.5, ge=0, le=1)
@@ -116,6 +121,8 @@ class WorldView(Strict):
     palette: Palette
     districts: list[DistrictView]
     npcs: list[NpcView]
+    days_lived: int = Field(default=0, ge=0)
+    """Story days the learner has finished in this city; the next one is ``days_lived + 1`` (progress, not dates)."""
 
 
 class CityEntry(Strict):

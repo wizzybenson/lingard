@@ -1,5 +1,7 @@
 import "@/i18n";
 
+import { Fraunces_600SemiBold, Fraunces_700Bold } from "@expo-google-fonts/fraunces";
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, useFonts } from "@expo-google-fonts/inter";
 import { Stack, router, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -28,6 +30,15 @@ export default function RootLayout() {
   // Web: CanvasKit (Skia for the web) must be loaded before any Skia component renders.
   // Phones: livekit-client needs the native WebRTC globals before a scene creates its room.
   const [ready, setReady] = useState(false);
+  // Font failures fall back to the system fonts rather than blocking the app.
+  const [fontsLoaded, fontError] = useFonts({
+    Fraunces_600SemiBold,
+    Fraunces_700Bold,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
   useEffect(() => {
     if (Platform.OS === "web") {
       void import("@shopify/react-native-skia/lib/module/web")
@@ -38,7 +49,7 @@ export default function RootLayout() {
       void import("@livekit/react-native").then((m) => m.registerGlobals()).finally(() => setReady(true));
     }
   }, []);
-  if (!ready) return null;
+  if (!ready || !(fontsLoaded || fontError)) return null;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

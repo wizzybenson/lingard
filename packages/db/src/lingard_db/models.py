@@ -45,7 +45,8 @@ class User(Timestamped, Base):
     """NFKC-normalised, case-folded display name; uniqueness is enforced on this."""
     pin_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(String(16), default="learner")
-    ui_locale: Mapped[str] = mapped_column(String(8), default="en")
+    ui_locale: Mapped[str | None] = mapped_column(String(8), default=None)
+    """The interface language the learner chose; None until they choose (the app then uses the device language)."""
     failed_pin_attempts: Mapped[int] = mapped_column(Integer, default=0)
     lockout_level: Mapped[int] = mapped_column(Integer, default=0)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

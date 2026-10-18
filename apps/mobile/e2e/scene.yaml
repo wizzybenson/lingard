@@ -3,14 +3,13 @@ appId: app.lingard
 ---
 - runFlow: sign-in.yaml
 - scrollUntilVisible:
-    element: "Start today's story"
+    element: "(Begin day .*|Continue your story)"
     direction: UP
-- tapOn: "Start today's story"
+- tapOn: "(Begin day .*|Continue your story)"
 - extendedWaitUntil:
     visible: "Your goal"
     timeout: 180000
 - takeScreenshot: 11-scene
-- tapOn: "Continue"
 - tapOn: "Start talking"
 - runFlow:
     when:
@@ -22,7 +21,8 @@ appId: app.lingard
     timeout: 30000
 - takeScreenshot: 12-scene-live
 - extendedWaitUntil:
-    visible: "— .*"
+    visible:
+      id: "caption-npc"
     timeout: 30000
 - takeScreenshot: 13-npc-spoke
 - waitForAnimationToEnd:

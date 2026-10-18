@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { Quest } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { cacheQueue, cachedQueue, queueAnswer, sync } from "@/state/offline";
-import { Body, Button, Card, Screen, Title } from "@/ui/kit";
+import { Body, Button, Card, Chip, IconBubble, Screen } from "@/ui/kit";
 
 export default function Phone() {
   const { t } = useTranslation();
@@ -41,16 +41,25 @@ export default function Phone() {
   };
 
   return (
-    <Screen>
-      <Title>{t("phone.title")}</Title>
-      {offline && <Body muted>{t("phone.offline")}</Body>}
-      {quests.length === 0 && <Body muted>{t("phone.empty")}</Body>}
+    <Screen title={t("phone.title")}>
+      <Body muted>{t("phone.intro")}</Body>
+      {offline && <Chip label={t("phone.offline")} tone="warning" icon="cloud-offline" />}
+      {quests.length === 0 && (
+        <Card style={{ alignItems: "center", paddingVertical: 32 }}>
+          <IconBubble name="chatbubbles" tone="accent" size={56} />
+          <Body muted>{t("phone.empty")}</Body>
+        </Card>
+      )}
       {quests.map((quest) => (
         <Card key={quest.id}>
           {quest.text && <Body>{quest.text}</Body>}
           <Body>{quest.prompt}</Body>
           {feedback[quest.id] ? (
-            <Body muted>{feedback[quest.id]}</Body>
+            <Chip
+              label={feedback[quest.id]!}
+              tone={feedback[quest.id] === t("phone.correct") ? "success" : feedback[quest.id] === t("phone.wrong") ? "danger" : "warning"}
+              icon={feedback[quest.id] === t("phone.correct") ? "checkmark-circle" : feedback[quest.id] === t("phone.wrong") ? "close-circle" : "cloud-offline"}
+            />
           ) : (
             quest.options.map((option, i) => <Button key={option} label={option} kind="secondary" onPress={() => void answer(quest, i)} />)
           )}

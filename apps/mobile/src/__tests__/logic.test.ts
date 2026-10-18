@@ -3,7 +3,7 @@ import { pinStillFresh } from "@/auth/store";
 import { appendCaption, captionOpacity, parseCaption } from "@/live/captions";
 import type { Game } from "@/contracts/generated";
 import { choices, isCorrect, score } from "@/games/engine";
-import { levelRange } from "@/home/levels";
+import { levelProgress, levelRange, levelWords } from "@/home/levels";
 import { clock, remaining, wordCount } from "@/games/exam";
 import ar from "@/i18n/ar.json";
 import en from "@/i18n/en.json";
@@ -134,4 +134,23 @@ test("skyline is a closed SVG path spanning the whole world, the same every time
   const xs = [...path.matchAll(/L([\d.]+) /g)].map((m) => Number(m[1]));
   expect(Math.max(...xs)).toBeGreaterThanOrEqual(300 * 1.7);
   expect(skyline(size, 1, 150, 1.6)).toBe(path);
+});
+
+test("levels read as words, never the <4–8 shorthand", () => {
+  const en = (key: string, o?: Record<string, unknown>) =>
+    ({ "passport.notMeasured": "not measured yet", "passport.below": `below ${o?.level}`, "passport.between": `${o?.low} to ${o?.high}` })[key] ?? key;
+  expect(levelWords(en, null, null)).toBe("not measured yet");
+  expect(levelWords(en, 2, 3)).toBe("below 4");
+  expect(levelWords(en, 2, 8)).toBe("below 4 to 8");
+  expect(levelWords(en, 6, 6)).toBe("6");
+  expect(levelWords(en, 5, 7)).toBe("5 to 7");
+  const fr = (key: string, o?: Record<string, unknown>) =>
+    ({ "passport.notMeasured": "pas encore mesuré", "passport.below": `moins de ${o?.level}`, "passport.between": `de ${o?.low} à ${o?.high}` })[key] ?? key;
+  expect(levelWords(fr, 5, 7)).toBe("de 5 à 7");
+});
+
+test("progress to a goal uses the middle of the estimate, so a wide range never looks reached", () => {
+  expect(levelProgress(null, null, 7)).toBe(0);
+  expect(levelProgress(3, 8, 7)).toBeCloseTo(5.5 / 7);
+  expect(levelProgress(8, 9, 7)).toBe(1);
 });

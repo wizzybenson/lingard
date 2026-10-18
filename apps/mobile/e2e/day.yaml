@@ -3,19 +3,19 @@ appId: app.lingard
 ---
 - runFlow: sign-in.yaml
 - scrollUntilVisible:
-    element: "Start today's story"
+    element: "(Begin day .*|Continue your story)"
     direction: UP
-- tapOn: "Start today's story"
+- tapOn: "(Begin day .*|Continue your story)"
 - extendedWaitUntil:          # planned ahead: the scene opens straight away
     visible: "Your goal"
     timeout: 5000
 - takeScreenshot: 21-scene-1
 - copyTextFrom:
     text: "with .*"
-- tapOn: "Continue"
 - tapOn: "Start talking"
 - extendedWaitUntil:
-    visible: "— .*"
+    visible:
+      id: "caption-npc"
     timeout: 30000
 - takeScreenshot: 22-scene-1-npc
 - tapOn: "Leave"

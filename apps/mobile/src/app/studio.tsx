@@ -50,8 +50,7 @@ export default function Studio() {
   }, [api, language]);
 
   return (
-    <Screen back>
-      <Title>{t("studio.title")}</Title>
+    <Screen back title={t("studio.title")}>
       {languages.length > 1 && language && (
         <Button
           label={language.toUpperCase()}

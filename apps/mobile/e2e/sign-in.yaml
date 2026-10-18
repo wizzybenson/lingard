@@ -15,11 +15,9 @@ appId: app.lingard
           id: "sign-in-name"
       - eraseText
       - inputText: ${MAESTRO_LINGARD_TEST_NAME}
-      - tapOn:
-          id: "sign-in-pin"
+      - pressKey: Enter          # Return moves to the PIN field
       - eraseText
-      - inputText: ${MAESTRO_LINGARD_TEST_PIN}
-      - tapOn: "Sign in"
+      - inputText: ${MAESTRO_LINGARD_TEST_PIN}   # the sixth digit signs in
 - extendedWaitUntil:
     visible: "Where to today?"
     timeout: 30000

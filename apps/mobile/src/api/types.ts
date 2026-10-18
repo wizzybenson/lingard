@@ -100,7 +100,8 @@ export interface LessonRow {
 export interface Profile {
   display_name: string;
   role: string;
-  ui_locale: "en" | "fr" | "ar";
+  /** null until the learner chooses; the app then shows the device language and saves it. */
+  ui_locale: "en" | "fr" | "ar" | null;
   target_bands: Record<string, Record<string, number>>;
   crs_inputs: Record<string, unknown>;
   model_accent: Record<string, string>;
@@ -125,7 +126,7 @@ export interface Today {
     days_left: number | null;
     skills: { skill: string; target: number; level_low: number | null; level_high: number | null; status: SkillStatus }[];
   }[];
-  next_step: "set_goal" | "placement" | "reviews" | "lesson" | "story";
+  next_step: "set_goal" | "placement" | "lesson" | "story";
   onboarding: { goal: boolean; placement: boolean; first_story: boolean };
 }
 

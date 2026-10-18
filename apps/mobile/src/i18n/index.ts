@@ -16,6 +16,26 @@ export const UI_LOCALES: { code: UiLocale; label: string }[] = [
 ];
 const RTL: ReadonlySet<UiLocale> = new Set(["ar"]);
 
+let chosenAtSignIn: UiLocale | null = null;
+
+/** The learner picked a language on the sign-in screen: it wins over the one saved in their profile. */
+export function chooseLocaleAtSignIn(locale: UiLocale): void {
+  chosenAtSignIn = locale;
+  applyLocale(locale);
+}
+
+/** The sign-in screen's choice, once (null when the learner didn't pick one there). */
+export function takeSignInLocale(): UiLocale | null {
+  const chosen = chosenAtSignIn;
+  chosenAtSignIn = null;
+  return chosen;
+}
+
+/** The interface language on screen now. */
+export function currentLocale(): UiLocale {
+  return (i18n.language in resources ? i18n.language : "en") as UiLocale;
+}
+
 export function deviceLocale(): UiLocale {
   const code = getLocales()[0]?.languageCode ?? "en";
   return code in resources ? (code as UiLocale) : "en";

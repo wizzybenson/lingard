@@ -88,7 +88,17 @@ export function CityCanvas({ view, size, onSelect }: Props) {
               <Group key={location.key}>
                 <Circle cx={centre.x} cy={centre.y} r={MARKER_RADIUS} color={colours.near} opacity={0.85} />
                 {font && (
-                  <Text x={centre.x - MARKER_RADIUS} y={centre.y + MARKER_RADIUS + 16} text={location.name.slice(0, 22)} font={font} color="#ffffff" />
+                  <Text
+                    // Kept inside its district's screen: a label near the right edge shifts left instead of being cut.
+                    x={Math.max(
+                      Math.floor(centre.x / size.width) * size.width + 8,
+                      Math.min(centre.x - MARKER_RADIUS, (Math.floor(centre.x / size.width) + 1) * size.width - font.getTextWidth(location.name) - 8),
+                    )}
+                    y={centre.y + MARKER_RADIUS + 16}
+                    text={location.name}
+                    font={font}
+                    color="#ffffff"
+                  />
                 )}
                 <Group transform={bobTransform}>
                   {people.map((npc, i) => (

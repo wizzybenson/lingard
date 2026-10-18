@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from fastapi import APIRouter, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from lingard_api.deps import Db, Principal, State
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, LANGUAGE_SCALE, CityKey
 from lingard_contracts.world import CityEntry, WorldView
-from lingard_db.models import LearnerProfile, WorldState
+from lingard_db.models import LearnerProfile, Session, WorldState
 from lingard_world import load_city
 
 router = APIRouter(prefix="/v1/world", tags=["world"])
@@ -41,4 +39,15 @@ async def get_world(city: CityKey, principal: Principal, state: State, db: Db, h
         await db.execute(select(WorldState).where(WorldState.user_id == principal.user_id, WorldState.city == city))
     ).scalar_one_or_none()
     unlocks = list(world.district_unlocks) if world else []
-    return content.view(hour=hour if hour is not None else datetime.now().hour, band=band, extra_unlocks=unlocks)
+    view = content.view(hour=hour if hour is not None else state.settings.world_hour, band=band, extra_unlocks=unlocks)
+    return view.model_copy(update={"days_lived": await days_lived(db, principal.user_id, city)})
+
+
+async def days_lived(db: Db, user_id: object, city: str) -> int:
+    """Finished story days in a city: the learner's progress there, independent of the calendar."""
+    finished = (
+        select(func.count())
+        .select_from(Session)
+        .where(Session.user_id == user_id, Session.city == city, Session.kind == "live", Session.ended_at.is_not(None))
+    )
+    return int((await db.execute(finished)).scalar_one())

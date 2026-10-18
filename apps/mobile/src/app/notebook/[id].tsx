@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { SessionView } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
+import { Body, Button, Card, ErrorText, Loading, Screen } from "@/ui/kit";
 
 const POLL_MS = 3000;
 
@@ -24,8 +24,7 @@ export default function NotebookScreen() {
   if (session.loading) return <Screen back><Loading /></Screen>;
   if (!notebook) {
     return (
-      <Screen back>
-        <Title>{t("notebook.title")}</Title>
+      <Screen back title={t("notebook.title")}>
         <ErrorText message={session.error} />
         <Body>{t("notebook.stillPreparing")}</Body>
         <Button label={t("notebook.retry")} onPress={session.reload} />
@@ -33,8 +32,7 @@ export default function NotebookScreen() {
     );
   }
   return (
-    <Screen back>
-      <Title>{t("notebook.title")}</Title>
+    <Screen back title={t("notebook.title")}>
       {notebook.encouragement ? <Body>{notebook.encouragement}</Body> : null}
       <Card>
         <Body muted>{t("notebook.corrections")}</Body>

@@ -19,7 +19,7 @@ from lingard_graphs.pedagogy.review import due_at
 
 router = APIRouter(prefix="/v1", tags=["today"])
 
-NextStep = Literal["set_goal", "placement", "reviews", "lesson", "story"]
+NextStep = Literal["set_goal", "placement", "lesson", "story"]
 SKILL_ORDER = ["listening", "reading", "writing", "speaking"]
 
 
@@ -117,12 +117,11 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     ).scalar_one()
     practised_today = now.date() in days
     step: NextStep
+    # Progress decides what comes next, never the calendar: due reviews are offered beside the story, not before it.
     if not exam_dates:
         step = "set_goal"
     elif not bands:
         step = "placement"
-    elif reviews_due and not practised_today:
-        step = "reviews"
     elif lessons_waiting:
         step = "lesson"
     else:

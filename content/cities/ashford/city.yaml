@@ -14,6 +14,7 @@ districts:
     description: The streets around the railway station where newcomers rent their first flat.
     locations:
       - key: ashford.station_quarter.flat_2a
+        kind: home
         name: Flat 2A, 9 Mill Lane
         description: A one-bedroom flat above a launderette, with a patch of damp in the bathroom.
         x: 0.25
@@ -24,6 +25,7 @@ districts:
           - {key: damp, kind: object, label: Damp patch, x: 0.3, y: 0.35, text: "A grey patch of damp about the size of a dinner plate."}
           - {key: tenancy, kind: object, label: Tenancy agreement, x: 0.75, y: 0.7, text: "Tenancy from 1 October. Deposit: £950, protected with a deposit scheme."}
       - key: ashford.station_quarter.copper_kettle
+        kind: cafe
         name: The Copper Kettle
         description: A busy café opposite the station, run by Siobhan for eight years.
         x: 0.55
@@ -34,6 +36,7 @@ districts:
           - {key: menu, kind: sign, label: Menu, x: 0.8, y: 0.3, text: "Flat white £3.10 · Bacon roll £4.20 · Soup of the day £5.50"}
           - {key: notice_board, kind: sign, label: Noticeboard, x: 0.15, y: 0.35, text: "Room to let, Kingsway. Evening English classes at Ashford College."}
       - key: ashford.station_quarter.bank
+        kind: bank
         name: Northgate Bank, Station Road branch
         description: A small high-street branch where newcomers open their first UK account.
         x: 0.8
@@ -49,6 +52,7 @@ districts:
     description: "Shops, offices and the job centre: where you look for work, register with a GP and buy what you need to fix things."
     locations:
       - key: ashford.kingsway.job_centre
+        kind: job_centre
         name: Kingsway Job Centre
         description: A ground-floor office full of leaflets, where people work on their CVs and practise for interviews.
         x: 0.25
@@ -59,6 +63,7 @@ districts:
           - {key: vacancies, kind: sign, label: Vacancies, x: 0.2, y: 0.3, text: "Warehouse operative (nights) · Bilingual receptionist · Kitchen porter. Interviews on Thursdays."}
           - {key: workshop, kind: sign, label: CV workshop, x: 0.8, y: 0.35, text: "CV workshop: Tuesdays at 2 pm, free, booking required."}
       - key: ashford.kingsway.surgery
+        kind: clinic
         name: Kingsway Medical Practice
         description: A busy GP surgery whose phone lines open at eight sharp.
         x: 0.6
@@ -68,6 +73,7 @@ districts:
           - {key: tom, kind: npc, label: Tom Fletcher, npc_key: receptionist_tom, x: 0.5, y: 0.55}
           - {key: poster, kind: sign, label: Poster, x: 0.2, y: 0.35, text: "New patients: please bring photo ID and proof of address to register."}
       - key: ashford.kingsway.hardware
+        kind: shop
         name: Hargreaves Hardware
         description: An old family hardware shop that sells everything from screws to advice.
         x: 0.8
@@ -84,6 +90,7 @@ districts:
     description: "The civic heart of town: where people argue their case, read the local paper and sort out official business."
     locations:
       - key: ashford.civic_quarter.town_hall
+        kind: town_hall
         name: Ashford Town Hall
         description: A red-brick Victorian building that hosts council meetings and public consultations.
         x: 0.3
@@ -93,6 +100,7 @@ districts:
           - {key: margaret, kind: npc, label: Margaret Doyle, npc_key: council_margaret, x: 0.5, y: 0.55}
           - {key: consultation, kind: sign, label: Consultation notice, x: 0.2, y: 0.3, text: "Public consultation: proposed cycle lane on Station Road. Tuesday 7 pm, Council Chamber."}
       - key: ashford.civic_quarter.library
+        kind: library
         name: Ashford Central Library
         description: The central library, with a room upstairs where a public debate is held every month.
         x: 0.62
@@ -102,6 +110,7 @@ districts:
           - {key: femi, kind: npc, label: Femi Adeyemi, npc_key: librarian_femi, x: 0.45, y: 0.5}
           - {key: debate, kind: sign, label: This month's debate, x: 0.78, y: 0.3, text: "Public debate: should rents be capped in the Station Quarter? First Thursday of the month, 6.30 pm."}
       - key: ashford.civic_quarter.gazette
+        kind: newspaper
         name: The Ashford Gazette
         description: The local newspaper office, cluttered with old editions and half-finished mugs of tea.
         x: 0.82
