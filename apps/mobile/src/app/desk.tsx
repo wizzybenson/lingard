@@ -48,9 +48,9 @@ export default function Desk() {
     return () => clearInterval(timer);
   }, [api, scoring, history, t]);
 
-  if (!tasks.data) return <Screen>{tasks.error ? <ErrorText message={tasks.error} /> : <Loading />}</Screen>;
+  if (!tasks.data) return <Screen back>{tasks.error ? <ErrorText message={tasks.error} /> : <Loading />}</Screen>;
   const task = tasks.data[choice.task];
-  if (!task) return <Screen><Body muted>{t("phone.empty")}</Body></Screen>;
+  if (!task) return <Screen back><Body muted>{t("phone.empty")}</Body></Screen>;
   const prompt = task.prompts[choice.prompt % Math.max(task.prompts.length, 1)] ?? "";
   const label = (option: WritingTask) => `${option.pack_name} · ${t(`writing.kinds.${option.kind}`, { defaultValue: option.task_id })}`;
 
@@ -68,7 +68,7 @@ export default function Desk() {
   };
 
   return (
-    <Screen>
+    <Screen back>
       <Title>{t("writing.title")}</Title>
       {tasks.data.map((option, i) => (
         <Button key={`${option.pack}-${option.task_id}`} label={label(option)} kind={i === choice.task ? "primary" : "secondary"} onPress={() => setChoice({ task: i, prompt: 0 })} />

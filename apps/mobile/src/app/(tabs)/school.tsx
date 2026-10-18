@@ -12,10 +12,10 @@ export default function School() {
   const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"));
   useFocusEffect(lessons.reload);
   return (
-    <Screen>
+    <Screen onRefresh={lessons.reload}>
       <Title>{t("school.title")}</Title>
-      {lessons.loading && <Loading />}
-      <ErrorText message={lessons.error} />
+      {lessons.loading && !lessons.data && <Loading />}
+      <ErrorText message={lessons.error} onRetry={lessons.reload} />
       {lessons.data?.length === 0 && <Body muted>{t("school.noLessons")}</Body>}
       {[...(lessons.data ?? [])]
         .sort((a, b) => Number(a.status === "done") - Number(b.status === "done"))

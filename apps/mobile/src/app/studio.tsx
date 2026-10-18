@@ -50,7 +50,7 @@ export default function Studio() {
   }, [api, language]);
 
   return (
-    <Screen>
+    <Screen back>
       <Title>{t("studio.title")}</Title>
       {languages.length > 1 && language && (
         <Button

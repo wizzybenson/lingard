@@ -1,32 +1,16 @@
 /** 2.5D city map: layered parallax, location markers, NPC sprites with an idle bob. Rendering only. */
-import { Canvas, Circle, Group, LinearGradient, Path, Rect, Skia, Text, matchFont, vec } from "@shopify/react-native-skia";
-import { useEffect, useMemo } from "react";
+import { Canvas, Circle, Group, LinearGradient, Path, Rect, Text, matchFont, vec } from "@shopify/react-native-skia";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useMemo } from "react";
 import { Platform } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useDerivedValue, useSharedValue, withRepeat, withTiming, runOnJS } from "react-native-reanimated";
+import { cancelAnimation, useDerivedValue, useSharedValue, withRepeat, withTiming, runOnJS } from "react-native-reanimated";
 
-import { LAYERS, MARKER_RADIUS, clampPan, hitTest, initials, npcsAt, placedLocations, project, worldWidth, type Size } from "../model";
+import { LAYERS, MARKER_RADIUS, clampPan, hitTest, initials, npcsAt, placedLocations, project, skyline, worldWidth, type Size } from "../model";
 import type { Location, WorldView } from "../types";
 
 // Skia objects are created at render time, never at import: on the web CanvasKit loads asynchronously.
 const FONT_SPEC = { fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }), fontSize: 12 };
-
-function skyline(size: Size, seed: number, height: number, widthFactor: number): string {
-  const path = Skia.Path.Make();
-  path.moveTo(0, size.height);
-  let x = 0;
-  let step = 0;
-  while (x < size.width * (widthFactor + 0.1)) {
-    const h = height * (0.6 + 0.4 * Math.abs(Math.sin(seed + step * 1.7)));
-    path.lineTo(x, size.height - h);
-    x += 30 + 25 * Math.abs(Math.cos(seed * 3 + step));
-    path.lineTo(x, size.height - h);
-    step += 1;
-  }
-  path.lineTo(x, size.height);
-  path.close();
-  return path.toSVGString();
-}
 
 interface Props {
   view: WorldView;
@@ -41,14 +25,17 @@ export function CityCanvas({ view, size, onSelect }: Props) {
   const pan = useSharedValue(0);
   const start = useSharedValue(0);
   const bob = useSharedValue(0);
-  useEffect(() => {
-    bob.value = withRepeat(withTiming(1, { duration: 1400 }), -1, true);
-  }, [bob]);
+  // The idle bob redraws every frame, so it only runs while the map is on screen.
+  useFocusEffect(
+    useCallback(() => {
+      bob.set(withRepeat(withTiming(1, { duration: 1400 }), -1, true));
+      return () => cancelAnimation(bob);
+    }, [bob]),
+  );
   const placed = placedLocations(view);
   const width = worldWidth(view);
   const far = useMemo(() => skyline(size, 1, size.height * 0.45, width), [size, width]);
-  const mid = useMemo(() => skyline(size, 4, size.height * 0.3, width), [size, width]);
-  const districts = view.districts.filter((d) => d.unlocked);
+  const mid = useMemo(() => skyline(size, 4, size.height * 0.3, width), [size, width]);  const districts = view.districts.filter((d) => d.unlocked);
 
   const pick = (x: number, y: number) => {
     const location = hitTest(view, { x, y }, size, pan.value);
@@ -57,6 +44,9 @@ export function CityCanvas({ view, size, onSelect }: Props) {
 
   const gesture = Gesture.Race(
     Gesture.Pan()
+      // Horizontal drags pan the map; vertical ones belong to the page so it still scrolls on a phone.
+      .activeOffsetX([-10, 10])
+      .failOffsetY([-10, 10])
       .onStart(() => {
         start.value = pan.value;
       })

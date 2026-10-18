@@ -59,11 +59,11 @@ export default function Thread() {
     }
   };
 
-  if (!prompt) return <Screen><Body>{t("exam.done")}</Body></Screen>;
+  if (!prompt) return <Screen back><Body>{t("exam.done")}</Body></Screen>;
   const withTime = (payload: Record<string, unknown>) => (section ? { ...payload, elapsed_s: elapsedS } : payload);
 
   return (
-    <Screen>
+    <Screen back>
       {minutes !== null && <Body muted>{t("exam.timeLeft", { time: clock(remaining(sectionStart.at, minutes, now)) })}</Body>}
       <ErrorText message={error} />
       {prompt.kind === "item" && (

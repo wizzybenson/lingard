@@ -16,7 +16,7 @@ const STATUS_COLOUR: Record<SkillStatus, string> = {
 };
 
 // Level ranges sit in a left-to-right isolate (U+2066…U+2069) so "<4–8/7" reads the same inside Arabic text.
-export function TodayCard({ today, onStartStory }: { today: Today; onStartStory: () => void }) {
+export function TodayCard({ today, onStartStory, busy = false }: { today: Today; onStartStory: () => void; busy?: boolean }) {
   const { t } = useTranslation();
   const go = () => {
     switch (today.next_step) {
@@ -79,7 +79,8 @@ export function TodayCard({ today, onStartStory }: { today: Today; onStartStory:
       ))}
       {today.reviews_due > 0 && <Body muted>{t("today.reviewsDue", { count: today.reviews_due })}</Body>}
       {today.lessons_waiting > 0 && <Body muted>{t("today.lessonsWaiting", { count: today.lessons_waiting })}</Body>}
-      <Button label={t(`today.next.${today.next_step}`)} onPress={go} />
+      <Button label={busy ? t("city.planning") : t(`today.next.${today.next_step}`)} busy={busy} onPress={go} />
+      {busy && <Body muted>{t("city.planningHint")}</Body>}
     </Card>
   );
 }

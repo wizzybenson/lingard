@@ -6,28 +6,31 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#1f2a44"
-    },
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.lingard",
+      "buildNumber": "1",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Lingard listens when you talk to people in the city, so they can answer you.",
         "NSFaceIDUsageDescription": "Unlock Lingard without typing your PIN.",
+        "NSCameraUsageDescription": "Lingard never turns on your camera. Its voice calls use a calling library that can also do video.",
+        "NSLocalNetworkUsageDescription": "Lingard connects to your local Lingard server while you are developing.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        },
         "UIBackgroundModes": [
           "audio"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "app.lingard",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png",
         "backgroundColor": "#1f2a44"
       },
       "permissions": [
@@ -59,13 +62,25 @@
         }
       ],
       "expo-sharing",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-font",
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#1f2a44"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "apiUrl": "http://localhost:58000"
-    }
+    },
+    "backgroundColor": "#fbf8f2"
   }
 }

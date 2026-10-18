@@ -144,6 +144,14 @@ export default function Settings() {
               disabled={pin.length !== 6}
               onPress={() => void api.post("/v1/me/delete", { pin }).then(() => signOut()).catch((e: Error) => setError(e.message))}
             />
+            <Button
+              label={t("app.cancel")}
+              kind="secondary"
+              onPress={() => {
+                setConfirmDelete(false);
+                setPin("");
+              }}
+            />
           </>
         )}
         <Button label={t("settings.signOut")} kind="secondary" onPress={() => void signOut()} />

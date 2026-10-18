@@ -44,7 +44,7 @@ export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, pa
   const start = async () => {
     setError(null);
     const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-    if (!granted) return setError("Microphone permission is needed.");
+    if (!granted) return setError(t("mic.permission"));
     await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
     await recorder.prepareToRecordAsync();
     recorder.record();
@@ -55,7 +55,7 @@ export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, pa
     await recorder.stop();
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const uri = recorder.uri;
-    if (!uri) return setError("Nothing was recorded.");
+    if (!uri) return setError(t("mic.nothing"));
     setBusy(true);
     try {
       const form = await formFor(uri);

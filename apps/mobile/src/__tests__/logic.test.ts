@@ -8,7 +8,7 @@ import { clock, remaining, wordCount } from "@/games/exam";
 import ar from "@/i18n/ar.json";
 import en from "@/i18n/en.json";
 import fr from "@/i18n/fr.json";
-import { clampPan, hitTest, initials, placedLocations, project, worldWidth } from "@/world/model";
+import { clampPan, hitTest, initials, placedLocations, project, skyline, worldWidth } from "@/world/model";
 import type { WorldView } from "@/world/types";
 
 jest.mock("expo-secure-store", () => ({}));
@@ -124,4 +124,14 @@ test("goal chips show CLB/NCLC ranges, with <4 below the conversion tables", () 
   expect(levelRange(null, null)).toBe("–");
   expect(levelRange(7, 7)).toBe("7");
   expect(levelRange(3, 6)).toBe("<4–6");
+});
+
+test("skyline is a closed SVG path spanning the whole world, the same every time", () => {
+  const size = { width: 300, height: 340 };
+  const path = skyline(size, 1, 150, 1.6);
+  expect(path.startsWith("M0 340 L")).toBe(true);
+  expect(path.endsWith(" Z")).toBe(true);
+  const xs = [...path.matchAll(/L([\d.]+) /g)].map((m) => Number(m[1]));
+  expect(Math.max(...xs)).toBeGreaterThanOrEqual(300 * 1.7);
+  expect(skyline(size, 1, 150, 1.6)).toBe(path);
 });

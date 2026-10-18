@@ -26,18 +26,17 @@ export default function PassportScreen() {
   const { reload: reloadPassport } = passport;
   const { reload: reloadWallet } = wallet;
   const { reload: reloadProfile } = profile;
-  useFocusEffect(
-    useCallback(() => {
-      reloadPassport();
-      reloadWallet();
-      reloadProfile();
-    }, [reloadPassport, reloadWallet, reloadProfile]),
-  );
+  const reloadAll = useCallback(() => {
+    reloadPassport();
+    reloadWallet();
+    reloadProfile();
+  }, [reloadPassport, reloadWallet, reloadProfile]);
+  useFocusEffect(reloadAll);
   return (
-    <Screen>
+    <Screen onRefresh={reloadAll}>
       <Title>{t("passport.title")}</Title>
-      {passport.loading && <Loading />}
-      <ErrorText message={passport.error} />
+      {passport.loading && !passport.data && <Loading />}
+      <ErrorText message={passport.error} onRetry={reloadAll} />
       {passport.data && (
         <>
           <Card>

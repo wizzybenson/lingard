@@ -1,5 +1,4 @@
 /** Goal setting: which exam, when, and the CLB/NCLC level needed per skill. Everything else is measured against it. */
-import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -8,7 +7,7 @@ import type { Profile } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from "@/ui/kit";
+import { Body, Button, Card, ErrorText, Field, goBack, Loading, Screen, Title } from "@/ui/kit";
 
 const SKILLS = ["listening", "reading", "writing", "speaking"] as const;
 const LEVELS = [4, 5, 6, 7, 8, 9, 10];
@@ -41,7 +40,7 @@ export default function Goal() {
       const packs = cities.data?.map((c) => c.pack) ?? [];
       const examDates = Object.fromEntries(packs.map((p) => [p, dates[p] ? dates[p] : null]));
       await api.patch("/v1/me", { exam_dates: examDates, target_bands: targets });
-      router.back();
+      goBack();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -49,9 +48,9 @@ export default function Goal() {
     }
   };
 
-  if (!profile.data || !cities.data) return <Screen><Loading /></Screen>;
+  if (!profile.data || !cities.data) return <Screen back><Loading /></Screen>;
   return (
-    <Screen>
+    <Screen back>
       <Title>{t("goal.title")}</Title>
       <Body muted>{t("goal.intro")}</Body>
       {cities.data.map(({ pack, pack_name }) => {
@@ -69,6 +68,8 @@ export default function Goal() {
                   onChangeText={(v) => setDates((d) => ({ ...d, [pack]: v.trim() }))}
                   placeholder="2027-03-01"
                   autoCapitalize="none"
+                  keyboardType="numbers-and-punctuation"
+                  maxLength={10}
                 />
                 <Body muted>{t("goal.target")}</Body>
                 {SKILLS.map((skill) => (

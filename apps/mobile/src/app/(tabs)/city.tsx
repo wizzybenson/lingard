@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWindowDimensions, View } from "react-native";
 
@@ -10,6 +10,7 @@ import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from "@/ui/kit";
+import { MAX_WIDTH, space } from "@/ui/theme";
 import { npcsAt, unlockedLocations } from "@/world/model";
 import type { Location } from "@/world/types";
 
@@ -38,8 +39,15 @@ export default function City() {
     void refreshReminderText(title, body).catch(() => undefined);
   }, [today.data, t]);
   const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
+  // The content column is at most MAX_WIDTH wide with space(2) padding; the card inside adds another space(2).
+  const column = Math.min(width, MAX_WIDTH) - space(4);
+  // A stable size object: the map rebuilds its skyline paths whenever this changes.
+  const mapSize = useMemo(() => ({ width: column, height: 340 }), [column]);
 
+  const starting = useRef(false); // a double tap must not plan two days
   const startDay = async () => {
+    if (starting.current) return;
+    starting.current = true;
     setPlanning(true);
     setError(null);
     try {
@@ -56,13 +64,20 @@ export default function City() {
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
+      starting.current = false;
       setPlanning(false);
     }
   };
 
   return (
-    <Screen>
-      {today.data && <TodayCard today={today.data} onStartStory={() => void startDay()} />}
+    <Screen
+      onRefresh={() => {
+        today.reload();
+        world.reload();
+      }}
+    >
+      {today.data && <TodayCard today={today.data} busy={planning} onStartStory={() => void startDay()} />}
+      <ErrorText message={error} onRetry={() => void startDay()} />
       <Title>{t("city.choose")}</Title>
       <View style={{ flexDirection: "row", gap: 8 }}>
         {cities.data?.map((c) => (
@@ -72,10 +87,10 @@ export default function City() {
         ))}
       </View>
       {world.loading && <Loading />}
-      <ErrorText message={cities.error ?? world.error ?? error} />
+      <ErrorText message={cities.error ?? world.error ?? today.error} onRetry={() => (today.error ? today.reload() : world.reload())} />
       {world.data && (
         <Suspense fallback={<Loading />}>
-          <CityCanvas view={world.data} size={{ width: Math.min(width, 760) - 32, height: 340 }} onSelect={setSelected} />
+          <CityCanvas view={world.data} size={mapSize} onSelect={setSelected} />
         </Suspense>
       )}
       {world.data &&
@@ -91,7 +106,7 @@ export default function City() {
         <Card>
           {selected.layer_art && selected.layer_art.length > 0 && (
             <Suspense fallback={null}>
-              <LocationArt api={api} layers={selected.layer_art} width={Math.min(width, 760) - 64} />
+              <LocationArt api={api} layers={selected.layer_art} width={column - space(4)} />
             </Suspense>
           )}
           <Title>{selected.name}</Title>
@@ -106,7 +121,10 @@ export default function City() {
             {d.name}: {t("city.locked", { band: d.min_band })}
           </Body>
         ))}
-      <Button label={planning ? t("city.planning") : t("city.startDay")} busy={planning} onPress={() => void startDay()} />
+      {/* The Today card already carries the start button; this is only for when it couldn't load. */}
+      {!today.data && !today.loading && (
+        <Button label={planning ? t("city.planning") : t("city.startDay")} busy={planning} onPress={() => void startDay()} />
+      )}
     </Screen>
   );
 }

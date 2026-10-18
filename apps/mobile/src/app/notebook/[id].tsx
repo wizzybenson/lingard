@@ -21,10 +21,10 @@ export default function NotebookScreen() {
     return api.get<SessionView>(`/v1/sessions/${id}`);
   }, [id]);
   const notebook = session.data?.notebook;
-  if (session.loading) return <Screen><Loading /></Screen>;
+  if (session.loading) return <Screen back><Loading /></Screen>;
   if (!notebook) {
     return (
-      <Screen>
+      <Screen back>
         <Title>{t("notebook.title")}</Title>
         <ErrorText message={session.error} />
         <Body>{t("notebook.stillPreparing")}</Body>
@@ -33,7 +33,7 @@ export default function NotebookScreen() {
     );
   }
   return (
-    <Screen>
+    <Screen back>
       <Title>{t("notebook.title")}</Title>
       {notebook.encouragement ? <Body>{notebook.encouragement}</Body> : null}
       <Card>

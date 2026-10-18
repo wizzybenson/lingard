@@ -70,6 +70,24 @@ export function hitTest(view: WorldView, tap: Point, size: Size, panX: number): 
   return best?.location ?? null;
 }
 
+/** A skyline silhouette as an SVG path: plain string maths, so nothing is allocated in Skia (CanvasKit on the web)
+ * on each render. ``widthFactor`` is how many screens wide the world is. */
+export function skyline(size: Size, seed: number, height: number, widthFactor: number): string {
+  const r = (n: number) => Math.round(n * 10) / 10;
+  const parts = [`M0 ${r(size.height)}`];
+  let x = 0;
+  let step = 0;
+  while (x < size.width * (widthFactor + 0.1)) {
+    const h = height * (0.6 + 0.4 * Math.abs(Math.sin(seed + step * 1.7)));
+    parts.push(`L${r(x)} ${r(size.height - h)}`);
+    x += 30 + 25 * Math.abs(Math.cos(seed * 3 + step));
+    parts.push(`L${r(x)} ${r(size.height - h)}`);
+    step += 1;
+  }
+  parts.push(`L${r(x)} ${r(size.height)}`, "Z");
+  return parts.join(" ");
+}
+
 export function initials(name: string): string {
   return name
     .split(/\s+/)

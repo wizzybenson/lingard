@@ -11,3 +11,6 @@ export const colors = {
 } as const;
 
 export const space = (n: number): number => n * 8;
+
+/** Widest content column, so the web and iPad read like a phone app rather than a stretched form. */
+export const MAX_WIDTH = 720;

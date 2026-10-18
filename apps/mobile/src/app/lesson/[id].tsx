@@ -72,7 +72,7 @@ export default function LessonScreen() {
   const [results, setResults] = useState<Record<number, GameResult>>({});
   const [finished, setFinished] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  if (!lesson.data) return <Screen><Loading /></Screen>;
+  if (!lesson.data) return <Screen back><Loading /></Screen>;
   const content = lesson.data.content;
   const scored = Object.values(results);
   const correct = scored.reduce((n, r) => n + r.correct, 0);
@@ -86,7 +86,7 @@ export default function LessonScreen() {
     }
   };
   return (
-    <Screen>
+    <Screen back>
       <Title>{content.title}</Title>
       <Card>
         <Body muted>{t("school.rule")}</Body>
