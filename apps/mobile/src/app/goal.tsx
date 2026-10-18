@@ -75,10 +75,12 @@ export default function Goal() {
                 {SKILLS.map((skill) => (
                   <View key={skill} style={{ gap: 4 }}>
                     <Body>{t(`skills.${skill}`)}</Body>
-                    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+                    {/* One row on a phone: the levels share the width instead of wrapping "10" onto its own line. */}
+                    <View style={{ flexDirection: "row", gap: 6 }}>
                       {LEVELS.map((level) => (
-                        <View key={level} style={{ minWidth: 48 }}>
+                        <View key={level} style={{ flex: 1 }}>
                           <Button
+                            compact
                             label={String(level)}
                             kind={targets[pack]?.[skill] === level ? "primary" : "secondary"}
                             onPress={() => setTargets((all) => ({ ...all, [pack]: { ...all[pack], [skill]: level } }))}

@@ -77,15 +77,19 @@ export default function Settings() {
       {remindersSupported && (
         <Card>
           <Body muted>{t("reminders.title")}</Body>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-            <Button label={t("reminders.off")} kind={reminder === null ? "primary" : "secondary"} onPress={() => void chooseReminder(null)} />
+          <View style={{ flexDirection: "row", gap: 6 }}>
+            <View style={{ flex: 1 }}>
+              <Button compact label={t("reminders.off")} kind={reminder === null ? "primary" : "secondary"} onPress={() => void chooseReminder(null)} />
+            </View>
             {REMINDER_TIMES.map((time) => (
-              <Button
-                key={`${time.hour}:${time.minute}`}
-                label={`${time.hour}:${String(time.minute).padStart(2, "0")}`}
-                kind={reminder?.hour === time.hour && reminder.minute === time.minute ? "primary" : "secondary"}
-                onPress={() => void chooseReminder(time)}
-              />
+              <View key={`${time.hour}:${time.minute}`} style={{ flex: 1 }}>
+                <Button
+                  compact
+                  label={`${time.hour}:${String(time.minute).padStart(2, "0")}`}
+                  kind={reminder?.hour === time.hour && reminder.minute === time.minute ? "primary" : "secondary"}
+                  onPress={() => void chooseReminder(time)}
+                />
+              </View>
             ))}
           </View>
         </Card>

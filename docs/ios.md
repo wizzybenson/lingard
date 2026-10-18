@@ -37,6 +37,22 @@ Keep code signing on (`CODE_SIGN_IDENTITY=-`, ad hoc, no Apple account needed). 
 Rerun `npx expo prebuild --platform ios` after changing `app.json` or adding a native package. JavaScript changes
 only need Metro.
 
+## UI tests (Maestro)
+
+`apps/mobile/e2e/` holds Maestro flows. `tour.yaml` signs in, then visits every tab, the Studio and the goal screen,
+taking a screenshot at each stop. They sign in as the shared local test learner (`LINGARD_TEST_NAME` and
+`LINGARD_TEST_PIN` in `.env`, which is gitignored; reset with `python -m lingard_api.cli reset-pin --name Ernest`).
+
+```bash
+# Homebrew wants newer Command Line Tools for maestro, so both live in ~/.local/share/lingard-tools:
+#   Temurin JDK 17 (api.adoptium.net) in jdk/, maestro.zip (GitHub releases) in maestro/
+export JAVA_HOME=~/.local/share/lingard-tools/jdk/Contents/Home
+export PATH=$JAVA_HOME/bin:~/.local/share/lingard-tools/maestro/bin:$PATH
+apps/mobile/e2e/run.sh            # or: run.sh sign-in.yaml
+```
+
+Screenshots land in `~/.maestro/tests/<timestamp>/`.
+
 ## A real iPhone
 
 Plug it in, trust the Mac, and turn on **Settings → Privacy & Security → Developer Mode**. Signing for a device needs

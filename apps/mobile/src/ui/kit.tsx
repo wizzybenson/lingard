@@ -104,12 +104,15 @@ export function Button({
   disabled = false,
   busy = false,
   kind = "primary",
+  compact = false,
 }: {
   label: string;
   onPress: () => void;
   disabled?: boolean;
   busy?: boolean;
   kind?: "primary" | "secondary" | "danger";
+  /** Narrow chips in a row of choices (levels, times): less side padding. */
+  compact?: boolean;
 }) {
   const background = kind === "primary" ? colors.accent : kind === "danger" ? colors.danger : colors.card;
   const ink = kind === "secondary" ? colors.ink : colors.accentInk;
@@ -124,6 +127,7 @@ export function Button({
         styles.button,
         { backgroundColor: background, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         kind === "secondary" && { borderWidth: 1, borderColor: colors.border },
+        compact && { paddingHorizontal: space(0.5) },
       ]}
     >
       {busy ? <ActivityIndicator color={ink} /> : <Text style={[styles.buttonText, { color: ink }]}>{label}</Text>}

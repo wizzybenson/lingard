@@ -1,0 +1,26 @@
+# Sign in as the shared local test learner (LINGARD_TEST_NAME/PIN in .env, passed in by run.sh).
+appId: app.lingard
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "This is the developer menu.*"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Welcome to Lingard"
+    commands:
+      - tapOn:
+          id: "sign-in-name"
+      - eraseText
+      - inputText: ${MAESTRO_LINGARD_TEST_NAME}
+      - tapOn:
+          id: "sign-in-pin"
+      - eraseText
+      - inputText: ${MAESTRO_LINGARD_TEST_PIN}
+      - tapOn: "Sign in"
+- extendedWaitUntil:
+    visible: "Where to today?"
+    timeout: 30000
+- takeScreenshot: 01-city

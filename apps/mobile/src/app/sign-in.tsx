@@ -39,8 +39,9 @@ export default function SignIn() {
       {auth.status === "locked" && (
         <Button label={t("signIn.biometric")} kind="secondary" onPress={() => void auth.unlock().then((ok) => ok && router.replace("/"))} />
       )}
-      <Field label={t("signIn.name")} value={name} onChangeText={setName} autoCapitalize="words" autoComplete="username" />
+      <Field testID="sign-in-name" label={t("signIn.name")} value={name} onChangeText={setName} autoCapitalize="words" autoComplete="username" />
       <Field
+        testID="sign-in-pin"
         label={t("pin.label")}
         value={pin}
         onChangeText={(v) => setPin(v.replace(/\D/g, "").slice(0, 6))}

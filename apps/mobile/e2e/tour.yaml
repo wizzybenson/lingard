@@ -1,0 +1,40 @@
+# Walk every tab and the main pushed screens after signing in; a screenshot at each stop.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- scrollUntilVisible:
+    element: "Café du Quai"
+    direction: DOWN
+- tapOn: "Café du Quai"
+- takeScreenshot: 02-city-location
+- tapOn: "Phone, tab.*"
+- takeScreenshot: 03-phone
+- tapOn: "School, tab.*"
+- takeScreenshot: 04-school
+- tapOn: "Exam Hall, tab.*"
+- assertVisible: "Quick placement.*"
+- takeScreenshot: 05-exam
+- tapOn: "Passport, tab.*"
+- takeScreenshot: 06-passport
+- scrollUntilVisible:
+    element: "Accent studio"
+    direction: DOWN
+- tapOn: "Accent studio"
+- assertVisible: "Back"
+- takeScreenshot: 07-studio
+- tapOn: "Back"
+- scrollUntilVisible:
+    element: "My goal and exam date"
+    direction: DOWN
+- tapOn: "My goal and exam date"
+- assertVisible: "Back"
+- takeScreenshot: 08-goal
+- tapOn: "Back"
+- tapOn: "Settings, tab.*"
+- takeScreenshot: 09-settings
+- scrollUntilVisible:
+    element: "Sign out"
+    direction: DOWN
+- takeScreenshot: 10-settings-bottom
+- tapOn: "City, tab.*"
+- assertVisible: "Where to today?"
