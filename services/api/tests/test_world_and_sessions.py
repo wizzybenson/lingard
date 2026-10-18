@@ -82,7 +82,9 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
 
     async with api.state.sessions() as db:  # the planner has handed over the first scene; more are coming
         await db.execute(
-            update(Session).where(Session.id == uuid.UUID(session_id)).values(plan={"status": "ready", "complete": False})
+            update(Session)
+            .where(Session.id == uuid.UUID(session_id))
+            .values(plan={"status": "ready", "complete": False})
         )
         await db.commit()
     ahead = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))

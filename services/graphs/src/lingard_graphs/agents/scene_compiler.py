@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import yaml
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
@@ -62,6 +63,12 @@ def describe_target(node: CurriculumNode) -> str:
     elif node.payload.get("items"):
         detail = f" — words: {', '.join(map(str, node.payload['items'][:8]))}"
     return f"- {node.key} ({node.kind}): {node.title}{detail}"
+
+
+def learner_address(content_root: Path, language: str) -> str:
+    """How scene goals address the learner, from ``content/languages/<language>.yaml`` (decision 0015)."""
+    data = yaml.safe_load((content_root / "languages" / f"{language}.yaml").read_text())
+    return str(data["learner_address"])
 
 
 class SceneCompiler:
@@ -121,6 +128,7 @@ class SceneCompiler:
             pack_alignment=", ".join(brief.pack_alignment) or "general",
             targets="\n".join(describe_target(n) for n in nodes),
             language_name=LANGUAGE_NAME[language],
+            learner_address=learner_address(self._content, language),
         )
         messages = self._router.messages("compile", system, "Design the scene now.")
         issues: list[ContractIssue] = []

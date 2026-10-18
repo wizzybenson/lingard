@@ -42,3 +42,4 @@ number_words: {deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, 
 narrator_voice: fr_f_narrator
 choose_correct_prompt: "Laquelle est correcte ?"
 capitalised_common: [monsieur, madame, mademoiselle, messieurs, mesdames]
+learner_address: "Address the learner formally, with « vous » (vouvoiement) or an infinitive, never « tu »: « Renseignez-vous sur… », « Ouvrir un compte… »."  # one register on every screen (decision 0015)

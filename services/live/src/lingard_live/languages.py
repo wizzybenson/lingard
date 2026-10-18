@@ -41,6 +41,8 @@ class LanguageConfig(BaseModel):
     choose_correct_prompt: str
     narrator_voice: str
     """TTS voice id that reads exam listening items aloud."""
+    learner_address: str
+    """How on-screen instructions address the learner (scene goals), for the Scene Compiler (decision 0015)."""
 
     def pick(self, options: list[str], rng: random.Random | None = None) -> str:
         return (rng or random).choice(options)

@@ -98,6 +98,20 @@ async def test_compiler_feeds_issues_back_then_succeeds(deps: GraphDeps, script:
     assert len(attempts) == 2
 
 
+async def test_compiler_states_the_register_and_coherence_standard(deps: GraphDeps, script: Script) -> None:
+    """Goals in a learning app must not switch between « vous » and « tu »; the model is told the standard."""
+    systems: list[str] = []
+
+    def record(messages: list[BaseMessage]) -> dict[str, Any]:
+        systems.append(message_text(messages[0]))
+        return good_draft(messages)
+
+    script.handlers["You design one scene"] = record
+    await compiler(deps).compile(brief())
+    assert "vouvoiement" in systems[0], "the register comes from content/languages/fr.yaml"
+    assert "Keep one register throughout the scene" in systems[0]
+
+
 async def test_compiler_asks_again_for_a_thin_scene(deps: GraphDeps, script: Script) -> None:
     seen: list[str] = []
     systems: list[str] = []

@@ -38,3 +38,4 @@ number_words: {two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, n
 narrator_voice: en_f_narrator
 choose_correct_prompt: "Which is correct?"
 capitalised_common: [i, "i'm", "i've", "i'll", "i'd", mr, mrs, ms, sir, madam, love, mate]
+learner_address: "Address the learner as « you », in the imperative or an infinitive: « Ask about… », « Open an account… »."  # decision 0015
