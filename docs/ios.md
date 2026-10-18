@@ -1,57 +1,66 @@
-# Running Lingard on an iPhone
+# Running Lingard on iOS
 
-Live scenes use LiveKit's native WebRTC module, which Expo Go doesn't include. On a phone, Lingard therefore runs as a
-**development build** (our own Expo Go with the native modules built in). This Mac has no Xcode, so builds run on EAS,
-Expo's cloud build service (decision 0013).
+Live scenes use LiveKit's native WebRTC module, which Expo Go doesn't include, so Lingard runs as a **development
+build**: our own app with the native modules compiled in. It builds locally with Xcode (decision 0013).
 
-## One-time setup (founder)
+## Requirements (one time)
 
-These steps need your Expo and Apple Developer accounts, so they can't be automated from here.
+- Xcode (26.4 here) with the iOS platform: `xcodebuild -downloadPlatform iOS` (about 8.5 GB).
+- CocoaPods: `brew install cocoapods`.
+- If `xcode-select -p` prints `/Library/Developer/CommandLineTools`, either run
+  `sudo xcode-select -s /Applications/Xcode.app` once, or prefix the commands below with
+  `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`.
+
+## Simulator
+
+The Simulator shares the Mac's network, so `localhost` works for the API and LiveKit unchanged.
 
 ```bash
-npm install -g eas-cli
 cd apps/mobile
-eas login
-eas init                    # links the project and writes extra.eas.projectId into app.json (commit that)
-eas device:create           # registers your iPhone for internal builds (open the link on the phone)
-eas build --profile development --platform ios
+npx expo prebuild --platform ios          # generates ios/ (gitignored) and installs the pods
+npx expo run:ios                          # builds, installs, boots a Simulator, starts Metro
 ```
 
-Install the build from the link or QR code EAS prints. On the phone, turn on **Settings → Privacy & Security →
-Developer Mode** the first time.
-
-## Each session: point the phone at your Mac
-
-The phone and the Mac must be on the same Wi-Fi. Find the Mac's address with `ipconfig getifaddr en0`.
+Without `expo run`, the equivalent by hand:
 
 ```bash
-# API, listening on the network rather than loopback only
-uv run uvicorn lingard_api.main:app --host 0.0.0.0 --port 58000
-
-# LiveKit must advertise the LAN address in its ICE candidates, or the phone's audio never connects
-LIVEKIT_NODE_IP=192.168.x.y docker compose up -d livekit
-
-# Workers as usual
-uv run python -m lingard_live.worker
-uv run python -m lingard_graphs.worker
-
-# Metro for the development build
-cd apps/mobile && npx expo start --dev-client
+cd apps/mobile/ios
+xcodebuild -workspace Lingard.xcworkspace -scheme Lingard -configuration Debug -sdk iphonesimulator \
+  -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGN_IDENTITY=- build
+xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/Lingard.app
+xcrun simctl launch booted app.lingard     # finds Metro on :8081 by itself
 ```
 
-Open the development build and pick the Mac's server. You don't need to change any app config: in development the app
-rewrites `localhost` in the API URL and in the LiveKit ticket to the address Metro is served from
+Keep code signing on (`CODE_SIGN_IDENTITY=-`, ad hoc, no Apple account needed). A build with
+`CODE_SIGNING_ALLOWED=NO` has no keychain access, so SecureStore fails and the saved session can't be read.
+
+Rerun `npx expo prebuild --platform ios` after changing `app.json` or adding a native package. JavaScript changes
+only need Metro.
+
+## A real iPhone
+
+Plug it in, trust the Mac, and turn on **Settings → Privacy & Security → Developer Mode**. Signing for a device needs
+your Apple ID in Xcode (Settings → Accounts), because the build is signed with your personal team:
+
+```bash
+npx expo run:ios --device
+```
+
+The phone reaches the Mac over Wi-Fi, so run the services on the LAN address (`ipconfig getifaddr en0`):
+
+```bash
+uv run uvicorn lingard_api.main:app --host 0.0.0.0 --port 58000
+LIVEKIT_NODE_IP=192.168.x.y docker compose up -d livekit   # ICE candidates must carry an address the phone can reach
+```
+
+In development the app rewrites `localhost` in the API URL and in the LiveKit ticket to the address Metro is served from
 (`src/config.ts`, `reachable`). iOS asks once for local-network access; allow it.
 
-## TestFlight / App Store
+## Release builds
 
-A store build can't reach your Mac. Before running `eas build --profile production`, you need:
-
-- the API deployed over HTTPS, with its address set for the build: `eas env:create --name EXPO_PUBLIC_API_URL --value https://…`;
-- LiveKit reachable over `wss://`, with `LIVEKIT_PUBLIC_URL` set on the API to that address;
-- `eas submit --platform ios` to upload, plus App Store Connect metadata (privacy labels: microphone audio, used for app
-  functionality, linked to the user).
+`eas.json` has profiles for the day a hosted build is wanted. Locally, an archive is made with Xcode
+(Product → Archive) once the API is deployed over HTTPS and `EXPO_PUBLIC_API_URL` points to it.
 
 What's already configured in `app.json`: bundle id `app.lingard`, microphone, Face ID and camera purpose strings (WebRTC
 links camera APIs even though Lingard never uses them), background audio for live scenes,
-`ITSAppUsesNonExemptEncryption: false` (HTTPS only), a light-only interface, and local-network ATS for development.
+`ITSAppUsesNonExemptEncryption: false`, a light-only interface, and local-network ATS for development.

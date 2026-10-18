@@ -13,7 +13,9 @@ const memory = new Map<string, string>();
 
 async function getItem(key: string): Promise<string | null> {
   if (Platform.OS === "web") return memory.get(key) ?? null; // web: access token only, the refresh token is a cookie
-  return SecureStore.getItemAsync(key);
+  // An unreadable keychain (locked before first unlock, or a build without keychain access) means "no saved
+  // session": the learner signs in again instead of the app hanging on its boot screen.
+  return SecureStore.getItemAsync(key).catch(() => null);
 }
 
 async function setItem(key: string, value: string): Promise<void> {
