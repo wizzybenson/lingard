@@ -172,3 +172,20 @@ async def test_realtime_stream_keeps_a_commit_whose_waiter_was_cancelled() -> No
         final = await stream.finish(2)
         await stream.close()
     assert final.text == "Oui, je comprends. Est-ce que je peux payer ?"
+
+
+def test_the_second_hearing_prefers_another_vendor_than_the_streaming_one() -> None:
+    from lingard_live.settings import build_second_ear
+
+    both = LiveSettings(
+        _env_file=None,
+        elevenlabs_api_key=SecretStr("e"),
+        openai_api_key=SecretStr("o"),
+        deepgram_api_key=None,
+        voicebox_url=None,
+        stt_order=["voicebox", "deepgram", "elevenlabs", "openai"],
+    )
+    assert build_stt(both).name == "elevenlabs>openai"
+    assert build_second_ear(both).name == "openai>elevenlabs"
+    alone = both.model_copy(update={"openai_api_key": None})
+    assert build_second_ear(alone).name == "elevenlabs", "no other vendor: the batch model still hears it again"

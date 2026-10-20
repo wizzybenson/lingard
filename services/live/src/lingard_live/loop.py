@@ -153,6 +153,7 @@ class LiveLoop:
         gate: GatePolicy | None = None,
         filler_after_ms: float | None = None,
         streaming_stt: StreamingStt | None = None,
+        second_ear: SttProvider | None = None,
     ) -> None:
         """``filler_after_ms``: if a reply's first sentence is still held by the claim check this long after it was
         screened, the NPC says a hesitation (``LanguageConfig.fillers``) first; ``None`` never does."""
@@ -171,6 +172,7 @@ class LiveLoop:
         self.gate = gate or GatePolicy()
         self.filler_after_ms = filler_after_ms
         self.streaming_stt = streaming_stt
+        self.second_ear = second_ear or stt
         self._stream: tuple[int, SttStream] | None = None
         """The streaming transcription of the utterance in progress, keyed by its speech start."""
         session.set_semantic_eot(self._utterance_complete)  # says "not yet" whenever nothing is streaming
@@ -578,7 +580,7 @@ class LiveLoop:
         async def hear(turn: TurnEvent) -> TurnEvent:
             try:
                 async with asyncio.timeout(SECOND_EAR_TIMEOUT_S):
-                    other = await self.stt.transcribe(audio, CITY_LOCALE[self.state.contract.city])
+                    other = await self.second_ear.transcribe(audio, CITY_LOCALE[self.state.contract.city])
             except Exception as exc:  # no second hearing: corrections then rest on the checks alone
                 logger.warning("second hearing failed: %s", exc)
                 return turn

@@ -79,8 +79,24 @@ def build_streaming_stt(settings: LiveSettings) -> StreamingStt | None:
     return ElevenLabsRealtimeStt(key, settings.elevenlabs_realtime_stt_model)
 
 
+STREAMING_VENDOR = "elevenlabs"
+"""The vendor behind ``build_streaming_stt``; the second hearing prefers any other."""
+
+
+def build_second_ear(settings: LiveSettings) -> SttProvider:
+    """The recogniser that hears a streamed turn again before corrections are trusted: another vendor when one is
+    configured (its mistakes differ from the streaming model's), the same vendor's batch model otherwise."""
+    providers = stt_providers(settings)
+    others = [p for name, p in providers.items() if name != STREAMING_VENDOR]
+    same = [p for name, p in providers.items() if name == STREAMING_VENDOR]
+    return _chain(others + same)
+
+
 def build_stt(settings: LiveSettings) -> SttProvider:
-    chain = list(stt_providers(settings).values())
+    return _chain(list(stt_providers(settings).values()))
+
+
+def _chain(chain: list[SttProvider]) -> SttProvider:
     if not chain:
         raise RuntimeError(
             "no STT provider configured (set VOICEBOX_URL, DEEPGRAM_API_KEY, OPENAI_API_KEY or ELEVENLABS_API_KEY)"
