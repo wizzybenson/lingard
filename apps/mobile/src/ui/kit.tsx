@@ -228,6 +228,45 @@ export function Button({
   );
 }
 
+export type ChoiceState = "idle" | "picked" | "right" | "wrong" | "dim";
+
+/** One answer in a multiple-choice question: a letter badge and left-aligned text that reads like a sentence.
+ * A pick shows at once ("picked") while it is checked; then the right one turns green, a wrong pick red, and the rest step back. */
+export function Choice({ label, index, state = "idle", onPress }: { label: string; index: number; state?: ChoiceState; onPress?: () => void }) {
+  const look = {
+    idle: { background: colors.card, border: colors.border, badge: colors.paper, badgeInk: colors.inkSoft, ink: colors.ink },
+    picked: { background: colors.accentSoft, border: colors.accent, badge: colors.accent, badgeInk: "#fff", ink: colors.ink },
+    right: { background: colors.successSoft, border: colors.success, badge: colors.success, badgeInk: "#fff", ink: colors.ink },
+    wrong: { background: colors.dangerSoft, border: colors.danger, badge: colors.danger, badgeInk: "#fff", ink: colors.ink },
+    dim: { background: colors.card, border: colors.border, badge: colors.paper, badgeInk: colors.muted, ink: colors.muted },
+  }[state];
+  const mark = state === "right" ? "checkmark" : state === "wrong" ? "close" : null;
+  return (
+    <Pressable
+      testID={`choice-${index}`}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !onPress, selected: state === "right" || state === "wrong" }}
+      disabled={!onPress}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.choice,
+        { backgroundColor: look.background, borderColor: look.border, transform: [{ scale: pressed ? 0.985 : 1 }] },
+        pressed && { backgroundColor: colors.accentSoft, borderColor: colors.accent },
+      ]}
+    >
+      <View style={[styles.choiceBadge, { backgroundColor: look.badge }]}>
+        {mark ? (
+          <Ionicons name={mark} size={16} color={look.badgeInk} />
+        ) : (
+          <Text style={{ fontFamily: fonts.semibold, fontSize: 14, color: look.badgeInk }}>{String.fromCharCode(65 + index)}</Text>
+        )}
+      </View>
+      <Text style={[type.body, { flex: 1, color: look.ink }]}>{label}</Text>
+    </Pressable>
+  );
+}
+
 /** A tappable row: icon or avatar, title, subtitle, and a chevron (places, settings, lessons). */
 export function ListRow({
   title,
@@ -430,6 +469,17 @@ const styles = StyleSheet.create({
   outlined: { borderWidth: 1, borderColor: colors.border },
   buttonInner: { flexDirection: "row", alignItems: "center", gap: space(1) },
   buttonText: { fontFamily: fonts.semibold, fontSize: 16, textAlign: "center" },
+  choice: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space(1.5),
+    minHeight: 54,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    paddingVertical: space(1.25),
+    paddingHorizontal: space(1.5),
+  },
+  choiceBadge: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   row: { flexDirection: "row", alignItems: "center", gap: space(1.5), paddingVertical: space(1.5), paddingHorizontal: space(2), minHeight: 64, backgroundColor: colors.card },
   rowSelected: { backgroundColor: colors.accentSoft },
   section: { backgroundColor: colors.card, borderRadius: radius.lg, overflow: "hidden" },

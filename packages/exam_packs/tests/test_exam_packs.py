@@ -9,7 +9,7 @@ from lingard_curriculum.packs import PackLibrary
 from lingard_exam_packs.adaptive import estimate, next_item, should_stop
 from lingard_exam_packs.generator import ItemGenerator
 from lingard_exam_packs.items import Item, ItemBank, band_to_logit
-from lingard_exam_packs.serving import is_correct, serve
+from lingard_exam_packs.serving import is_correct, serve, served_answer
 from lingard_llm import LLMConfig, LLMRouter, ModelSpec, PromptRegistry
 from lingard_llm.testing import ScriptedChatModel
 
@@ -48,6 +48,8 @@ def test_shuffled_serving_maps_answers_back() -> None:
     correct_text = item.options[item.answer]
     assert is_correct(item, "learner-1", served.options.index(correct_text))
     assert not is_correct(item, "learner-1", (served.options.index(correct_text) + 1) % len(served.options))
+    assert served_answer(item, "learner-1") == served.options.index(correct_text)
+    assert not is_correct(item, "learner-1", -1)
     positions = {serve(item, f"learner-{i}").options.index(correct_text) for i in range(30)}
     assert len(positions) > 1, "answer position varies by learner"
     assert serve(ItemBank.load(ROOT / "content").get("fr-co-001"), "l").text is None, "listening scripts never sent"

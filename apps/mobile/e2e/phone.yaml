@@ -1,0 +1,29 @@
+# The Phone inbox: answer one message, see it checked, move to the next. No paid calls.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "Phone, tab.*"
+- extendedWaitUntil:
+    visible: ".* of 8"
+    timeout: 10000
+- takeScreenshot: phone-01-message
+- runFlow:
+    when:
+      visible:
+        id: "choice-0"
+    commands:
+      - tapOn:
+          id: "choice-0"
+      - extendedWaitUntil:
+          visible: "Next message"
+          timeout: 5000
+      - assertVisible: "(Correct!|Not quite.*)"
+      - takeScreenshot: phone-02-checked
+      - tapOn: "Next message"
+      - takeScreenshot: phone-03-next
+- runFlow:
+    when:
+      notVisible:
+        id: "choice-0"
+    commands:
+      - assertVisible: "All caught up"

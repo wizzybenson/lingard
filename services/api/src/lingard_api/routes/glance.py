@@ -1,4 +1,6 @@
-"""``/v1/glance``: 2–5 minute text-first micro-quests from a pre-built queue, cached offline (SPEC §19.3)."""
+"""``/v1/glance``: 2–5 minute text-first micro-quests from a pre-built queue, cached offline (SPEC §19.3).
+
+An answer comes back with the right option's index: Glance is practice, so a miss shows what was right."""
 
 from __future__ import annotations
 
@@ -16,7 +18,7 @@ from lingard_api.deps import Db, Principal, State
 from lingard_contracts.common import LANGUAGE_PACK, Language, Skill
 from lingard_db.models import FsrsItem, LearnerProfile
 from lingard_exam_packs.items import ItemBank
-from lingard_exam_packs.serving import is_correct, serve
+from lingard_exam_packs.serving import serve, served_answer
 from lingard_graphs.pedagogy.review import new_card, review
 from lingard_live.languages import load_language
 
@@ -120,7 +122,8 @@ async def answer(
     await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
     if "item" in key:
         item = ItemBank.load(state.settings.content_root).get(key["item"])
-        return {"correct": is_correct(item, user, int(body.answer))}
+        right = served_answer(item, user)
+        return {"correct": int(body.answer) == right, "answer": right}
     correct = int(body.answer) == key["answer"]
     row = (
         await db.execute(
@@ -129,4 +132,4 @@ async def answer(
     ).scalar_one()
     card = review(row.card or new_card(), correct, now=body.synced_at or datetime.now(UTC))
     await state.graph_deps.store.save_fsrs(principal.user_id, key["node"], card)
-    return {"correct": correct, "node_key": quest.node_key}
+    return {"correct": correct, "answer": key["answer"], "node_key": quest.node_key}

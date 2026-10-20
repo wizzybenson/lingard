@@ -38,6 +38,11 @@ def serve(item: Item, learner_seed: str, audio_ref: str | None = None) -> Served
     )
 
 
-def is_correct(item: Item, learner_seed: str, chosen_index: int) -> bool:
+def served_answer(item: Item, learner_seed: str) -> int:
+    """Where the right option sits in this learner's order (for practice feedback, never during a mock)."""
     order = [i for i in permutation(item.id, learner_seed) if i < len(item.options)]
-    return 0 <= chosen_index < len(order) and order[chosen_index] == item.answer
+    return order.index(item.answer)
+
+
+def is_correct(item: Item, learner_seed: str, chosen_index: int) -> bool:
+    return chosen_index == served_answer(item, learner_seed)

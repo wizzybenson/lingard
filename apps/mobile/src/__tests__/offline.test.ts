@@ -1,4 +1,4 @@
-import { cacheQueue, cachedQueue, pendingAnswers, queueAnswer, sync } from "@/state/offline";
+import { answeredQuests, cacheQueue, cachedQueue, pendingAnswers, queueAnswer, rememberAnswer, sync } from "@/state/offline";
 
 jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
@@ -14,4 +14,11 @@ test("queue cached offline and answers synced later, keeping failures", async ()
   });
   expect(synced).toBe(1);
   expect((await pendingAnswers()).map((a) => a.quest_id)).toEqual(["q2"]);
+});
+
+test("answers are remembered for the current queue only", async () => {
+  const quest = (id: string) => ({ id, kind: "read" as const, language: "fr" as const, prompt: "?", options: ["a", "b"], text: null, node_key: null });
+  await rememberAnswer("old", { choice: 0, correct: true, answer: 0 }, [quest("old")]);
+  await rememberAnswer("new", { choice: 1, correct: false, answer: 0 }, [quest("new")]);
+  expect(await answeredQuests()).toEqual({ new: { choice: 1, correct: false, answer: 0 } });
 });

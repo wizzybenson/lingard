@@ -5,12 +5,32 @@ import type { Quest } from "@/api/types";
 
 const QUEUE = "lingard.glance.queue";
 const PENDING = "lingard.glance.pending";
+const ANSWERED = "lingard.glance.answered";
 
 export interface PendingAnswer {
   quest_id: string;
   answer: number;
   language: "fr" | "en";
   synced_at: string;
+}
+
+/** What the learner picked, and what the server said; `correct` and `answer` are null until an offline answer syncs. */
+export interface Answered {
+  choice: number;
+  correct: boolean | null;
+  answer: number | null;
+}
+
+export async function answeredQuests(): Promise<Record<string, Answered>> {
+  const raw = await AsyncStorage.getItem(ANSWERED);
+  return raw ? (JSON.parse(raw) as Record<string, Answered>) : {};
+}
+
+/** Remember an answer, forgetting quests that have left the queue so the store stays small. */
+export async function rememberAnswer(questId: string, answered: Answered, queue: Quest[]): Promise<void> {
+  const live = new Set(queue.map((q) => q.id));
+  const kept = Object.entries(await answeredQuests()).filter(([id]) => live.has(id));
+  await AsyncStorage.setItem(ANSWERED, JSON.stringify(Object.fromEntries([...kept, [questId, answered]])));
 }
 
 export async function cacheQueue(quests: Quest[]): Promise<void> {

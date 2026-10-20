@@ -151,4 +151,6 @@ async def test_glance_queue_and_offline_answer(api) -> None:  # type: ignore[no-
         json={"quest_id": first["id"], "answer": 0, "synced_at": "2026-10-14T08:00:00Z"},
         headers=api.bearer(token),
     )
-    assert result.status_code == 200 and isinstance(result.json()["correct"], bool)
+    body = result.json()
+    assert result.status_code == 200 and isinstance(body["correct"], bool)
+    assert body["correct"] == (body["answer"] == 0) and 0 <= body["answer"] < len(first["options"])
