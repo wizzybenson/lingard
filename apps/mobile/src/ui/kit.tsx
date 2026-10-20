@@ -20,6 +20,7 @@ import {
   type TextInputProps,
   type ViewStyle,
 } from "react-native";
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors, fonts, MAX_WIDTH, radius, shadow, space, type } from "./theme";
@@ -442,12 +443,33 @@ export function ErrorText({ message, onRetry }: { message: string | null | undef
   );
 }
 
-export function Loading() {
+/** While a screen loads: soft placeholder cards that breathe, in the shape of what is coming, instead of a lone
+ * spinner. ``inline`` is a small spinner for places inside a card. */
+export function Loading({ inline = false }: { inline?: boolean }) {
   const { t } = useTranslation();
-  return <ActivityIndicator accessibilityLabel={t("app.loading")} color={colors.accent} style={{ marginTop: space(4) }} />;
+  const pulse = useSharedValue(0);
+  useEffect(() => {
+    if (!inline) pulse.set(withRepeat(withTiming(1, { duration: 800 }), -1, true));
+    return () => cancelAnimation(pulse);
+  }, [inline, pulse]);
+  const breathe = useAnimatedStyle(() => ({ opacity: 0.55 + 0.45 * pulse.value }));
+  if (inline) return <ActivityIndicator accessibilityLabel={t("app.loading")} color={colors.accent} style={{ marginVertical: space(2) }} />;
+  return (
+    <Animated.View style={[{ gap: space(1.5) }, breathe]} accessible accessibilityLabel={t("app.loading")} accessibilityRole="progressbar">
+      {[0.6, 1, 0.8].map((width, i) => (
+        <View key={i} style={styles.skeleton}>
+          <View style={[styles.skeletonLine, { width: `${width * 55}%`, height: 18 }]} />
+          <View style={[styles.skeletonLine, { width: `${width * 90}%` }]} />
+          <View style={[styles.skeletonLine, { width: `${width * 70}%` }]} />
+        </View>
+      ))}
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({
+  skeleton: { backgroundColor: colors.card, borderRadius: radius.lg, padding: space(2.5), gap: space(1.25) },
+  skeletonLine: { height: 12, borderRadius: 6, backgroundColor: colors.paperDeep },
   screen: { flex: 1, backgroundColor: colors.paper },
   flex: { flex: 1 },
   scroll: { flexGrow: 1, paddingBottom: space(4) },

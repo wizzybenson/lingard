@@ -110,7 +110,7 @@ export default function Voice() {
       )}
       <Card style={{ gap: space(1.5) }}>
         <Overline>{t("voice.passageTitle")}</Overline>
-        {passage.data ? <Text style={[type.body, { fontSize: 18, lineHeight: 28 }]}>{passage.data.text}</Text> : <Loading />}
+        {passage.data ? <Text style={[type.body, { fontSize: 18, lineHeight: 28 }]}>{passage.data.text}</Text> : <Loading inline />}
         <Text style={type.caption}>{t("voice.readHint", { min: passage.data?.min_seconds ?? 20 })}</Text>
         {language && (
           <Recorder<VoiceView>

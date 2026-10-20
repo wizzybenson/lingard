@@ -1,4 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Haptics from "expo-haptics";
 import { Redirect, Tabs } from "expo-router";
 import { useEffect, type ComponentProps } from "react";
 
@@ -38,11 +39,12 @@ export default function TabsLayout() {
       .then((p) => (p.ui_locale ? applyLocale(p.ui_locale) : api.patch("/v1/me", { ui_locale: currentLocale() })))
       .catch(() => undefined);
   }, [status, api]);
-  if (status === "booting") return <Screen><Loading /></Screen>; // the web is still trading its cookie for a token
+  if (status === "booting") return <Screen><Loading inline /></Screen>; // the web is still trading its cookie for a token
   if (status !== "signedIn") return <Redirect href="/sign-in" />;
   if (pinChangeRequired) return <Redirect href="/change-pin" />;
   return (
     <Tabs
+      screenListeners={{ tabPress: () => void Haptics.selectionAsync() }}
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: colors.accent,

@@ -8,7 +8,7 @@ export default function Index() {
   if (status === "booting") {
     return (
       <Screen>
-        <Loading />
+        <Loading inline />
       </Screen>
     );
   }
