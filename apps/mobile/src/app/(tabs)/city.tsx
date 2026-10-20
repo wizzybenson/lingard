@@ -3,7 +3,8 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, useWindowDimensions, View } from "react-native";
 
-import type { CityEntry, Profile, SessionView, Today, WorldView } from "@/api/types";
+import type { CityEntry, KeyPoint, Profile, SessionView, Today, WorldView } from "@/api/types";
+import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { TodayCard } from "@/home/TodayCard";
 import { refreshReminderText, reminderText } from "@/state/reminders";
 import { useApi } from "@/state/auth";
@@ -41,7 +42,13 @@ export default function City() {
   const cities = useCities();
   const [chosen, setCity] = useState<CityEntry["city"] | null>(null);
   const city = chosen ?? cities.data?.[0]?.city ?? null;
+  const cityLanguage = cities.data?.find((c) => c.city === city)?.language ?? null;
   const [selected, setSelected] = useState<Location | null>(null);
+  const placeKind = selected?.kind ?? null;
+  const useful = useResource(
+    () => (placeKind && cityLanguage ? api.get<KeyPoint[]>(`/v1/key-points/for-place?language=${cityLanguage}&place=${placeKind}`) : Promise.resolve(null)),
+    [api, placeKind, cityLanguage],
+  );
   const [planning, setPlanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
@@ -166,6 +173,7 @@ export default function City() {
           </View>
         </Card>
       )}
+      {selected && placeKind && <KeyPointStrip key={selected.key} id={`place.${placeKind}`} eyebrow={t("journey.usefulHere")} points={useful.data} />}
       {world.data && places.length > 0 && (
         <Section title={t("city.places")}>
           {places.map((location) => {

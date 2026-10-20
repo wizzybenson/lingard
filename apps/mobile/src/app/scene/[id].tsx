@@ -1,12 +1,13 @@
 import * as Haptics from "expo-haptics";
-import { router, useLocalSearchParams } from "expo-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import Animated, { cancelAnimation, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
-import type { LiveTicket, SceneView, SessionView } from "@/api/types";
+import type { KeyPoint, LiveTicket, SceneView, SessionView } from "@/api/types";
+import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { captionOpacity } from "@/live/captions";
 import { useLiveScene, type LiveError } from "@/live/useLiveScene";
 import { useApi } from "@/state/auth";
@@ -69,6 +70,19 @@ export default function Scene() {
   const [preparingNext, setPreparingNext] = useState(false);
   const { width } = useWindowDimensions();
   const band = scene.data?.learner_band ?? 4; // unknown band: keep captions fully visible
+  // Lessons woven into the scene, never in its way: the words and phrases this conversation will use, before going
+  // in, and the confirmed mistakes of this conversation once it is over (or while the next scene is prepared).
+  const prep = useResource(() => api.get<KeyPoint[]>(`/v1/scenes/${id}/prep`), [api, id]);
+  const over = live.status === "ended" || preparingNext;
+  const brushUp = useResource(() => (over ? api.get<KeyPoint[]>(`/v1/scenes/${id}/brush-up`) : Promise.resolve(null)), [api, id, over]);
+  const { reload: reloadPrep } = prep;
+  const { reload: reloadBrushUp } = brushUp;
+  useFocusEffect(
+    useCallback(() => {
+      reloadPrep(); // back from a lesson: what was just learned drops out of the offer
+      reloadBrushUp();
+    }, [reloadPrep, reloadBrushUp]),
+  );
 
   const start = () => live.connect(() => api.post<LiveTicket>(`/v1/scenes/${id}/live`));
 
@@ -126,6 +140,8 @@ export default function Scene() {
   const npcName = scene.data?.npc_name ?? "";
   const status = live.npcSpeaking ? t("scene.speaking") : live.learnerSpeaking ? t("scene.listening") : null;
 
+  // Going in stays one tap away, whatever is offered above it.
+  const enter = scene.data && live.status === "idle" && <Button label={t("scene.connect")} icon="mic" onPress={() => void start()} />;
   // While live, talking and leaving stay pinned under the conversation instead of scrolling away as it grows.
   const controls = live.status === "live" && (
     <>
@@ -161,7 +177,7 @@ export default function Scene() {
   );
 
   return (
-    <Screen back onBack={back} footer={controls || undefined} followContent={live.status === "live"}>
+    <Screen back onBack={back} footer={controls || enter || undefined} followContent={live.status === "live"}>
       <ErrorText message={scene.error} onRetry={scene.reload} />
       {scene.data && live.status === "live" && (
         <Card style={styles.compact}>
@@ -209,11 +225,11 @@ export default function Scene() {
       )}
       {scene.data && live.status === "idle" && (
         <View style={{ gap: space(1.5) }}>
+          <KeyPointStrip id={`scene.${id}.prep`} eyebrow={t("journey.beforeScene")} points={prep.data} />
           <View style={styles.tip}>
             <Ionicons name="headset" size={18} color={colors.muted} />
             <Text style={[type.callout, { flex: 1 }]}>{t("scene.headphones")}</Text>
           </View>
-          <Button label={t("scene.connect")} icon="mic" onPress={() => void start()} />
         </View>
       )}
       {live.status === "connecting" && (
@@ -277,6 +293,7 @@ export default function Scene() {
           <Button label={t("app.continue")} icon="arrow-forward" busy={moving} onPress={() => void next()} />
         </Card>
       )}
+      {over && <KeyPointStrip id={`scene.${id}`} eyebrow={t("journey.afterScene")} points={brushUp.data} />}
       {preparingNext && (
         <View style={styles.tip} accessibilityLiveRegion="polite">
           <ActivityIndicator color={colors.accent} />

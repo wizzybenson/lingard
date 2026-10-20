@@ -9,6 +9,10 @@ appId: app.lingard
 - takeScreenshot: 01b-map
 - tapOn: "Café du Quai.*"
 - takeScreenshot: 02-city-location
+- scrollUntilVisible:
+    element: "Useful here"
+    direction: DOWN
+- takeScreenshot: 02b-useful-here
 - tapOn: "Phone, tab.*"
 - takeScreenshot: 03-phone
 - tapOn: "School, tab.*"

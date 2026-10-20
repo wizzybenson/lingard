@@ -46,8 +46,11 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
             "location_key": "rivemont.vieux_port.apartment_3b",
             "cast": [{"npc_key": "landlord_martin", "role": "landlord", "voice_id": "fr_m_58_martin"}],
             "learner_goal": "Récupérer votre dépôt de garantie",
-            "targets": {"grammar": ["fr.grammar.si_imparfait"]},
-            "elicitation": [{"target": "fr.grammar.si_imparfait", "tactic": "Ask what the tenant would do if refused"}],
+            "targets": {"grammar": ["fr.grammar.si_imparfait"], "lexset": ["fr.lex.housing.deposit_repairs"]},
+            "elicitation": [
+                {"target": "fr.grammar.si_imparfait", "tactic": "Ask what the tenant would do if refused"},
+                {"target": "fr.lex.housing.deposit_repairs", "tactic": "Talk about the crack and the deposit"},
+            ],
             "approved_facts": ["Le dépôt était de 900 dollars"],
             "npc_language_band": 7,
             "accent_variety": ["fr-FR-standard"],
@@ -77,6 +80,57 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     body = scene.json()
     assert body["learner_goal"] == "Récupérer votre dépôt de garantie"
     assert "targets" not in body and "elicitation" not in body and "si_imparfait" not in scene.text
+    assert body["location_kind"] == "home"
+
+    # The journey offers lessons where they help: the words of a place before going in, and the confirmed
+    # mistakes of a scene on the way out (an unconfirmed tag is never offered).
+    from lingard_curriculum.seed import load_seed, seed_graph
+    from lingard_db.models import Assessment, Turn
+
+    await seed_graph(api.state.curriculum, load_seed(api.settings.content_root, "fr"))
+    useful = (
+        await api.client.get(
+            "/v1/key-points/for-place", params={"language": "fr", "place": "home"}, headers=api.bearer(token)
+        )
+    ).json()
+    assert useful and len(useful) <= 3 and all("home" in k["places"] for k in useful)
+    async with api.state.sessions() as db:
+        for index, (key, confidence, agrees) in enumerate(
+            [("fr.grammar.si_imparfait", 0.93, True), ("fr.grammar.negation", 0.6, None)]
+        ):
+            turn = Turn(
+                tenant_id=user.tenant_id,
+                user_id=user.id,
+                scene_id=contract.scene_id,
+                event_id=uuid.uuid4(),
+                index=index,
+                speaker="learner",
+                transcript="Si je refuserais…",
+            )
+            db.add(turn)
+            await db.flush()
+            tag = {
+                "node_key": key,
+                "span": {"start": 0, "end": 2, "text": "Si"},
+                "confidence": confidence,
+                "second_check_agrees": agrees,
+            }
+            db.add(
+                Assessment(
+                    tenant_id=user.tenant_id,
+                    user_id=user.id,
+                    turn_id=turn.id,
+                    pack="tef_canada",
+                    dimension_scores=[],
+                    confidence=0.8,
+                    error_tags=[tag],
+                )
+            )
+        await db.commit()
+    ready = (await api.client.get(f"/v1/scenes/{contract.scene_id}/prep", headers=api.bearer(token))).json()
+    assert [k["node_key"] for k in ready] == ["fr.lex.housing.deposit_repairs"], "its words; grammar stays hidden"
+    brush = (await api.client.get(f"/v1/scenes/{contract.scene_id}/brush-up", headers=api.bearer(token))).json()
+    assert [k["node_key"] for k in brush] == ["fr.grammar.si_imparfait"]
 
     from lingard_db.models import Session
 

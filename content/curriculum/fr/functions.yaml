@@ -20,6 +20,7 @@ nodes:
     band: 4
     title: "Demander un renseignement"
     payload:
+      places: [town_hall, library, job_centre]
       exponents: ["Excusez-moi, où se trouve… ?", "À quelle heure ouvre… ?", "Est-ce que vous savez si… ?"]
       lesson:
         rule: "Une question polie commence souvent par « Excusez-moi » et utilise est-ce que ou « savez-vous si »."
@@ -31,6 +32,7 @@ nodes:
     band: 4
     title: "Faire une demande polie"
     payload:
+      places: [bank, cafe, shop, town_hall]
       exponents: ["Je voudrais…", "Est-ce que je pourrais… ?", "Vous serait-il possible de… ?"]
       lesson:
         rule: "Pour demander poliment : je voudrais, est-ce que je pourrais, vous serait-il possible de ; « je veux » est trop direct."
@@ -43,6 +45,7 @@ nodes:
     band: 4
     title: "Demander de répéter, faire préciser"
     payload:
+      places: [clinic, bank]
       exponents: ["Pardon, vous pouvez répéter ?", "Qu'est-ce que vous voulez dire par… ?", "Plus lentement, s'il vous plaît."]
       lesson:
         rule: "Quand on ne comprend pas, on le dit tout de suite : pardon ? vous pouvez répéter ? qu'est-ce que vous voulez dire par… ?"
@@ -54,6 +57,7 @@ nodes:
     band: 4
     title: "Prendre ou déplacer un rendez-vous"
     payload:
+      places: [clinic, job_centre]
       exponents: ["Je voudrais prendre rendez-vous pour…", "Est-ce que mardi vous conviendrait ?", "Je dois annuler mon rendez-vous."]
       lesson:
         rule: "Pour un rendez-vous : je voudrais prendre rendez-vous, est-ce que mardi vous convient ? ; pour changer : je dois déplacer mon rendez-vous."
@@ -76,6 +80,7 @@ nodes:
     band: 5
     title: "Décrire une personne, un lieu"
     payload:
+      places: [newspaper]
       exponents: ["C'est un quartier animé où…", "Il a l'air…", "Il y a… à côté de…"]
       lesson:
         rule: "Pour décrire : c'est un quartier + adjectif, il y a…, elle est + adjectif ; on donne deux ou trois détails précis."
@@ -100,6 +105,7 @@ nodes:
     band: 5
     title: "S'excuser et répondre à des excuses"
     payload:
+      places: [home]
       exponents: ["Je suis désolé(e) pour…", "Toutes mes excuses.", "Ce n'est pas grave."]
       lesson:
         rule: "Je suis désolé(e) de/que… ; excusez-moi pour… ; on répond « ce n'est pas grave »."
@@ -111,6 +117,7 @@ nodes:
     band: 6
     title: "Se plaindre poliment"
     payload:
+      places: [home, shop]
       exponents: ["Je me permets de vous signaler que…", "Je ne suis pas satisfait(e) de…", "Il me semble que ce n'est pas normal."]
       lesson:
         rule: "Se plaindre poliment : décrire le problème, ses effets, puis demander une solution avec le conditionnel."
@@ -135,6 +142,7 @@ nodes:
     band: 6
     title: "Donner son opinion"
     payload:
+      places: [newspaper]
       exponents: ["À mon avis,…", "Je trouve que…", "Selon moi,…"]
       lesson:
         rule: "Je pense que, je trouve que, à mon avis + indicatif ; on justifie avec parce que ou car."
@@ -169,6 +177,7 @@ nodes:
     band: 7
     title: "Négocier"
     payload:
+      places: [home, shop]
       exponents: ["Je vous propose…", "Et si on coupait la poire en deux ?", "Je pourrais accepter à condition que…"]
       lesson:
         rule: "Négocier : proposer, faire une contre-proposition, chercher un compromis avec le conditionnel."
@@ -287,6 +296,7 @@ nodes:
     band: 5
     title: "Téléphoner"
     payload:
+      places: [job_centre]
       exponents: ["Bonjour, pourrais-je parler à… ?", "C'est de la part de qui ?", "Je peux laisser un message ?"]
       lesson:
         rule: "Au téléphone : se présenter, demander la personne, laisser un message avec son numéro."
@@ -344,6 +354,7 @@ nodes:
     band: 6
     title: "Expliquer une démarche"
     payload:
+      places: [library]
       exponents: ["D'abord, il faut…", "Ensuite, vous…", "Une fois que c'est fait,…"]
       lesson:
         rule: "Expliquer une démarche étape par étape : d'abord, ensuite, une fois que…, enfin ; impératif ou il faut + infinitif."

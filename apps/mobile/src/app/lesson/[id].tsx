@@ -13,7 +13,7 @@ import { choices, isCorrect, score, type GameResult } from "@/games/engine";
 import { PlayButton } from "@/live/PlayButton";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, Choice, ErrorText, Field, Loading, Overline, Screen } from "@/ui/kit";
+import { Body, Button, Card, Chip, Choice, ErrorText, Field, goBack, Loading, Overline, Screen } from "@/ui/kit";
 import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 /** Sentence race: tap the words in order; tap a placed word to send it back. */
@@ -197,8 +197,14 @@ export default function LessonScreen() {
     }
   };
   const done = lesson.data.status === "done";
+  // Lessons open from the journey (a scene, the map, the School): finishing returns the learner to where they were.
   const footer = finished ? (
-    <Chip label={finished} tone="success" icon="trophy" />
+    <View style={{ flexDirection: "row", alignItems: "center", gap: space(1.5) }}>
+      <Chip label={finished} tone="success" icon="trophy" />
+      <View style={{ flex: 1 }}>
+        <Button label={t("app.continue")} icon="arrow-forward" onPress={goBack} />
+      </View>
+    </View>
   ) : done ? (
     <Chip label={t("school.done")} tone="success" icon="checkmark-done" />
   ) : (

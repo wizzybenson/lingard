@@ -21,6 +21,7 @@ from lingard_api.deps import Db, Principal, State
 from lingard_api.state import AppState
 from lingard_contracts.common import LANGUAGE_CITY, Language, node_language
 from lingard_curriculum.conjugation import FrenchConjugator
+from lingard_curriculum.models import CurriculumNode
 from lingard_db.models import Lesson
 from lingard_graphs.graphs.lesson_builder import key_points_lesson
 from lingard_graphs.pedagogy.key_points import FIRST_BAND, KINDS, key_points_path
@@ -40,6 +41,12 @@ class KeyPoint(BaseModel):
     preview: bool
     status: Literal["new", "open", "done"]
     lesson_id: uuid.UUID | None
+    places: list[str] = []
+    """Kinds of place where this is useful (a bank, a clinic): the journey offers it there."""
+
+
+PLACE_OFFER = 3
+"""How many lessons a place offers at once: a nudge, not a syllabus."""
 
 
 @cache
@@ -54,10 +61,17 @@ async def key_points(state: AppState, db: AsyncSession, user_id: uuid.UUID, lang
     steps = await key_points_path(
         state.curriculum, state.settings.content_root, language, profile.language_bands.get(language)
     )
+    return await describe(db, user_id, [(s.node, s.core, s.preview) for s in steps])
+
+
+async def describe(
+    db: AsyncSession, user_id: uuid.UUID, nodes: list[tuple[CurriculumNode, bool, bool]]
+) -> list[KeyPoint]:
+    """Key points for ``(node, core, preview)``, with the learner's lesson for each and whether it is done."""
     rows = (
         await db.execute(
             select(Lesson)
-            .where(Lesson.user_id == user_id, Lesson.node_key.in_([s.node.key for s in steps]))
+            .where(Lesson.user_id == user_id, Lesson.node_key.in_([n.key for n, _, _ in nodes]))
             .order_by(Lesson.created_at)
         )
     ).scalars()
@@ -68,18 +82,19 @@ async def key_points(state: AppState, db: AsyncSession, user_id: uuid.UUID, lang
         if row.status == "done":
             done.add(row.node_key)
     out = []
-    for step in steps:
-        lesson = latest.get(step.node.key)
+    for node, core, preview in nodes:
+        lesson = latest.get(node.key)
         out.append(
             KeyPoint(
-                node_key=step.node.key,
-                kind=step.node.kind,
-                title=step.node.title,
-                band=step.node.band,
-                core=step.core,
-                preview=step.preview,
-                status="done" if step.node.key in done else "open" if lesson else "new",
+                node_key=node.key,
+                kind=node.kind,
+                title=node.title,
+                band=node.band,
+                core=core,
+                preview=preview,
+                status="done" if node.key in done else "open" if lesson else "new",
                 lesson_id=lesson.id if lesson else None,
+                places=[str(p) for p in node.payload.get("places", [])],
             )
         )
     return out
@@ -88,6 +103,14 @@ async def key_points(state: AppState, db: AsyncSession, user_id: uuid.UUID, lang
 @router.get("", response_model=list[KeyPoint])
 async def path(language: Language, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
     return await key_points(state, db, principal.user_id, language)
+
+
+@router.get("/for-place", response_model=list[KeyPoint])
+async def for_place(language: Language, place: str, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
+    """The words and phrases useful at this kind of place, at the learner's level or below, not yet learned first."""
+    useful = [k for k in await key_points(state, db, principal.user_id, language) if place in k.places]
+    useful.sort(key=lambda k: (k.status == "done", k.preview, not k.core))
+    return useful[:PLACE_OFFER]
 
 
 @router.post("/{node_key}", status_code=201)

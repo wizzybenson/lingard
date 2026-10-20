@@ -1,5 +1,6 @@
 {
-  "app": {"name": "Lingard", "loading": "Loading", "retry": "Try again", "back": "Back", "continue": "Continue", "save": "Save", "cancel": "Cancel"},
+  "app": {"name": "Lingard", "loading": "Loading", "retry": "Try again", "back": "Back", "continue": "Continue", "save": "Save", "cancel": "Cancel", "close": "Close"},
+  "journey": {"beforeScene": "Before you go in · useful here", "afterScene": "From this conversation · worth a look", "usefulHere": "Useful here"},
   "pin": {"label": "6-digit PIN", "mustBeSixDigits": "Your PIN must be exactly 6 digits.", "tooFewDigits": "Use more different digits.", "sequence": "Avoid sequences like 123456.", "repeats": "Avoid repeating patterns.", "pattern": "Avoid simple patterns.", "change": "Choose a new PIN", "current": "Current PIN", "new": "New PIN"},
   "signIn": {"title": "Welcome to Lingard", "name": "Your name", "submit": "Sign in", "haveInvite": "I have an invite code", "invite": "Invite code", "join": "Join", "biometric": "Unlock with Face ID / fingerprint", "mustChange": "Please choose your own PIN before you continue.", "tagline": "Live the language. Pass the exam."},
   "tabs": {"city": "City", "phone": "Phone", "school": "School", "exam": "Exam Hall", "passport": "Passport", "settings": "Settings"},

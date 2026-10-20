@@ -6,21 +6,17 @@ import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
 import type { KeyPoint, LessonRow, Profile } from "@/api/types";
-import { openKeyPoint } from "@/school/keyPoints";
+import { KIND_ICONS, openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title, type IconName } from "@/ui/kit";
+import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title } from "@/ui/kit";
 import { space, type } from "@/ui/theme";
 
 type Language = "fr" | "en";
 
 const KINDS: KeyPoint["kind"][] = ["grammar", "lexset", "function"];
-const KIND_ICONS: Record<KeyPoint["kind"], [IconName, IconName]> = {
-  grammar: ["book-outline", "book"],
-  lexset: ["albums-outline", "albums"],
-  function: ["chatbubbles-outline", "chatbubbles"],
-};
+
 
 export default function School() {
   const { t } = useTranslation();

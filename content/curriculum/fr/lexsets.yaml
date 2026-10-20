@@ -30,6 +30,7 @@ nodes:
     band: 4
     title: "Courses et alimentation"
     payload:
+      places: [cafe, shop]
       items: ["boulangerie", "épicerie", "caisse", "un kilo de", "une douzaine de", "frais", "en promotion", "reçu"]
       lesson:
         rule: "On achète le pain à la boulangerie et on fait ses courses à l'épicerie ; on paie à la caisse et on garde le reçu."
@@ -52,6 +53,7 @@ nodes:
     band: 4
     title: "Logement : louer"
     payload:
+      places: [home]
       items: ["appartement", "loyer", "bail", "propriétaire", "locataire", "charges comprises", "meublé", "studio", "colocation"]
       lesson:
         rule: "Le locataire paie un loyer au propriétaire et signe un bail ; « Charges comprises » veut dire que certaines charges sont incluses dans le montant annoncé ; il faut vérifier lesquelles dans le bail."
@@ -63,6 +65,7 @@ nodes:
     band: 4
     title: "Loisirs"
     payload:
+      places: [cafe]
       items: ["cinéma", "randonnée", "patinoire", "bibliothèque", "match de hockey", "festival", "abonnement"]
       lesson:
         rule: "On fait du sport (faire de la randonnée), on va au cinéma, à la patinoire, à un festival ; on prend un abonnement pour y aller souvent."
@@ -74,6 +77,7 @@ nodes:
     band: 5
     title: "Santé et rendez-vous médicaux"
     payload:
+      places: [clinic]
       items: ["ordonnance", "pharmacie", "carte d'assurance maladie", "symptôme", "fièvre", "urgence", "clinique sans rendez-vous"]
       lesson:
         rule: "Le médecin fait une ordonnance, la pharmacie donne les médicaments ; sans rendez-vous, on va à une clinique sans rendez-vous, et aux urgences si c'est grave."
@@ -85,6 +89,7 @@ nodes:
     band: 5
     title: "Banque"
     payload:
+      places: [bank]
       items: ["ouvrir un compte", "virement", "guichet", "carte de débit", "relevé de compte", "frais", "épargne"]
       lesson:
         rule: "On ouvre un compte au guichet ; on paie avec une carte de débit ; un virement envoie de l'argent d'un compte à un autre."
@@ -107,6 +112,7 @@ nodes:
     band: 6
     title: "Logement : dépôt et réparations"
     payload:
+      places: [home]
       items: ["dépôt de garantie", "état des lieux", "fissure", "fuite", "plombier", "remise en état", "retenir sur le dépôt", "usure"]
       lesson:
         rule: "En France, on fait un état des lieux à l'entrée et à la sortie ; le propriétaire peut retenir sur le dépôt de garantie le coût des réparations liées aux dégâts, mais pas à l'usure normale. Au Québec, le propriétaire ne peut pas exiger de dépôt de garantie."
@@ -118,6 +124,7 @@ nodes:
     band: 6
     title: "Travail et recherche d'emploi"
     payload:
+      places: [job_centre]
       items: ["candidature", "lettre de motivation", "entretien", "poste à pourvoir", "salaire", "période d'essai", "temps partiel", "recruteur"]
       lesson:
         rule: "On envoie une candidature avec un CV et une lettre de motivation ; le recruteur propose un entretien pour le poste à pourvoir."
@@ -129,6 +136,7 @@ nodes:
     band: 6
     title: "Démarches administratives"
     payload:
+      places: [town_hall]
       items: ["formulaire", "pièce d'identité", "numéro d'assurance sociale", "guichet", "délai", "justificatif de domicile", "demande"]
       lesson:
         rule: "Pour une demande, on remplit un formulaire et on joint une pièce d'identité et un justificatif de domicile ; le délai dit combien de temps il faut attendre."
@@ -140,6 +148,7 @@ nodes:
     band: 7
     title: "Éducation et formation"
     payload:
+      places: [library]
       items: ["inscription", "frais de scolarité", "diplôme", "formation continue", "stage", "équivalence", "bourse"]
       lesson:
         rule: "On fait une inscription, on paie des frais de scolarité, on obtient un diplôme ; Un stage est une période de formation pratique en milieu professionnel, pendant les études ou dans un autre parcours de formation."
@@ -151,6 +160,7 @@ nodes:
     band: 7
     title: "Technologie"
     payload:
+      places: [library]
       items: ["données personnelles", "mot de passe", "application", "télétravail", "réseaux sociaux", "cybersécurité"]
       lesson:
         rule: "On protège ses données personnelles avec un mot de passe solide ; le télétravail, c'est travailler de la maison."
@@ -162,6 +172,7 @@ nodes:
     band: 8
     title: "Actualité et société"
     payload:
+      places: [newspaper]
       items: ["enquête", "conseil municipal", "manifestation", "sondage", "projet de loi", "porte-parole", "selon les autorités"]
       lesson:
         rule: "Les médias parlent d'une enquête, d'un sondage, d'un projet de loi ; « selon les autorités » cite une source."
@@ -195,6 +206,7 @@ nodes:
     band: 4
     title: "Nombres, dates et heures"
     payload:
+      places: [clinic, bank]
       items: ["soixante-dix", "quatre-vingts", "quatre-vingt-dix", "le premier mars", "midi", "minuit", "et quart", "moins le quart", "et demie", "14 h 30"]
       lesson:
         rule: "70 = soixante-dix, 80 = quatre-vingts, 90 = quatre-vingt-dix ; on dit le premier mars, mais le deux mars ; à l'oral, 14 h 30 se dit « quatorze heures trente »."
@@ -206,6 +218,7 @@ nodes:
     band: 4
     title: "S'orienter en ville"
     payload:
+      places: [town_hall, library]
       items: ["à gauche", "à droite", "tout droit", "le carrefour", "le feu", "le coin de la rue", "traverser", "en face de", "à côté de"]
       lesson:
         rule: "Pour indiquer le chemin : allez tout droit, tournez à gauche ou à droite au carrefour, traversez au feu."
@@ -228,6 +241,7 @@ nodes:
     band: 4
     title: "La maison"
     payload:
+      places: [home, shop]
       items: ["la cuisine", "la salle de bains", "le chauffage", "la machine à laver", "le frigo", "les meubles", "le balcon", "la poubelle"]
       lesson:
         rule: "Les pièces : la cuisine, la salle de bains ; au Canada, on dit souvent le frigo pour le réfrigérateur ; on sort la poubelle le jour de la collecte."
@@ -239,6 +253,7 @@ nodes:
     band: 5
     title: "Factures et services"
     payload:
+      places: [bank]
       items: ["la facture", "l'abonnement", "payer en ligne", "le prélèvement automatique", "les frais", "le remboursement", "le forfait", "le service à la clientèle"]
       lesson:
         rule: "On reçoit une facture, on paie en ligne ou par prélèvement automatique ; Un forfait est un prix fixe pour un ensemble de services ; un forfait de téléphone est souvent facturé par mois.."
@@ -272,6 +287,7 @@ nodes:
     band: 6
     title: "Immigration et citoyenneté"
     payload:
+      places: [town_hall]
       items: ["la résidence permanente", "le permis de travail", "le visa", "la citoyenneté", "la demande", "les pièces justificatives", "le numéro d'assurance sociale", "Entrée express"]
       lesson:
         rule: "Les démarches : une demande de résidence permanente ou de permis de travail, avec des pièces justificatives ; Entrée express est le système fédéral de sélection."
@@ -283,6 +299,7 @@ nodes:
     band: 7
     title: "Droits au travail"
     payload:
+      places: [job_centre]
       items: ["le contrat de travail", "le salaire minimum", "les heures supplémentaires", "le congé", "la période d'essai", "le syndicat", "le licenciement", "la sécurité au travail"]
       lesson:
         rule: "Le contrat de travail fixe le salaire et les heures ; les heures supplémentaires sont payées davantage ; un syndicat défend les employés."
@@ -294,6 +311,7 @@ nodes:
     band: 7
     title: "Argent et économie"
     payload:
+      places: [bank]
       items: ["le budget", "l'épargne", "le prêt", "le taux d'intérêt", "l'inflation", "les impôts", "le pouvoir d'achat", "la dette"]
       lesson:
         rule: "On fait un budget, on met de l'argent en épargne, on rembourse un prêt ; l'inflation fait baisser le pouvoir d'achat."
@@ -305,6 +323,7 @@ nodes:
     band: 7
     title: "Culture et arts"
     payload:
+      places: [library]
       items: ["l'exposition", "le spectacle", "le musée", "la pièce de théâtre", "le patrimoine", "la critique", "le concert"]
       lesson:
         rule: "On visite une exposition au musée, on va voir un spectacle ou une pièce de théâtre ; le patrimoine, c'est l'héritage culturel d'un lieu."
@@ -316,6 +335,7 @@ nodes:
     band: 8
     title: "Loi et sécurité"
     payload:
+      places: [town_hall]
       items: ["porter plainte", "le témoin", "l'amende", "la loi", "le tribunal", "le cambriolage", "l'assurance", "les droits"]
       lesson:
         rule: "En cas de vol ou de cambriolage, on porte plainte à la police ; un témoin raconte ce qu'il a vu ; une amende est une somme à payer."
@@ -327,6 +347,7 @@ nodes:
     band: 8
     title: "Médias et communication"
     payload:
+      places: [newspaper]
       items: ["les réseaux sociaux", "l'émission", "la source", "la désinformation", "le reportage", "l'éditorial", "l'abonné"]
       lesson:
         rule: "Une émission passe à la radio ou à la télé ; un reportage traite un sujet en profondeur ; on vérifie la source pour éviter la désinformation."

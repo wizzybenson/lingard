@@ -20,6 +20,7 @@ nodes:
     band: 4
     title: "Ask for information"
     payload:
+      places: [town_hall, library, job_centre]
       exponents: ["Excuse me, could you tell me…?", "Do you know where…?", "What time does… open?"]
       lesson:
         rule: "Start with excuse me; use indirect questions to be polite: do you know where…?, could you tell me when…?"
@@ -32,6 +33,7 @@ nodes:
     band: 4
     title: "Make polite requests"
     payload:
+      places: [bank, cafe, shop, town_hall]
       exponents: ["Could I…?", "Would you mind…ing?", "I was wondering if…"]
       lesson:
         rule: "Ask politely with could I…?, would you mind…?, I'd like…; “I'd like” is usually more polite than “I want” when making a request."
@@ -43,6 +45,7 @@ nodes:
     band: 4
     title: "Ask for repetition or clarification"
     payload:
+      places: [clinic, bank]
       exponents: ["Sorry, could you say that again?", "What do you mean by…?", "Could you speak a bit more slowly?"]
       lesson:
         rule: "Say at once when you don't understand: sorry?, could you say that again?, what do you mean by…?"
@@ -54,6 +57,7 @@ nodes:
     band: 4
     title: "Make or change an appointment"
     payload:
+      places: [clinic, job_centre]
       exponents: ["I'd like to book an appointment for…", "Would Tuesday suit you?", "I need to cancel my appointment."]
       lesson:
         rule: "I'd like to make an appointment; is Tuesday at ten OK?; to change it: I need to rearrange my appointment."
@@ -76,6 +80,7 @@ nodes:
     band: 5
     title: "Describe people and places"
     payload:
+      places: [newspaper]
       exponents: ["It's a lively area where…", "She seems…", "It's next to…"]
       lesson:
         rule: "Describe with it's a… area, there's/there are…, she's very…; give two or three concrete details."
@@ -100,6 +105,7 @@ nodes:
     band: 5
     title: "Apologise and respond to apologies"
     payload:
+      places: [home]
       exponents: ["I'm really sorry about…", "I apologise for…", "Don't worry about it."]
       lesson:
         rule: "I'm sorry for + -ing / I'm sorry I…; reply with no problem, don't worry."
@@ -111,6 +117,7 @@ nodes:
     band: 6
     title: "Complain politely"
     payload:
+      places: [home, shop]
       exponents: ["I'm afraid there's a problem with…", "I'm not happy with…", "I'd like this to be sorted out."]
       lesson:
         rule: "Complain politely: describe the problem, its effect, then ask for action with could you…?"
@@ -134,6 +141,7 @@ nodes:
     band: 6
     title: "Give opinions"
     payload:
+      places: [newspaper]
       exponents: ["In my view,…", "I reckon…", "As far as I'm concerned,…"]
       lesson:
         rule: "I think, in my opinion, personally; give a reason with because or since."
@@ -168,6 +176,7 @@ nodes:
     band: 7
     title: "Negotiate"
     payload:
+      places: [home, shop]
       exponents: ["How about we meet halfway?", "I could accept that if…", "What if I…?"]
       lesson:
         rule: "Negotiate: propose, counter-propose, look for a compromise with would and could."
@@ -284,6 +293,7 @@ nodes:
     band: 5
     title: "On the phone"
     payload:
+      places: [job_centre]
       exponents: ["Hello, could I speak to…?", "Who's calling, please?", "Can I leave a message?"]
       lesson:
         rule: "On the phone: say who you are, ask for the person, leave a message with your number."
@@ -340,6 +350,7 @@ nodes:
     band: 6
     title: "Explain a process"
     payload:
+      places: [library]
       exponents: ["First, you need to…", "After that,…", "Once that's done,…"]
       lesson:
         rule: "Explain a process step by step: first, then, once you've…, finally; use imperatives."

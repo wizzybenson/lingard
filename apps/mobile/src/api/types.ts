@@ -24,6 +24,8 @@ export interface SceneView {
   status: string;
   intensity: string;
   location_name: string;
+  /** The kind of place (bank, clinic): the scene offers the words and phrases useful there before it starts. */
+  location_kind: string | null;
   layer_art: string[];
   npc_name: string;
   npc_role: string;
@@ -133,6 +135,8 @@ export interface KeyPoint {
   preview: boolean;
   status: "new" | "open" | "done";
   lesson_id: string | null;
+  /** Kinds of place where this is useful: the journey offers it there. */
+  places: string[];
 }
 
 export interface Profile {

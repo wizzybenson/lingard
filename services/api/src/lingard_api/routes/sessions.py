@@ -13,10 +13,13 @@ from sqlalchemy import select
 from lingard_api.deps import Db, Principal, State
 from lingard_api.jobs import GRAPH_JOBS, LIVE_JOBS
 from lingard_api.livekit_token import mint_learner_token
+from lingard_api.routes.key_points import PLACE_OFFER, KeyPoint, describe, key_points
 from lingard_api.routes.speech import require_providers
+from lingard_contracts.assessment import ErrorTag
 from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_contracts.scene import SceneContract
-from lingard_db.models import LearnerProfile, Scene, Session, User
+from lingard_db.models import Assessment, LearnerProfile, Scene, Session, Turn, User
+from lingard_graphs.pedagogy.key_points import KINDS
 from lingard_llm.config import any_llm_configured
 from lingard_world import load_city
 
@@ -51,6 +54,8 @@ class SceneView(BaseModel):
     status: str
     intensity: str
     location_name: str = ""
+    location_kind: str | None = None
+    """The kind of place (bank, clinic): the scene offers the words and phrases useful there before it starts."""
     layer_art: list[str] = []
     npc_name: str = ""
     npc_role: str = ""
@@ -196,6 +201,7 @@ async def get_scene(scene_id: uuid.UUID, principal: Principal, state: State, db:
     return view.model_copy(
         update={
             "location_name": location.name,
+            "location_kind": location.kind,
             "layer_art": list(location.layer_art),
             "npc_name": npc.name if npc else "",
             "npc_role": npc.role if npc else "",
@@ -239,3 +245,45 @@ async def go_live(scene_id: uuid.UUID, principal: Principal, state: State, db: D
     row.status = "live"
     await db.commit()
     return LiveTicket(livekit_url=settings.livekit_public_url, room=room, token=token, scene_id=row.id)
+
+
+@router.get("/scenes/{scene_id}/brush-up", response_model=list[KeyPoint])
+async def brush_up(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
+    """Lessons for the mistakes confirmed in this scene (the same ≥ 0.85 and second-check gate as the notebook),
+    offered as the learner leaves it; mistakes still being assessed simply are not there yet."""
+    row = await db.get(Scene, scene_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
+    tags = (
+        await db.execute(
+            select(Assessment.error_tags).join(Turn, Assessment.turn_id == Turn.id).where(Turn.scene_id == scene_id)
+        )
+    ).scalars()
+    keys = list(dict.fromkeys(t.node_key for batch in tags for t in map(ErrorTag.model_validate, batch) if t.showable))
+    nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed and n.kind in KINDS]
+    return await describe(db, principal.user_id, [(n, False, False) for n in nodes[:PLACE_OFFER]])
+
+
+@router.get("/scenes/{scene_id}/prep", response_model=list[KeyPoint])
+async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
+    """Before going in: the word and phrase lessons this conversation will draw on, not yet learned. Grammar targets
+    stay hidden (SPEC §9); words and phrases are taught before the scene that needs them (SPEC §16). With none of
+    those, the words and phrases useful at this kind of place."""
+    row = await db.get(Scene, scene_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
+    contract = SceneContract.model_validate(row.contract)
+    keys = [*contract.targets.lexset, *contract.targets.functions]
+    nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed]
+    offered = [
+        k for k in await describe(db, principal.user_id, [(n, True, False) for n in nodes]) if k.status != "done"
+    ]
+    if not offered:
+        kind = load_city(state.settings.content_root, contract.city).location(contract.location_key).kind
+        language = CITY_LANGUAGE[contract.city]
+        offered = [
+            k
+            for k in await key_points(state, db, principal.user_id, language)
+            if kind in k.places and k.status != "done" and not k.preview
+        ]
+    return offered[:PLACE_OFFER]

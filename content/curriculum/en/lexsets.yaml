@@ -30,6 +30,7 @@ nodes:
     band: 4
     title: "Food and shopping"
     payload:
+      places: [cafe, shop]
       items: ["checkout", "receipt", "special offer", "best before", "aisle", "refund", "a loaf of"]
       lesson:
         rule: "You queue at the checkout and keep the receipt; best before shows when food is at its best; a loaf of bread, a bottle of milk."
@@ -52,6 +53,7 @@ nodes:
     band: 4
     title: "Housing: renting"
     payload:
+      places: [home]
       items: ["flat", "rent", "tenancy agreement", "landlord", "tenant", "bills included", "furnished", "letting agent"]
       lesson:
         rule: "The tenant pays rent to the landlord, often through a letting agent, and signs a tenancy agreement; “Bills included” means the rent covers some or all household bills; check which bills are included."
@@ -63,6 +65,7 @@ nodes:
     band: 4
     title: "Leisure"
     payload:
+      places: [cafe]
       items: ["pub quiz", "gym membership", "five-a-side", "library", "cinema", "gig"]
       lesson:
         rule: "Free time in Britain: a pub quiz, five-a-side football, a gig (a concert), a gym membership."
@@ -74,6 +77,7 @@ nodes:
     band: 5
     title: "Health and the GP"
     payload:
+      places: [clinic]
       items: ["GP", "surgery", "prescription", "pharmacy", "register with", "symptoms", "A&E", "walk-in centre"]
       lesson:
         rule: "You register with a GP at the local surgery; the GP writes a prescription for the pharmacy; A&E is for emergencies, a walk-in centre for minor problems."
@@ -85,6 +89,7 @@ nodes:
     band: 5
     title: "Banking"
     payload:
+      places: [bank]
       items: ["current account", "direct debit", "sort code", "overdraft", "statement", "transfer money"]
       lesson:
         rule: "A current account is for everyday money; a direct debit pays bills automatically; your sort code and account number identify your account; an overdraft lets you spend more than you have."
@@ -107,6 +112,7 @@ nodes:
     band: 6
     title: "Housing: deposit and repairs"
     payload:
+      places: [home]
       items: ["deposit protection scheme", "inventory", "damp", "leak", "plumber", "wear and tear", "deduction", "check-out inspection"]
       lesson:
         rule: "For most private tenancies in England, the landlord must protect your tenancy deposit using a government-approved scheme.; the inventory lists the flat's condition; normal wear and tear cannot be deducted."
@@ -118,6 +124,7 @@ nodes:
     band: 6
     title: "Work and job search"
     payload:
+      places: [job_centre]
       items: ["CV", "cover letter", "interview", "vacancy", "salary", "probation period", "part-time", "shortlist"]
       lesson:
         rule: "You apply for a vacancy with a CV and a cover letter; if you are shortlisted, you are invited to an interview."
@@ -129,6 +136,7 @@ nodes:
     band: 6
     title: "Paperwork and services"
     payload:
+      places: [town_hall]
       items: ["form", "proof of address", "National Insurance number", "council", "appointment", "processing time", "application"]
       lesson:
         rule: "Applications need a form, proof of address and sometimes your National Insurance number; the processing time tells you how long to wait."
@@ -140,6 +148,7 @@ nodes:
     band: 7
     title: "Education and training"
     payload:
+      places: [library]
       items: ["enrolment", "tuition fees", "qualification", "apprenticeship", "evening class", "scholarship"]
       lesson:
         rule: "Enrolment is signing up for a course; tuition fees are what you pay; an apprenticeship combines paid work and training."
@@ -151,6 +160,7 @@ nodes:
     band: 7
     title: "Technology"
     payload:
+      places: [library]
       items: ["personal data", "password", "app", "remote working", "social media", "online scam"]
       lesson:
         rule: "Protect your personal data with a strong password; Remote working means working away from your usual workplace, often from home.; an online scam tries to steal your money or data."
@@ -162,6 +172,7 @@ nodes:
     band: 8
     title: "News and society"
     payload:
+      places: [newspaper]
       items: ["inquiry", "local council", "protest", "survey", "legislation", "spokesperson", "according to officials"]
       lesson:
         rule: "News language: an inquiry, a survey, legislation, a spokesperson; according to officials introduces a source."
@@ -195,6 +206,7 @@ nodes:
     band: 4
     title: "Numbers, dates and times"
     payload:
+      places: [clinic, bank]
       items: ["thirteen / thirty", "fifteen / fifty", "the first of March", "midday", "midnight", "quarter past", "quarter to", "half past", "14:30", "double six"]
       lesson:
         rule: "Listen for the stress: thirTEEN but THIRty; we say the first of March or March the first; a.m./p.m. or the 24-hour clock; phone numbers use double six."
@@ -206,6 +218,7 @@ nodes:
     band: 4
     title: "Finding your way"
     payload:
+      places: [town_hall, library]
       items: ["turn left", "turn right", "go straight on", "the roundabout", "the traffic lights", "on the corner", "cross the road", "opposite", "next to"]
       lesson:
         rule: "Give directions with imperatives: go straight on, turn left at the roundabout, cross the road at the traffic lights."
@@ -228,6 +241,7 @@ nodes:
     band: 4
     title: "The home"
     payload:
+      places: [home, shop]
       items: ["kitchen", "bathroom", "central heating", "washing machine", "fridge", "furniture", "balcony", "bins"]
       lesson:
         rule: "Rooms and appliances: the kitchen, bathroom, central heating, washing machine, fridge; you put the bins out on collection day."
@@ -239,6 +253,7 @@ nodes:
     band: 5
     title: "Bills and services"
     payload:
+      places: [bank]
       items: ["bill", "subscription", "pay online", "direct debit", "charges", "refund", "contract", "customer service"]
       lesson:
         rule: "You get a bill, pay online or by direct debit; Payments for a contract or subscription are often made monthly, but the payment schedule can vary.; customer service deals with complaints."
@@ -272,6 +287,7 @@ nodes:
     band: 6
     title: "Immigration and citizenship"
     payload:
+      places: [town_hall]
       items: ["permanent residence", "work permit", "visa", "citizenship", "application", "supporting documents", "biometrics", "National Insurance number"]
       lesson:
         rule: "Applications for a visa, a work permit or permanent residence need supporting documents and sometimes biometrics (fingerprints and a photo)."
@@ -283,6 +299,7 @@ nodes:
     band: 7
     title: "Rights at work"
     payload:
+      places: [job_centre]
       items: ["employment contract", "minimum wage", "overtime", "annual leave", "probation period", "trade union", "dismissal", "health and safety"]
       lesson:
         rule: "Your employment contract sets pay and hours; overtime is extra hours; annual leave is paid holiday; a trade union defends workers."
@@ -294,6 +311,7 @@ nodes:
     band: 7
     title: "Money and the economy"
     payload:
+      places: [bank]
       items: ["budget", "savings", "loan", "interest rate", "inflation", "tax", "cost of living", "debt"]
       lesson:
         rule: "Make a budget, put money into savings, repay a loan; inflation raises the cost of living."
@@ -305,6 +323,7 @@ nodes:
     band: 7
     title: "Culture and the arts"
     payload:
+      places: [library]
       items: ["exhibition", "performance", "museum", "play", "heritage", "review", "concert"]
       lesson:
         rule: "Visit an exhibition at a museum, see a play or a performance; heritage is a place's history and culture; a review gives an opinion on it."
@@ -316,6 +335,7 @@ nodes:
     band: 8
     title: "Law and safety"
     payload:
+      places: [town_hall]
       items: ["report a crime", "witness", "fine", "the law", "court", "burglary", "insurance", "rights"]
       lesson:
         rule: "After a burglary, you report a crime to the police; a witness saw what happened; a fine is money you must pay."
@@ -327,6 +347,7 @@ nodes:
     band: 8
     title: "Media and communication"
     payload:
+      places: [newspaper]
       items: ["social media", "programme", "source", "misinformation", "documentary", "editorial", "subscriber"]
       lesson:
         rule: "A programme is on TV or radio; a documentary looks at real events; check the source to avoid misinformation."
