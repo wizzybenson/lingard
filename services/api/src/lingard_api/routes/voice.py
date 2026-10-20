@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
+from functools import cache
+from pathlib import Path
 from typing import Annotated
 
+import yaml
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from fastapi.responses import Response
 from pydantic import BaseModel
@@ -14,8 +17,10 @@ from sqlalchemy import select
 from lingard_api import audit
 from lingard_api.deps import Db, Principal, State
 from lingard_api.privacy import CascadeError, delete_account, delete_voice_clone, export_zip
+from lingard_api.routes.speech import MAX_UPLOAD_BYTES, decode_audio
+from lingard_contracts.common import Language
+from lingard_contracts.live import SAMPLE_RATE
 from lingard_db.models import LearnerProfile, VoiceProfile
-from lingard_pronunciation.audio import wav_to_pcm
 from lingard_pronunciation.clone import CloneError, create_with_fallback
 from lingard_storage import AUDIO_BUCKET, user_prefix
 
@@ -27,6 +32,17 @@ class VoiceView(BaseModel):
     status: str
     provider: str | None = None
     consent_at: str | None = None
+
+
+class Passage(BaseModel):
+    text: str
+    min_seconds: int = MIN_SAMPLE_S
+    max_seconds: int = MAX_SAMPLE_S
+
+
+@cache
+def _passage(content_root: Path, language: str) -> str:
+    return str(yaml.safe_load((content_root / "pronunciation" / f"clone_passage_{language}.yaml").read_text())["text"])
 
 
 class DeleteAccountBody(BaseModel):
@@ -43,6 +59,12 @@ async def voice_status(principal: Principal, db: Db) -> VoiceView:
     if row is None:
         return VoiceView(status="none")
     return VoiceView(status=row.status, provider=row.provider, consent_at=row.consent_at.isoformat())
+
+
+@router.get("/voice/passage", response_model=Passage)
+async def passage(principal: Principal, state: State, language: Language) -> Passage:
+    """Something to read aloud for the clone sample: about 30–40 s at a learner's pace."""
+    return Passage(text=_passage(state.settings.content_root, language))
 
 
 @router.post("/voice/clone", response_model=VoiceView, status_code=201)
@@ -64,8 +86,14 @@ async def create_clone(
     ).scalar_one_or_none()
     if existing is not None:
         return VoiceView(status=existing.status, provider=existing.provider, consent_at=existing.consent_at.isoformat())
-    pcm, rate = wav_to_pcm(await sample.read())
-    seconds = len(pcm) / 2 / rate
+    data = await sample.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status.HTTP_413_CONTENT_TOO_LARGE, "recording too long")
+    try:
+        pcm = decode_audio(data)  # WAV, or M4A from phones and WebM from browsers
+    except ValueError as exc:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
+    seconds = len(pcm) / 2 / SAMPLE_RATE
     if not MIN_SAMPLE_S <= seconds <= MAX_SAMPLE_S:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, f"sample must be {MIN_SAMPLE_S}–{MAX_SAMPLE_S} s")
     order = [state.clone_providers[n] for n in ("voicebox", "elevenlabs") if n in state.clone_providers]

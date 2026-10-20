@@ -19,6 +19,6 @@ appId: app.lingard
       - eraseText
       - inputText: ${MAESTRO_LINGARD_TEST_PIN}   # the sixth digit signs in
 - extendedWaitUntil:
-    visible: "Where to today?"
+    visible: "Settings, tab.*"  # the tab bar: signed in, whatever the home card shows
     timeout: 30000
 - takeScreenshot: 01-city

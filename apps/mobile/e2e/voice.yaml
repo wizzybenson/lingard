@@ -1,0 +1,17 @@
+# Your voice: Settings → Your voice shows the consent, the passage to read and the recorder. No recording, no paid calls.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "Settings, tab.*"
+- scrollUntilVisible:
+    element: "Your voice.*"
+- tapOn: "Your voice.*"
+- extendedWaitUntil:
+    visible: "Read this aloud"
+    timeout: 10000
+- assertVisible: "Allow a voice clone"
+- assertVisible: ".*Bonjour.*"  # the passage itself
+- takeScreenshot: voice-01-start
+- scrollUntilVisible:
+    element: ".*Record"
+- takeScreenshot: voice-02-recorder

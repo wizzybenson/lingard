@@ -49,3 +49,12 @@ Each run costs a few cents.
   - ElevenLabs refuses because the pay-as-you-go plan has no instant voice cloning.
   - Installing voicebox's dependencies needs the founder's go-ahead (third-party code).
 - **Golden self:** without an ElevenLabs clone, golden self falls back to the native render.
+
+## Addendum (same day): voice clone verified on ElevenLabs Starter
+
+- **Robot run (`--clone`):** the clone was created in 3.2 s; golden self took 3.0 s; shadow scoring took 0.2 s. The verified delete left 4 of 10 slots used.
+- **Golden self is a real conversion:** its median pitch was 129 Hz, against 122 Hz for the learner sample and 168 Hz for the native narrator.
+- **NPC voices:** NPCs never use a cloned or designed account voice, because learners' clones share the account.
+- **The app had no way to create a clone.** It now has a "Your voice" screen, reached from Settings: consent, a passage to read in the target language (`content/pronunciation/clone_passage_<lang>.yaml`), a recorder, the ready state with a link to Accent Studio, and delete.
+- **Recording formats:** the clone endpoint now accepts phone (M4A) and browser (WebM) recordings.
+- **UI test:** `e2e/voice.yaml`. The shared sign-in flow now waits for the tab bar.

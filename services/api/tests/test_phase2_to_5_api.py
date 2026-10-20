@@ -89,7 +89,16 @@ async def test_writing_lessons_wallet_and_shop(api, monkeypatch) -> None:  # typ
     assert (await api.client.get("/v1/league", headers=api.bearer(token))).json() == {"opted_in": False, "ranking": []}
 
 
-async def test_voice_clone_consent_cascade_export_and_account_deletion(api) -> None:  # type: ignore[no-untyped-def]
+async def test_voice_clone_passage_is_in_the_learners_language(api) -> None:  # type: ignore[no-untyped-def]
+    token, _ = await learner(api)
+    fr = (await api.client.get("/v1/voice/passage", params={"language": "fr"}, headers=api.bearer(token))).json()
+    en = (await api.client.get("/v1/voice/passage", params={"language": "en"}, headers=api.bearer(token))).json()
+    assert "français" in fr["text"] and "English" in en["text"]
+    assert len(fr["text"].split()) >= 60, "about 30 s or more at a learner's pace"
+    assert fr["min_seconds"] == 20 and fr["max_seconds"] == 120
+
+
+async def test_voice_clone_consent_cascade_export_and_account_deletion(api, m4a) -> None:  # type: ignore[no-untyped-def]
     fake = FakeClone(name="voicebox")
     api.state.clone_providers = {"voicebox": fake}
     store = api.state.objects
@@ -110,8 +119,10 @@ async def test_voice_clone_consent_cascade_export_and_account_deletion(api) -> N
     failed = await api.client.post("/v1/voice/clone", files=files, data={"consent": "true"}, headers=api.bearer(token))
     assert failed.status_code == 502 and "provider unavailable" in failed.json()["detail"]
     fake.fail_create = False
-    created = await api.client.post("/v1/voice/clone", files=files, data={"consent": "true"}, headers=api.bearer(token))
-    assert created.status_code == 201 and len(fake.profiles) == 1
+    phone = {"sample": ("s.m4a", m4a(25), "audio/mp4")}
+    created = await api.client.post("/v1/voice/clone", files=phone, data={"consent": "true"}, headers=api.bearer(token))
+    assert created.status_code == 201 and len(fake.profiles) == 1, "a phone's M4A recording is accepted"
+    assert abs(len(next(iter(fake.profiles.values()))) / 32_000 - 25) < 0.5, "decoded to 16 kHz mono"
     await store.put(AUDIO_BUCKET, f"{user_prefix(user_id)}turns/2026-10-01/t1.pcm", b"turn-audio")
 
     export = await api.client.get("/v1/me/export", headers=api.bearer(token))

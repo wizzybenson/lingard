@@ -1,8 +1,11 @@
 import asyncio
-from collections.abc import AsyncIterator
+import io
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass
 
+import av
 import httpx
+import numpy as np
 import pytest
 
 from lingard_api.cli import migrate
@@ -59,3 +62,24 @@ async def api(pg_schema_factory) -> AsyncIterator[Api]:  # type: ignore[no-untyp
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             yield Api(client, state, settings)
         await state.close()
+
+
+def _m4a(seconds: float = 1.0) -> bytes:
+    """AAC in MP4 at 44.1 kHz, as iOS and Android record."""
+    buffer = io.BytesIO()
+    with av.open(buffer, "w", format="mp4") as container:
+        stream = container.add_stream("aac", rate=44_100)
+        stream.layout = "mono"
+        samples = (0.3 * np.sin(2 * np.pi * 220 * np.arange(int(44_100 * seconds)) / 44_100)).astype(np.float32)
+        frame = av.AudioFrame.from_ndarray(samples.reshape(1, -1), format="fltp", layout="mono")
+        frame.sample_rate = 44_100
+        for packet in stream.encode(frame):
+            container.mux(packet)
+        for packet in stream.encode(None):
+            container.mux(packet)
+    return buffer.getvalue()
+
+
+@pytest.fixture
+def m4a() -> Callable[[float], bytes]:
+    return _m4a

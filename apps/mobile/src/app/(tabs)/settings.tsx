@@ -133,9 +133,9 @@ export default function Settings() {
       <Section title={t("settings.privacy")}>
         <ListRow
           icon="mic-circle"
-          title={t("settings.voiceClone")}
+          title={t("voice.title")}
           subtitle={t("settings.voiceCloneHint")}
-          trailing={consentSwitch("voice_clone", t("settings.voiceCloneConsent"))}
+          onPress={() => router.push("/voice")}
         />
         <ListRow
           icon="people"

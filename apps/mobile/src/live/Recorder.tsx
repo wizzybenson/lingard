@@ -14,12 +14,12 @@ export interface Recording {
   uri: string;
 }
 
-async function formFor(uri: string): Promise<FormData> {
+async function formFor(uri: string, field: string): Promise<FormData> {
   const form = new FormData();
   if (Platform.OS === "web") {
-    form.append("audio", await (await fetch(uri)).blob(), "answer.webm");
+    form.append(field, await (await fetch(uri)).blob(), "answer.webm");
   } else {
-    form.append("audio", { uri, name: "answer.m4a", type: "audio/mp4" } as unknown as Blob);
+    form.append(field, { uri, name: "answer.m4a", type: "audio/mp4" } as unknown as Blob);
   }
   return form;
 }
@@ -32,9 +32,20 @@ interface RecorderProps<T> {
   path?: string;
   /** Extra multipart fields sent with the recording. */
   fields?: Record<string, string>;
+  /** Multipart field the recording goes in. */
+  fileField?: string;
+  disabled?: boolean;
 }
 
-export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, path = "/v1/speech/transcribe", fields = {} }: RecorderProps<T>) {
+export function Recorder<T = Omit<Recording, "uri">>({
+  api,
+  language,
+  onDone,
+  path = "/v1/speech/transcribe",
+  fields = {},
+  fileField = "audio",
+  disabled = false,
+}: RecorderProps<T>) {
   const { t } = useTranslation();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const state = useAudioRecorderState(recorder);
@@ -58,7 +69,7 @@ export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, pa
     if (!uri) return setError(t("mic.nothing"));
     setBusy(true);
     try {
-      const form = await formFor(uri);
+      const form = await formFor(uri, fileField);
       form.append("language", language);
       for (const [key, value] of Object.entries(fields)) form.append(key, value);
       const result = await api.postForm<T>(path, form);
@@ -75,7 +86,7 @@ export function Recorder<T = Omit<Recording, "uri">>({ api, language, onDone, pa
       {state.isRecording ? (
         <Button label={`■ ${t("units.seconds", { count: Math.round((state.durationMillis ?? 0) / 1000) })}`} kind="danger" onPress={() => void stop()} />
       ) : (
-        <Button label={`● ${t("exam.record")}`} busy={busy} onPress={() => void start()} />
+        <Button label={`● ${t("exam.record")}`} busy={busy} disabled={disabled} onPress={() => void start()} />
       )}
       {busy && <Body muted>…</Body>}
       <ErrorText message={error} />
