@@ -20,3 +20,6 @@ nodes:
   - {key: fr.pron.open_closed_e, band: 7, title: "/e/ et /ɛ/ (été / était)", payload: {phonemes: ["e", "ɛ"], minimal_pairs: [[été, était], [fée, fait]], functional_load: 0.5, l1_difficulty: {ar: 0.7, generic: 0.5}}}
   - {key: fr.pron.p_vs_b, band: 4, title: "/p/ et /b/ (pain / bain)", payload: {phonemes: ["p", "b"], minimal_pairs: [[pain, bain], [poire, boire]], functional_load: 0.8, l1_difficulty: {ar: 0.9, generic: 0.2}}}
   - {key: fr.pron.v_vs_f, band: 4, title: "/v/ et /f/ (vous / fou)", payload: {phonemes: ["v", "f"], minimal_pairs: [[vous, fou], [vin, fin]], functional_load: 0.7, l1_difficulty: {ar: 0.6, generic: 0.2}}}
+  - {key: fr.pron.s_vs_z, band: 4, title: "/s/ et /z/ (poisson / poison)", payload: {phonemes: ["s", "z"], minimal_pairs: [[poisson, poison], [dessert, désert], [ils sont, ils ont]], functional_load: 0.7, l1_difficulty: {ar: 0.4, generic: 0.5}}}
+  - {key: fr.pron.i_vs_y, band: 4, title: "/i/ et /y/ (si / su)", payload: {phonemes: ["i", "y"], minimal_pairs: [[si, su], [vie, vue], [dit, du]], functional_load: 0.7, l1_difficulty: {ar: 0.8, generic: 0.6}}}
+  - {key: fr.pron.ch_vs_j, band: 5, title: "/ʃ/ et /ʒ/ (chou / joue)", payload: {phonemes: ["ʃ", "ʒ"], minimal_pairs: [[chou, joue], [bouche, bouge], [cache, cage]], functional_load: 0.5, l1_difficulty: {ar: 0.5, generic: 0.5}}}

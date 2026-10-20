@@ -1,6 +1,7 @@
 # IELTS Speaking practice tasks for mocks (original). Keys are the pack's speaking part ids.
 # interview: Part 1 (4–5 min) familiar topics; long_turn: Part 2 cue card (1 min to prepare, 1–2 min to talk);
-# discussion: Part 3 (4–5 min) abstract questions linked to the Part 2 topic.
+# discussion: Part 3 (4–5 min) abstract questions linked to the Part 2 topic: a mock asks the Part 3 with the same
+# ``topic`` as the Part 2 it chose.
 # Each task is played live with the examiner: "facts" are all she may state, "tactics" tell her how to run the part.
 examiner: {npc_key: examiner_ruth, location_key: ashford.station_quarter.test_centre}
 interview:
@@ -25,47 +26,115 @@ interview:
     facts:
       - "This is Part 1 of the IELTS speaking test."
       - "Part 1 lasts about four to five minutes."
+  - prompt: "Part 1. The examiner will ask you about your home and about music. Answer naturally and give some detail."
+    targets: [en.func.describe_person_place]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 1. Ask these questions one at a time, in order, with only a brief neutral acknowledgement between them, and never give your own opinion: Can you describe the place where you live? Which room do you spend most time in? Would you like to change anything about your home? What kind of music do you like? Did you learn to play an instrument as a child? Do you listen to music while you work or study?"
+    facts:
+      - "This is Part 1 of the IELTS speaking test."
+      - "Part 1 lasts about four to five minutes."
+  - prompt: "Part 1. The examiner will ask you about shopping and about your neighbours. Answer naturally and give some detail."
+    targets: [en.func.express_preference]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 1. Ask these questions one at a time, in order, with only a brief neutral acknowledgement between them, and never give your own opinion: Do you enjoy shopping? Do you prefer shopping online or in shops? Why? What was the last thing you bought? Do you know your neighbours well? How do neighbours help each other where you live?"
+    facts:
+      - "This is Part 1 of the IELTS speaking test."
+      - "Part 1 lasts about four to five minutes."
 long_turn:
-  - prompt: "Part 2. Describe a time when you helped someone. You should say: who you helped, what the situation was, how you helped them, and explain how you felt about helping this person. You have one minute to prepare, then talk for one to two minutes."
+  - topic: helping
+    prompt: "Part 2. Describe a time when you helped someone. You should say: who you helped, what the situation was, how you helped them, and explain how you felt about helping this person. You have one minute to prepare, then talk for one to two minutes."
     targets: [en.func.narrate_past]
     tactics:
       - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Do you often help people like this?"
     facts:
       - "This is Part 2 of the IELTS speaking test."
       - "The candidate has one minute to prepare and should speak for one to two minutes."
-  - prompt: "Part 2. Describe a skill you would like to learn. You should say: what the skill is, why you want to learn it, how you would learn it, and explain how it would change your life. You have one minute to prepare, then talk for one to two minutes."
+  - topic: skills
+    prompt: "Part 2. Describe a skill you would like to learn. You should say: what the skill is, why you want to learn it, how you would learn it, and explain how it would change your life. You have one minute to prepare, then talk for one to two minutes."
     targets: [en.func.describe_person_place]
     tactics:
       - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Is this skill popular where you live?"
     facts:
       - "This is Part 2 of the IELTS speaking test."
       - "The candidate has one minute to prepare and should speak for one to two minutes."
-  - prompt: "Part 2. Describe a place in your town where people like to meet. You should say: where it is, what it looks like, what people do there, and explain why it is popular. You have one minute to prepare, then talk for one to two minutes."
+  - topic: public_places
+    prompt: "Part 2. Describe a place in your town where people like to meet. You should say: where it is, what it looks like, what people do there, and explain why it is popular. You have one minute to prepare, then talk for one to two minutes."
     targets: [en.func.describe_person_place]
     tactics:
       - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Do you go there often yourself?"
     facts:
       - "This is Part 2 of the IELTS speaking test."
       - "The candidate has one minute to prepare and should speak for one to two minutes."
+  - topic: people
+    prompt: "Part 2. Describe a person who has had an important influence on your life. You should say: who this person is, how you know them, what they have done for you, and explain why they have influenced you so much. You have one minute to prepare, then talk for one to two minutes."
+    targets: [en.func.describe_person_place]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Are you still in touch with this person?"
+    facts:
+      - "This is Part 2 of the IELTS speaking test."
+      - "The candidate has one minute to prepare and should speak for one to two minutes."
+  - topic: objects
+    prompt: "Part 2. Describe something you own that is very important to you. You should say: what it is, how you got it, how often you use it, and explain why it is so important to you. You have one minute to prepare, then talk for one to two minutes."
+    targets: [en.func.describe_person_place]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Would you ever give it away?"
+    facts:
+      - "This is Part 2 of the IELTS speaking test."
+      - "The candidate has one minute to prepare and should speak for one to two minutes."
+  - topic: celebrations
+    prompt: "Part 2. Describe a celebration you enjoyed. You should say: what the occasion was, where and when it took place, who was there, and explain why you enjoyed it. You have one minute to prepare, then talk for one to two minutes."
+    targets: [en.func.narrate_past]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Do you often go to celebrations like this?"
+    facts:
+      - "This is Part 2 of the IELTS speaking test."
+      - "The candidate has one minute to prepare and should speak for one to two minutes."
 discussion:
-  - prompt: "Part 3. The examiner will discuss helping others with you. Give reasons and examples for your views."
+  - topic: helping
+    prompt: "Part 3. The examiner will discuss helping others with you. Give reasons and examples for your views."
     targets: [en.func.express_opinion]
     tactics:
       - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why do some people volunteer more than others? Should schools require students to do community work? How has technology changed the way people help each other?"
     facts:
       - "This is Part 3 of the IELTS speaking test."
       - "Part 3 lasts about four to five minutes."
-  - prompt: "Part 3. The examiner will discuss learning new skills with you. Give reasons and examples for your views."
+  - topic: skills
+    prompt: "Part 3. The examiner will discuss learning new skills with you. Give reasons and examples for your views."
     targets: [en.func.express_opinion]
     tactics:
       - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Is it easier for children or adults to learn something new? Will people need to change careers more often in the future? What role should employers play in training workers?"
     facts:
       - "This is Part 3 of the IELTS speaking test."
       - "Part 3 lasts about four to five minutes."
-  - prompt: "Part 3. The examiner will discuss public spaces with you. Give reasons and examples for your views."
+  - topic: public_places
+    prompt: "Part 3. The examiner will discuss public spaces with you. Give reasons and examples for your views."
     targets: [en.func.express_opinion]
     tactics:
       - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why are public spaces important in a city? Who should pay for parks and squares? How might town centres change in the next twenty years?"
+    facts:
+      - "This is Part 3 of the IELTS speaking test."
+      - "Part 3 lasts about four to five minutes."
+  - topic: people
+    prompt: "Part 3. The examiner will discuss role models and influence with you. Give reasons and examples for your views."
+    targets: [en.func.express_opinion]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Who are the main role models for young people today? Do famous people have a responsibility to behave well? Is the influence of parents weaker now than in the past?"
+    facts:
+      - "This is Part 3 of the IELTS speaking test."
+      - "Part 3 lasts about four to five minutes."
+  - topic: objects
+    prompt: "Part 3. The examiner will discuss possessions and consumer habits with you. Give reasons and examples for your views."
+    targets: [en.func.express_opinion]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why do people keep things they no longer use? Do people today buy more than they need? Should products be designed to last longer?"
+    facts:
+      - "This is Part 3 of the IELTS speaking test."
+      - "Part 3 lasts about four to five minutes."
+  - topic: celebrations
+    prompt: "Part 3. The examiner will discuss celebrations and traditions with you. Give reasons and examples for your views."
+    targets: [en.func.express_opinion]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why are traditional celebrations important to communities? Are celebrations becoming too commercial? How do people who move abroad keep their traditions alive?"
     facts:
       - "This is Part 3 of the IELTS speaking test."
       - "Part 3 lasts about four to five minutes."

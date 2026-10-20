@@ -37,6 +37,7 @@ from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_exam_packs.adaptive import estimate
 from lingard_exam_packs.generator import ItemGenerator
 from lingard_exam_packs.items import Item, ItemBank
+from lingard_exam_packs.prompts import writing_prompts
 from lingard_exam_packs.serving import check, serve_set
 from lingard_graphs.agents.writing import WritingExaminer, rubric_text
 from lingard_graphs.deps import GraphDeps
@@ -106,6 +107,17 @@ def spread_bands(count: int, low: int = 4, high: int = 10) -> list[int]:
     return [low + round(i * (high - low) / max(count - 1, 1)) for i in range(count)]
 
 
+def choose_speaking(entries: list[Any], topics: set[str], pick: random.Random) -> dict[str, Any]:
+    """One speaking task for a part. A part with a task on a topic already chosen (IELTS Part 3 discusses the Part 2
+    cue card's theme) stays on that topic; the chosen topic is added to ``topics``."""
+    tasks = [e if isinstance(e, dict) else {"prompt": e} for e in entries]
+    linked = [e for e in tasks if e.get("topic") in topics]
+    fields = dict(pick.choice(linked or tasks))
+    if topic := fields.pop("topic", None):
+        topics.add(topic)
+    return fields
+
+
 def build_exam_hall(
     deps: GraphDeps, bank: ItemBank, checkpointer: BaseCheckpointSaver[str] | None = None
 ) -> CompiledStateGraph[ExamState, Any, ExamState, ExamState]:
@@ -161,21 +173,20 @@ def build_exam_hall(
         writing_file, speaking_file = folder / "writing_prompts.yaml", folder / "speaking_prompts.yaml"
         if not (writing_file.exists() and speaking_file.exists()):
             return None
-        writing, speaking = yaml.safe_load(writing_file.read_text()), yaml.safe_load(speaking_file.read_text())
+        writing, speaking = writing_prompts(deps.content_root, pack_id), yaml.safe_load(speaking_file.read_text())
         pack = deps.packs.pack(pack_id)
         task_ids = [t.id for s in pack.sections for t in s.tasks]
         part_ids = [p.id for s in pack.sections if s.skill is Skill.SPEAKING for p in s.part_list()]
         if not all(writing.get(t) for t in task_ids) or not all(speaking.get(p) for p in part_ids):
             return None
         pick = random.Random(uuid.uuid4().hex)  # noqa: S311
+        topics: set[str] = set()
 
         def speaking_task(part_id: str) -> MockTasks.Speaking:
-            chosen = pick.choice(speaking[part_id])
-            fields = chosen if isinstance(chosen, dict) else {"prompt": chosen}
-            return MockTasks.Speaking(part_id=part_id, **fields)
+            return MockTasks.Speaking(part_id=part_id, **choose_speaking(speaking[part_id], topics, pick))
 
         return MockTasks(
-            writing=[MockTasks.Writing(task_id=t, prompt=pick.choice(writing[t])) for t in task_ids],
+            writing=[MockTasks.Writing(task_id=t, prompt=pick.choice(writing[t]).prompt) for t in task_ids],
             speaking=[speaking_task(p) for p in part_ids],
             examiner=speaking.get("examiner"),
         )

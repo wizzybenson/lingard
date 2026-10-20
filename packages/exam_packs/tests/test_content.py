@@ -46,3 +46,16 @@ def test_sets_share_one_text_and_part() -> None:
 def test_true_false_not_given_keeps_its_order() -> None:
     tfng = [i for i in BANK.select("ielts_gt", Skill.READING) if i.task_type == "true_false_not_given"]
     assert tfng and all(i.options == ["TRUE", "FALSE", "NOT GIVEN"] and not i.shuffle for i in tfng)
+
+
+@pytest.mark.parametrize("pack_id", ["ielts_gt", "tef_canada"])
+def test_every_writing_variant_the_exam_sets_has_prompts(pack_id: PackId) -> None:
+    from lingard_exam_packs.prompts import writing_prompts
+
+    prompts = writing_prompts(ROOT, pack_id)
+    for task in PACKS.pack(pack_id).section_for(Skill.WRITING).tasks:
+        assert task.variants, f"{task.id} declares the kinds of prompt the exam sets"
+        tagged = [p.variant for p in prompts[task.id]]
+        assert set(tagged) <= set(task.variants), f"{task.id}: undeclared variant"
+        for variant in task.variants:
+            assert tagged.count(variant) >= 2, f"{task.id}: at least two prompts for {variant}"

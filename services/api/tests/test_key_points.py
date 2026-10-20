@@ -39,3 +39,15 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
 
     assert (await api.client.post("/v1/key-points/fr.grammar.nope", headers=auth)).status_code == 404
     assert (await api.client.post("/v1/key-points/fr.lexset.food", headers=auth)).status_code == 404
+
+
+async def test_an_english_key_point_opens_too(api) -> None:  # type: ignore[no-untyped-def]
+    """English verb data has its own shape; opening an English lesson must not try to read it as French."""
+    await seed_graph(api.state.curriculum, load_seed(api.settings.content_root, "en"))
+    token, _ = await learner(api)
+    auth = api.bearer(token)
+    opened = await api.client.post("/v1/key-points/en.grammar.subject_verb_agreement", headers=auth)
+    assert opened.status_code == 201
+    lesson = (await api.client.get(f"/v1/lessons/{opened.json()['id']}", headers=auth)).json()["content"]
+    assert lesson["kind"] == "key_points" and lesson["games"]
+    assert "The controls look complicated." in lesson["models"]

@@ -176,6 +176,8 @@ export interface WritingTask {
   min_words: number;
   suggested_minutes: number;
   prompts: string[];
+  /** The kind of task each prompt practises, in the same order (formal letter, problem–solution essay…). */
+  prompt_variants: (string | null)[];
 }
 
 /** An exam as a full mock runs it: sections in the official order with their timing (GET /v1/exams/formats). */

@@ -24,6 +24,9 @@ class TaskDef(_Model):
     suggested_minutes: int
     weight: float = 1
     rubric: list[str]
+    variants: list[str] = []
+    """The kinds of prompt the exam sets for this task (a formal or personal letter; an opinion or a
+    problem–solution essay). Practice prompts are tagged with one, and every variant needs prompts."""
 
 
 class PartDef(_Model):

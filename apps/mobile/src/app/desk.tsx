@@ -84,7 +84,9 @@ export default function Desk() {
 
   if (!tasks.data) return <Screen back>{tasks.error ? <ErrorText message={tasks.error} onRetry={tasks.reload} /> : <Loading />}</Screen>;
   if (!task) return <Screen back><Body muted>{t("phone.empty")}</Body></Screen>;
-  const prompt = task.prompts[promptIndex % Math.max(task.prompts.length, 1)] ?? "";
+  const shown = promptIndex % Math.max(task.prompts.length, 1);
+  const prompt = task.prompts[shown] ?? "";
+  const variant = task.prompt_variants[shown];
   const words = wordCount(text);
   const enough = words >= task.min_words;
 
@@ -141,6 +143,7 @@ export default function Desk() {
         <View style={styles.row}>
           <Overline>{t("writing.topic")}</Overline>
           <View style={{ flex: 1 }} />
+          {variant && <Chip label={t(`writing.variants.${variant}`, { defaultValue: variant })} tone="accent" icon="pricetag" />}
           <Chip label={t("writing.minWords", { count: task.min_words })} icon="text" />
           <Chip label={t("writing.aboutMinutes", { count: task.suggested_minutes })} icon="time-outline" />
         </View>

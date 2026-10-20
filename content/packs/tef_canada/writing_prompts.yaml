@@ -1,9 +1,28 @@
-# Sujets d'entraînement pour le Bureau (originaux). Clés : identifiants des tâches d'expression écrite du pack.
+# Sujets d'entraînement pour le Bureau et les examens blancs (originaux). Clés : identifiants des tâches d'expression
+# écrite du pack ; chaque sujet indique la variante qu'il entraîne (voir pack.yaml).
 section_a:
-  - "Poursuivez cet article de journal (80 mots minimum) : « Un chien retrouve sa famille après trois semaines. Hier matin, à Rivemont, une famille du quartier Saint-Roch a eu une belle surprise en ouvrant sa porte… »"
-  - "Poursuivez cet article de journal (80 mots minimum) : « Une fuite d'eau inonde la bibliothèque du quartier. Hier soir, peu avant la fermeture, les employés de la bibliothèque Gabrielle-Roy ont entendu un bruit étrange… »"
-  - "Poursuivez cet article de journal (80 mots minimum) : « Un marché de nuit attire des milliers de visiteurs. Samedi dernier, pour la première fois, le Vieux-Port a accueilli un marché ouvert jusqu'à minuit… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un chien retrouve sa famille après trois semaines. Hier matin, à Rivemont, une famille du quartier Saint-Roch a eu une belle surprise en ouvrant sa porte… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Une fuite d'eau inonde la bibliothèque du quartier. Hier soir, peu avant la fermeture, les employés de la bibliothèque Gabrielle-Roy ont entendu un bruit étrange… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un marché de nuit attire des milliers de visiteurs. Samedi dernier, pour la première fois, le Vieux-Port a accueilli un marché ouvert jusqu'à minuit… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Panne d'électricité géante dans la Haute-Ville. Mardi, vers 18 heures, au moment où les familles préparaient le souper, toutes les lumières se sont éteintes… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un portefeuille rendu avec 500 dollars à l'intérieur. Jeudi dernier, une étudiante de Rivemont a trouvé un portefeuille sur un banc du parc… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Tempête de neige : les écoles fermées, les habitants solidaires. Dimanche soir, plus de quarante centimètres de neige sont tombés sur Rivemont… »"
 section_b:
-  - "« Les grandes villes devraient interdire les voitures dans leur centre. » Vous écrivez au courrier des lecteurs du journal local pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
-  - "« Le télétravail devrait devenir la norme pour tous les emplois de bureau. » Vous écrivez sur un forum pour donner votre point de vue. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
-  - "« Il faudrait apprendre le français avant d'immigrer au Québec ou au Canada. » Vous écrivez au courrier des lecteurs pour réagir à cette affirmation. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: courrier_des_lecteurs
+    prompt: "« Les grandes villes devraient interdire les voitures dans leur centre. » Vous écrivez au courrier des lecteurs du journal local pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: forum
+    prompt: "« Le télétravail devrait devenir la norme pour tous les emplois de bureau. » Vous écrivez sur un forum pour donner votre point de vue. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: courrier_des_lecteurs
+    prompt: "« Il faudrait apprendre le français avant d'immigrer au Québec ou au Canada. » Vous écrivez au courrier des lecteurs pour réagir à cette affirmation. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: forum
+    prompt: "« Les enfants ne devraient pas avoir de téléphone portable avant l'âge de quinze ans. » Vous réagissez sur un forum de parents. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: courrier_des_lecteurs
+    prompt: "« Le transport en commun devrait être gratuit pour tous les habitants. » Vous écrivez au courrier des lecteurs du journal de Rivemont pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: forum
+    prompt: "« Le bénévolat devrait être obligatoire pour tous les élèves du secondaire. » Vous donnez votre point de vue sur un forum consacré à l'éducation. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."

@@ -25,6 +25,16 @@ nodes:
         common_errors:
           - {wrong: "Je vas au travail.", right: "Je vais au travail."}
           - {wrong: "Vous faisez la cuisine.", right: "Vous faites la cuisine."}
+  - key: fr.grammar.cest_il_est_il_y_a
+    band: 4
+    title: "C'est, il est, il y a"
+    payload:
+      lesson:
+        rule: "C'est + nom avec déterminant ou + pronom, pour présenter ou identifier ; il/elle est + adjectif, ou + profession sans article ; il y a + nom, pour dire qu'une chose existe."
+        examples: ["C'est mon voisin.", "Il est infirmier.", "Il y a une pharmacie près de la gare."]
+        common_errors:
+          - {wrong: "Il est un médecin.", right: "C'est un médecin."}
+          - {wrong: "Il a une pharmacie près d'ici.", right: "Il y a une pharmacie près d'ici."}
   - key: fr.grammar.articles_gender
     band: 4
     title: Articles et genre
@@ -35,6 +45,37 @@ nodes:
         common_errors:
           - {wrong: "Je n'ai pas du temps.", right: "Je n'ai pas de temps."}
           - {wrong: "Le problème est la clé.", right: "Le problème, c'est la clé."}
+  - key: fr.grammar.adjectifs_accord
+    band: 4
+    title: "Accord et place des adjectifs"
+    payload:
+      lesson:
+        rule: "L'adjectif s'accorde en genre et en nombre avec le nom : petit, petite, petits, petites. Il se place en général après le nom ; quelques adjectifs courts et fréquents se placent avant : beau, bon, grand, petit, jeune, vieux, nouveau."
+        examples: ["Une voiture rouge.", "Un petit appartement calme.", "Les fenêtres sont ouvertes."]
+        common_errors:
+          - {wrong: "Un appartement petit.", right: "Un petit appartement."}
+          - {wrong: "Les portes sont fermé.", right: "Les portes sont fermées."}
+    prereq: [fr.grammar.articles_gender]
+  - key: fr.grammar.possessifs_demonstratifs
+    band: 4
+    title: "Possessifs et démonstratifs"
+    payload:
+      lesson:
+        rule: "Possessifs : mon, ma, mes ; ton, ta, tes ; son, sa, ses ; notre, nos ; votre, vos ; leur, leurs. Devant une voyelle, mon, ton, son même au féminin. Démonstratifs : ce (cet devant une voyelle), cette, ces."
+        examples: ["Voici mon adresse.", "Cet appartement est encore libre.", "Ces clés sont à vous ?"]
+        common_errors:
+          - {wrong: "Voici ma adresse.", right: "Voici mon adresse."}
+          - {wrong: "Ce appartement est libre.", right: "Cet appartement est libre."}
+  - key: fr.grammar.prepositions_lieu
+    band: 4
+    title: "Prépositions de lieu, villes et pays"
+    payload:
+      lesson:
+        rule: "À + ville (à Montréal) ; en + pays féminin ou commençant par une voyelle (en France, en Iran) ; au + pays masculin (au Canada, au Maroc) ; aux + pays pluriel (aux États-Unis). Chez + personne. Sur, sous, devant, derrière, à côté de, en face de."
+        examples: ["J'habite au Canada, à Rivemont.", "Je vais chez le médecin demain.", "La banque est en face de la gare."]
+        common_errors:
+          - {wrong: "Je vais à Canada.", right: "Je vais au Canada."}
+          - {wrong: "Je vais au médecin.", right: "Je vais chez le médecin."}
   - key: fr.grammar.negation
     band: 4
     title: "Négation : ne… pas, ne… jamais, ne… plus, ne… rien"
@@ -45,6 +86,17 @@ nodes:
         common_errors:
           - {wrong: "Je ne ai pas compris.", right: "Je n'ai pas compris."}
           - {wrong: "Il n'a vu pas le film.", right: "Il n'a pas vu le film."}
+  - key: fr.grammar.quantites
+    band: 4
+    title: "Exprimer une quantité"
+    payload:
+      lesson:
+        rule: "Beaucoup de, peu de, assez de, trop de, un kilo de, une bouteille de + nom sans article (de devient d' devant une voyelle). Mais : la plupart des + nom."
+        examples: ["J'ai beaucoup de travail cette semaine.", "Un kilo de pommes, s'il vous plaît.", "Il y a trop d'étapes."]
+        common_errors:
+          - {wrong: "J'ai beaucoup des amis ici.", right: "J'ai beaucoup d'amis ici."}
+          - {wrong: "Un litre du lait.", right: "Un litre de lait."}
+    prereq: [fr.grammar.articles_gender]
   - key: fr.grammar.questions
     band: 4
     title: "Poser des questions : intonation, est-ce que, inversion"
@@ -64,6 +116,28 @@ nodes:
         examples: ["Je vais appeler le propriétaire.", "On va visiter l'appartement demain."]
         common_errors:
           - {wrong: "Je vais à signer.", right: "Je vais signer."}
+  - key: fr.grammar.verbes_pronominaux
+    band: 4
+    title: "Verbes pronominaux"
+    payload:
+      lesson:
+        rule: "Le pronom réfléchi suit le sujet : je me lève, tu te lèves, il se lève, nous nous levons, vous vous levez, ils se lèvent. À la négation, ne se place avant le pronom : je ne me lève pas."
+        examples: ["Je me réveille à sept heures.", "Comment vous appelez-vous ?", "Nous nous préparons pour l'entretien."]
+        common_errors:
+          - {wrong: "Je lève à sept heures.", right: "Je me lève à sept heures."}
+          - {wrong: "Nous se préparons.", right: "Nous nous préparons."}
+    prereq: [fr.grammar.present_regular]
+  - key: fr.grammar.passe_recent_en_train_de
+    band: 4
+    title: "Venir de et être en train de"
+    payload:
+      lesson:
+        rule: "Venir de + infinitif : une action qui vient de se terminer. Être en train de + infinitif : une action en cours en ce moment."
+        examples: ["Je viens d'arriver à Rivemont.", "Il est en train de remplir le formulaire.", "Nous venons de signer le bail."]
+        common_errors:
+          - {wrong: "Je viens de arrivé.", right: "Je viens d'arriver."}
+          - {wrong: "Je suis en train travailler.", right: "Je suis en train de travailler."}
+    prereq: [fr.grammar.present_irregular]
   - key: fr.grammar.passe_compose_avoir
     band: 5
     title: Passé composé avec avoir
@@ -95,6 +169,28 @@ nodes:
         common_errors:
           - {wrong: "Hier, je regardais la télé quand le téléphone sonnait.", right: "Hier, je regardais la télé quand le téléphone a sonné."}
     prereq: [fr.grammar.passe_compose_avoir]
+  - key: fr.grammar.passe_compose_ou_imparfait
+    band: 5
+    title: "Passé composé ou imparfait ?"
+    payload:
+      lesson:
+        rule: "L'imparfait pose le décor : description, état, habitude, action en cours. Le passé composé raconte les événements ponctuels qui font avancer l'histoire."
+        examples: ["Je dormais quand le téléphone a sonné.", "Quand j'étais enfant, j'allais à l'école à pied.", "Hier, j'ai visité trois appartements."]
+        common_errors:
+          - {wrong: "Quand j'ai été petit, j'habitais à Rabat.", right: "Quand j'étais petit, j'habitais à Rabat."}
+          - {wrong: "Je lisais quand il arrivait.", right: "Je lisais quand il est arrivé."}
+    prereq: [fr.grammar.passe_compose_avoir, fr.grammar.imparfait]
+  - key: fr.grammar.expressions_de_temps
+    band: 5
+    title: "Depuis, il y a, pendant, dans"
+    payload:
+      lesson:
+        rule: "Depuis + présent : une situation qui continue. Il y a + passé : le moment où une chose s'est passée. Pendant : une durée terminée. Dans : un moment à venir."
+        examples: ["J'habite ici depuis deux ans.", "Je suis arrivé il y a trois mois.", "Je pars en vacances dans une semaine."]
+        common_errors:
+          - {wrong: "J'habite ici pour deux ans.", right: "J'habite ici depuis deux ans."}
+          - {wrong: "Je suis arrivé depuis trois mois.", right: "Je suis arrivé il y a trois mois."}
+    prereq: [fr.grammar.passe_compose_etre]
   - key: fr.grammar.comparatif_superlatif
     band: 5
     title: Comparatif et superlatif
@@ -134,6 +230,28 @@ nodes:
         common_errors:
           - {wrong: "J'ai besoin de ça, j'y ai besoin.", right: "J'en ai besoin."}
     prereq: [fr.grammar.pronoms_cod_coi]
+  - key: fr.grammar.adverbes
+    band: 6
+    title: "Adverbes en -ment et place des adverbes"
+    payload:
+      lesson:
+        rule: "Adjectif au féminin + -ment (lente → lentement) ; -ant → -amment, -ent → -emment (courant → couramment, évident → évidemment). Au passé composé, les adverbes courts se placent entre l'auxiliaire et le participe : j'ai bien compris."
+        examples: ["Parlez lentement, s'il vous plaît.", "J'ai déjà rempli le formulaire.", "Elle parle couramment l'arabe et le français."]
+        common_errors:
+          - {wrong: "Il parle rapide.", right: "Il parle rapidement."}
+          - {wrong: "J'ai compris bien.", right: "J'ai bien compris."}
+    prereq: [fr.grammar.passe_compose_avoir]
+  - key: fr.grammar.indefinis_ne_que
+    band: 6
+    title: "Quelqu'un, personne, rien, aucun, chaque, ne… que"
+    payload:
+      lesson:
+        rule: "Quelqu'un, quelque chose s'opposent à personne, rien (avec ne). Chaque + nom singulier ; aucun(e) + ne, au singulier. Ne… que signifie seulement."
+        examples: ["Personne n'a appelé ce matin.", "Il n'y a aucun problème.", "Je n'ai que dix minutes."]
+        common_errors:
+          - {wrong: "Chaque jours, je prends le bus.", right: "Chaque jour, je prends le bus."}
+          - {wrong: "Il n'y a aucuns problèmes.", right: "Il n'y a aucun problème."}
+    prereq: [fr.grammar.negation]
   - key: fr.grammar.futur_simple
     band: 6
     title: Futur simple
@@ -194,6 +312,28 @@ nodes:
         common_errors:
           - {wrong: "Le livre que j'ai besoin.", right: "Le livre dont j'ai besoin."}
     prereq: [fr.grammar.relatifs_qui_que_ou]
+  - key: fr.grammar.doubles_pronoms
+    band: 7
+    title: "Ordre des doubles pronoms"
+    payload:
+      lesson:
+        rule: "Me, te, se, nous, vous se placent avant le, la, les ; le, la, les avant lui, leur ; puis y, puis en : il me le donne, je le lui envoie, il y en a."
+        examples: ["Je vous l'envoie aujourd'hui.", "Le formulaire ? Je le lui ai déjà donné.", "Des places ? Il y en a encore."]
+        common_errors:
+          - {wrong: "Je lui le donne.", right: "Je le lui donne."}
+          - {wrong: "Il en y a encore.", right: "Il y en a encore."}
+    prereq: [fr.grammar.pronoms_cod_coi, fr.grammar.pronoms_y_en]
+  - key: fr.grammar.pronoms_demonstratifs_possessifs
+    band: 7
+    title: "Celui, celle, le mien, la vôtre"
+    payload:
+      lesson:
+        rule: "Celui, celle, ceux, celles remplacent un nom déjà dit, suivis de -ci, -là, de qui, que ou de. Le mien, la mienne, les miens, les miennes ; le vôtre, la vôtre, les vôtres ; le leur, la leur, les leurs."
+        examples: ["Quel formulaire ? Celui de la mairie.", "Ce n'est pas ma clé, c'est la vôtre.", "Je préfère celle qui donne sur le parc."]
+        common_errors:
+          - {wrong: "Celle qui je préfère.", right: "Celle que je préfère."}
+          - {wrong: "C'est la votre.", right: "C'est la vôtre."}
+    prereq: [fr.grammar.relatifs_qui_que_ou]
   - key: fr.grammar.plus_que_parfait
     band: 7
     title: Plus-que-parfait
@@ -242,6 +382,28 @@ nodes:
         common_errors:
           - {wrong: "J'aurais du partir plus tôt.", right: "J'aurais dû partir plus tôt."}
     prereq: [fr.grammar.conditionnel_present, fr.grammar.passe_compose_etre]
+  - key: fr.grammar.futur_anterieur
+    band: 8
+    title: "Futur antérieur"
+    payload:
+      lesson:
+        rule: "Avoir ou être au futur simple + participe passé : une action future terminée avant une autre. Après quand, dès que, lorsque, le français emploie le futur, jamais le présent."
+        examples: ["Dès que j'aurai reçu ma carte, je vous l'enverrai.", "Quand vous serez arrivés, appelez-moi.", "J'aurai fini le dossier avant vendredi."]
+        common_errors:
+          - {wrong: "Quand j'ai fini, je t'appellerai.", right: "Quand j'aurai fini, je t'appellerai."}
+          - {wrong: "Quand je serai fini, je t'appellerai.", right: "Quand j'aurai fini, je t'appellerai."}
+    prereq: [fr.grammar.futur_simple, fr.grammar.passe_compose_etre]
+  - key: fr.grammar.accord_participe_avoir
+    band: 8
+    title: "Accord du participe passé avec avoir"
+    payload:
+      lesson:
+        rule: "Avec avoir, le participe passé s'accorde avec le complément d'objet direct seulement quand celui-ci est placé avant le verbe (pronom la, les, ou relatif que)."
+        examples: ["Les clés ? Je les ai trouvées.", "La lettre que j'ai écrite est partie hier.", "J'ai trouvé les clés dans la boîte."]
+        common_errors:
+          - {wrong: "La décision que j'ai pris.", right: "La décision que j'ai prise."}
+          - {wrong: "J'ai trouvées les clés.", right: "J'ai trouvé les clés."}
+    prereq: [fr.grammar.pronoms_cod_coi, fr.grammar.passe_compose_avoir]
   - key: fr.grammar.si_plus_que_parfait
     band: 8
     title: "Hypothèse irréelle au passé : si + plus-que-parfait → conditionnel passé"
@@ -263,6 +425,17 @@ nodes:
           - {wrong: "Je pense qu'il ait raison.", right: "Je pense qu'il a raison."}
           - {wrong: "Je doute qu'il vient.", right: "Je doute qu'il vienne."}
     prereq: [fr.grammar.subjonctif_present]
+  - key: fr.grammar.subjonctif_conjonctions
+    band: 8
+    title: "Subjonctif après bien que, pour que, avant que, à condition que"
+    payload:
+      lesson:
+        rule: "Bien que, pour que, afin que, avant que, à condition que, sans que + subjonctif. Après que, parce que, pendant que, dès que gardent l'indicatif. Avec le même sujet : pour, avant de, sans + infinitif."
+        examples: ["Je vous appelle pour que vous soyez prêt.", "Bien qu'il fasse froid, le marché est ouvert.", "J'économise pour payer le dépôt."]
+        common_errors:
+          - {wrong: "Bien qu'il fait froid, le marché est ouvert.", right: "Bien qu'il fasse froid, le marché est ouvert."}
+          - {wrong: "Je travaille pour que je paie le loyer.", right: "Je travaille pour payer le loyer."}
+    prereq: [fr.grammar.subjonctif_present]
   - key: fr.grammar.discours_rapporte
     band: 8
     title: Discours rapporté au passé
@@ -282,13 +455,24 @@ nodes:
         examples: ["La décision a été prise par le conseil.", "Les candidats seront convoqués lundi."]
         common_errors:
           - {wrong: "La loi a été voté hier.", right: "La loi a été votée hier."}
+  - key: fr.grammar.infinitif_passe_participe_present
+    band: 8
+    title: "Infinitif passé et participe présent"
+    payload:
+      lesson:
+        rule: "Après + infinitif passé (après avoir signé, après être arrivé) pour une action antérieure, avec le même sujet. À l'écrit, le participe présent en -ant (ayant, étant) exprime la cause ou décrit."
+        examples: ["Après avoir signé le bail, il a reçu les clés.", "Étant malade, elle n'est pas venue.", "Après être arrivés, nous avons cherché un logement."]
+        common_errors:
+          - {wrong: "Après signer le bail, il a reçu les clés.", right: "Après avoir signé le bail, il a reçu les clés."}
+          - {wrong: "Après être signé le contrat, il est parti.", right: "Après avoir signé le contrat, il est parti."}
+    prereq: [fr.grammar.gerondif]
   - key: fr.grammar.concordance_des_temps
     band: 9
     title: Concordance des temps dans le récit
     payload:
       lesson:
         rule: "Dans un récit au passé, articuler passé composé (événements), imparfait (cadre), plus-que-parfait (antériorité) et conditionnel (futur dans le passé)."
-        examples: ["Elle savait qu'elle partirait, car on lui avait proposé un poste."]
+        examples: ["Elle savait qu'elle partirait, car on lui avait proposé un poste.", "Quand je suis arrivé, il pleuvait et le bureau avait déjà fermé."]
         common_errors:
           - {wrong: "Il savait qu'il réussira.", right: "Il savait qu'il réussirait."}
     prereq: [fr.grammar.discours_rapporte]
@@ -302,6 +486,17 @@ nodes:
         common_errors:
           - {wrong: "Je suis content que tu es venu.", right: "Je suis content que tu sois venu."}
     prereq: [fr.grammar.subjonctif_vs_indicatif]
+  - key: fr.grammar.relatifs_composes
+    band: 9
+    title: "Lequel, auquel, duquel"
+    payload:
+      lesson:
+        rule: "Après une préposition, pour une chose : lequel, laquelle, lesquels, lesquelles. À + lequel = auquel (auxquels, auxquelles) ; de + lequel = duquel, quand de fait partie d'une locution (près duquel). Pour une personne, on préfère à qui, avec qui."
+        examples: ["Le dossier sur lequel je travaille est urgent.", "C'est la raison pour laquelle j'ai démissionné.", "Le projet auquel je participe commence lundi."]
+        common_errors:
+          - {wrong: "C'est la raison pour que j'ai démissionné.", right: "C'est la raison pour laquelle j'ai démissionné."}
+          - {wrong: "Le projet à lequel je participe.", right: "Le projet auquel je participe."}
+    prereq: [fr.grammar.relatif_dont]
   - key: fr.grammar.nominalisation
     band: 9
     title: Nominalisation (style écrit)
@@ -320,3 +515,14 @@ nodes:
         examples: ["C'est la sécurité qui m'inquiète.", "Ce que je propose, c'est un compromis."]
         common_errors:
           - {wrong: "C'est la sécurité que m'inquiète.", right: "C'est la sécurité qui m'inquiète."}
+  - key: fr.grammar.hypothese_concession_nuancees
+    band: 10
+    title: "Nuancer : à moins que, pour peu que, quand bien même"
+    payload:
+      lesson:
+        rule: "À moins que (+ subjonctif, souvent avec ne explétif), pour peu que (+ subjonctif) et quand bien même (+ conditionnel) nuancent une condition ou une concession dans un argument soutenu."
+        examples: ["Nous signerons, à moins que vous ne trouviez mieux.", "Quand bien même il serait d'accord, le budget ne suffirait pas.", "Pour peu qu'on l'écoute, il propose de bonnes idées."]
+        common_errors:
+          - {wrong: "Quand bien même il est d'accord, le budget ne suffirait pas.", right: "Quand bien même il serait d'accord, le budget ne suffirait pas."}
+          - {wrong: "À moins que vous trouvez mieux.", right: "À moins que vous ne trouviez mieux."}
+    prereq: [fr.grammar.subjonctif_conjonctions]

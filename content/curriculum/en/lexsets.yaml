@@ -21,3 +21,19 @@ nodes:
   - {key: en.lex.news_current_affairs, band: 8, title: "News and society", payload: {items: [inquiry, "local council", protest, survey, legislation, spokesperson, "according to officials"]}}
   - {key: en.lex.environment, band: 8, title: "Environment", payload: {items: ["climate change", recycling, "public transport", "carbon footprint", "green spaces", waste]}}
   - {key: en.lex.abstract_argument, band: 9, title: "Language of argument", payload: {items: [issue, "highlight", "call into question", "in the long run", "by contrast", crucial, "outweigh"]}}
+
+  - {key: en.lex.numbers_dates_times, band: 4, title: "Numbers, dates and times", payload: {items: ["thirteen / thirty", "fifteen / fifty", "the first of March", "midday", "midnight", "quarter past", "quarter to", "half past", "14:30", "double six"]}}
+  - {key: en.lex.directions_city, band: 4, title: "Finding your way", payload: {items: ["turn left", "turn right", "go straight on", "the roundabout", "the traffic lights", "on the corner", "cross the road", "opposite", "next to"]}}
+  - {key: en.lex.family_relationships, band: 4, title: "Family and relationships", payload: {items: ["partner", "husband", "wife", "children", "brother", "sister", "parents", "in-laws", "single", "married"]}}
+  - {key: en.lex.home_household, band: 4, title: "The home", payload: {items: ["kitchen", "bathroom", "central heating", "washing machine", "fridge", "furniture", "balcony", "bins"]}}
+  - {key: en.lex.services_bills, band: 5, title: "Bills and services", payload: {items: ["bill", "subscription", "pay online", "direct debit", "charges", "refund", "contract", "customer service"]}}
+  - {key: en.lex.sport_fitness, band: 5, title: "Sport and fitness", payload: {items: ["gym", "training", "team", "swimming", "running", "match", "membership"]}}
+  - {key: en.lex.travel_holidays, band: 5, title: "Travel and holidays", payload: {items: ["booking", "airport", "accommodation", "stay", "luggage", "flight", "cancel", "check-in"]}}
+  - {key: en.lex.immigration_citizenship, band: 6, title: "Immigration and citizenship", payload: {items: ["permanent residence", "work permit", "visa", "citizenship", "application", "supporting documents", "biometrics", "National Insurance number"]}}
+  - {key: en.lex.workplace_rights, band: 7, title: "Rights at work", payload: {items: ["employment contract", "minimum wage", "overtime", "annual leave", "probation period", "trade union", "dismissal", "health and safety"]}}
+  - {key: en.lex.money_economy, band: 7, title: "Money and the economy", payload: {items: ["budget", "savings", "loan", "interest rate", "inflation", "tax", "cost of living", "debt"]}}
+  - {key: en.lex.culture_arts, band: 7, title: "Culture and the arts", payload: {items: ["exhibition", "performance", "museum", "play", "heritage", "review", "concert"]}}
+  - {key: en.lex.law_safety, band: 8, title: "Law and safety", payload: {items: ["report a crime", "witness", "fine", "the law", "court", "burglary", "insurance", "rights"]}}
+  - {key: en.lex.media_communication, band: 8, title: "Media and communication", payload: {items: ["social media", "programme", "source", "misinformation", "documentary", "editorial", "subscriber"]}}
+  - {key: en.lex.society_issues, band: 9, title: "Social issues", payload: {items: ["equality", "diversity", "integration", "affordable housing", "poverty", "an ageing population", "discrimination", "social mobility"]}}
+  - {key: en.lex.science_public_health, band: 9, title: "Science and public health", payload: {items: ["research", "public health", "prevention", "study", "data", "innovation", "ethics", "clinical trial"]}}

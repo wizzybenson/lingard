@@ -91,7 +91,8 @@ async def test_lesson_audio_and_writing_tasks(api) -> None:  # type: ignore[no-u
         ("tef_canada", "section_a"),
         ("tef_canada", "section_b"),
     }
-    assert all(len(t["prompts"]) == 3 and t["min_words"] > 0 for t in tasks)
+    assert all(len(t["prompts"]) >= 6 and t["min_words"] > 0 for t in tasks)
+    assert all(len(t["prompt_variants"]) == len(t["prompts"]) and all(t["prompt_variants"]) for t in tasks)
     unconfigured = await api.client.post(
         "/v1/writing",
         json={"pack": "ielts_gt", "task_id": "task1_letter", "prompt": "p", "text": "t"},

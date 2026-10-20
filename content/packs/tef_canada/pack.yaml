@@ -36,10 +36,13 @@ sections:
     minutes: 60
     order: 3
     tasks:
+      # Section A continues a news item; section B argues a point of view, as a letter to a newspaper or a forum post.
       - {id: section_a, kind: continue_news_item, min_words: 80, suggested_minutes: 25, weight: 1,
-         rubric: [task_fulfilment, coherence_cohesion, lexical_resource, grammatical_control]}
+         rubric: [task_fulfilment, coherence_cohesion, lexical_resource, grammatical_control],
+         variants: [fait_divers]}
       - {id: section_b, kind: argue_point_of_view, min_words: 200, suggested_minutes: 35, weight: 1,
-         rubric: [task_fulfilment, argumentation, coherence_cohesion, lexical_resource, grammatical_control]}
+         rubric: [task_fulfilment, argumentation, coherence_cohesion, lexical_resource, grammatical_control],
+         variants: [courrier_des_lecteurs, forum]}
   - id: expression_orale
     skill: speaking
     minutes: 15

@@ -15,6 +15,38 @@ nodes:
         common_errors:
           - {wrong: "I am live in Ashford.", right: "I live in Ashford."}
           - {wrong: "She work at the hospital.", right: "She works at the hospital."}
+  - key: en.grammar.there_is_it_is
+    band: 4
+    title: "There is / there are and it is"
+    payload:
+      lesson:
+        rule: "There is + singular and there are + plural say that something exists or is somewhere. Use it for a thing already mentioned."
+        examples: ["There is a pharmacy near the station.", "There are two bedrooms in the flat.", "It's on the second floor."]
+        common_errors:
+          - {wrong: "It has a pharmacy near here.", right: "There is a pharmacy near here."}
+          - {wrong: "There is two bedrooms.", right: "There are two bedrooms."}
+  - key: en.grammar.subject_verb_agreement
+    band: 4
+    title: "Subject–verb agreement"
+    payload:
+      lesson:
+        rule: "In the present simple, he, she, it and singular nouns take -s; plural nouns do not. With a long subject, the main noun decides: the list of documents is…, the keys to the flat are…"
+        examples: ["The landlord lives upstairs.", "The controls look complicated.", "The list of documents is on the website."]
+        common_errors:
+          - {wrong: "The controls looks confusing.", right: "The controls look confusing."}
+          - {wrong: "She work in a café.", right: "She works in a café."}
+    prereq: [en.grammar.present_simple_continuous]
+  - key: en.grammar.adverbs_of_frequency
+    band: 4
+    title: "Adverbs of frequency"
+    payload:
+      lesson:
+        rule: "Always, usually, often, sometimes, rarely and never go before the main verb but after be and after an auxiliary."
+        examples: ["I usually take the bus to work.", "She is never late.", "I have always lived in a city."]
+        common_errors:
+          - {wrong: "I go always to work by bus.", right: "I always go to work by bus."}
+          - {wrong: "He never is on time.", right: "He is never on time."}
+    prereq: [en.grammar.present_simple_continuous]
   - key: en.grammar.articles
     band: 4
     title: Articles a / an / the / zero article
@@ -25,6 +57,26 @@ nodes:
         common_errors:
           - {wrong: "I need the advice.", right: "I need some advice."}
           - {wrong: "She is teacher.", right: "She is a teacher."}
+  - key: en.grammar.pronouns_possessives
+    band: 4
+    title: "Pronouns, possessives, this and that"
+    payload:
+      lesson:
+        rule: "Subject: I, you, he, she, it, we, they. Object: me, you, him, her, it, us, them. Possessive: my, your, his, her, its, our, their, and mine, yours, his, hers, ours, theirs. Use 's for people (Anna's flat). This/these for near things, that/those for far ones."
+        examples: ["This is my key, not yours.", "Can you give it to her?", "Those boxes are Tom's."]
+        common_errors:
+          - {wrong: "This bag is my.", right: "This bag is mine."}
+          - {wrong: "These book is mine.", right: "This book is mine."}
+  - key: en.grammar.prepositions_time_place
+    band: 4
+    title: "In, on, at for time and place"
+    payload:
+      lesson:
+        rule: "At + clock times and points (at 9:30, at the station). On + days and dates (on Monday, on 3 May), and streets (on Mill Lane). In + months, years, parts of the day, towns and countries (in June, in the morning, in Ashford)."
+        examples: ["The appointment is at 10:15 on Tuesday.", "I moved here in March.", "She lives in Ashford, on Mill Lane."]
+        common_errors:
+          - {wrong: "See you on the morning.", right: "See you in the morning."}
+          - {wrong: "The meeting is in Monday.", right: "The meeting is on Monday."}
   - key: en.grammar.past_simple
     band: 4
     title: Past simple (regular and irregular)
@@ -54,6 +106,16 @@ nodes:
         common_errors:
           - {wrong: "Where you work?", right: "Where do you work?"}
           - {wrong: "Who did call you?", right: "Who called you?"}
+  - key: en.grammar.can_could_be_able_to
+    band: 4
+    title: "Can, could and be able to"
+    payload:
+      lesson:
+        rule: "Can for present ability and requests; could for past ability and polite requests; be able to for other tenses (will be able to, have been able to)."
+        examples: ["Can you help me with this form?", "I couldn't find the address.", "You will be able to collect it on Friday."]
+        common_errors:
+          - {wrong: "I can to speak French.", right: "I can speak French."}
+          - {wrong: "I will can come tomorrow.", right: "I will be able to come tomorrow."}
   - key: en.grammar.countable_uncountable
     band: 5
     title: Countable and uncountable nouns
@@ -63,6 +125,17 @@ nodes:
         examples: ["Could you give me some information?", "How much luggage do you have?"]
         common_errors:
           - {wrong: "I have many furnitures.", right: "I have a lot of furniture."}
+  - key: en.grammar.quantifiers
+    band: 5
+    title: "Some, any, much, many, a few, a little"
+    payload:
+      lesson:
+        rule: "Some in positive sentences, offers and requests; any in negatives and most questions. Many and a few with countable plurals; much and a little with uncountable nouns; a lot of with both."
+        examples: ["Is there any milk left?", "I've got a few questions.", "We don't have much time."]
+        common_errors:
+          - {wrong: "How much people are coming?", right: "How many people are coming?"}
+          - {wrong: "I don't have some money.", right: "I don't have any money."}
+    prereq: [en.grammar.countable_uncountable]
   - key: en.grammar.present_perfect
     band: 5
     title: Present perfect
@@ -93,6 +166,17 @@ nodes:
         examples: ["I'll call you back.", "We're going to look at a flat on Saturday.", "I'm meeting the agent at ten."]
         common_errors:
           - {wrong: "I will to call you.", right: "I'll call you."}
+  - key: en.grammar.zero_conditional_time_clauses
+    band: 5
+    title: "Zero conditional and time clauses"
+    payload:
+      lesson:
+        rule: "If or when + present, present for facts and routines. After when, as soon as, before, after and until, use the present for the future: I'll call you when I arrive."
+        examples: ["If you press this button, the heating comes on.", "I'll call you when I get home.", "Wait here until the doctor is ready."]
+        common_errors:
+          - {wrong: "I'll call you when I will arrive.", right: "I'll call you when I arrive."}
+          - {wrong: "As soon as I will know, I'll tell you.", right: "As soon as I know, I'll tell you."}
+    prereq: [en.grammar.future_forms]
   - key: en.grammar.modals_obligation
     band: 5
     title: "Modals of obligation and advice: must, have to, should"
@@ -139,6 +223,47 @@ nodes:
         examples: ["I used to live in Casablanca.", "On Sundays we would walk by the sea."]
         common_errors:
           - {wrong: "I use to work in a bank.", right: "I used to work in a bank."}
+  - key: en.grammar.present_perfect_or_past_simple
+    band: 6
+    title: "Present perfect or past simple?"
+    payload:
+      lesson:
+        rule: "Past simple for a finished time (yesterday, in 2020, two weeks ago). Present perfect for experience, a result that matters now, or an unfinished time (today, this week, ever, yet, since, for)."
+        examples: ["I lost my keys yesterday.", "I've lost my keys. Can you help me?", "I have lived here since May."]
+        common_errors:
+          - {wrong: "I have seen him yesterday.", right: "I saw him yesterday."}
+          - {wrong: "I live here since 2022.", right: "I have lived here since 2022."}
+    prereq: [en.grammar.present_perfect, en.grammar.past_simple]
+  - key: en.grammar.too_enough_so_such
+    band: 6
+    title: "Too, enough, so, such"
+    payload:
+      lesson:
+        rule: "Too + adjective means more than you want. Adjective + enough; enough + noun. So + adjective or adverb; such (a) + adjective + noun."
+        examples: ["The flat is too small for us.", "Is the room big enough?", "It was such a long day."]
+        common_errors:
+          - {wrong: "It is enough big.", right: "It is big enough."}
+          - {wrong: "It was so a long day.", right: "It was such a long day."}
+  - key: en.grammar.phrasal_verbs
+    band: 6
+    title: "Common phrasal verbs"
+    payload:
+      lesson:
+        rule: "Verb + particle with its own meaning: fill in (a form), look for, find out, set up, sort out, turn down. With separable verbs a pronoun goes between the verb and the particle: fill it in."
+        examples: ["Please fill in this form.", "I need to find out when the office opens.", "Can you sort it out today?"]
+        common_errors:
+          - {wrong: "Fill in it, please.", right: "Fill it in, please."}
+          - {wrong: "I'm looking my keys.", right: "I'm looking for my keys."}
+  - key: en.grammar.substitution_ellipsis
+    band: 6
+    title: "So, not, one: avoiding repetition"
+    payload:
+      lesson:
+        rule: "Answer with I think so, I hope so, I hope not, I'm afraid not. Use one or ones instead of repeating a countable noun."
+        examples: ["Will it rain later? I hope not.", "Is the office open? I think so.", "I prefer the blue one."]
+        common_errors:
+          - {wrong: "I think yes.", right: "I think so."}
+          - {wrong: "I prefer the blue.", right: "I prefer the blue one."}
   - key: en.grammar.second_conditional
     band: 7
     title: "Second conditional: if + past, would"
@@ -186,6 +311,49 @@ nodes:
         examples: ["You're new here, aren't you?", "She didn't call, did she?"]
         common_errors:
           - {wrong: "You live here, isn't it?", right: "You live here, don't you?"}
+  - key: en.grammar.present_perfect_continuous
+    band: 7
+    title: "Present perfect continuous"
+    payload:
+      lesson:
+        rule: "Have or has been + -ing for an activity that started in the past and is still going on or has just stopped, often with for, since or how long. State verbs (know, believe, own) keep the simple form."
+        examples: ["I've been waiting for an hour.", "How long have you been learning English?", "I've known him for years."]
+        common_errors:
+          - {wrong: "I am waiting here since 9.", right: "I have been waiting here since 9."}
+          - {wrong: "I've been knowing him for years.", right: "I've known him for years."}
+    prereq: [en.grammar.present_perfect]
+  - key: en.grammar.modals_of_deduction
+    band: 7
+    title: "Must, might, can't for deduction"
+    payload:
+      lesson:
+        rule: "Must be when you are sure something is true; might, may or could be when it is possible; can't be when you are sure it is not true."
+        examples: ["That must be the landlord.", "The office might be closed today.", "It can't be far from here."]
+        common_errors:
+          - {wrong: "He mustn't be at home, his car has gone.", right: "He can't be at home, his car has gone."}
+          - {wrong: "It must to be expensive.", right: "It must be expensive."}
+    prereq: [en.grammar.modals_obligation]
+  - key: en.grammar.unless_in_case
+    band: 7
+    title: "Unless, in case, as long as"
+    payload:
+      lesson:
+        rule: "Unless means if not. In case means as a precaution. As long as and provided that mean only if. All take a present verb for the future."
+        examples: ["You can't park here unless you have a permit.", "Take an umbrella in case it rains.", "You can borrow it as long as you bring it back."]
+        common_errors:
+          - {wrong: "Unless you don't hurry, you'll miss the bus.", right: "Unless you hurry, you'll miss the bus."}
+          - {wrong: "Take a coat in case it will rain.", right: "Take a coat in case it rains."}
+    prereq: [en.grammar.first_conditional]
+  - key: en.grammar.word_formation
+    band: 7
+    title: "Word formation: prefixes and suffixes"
+    payload:
+      lesson:
+        rule: "Suffixes change the word class: -tion, -ment, -ity make nouns; -ful, -ive, -able make adjectives; -ly makes adverbs. Prefixes change the meaning: un-, in-, dis-, re-, over-."
+        examples: ["The decision was unfair.", "Public transport here is very reliable.", "We need to reduce unemployment."]
+        common_errors:
+          - {wrong: "It was a very success event.", right: "It was a very successful event."}
+          - {wrong: "He is very responsibility.", right: "He is very responsible."}
   - key: en.grammar.third_conditional
     band: 8
     title: "Third conditional: if + past perfect, would have"
@@ -225,13 +393,46 @@ nodes:
         examples: ["I wish I lived closer to work.", "If only I had read the contract."]
         common_errors:
           - {wrong: "I wish I have more time.", right: "I wish I had more time."}
+  - key: en.grammar.past_modals
+    band: 8
+    title: "Should have, must have, might have, could have"
+    payload:
+      lesson:
+        rule: "Modal + have + past participle. Should have for regret or criticism; must, might and can't have for deductions about the past; could have for something possible that did not happen."
+        examples: ["I should have read the contract.", "She must have forgotten the appointment.", "You could have told me!"]
+        common_errors:
+          - {wrong: "I should have went earlier.", right: "I should have gone earlier."}
+          - {wrong: "He must forgot the keys.", right: "He must have forgotten the keys."}
+    prereq: [en.grammar.modals_of_deduction]
+  - key: en.grammar.causative
+    band: 8
+    title: "Have or get something done"
+    payload:
+      lesson:
+        rule: "Have or get + object + past participle when someone else does a job for you."
+        examples: ["I'm having the boiler repaired on Monday.", "Where can I get my documents translated?", "We had the locks changed."]
+        common_errors:
+          - {wrong: "I have cut my hair yesterday.", right: "I had my hair cut yesterday."}
+          - {wrong: "I need to get translated my documents.", right: "I need to get my documents translated."}
+    prereq: [en.grammar.passive_voice]
+  - key: en.grammar.future_continuous_perfect
+    band: 8
+    title: "Future continuous and future perfect"
+    payload:
+      lesson:
+        rule: "Will be + -ing for an action in progress at a future time. Will have + past participle for an action finished before a future time, often with by."
+        examples: ["This time tomorrow I'll be flying to Toronto.", "By June I will have finished the course.", "Don't call at eight; I'll be working."]
+        common_errors:
+          - {wrong: "By next year I will work here for ten years.", right: "By next year I will have worked here for ten years."}
+          - {wrong: "At eight I will working.", right: "At eight I will be working."}
+    prereq: [en.grammar.future_forms, en.grammar.present_perfect]
   - key: en.grammar.mixed_conditionals
     band: 9
     title: Mixed conditionals
     payload:
       lesson:
         rule: "Past condition with present result (If I had taken the job, I would be in London now) or present condition with past result."
-        examples: ["If I'd saved more, I wouldn't be worried now."]
+        examples: ["If I'd saved more, I wouldn't be worried now.", "If I spoke better French, I would have got the job."]
         common_errors:
           - {wrong: "If I took that job, I would be rich now.", right: "If I had taken that job, I would be rich now."}
     prereq: [en.grammar.third_conditional]
@@ -253,6 +454,28 @@ nodes:
         examples: ["It's the noise that bothers me.", "What I'd suggest is a compromise."]
         common_errors:
           - {wrong: "What I need it is more time.", right: "What I need is more time."}
+  - key: en.grammar.hedging
+    band: 9
+    title: "Hedging and impersonal reporting"
+    payload:
+      lesson:
+        rule: "In formal writing, soften and distance claims: it could be argued that, it is widely believed that, X is said to, tend to, may, arguably."
+        examples: ["It is widely believed that public transport reduces pollution.", "Remote work tends to suit experienced staff.", "Prices are expected to rise next year."]
+        common_errors:
+          - {wrong: "It is believed that is true.", right: "It is believed that this is true."}
+          - {wrong: "Prices are expected rising.", right: "Prices are expected to rise."}
+    prereq: [en.grammar.passive_voice]
+  - key: en.grammar.nominalisation
+    band: 9
+    title: "Nominalisation in formal writing"
+    payload:
+      lesson:
+        rule: "Turn verbs and adjectives into nouns to sound formal and to pack information: decide → decision, increase → an increase in, important → the importance of."
+        examples: ["The increase in rents worries many tenants.", "The introduction of the scheme was a success.", "The importance of training is often underestimated."]
+        common_errors:
+          - {wrong: "The increase of rents worries tenants.", right: "The increase in rents worries tenants."}
+          - {wrong: "The introduce of the scheme was a success.", right: "The introduction of the scheme was a success."}
+    prereq: [en.grammar.word_formation]
   - key: en.grammar.inversion
     band: 10
     title: Inversion after negative adverbials

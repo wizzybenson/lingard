@@ -154,3 +154,22 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
     assert isinstance(store, MemoryStore)
     assert (await store.posteriors(USER))[("tef_canada", "speaking")].observations == 1
     assert (await store.wallet(USER))[0] >= 80
+
+
+def test_ielts_part_3_discusses_the_theme_of_the_part_2_cue_card() -> None:
+    import random
+
+    import yaml
+
+    from lingard_graphs.graphs.exam_hall import choose_speaking
+
+    prompts = yaml.safe_load((ROOT / "content" / "packs" / "ielts_gt" / "speaking_prompts.yaml").read_text())
+    assert {e["topic"] for e in prompts["long_turn"]} == {e["topic"] for e in prompts["discussion"]}
+    for seed in range(20):
+        pick, topics = random.Random(seed), set[str]()
+        choose_speaking(prompts["interview"], topics, pick)
+        cue = choose_speaking(prompts["long_turn"], topics, pick)
+        talk = choose_speaking(prompts["discussion"], topics, pick)
+        topic = next(e["topic"] for e in prompts["long_turn"] if e["prompt"] == cue["prompt"])
+        assert any(e["topic"] == topic and e["prompt"] == talk["prompt"] for e in prompts["discussion"])
+        assert "topic" not in cue and "topic" not in talk

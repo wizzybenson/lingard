@@ -4,11 +4,8 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from functools import cache
-from pathlib import Path
 from typing import Any, Literal
 
-import yaml
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
@@ -25,6 +22,7 @@ from lingard_contracts.common import LANGUAGE_CITY, LANGUAGE_PACK, Language, Pac
 from lingard_db.models import BandPosterior, Lesson, SimCrsSnapshot, WritingSubmission
 from lingard_economy.crs import DISCLAIMER
 from lingard_economy.rewards import COINS, LedgerEntry
+from lingard_exam_packs.prompts import writing_prompts
 from lingard_graphs.pedagogy.bands import BandPosterior as Posterior
 from lingard_graphs.pedagogy.bands import summarise
 from lingard_graphs.pedagogy.review import new_card, review
@@ -172,6 +170,8 @@ class WritingTask(BaseModel):
     min_words: int
     suggested_minutes: int
     prompts: list[str]
+    prompt_variants: list[str | None] = []
+    """The variant each prompt practises, in the same order (a formal letter, a discussion essay)."""
 
 
 @router.get("/writing/tasks", response_model=list[WritingTask])
@@ -180,7 +180,7 @@ async def writing_tasks(principal: Principal, state: State) -> list[WritingTask]
     tasks = []
     for pack_id in LANGUAGE_PACK.values():
         pack = state.packs.pack(pack_id)
-        prompts = _writing_prompts(state.settings.content_root, pack_id)
+        prompts = writing_prompts(state.settings.content_root, pack_id)
         for task in pack.section_for(Skill.WRITING).tasks:
             tasks.append(
                 WritingTask(
@@ -190,17 +190,11 @@ async def writing_tasks(principal: Principal, state: State) -> list[WritingTask]
                     kind=task.kind,
                     min_words=task.min_words,
                     suggested_minutes=task.suggested_minutes,
-                    prompts=prompts.get(task.id, []),
+                    prompts=[p.prompt for p in prompts.get(task.id, ())],
+                    prompt_variants=[p.variant for p in prompts.get(task.id, ())],
                 )
             )
     return tasks
-
-
-@cache
-def _writing_prompts(content_root: Path, pack_id: str) -> dict[str, list[str]]:
-    path = content_root / "packs" / pack_id / "writing_prompts.yaml"
-    data = yaml.safe_load(path.read_text()) if path.is_file() else {}
-    return {str(k): [str(p) for p in v] for k, v in (data or {}).items()}
 
 
 @router.get("/writing")

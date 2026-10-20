@@ -26,3 +26,16 @@ nodes:
   - {key: en.func.persuade, band: 8, title: "Persuade", payload: {exponents: ["You won't regret it.", "Just think how much you'd save…", "I understand your concerns, but…"]}, requires: [en.grammar.linking_words]}
   - {key: en.func.concede_and_counter, band: 9, title: "Concede and counter-argue", payload: {exponents: ["Admittedly…, but…", "While it's true that…, …", "That said,…"]}, requires: [en.grammar.linking_words]}
   - {key: en.func.summarise, band: 9, title: "Summarise and paraphrase", payload: {exponents: ["To sum up,…", "In other words,…", "So what you're saying is…"]}}
+
+  - {key: en.func.ask_give_directions, band: 4, title: "Ask for and give directions", payload: {exponents: ["Excuse me, how do I get to…?", "Take the second turning on the left.", "It's about five minutes' walk."]}}
+  - {key: en.func.invite_accept_decline, band: 4, title: "Invite, accept and decline", payload: {exponents: ["Would you like to…?", "I'd love to.", "That's kind of you, but I'm busy that day."]}}
+  - {key: en.func.thank_respond, band: 4, title: "Thank and respond", payload: {exponents: ["Thanks so much for your help.", "You're welcome.", "That's really kind of you."]}}
+  - {key: en.func.telephone, band: 5, title: "On the phone", payload: {exponents: ["Hello, could I speak to…?", "Who's calling, please?", "Can I leave a message?"]}}
+  - {key: en.func.make_suggestions, band: 5, title: "Make suggestions", payload: {exponents: ["How about…?", "Why don't we…?", "You could try…"]}}
+  - {key: en.func.ask_permission, band: 5, title: "Ask for permission", payload: {exponents: ["Can I…?", "Do you mind if I…?", "Would it be all right if I opened the window?"]}}
+  - {key: en.func.sympathise_congratulate, band: 5, title: "Congratulate and sympathise", payload: {exponents: ["Congratulations!", "I'm so sorry to hear that.", "Good luck with everything!"]}}
+  - {key: en.func.express_certainty, band: 6, title: "Express certainty and probability", payload: {exponents: ["I'm sure that…", "It's likely that…", "I doubt that…"]}, requires: [en.grammar.modals_of_deduction]}
+  - {key: en.func.give_instructions, band: 6, title: "Explain a process", payload: {exponents: ["First, you need to…", "After that,…", "Once that's done,…"]}}
+  - {key: en.func.formal_register, band: 7, title: "Write in the right register", payload: {exponents: ["Dear Sir or Madam,", "I am writing to enquire about…", "Yours faithfully,"]}}
+  - {key: en.func.report_information, band: 7, title: "Report information", payload: {exponents: ["According to…", "The article says that…", "I was told that…"]}, requires: [en.grammar.reported_speech]}
+  - {key: en.func.structure_talk, band: 8, title: "Structure a talk", payload: {exponents: ["First of all,…", "Moving on to…", "To sum up,…"]}, requires: [en.grammar.linking_words]}

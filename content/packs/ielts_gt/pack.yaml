@@ -33,10 +33,15 @@ sections:
     minutes: 60
     order: 3
     tasks:
+      # ielts.org: "the letter may be personal, semi-formal or formal in style"; the essay may ask the candidate to
+      # give an opinion, discuss ideas, or outline a problem and a solution. Advantages/disadvantages and two-part
+      # questions are the usual framings of "evaluate and discuss" and get their own prompts.
       - {id: task1_letter, kind: letter, min_words: 150, suggested_minutes: 20, weight: 1,
-         rubric: [task_achievement, coherence_cohesion, lexical_resource, grammatical_range_accuracy]}
+         rubric: [task_achievement, coherence_cohesion, lexical_resource, grammatical_range_accuracy],
+         variants: [personal, semi_formal, formal]}
       - {id: task2_essay, kind: essay, min_words: 250, suggested_minutes: 40, weight: 2,
-         rubric: [task_response, coherence_cohesion, lexical_resource, grammatical_range_accuracy]}
+         rubric: [task_response, coherence_cohesion, lexical_resource, grammatical_range_accuracy],
+         variants: [opinion, discussion, advantages_disadvantages, problem_solution, two_part]}
   - id: speaking
     skill: speaking
     minutes: [11, 14]

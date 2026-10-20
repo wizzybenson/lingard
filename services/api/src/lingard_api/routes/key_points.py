@@ -41,8 +41,9 @@ class KeyPoint(BaseModel):
 
 
 @cache
-def _conjugator(content_root: Path, language: Language) -> FrenchConjugator | None:
-    path = content_root / "curriculum" / language / "conjugation.yaml"
+def _conjugator(content_root: Path) -> FrenchConjugator | None:
+    """The conjugation-duel engine (French data); the lesson builder only asks it about nodes it conjugates."""
+    path = content_root / "curriculum" / "fr" / "conjugation.yaml"
     return FrenchConjugator.load(path) if path.exists() else None
 
 
@@ -109,7 +110,7 @@ async def open_key_points(node_key: str, principal: Principal, state: State, db:
         node,
         load_city(state.settings.content_root, LANGUAGE_CITY[language]),
         band,
-        _conjugator(state.settings.content_root, language),
+        _conjugator(state.settings.content_root),
         random.Random(f"{principal.user_id}:{node_key}"),  # noqa: S311
     )
     lesson_id = await state.graph_deps.store.save_lesson(principal.user_id, node_key, lesson.model_dump(mode="json"))

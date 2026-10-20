@@ -17,3 +17,6 @@ nodes:
   - {key: en.pron.intonation, band: 6, title: "Intonation for questions, lists and attitude", payload: {functional_load: 0.5, l1_difficulty: {ar: 0.5, generic: 0.5}}}
   - {key: en.pron.connected_speech, band: 7, title: "Connected speech (linking, elision)", payload: {examples: ["turn_off", "next_door → nex' door", "want to → wanna"], functional_load: 0.4, l1_difficulty: {ar: 0.6, generic: 0.6}}}
   - {key: en.pron.non_rhotic_r, band: 7, title: "Non-rhotic /r/ in Southern British English", payload: {examples: ["car /kɑː/", "water /ˈwɔːtə/"], functional_load: 0.2, l1_difficulty: {ar: 0.8, generic: 0.5}}}
+  - {key: en.pron.w_vs_v, band: 4, title: "/w/ and /v/ (wine / vine)", payload: {phonemes: ["w", "v"], minimal_pairs: [[wine, vine], [west, vest], [wet, vet]], functional_load: 0.6, l1_difficulty: {ar: 0.5, generic: 0.5}}}
+  - {key: en.pron.ae_vs_uh, band: 5, title: "/æ/ and /ʌ/ (cat / cut)", payload: {phonemes: ["æ", "ʌ"], minimal_pairs: [[cat, cut], [hat, hut], [match, much]], functional_load: 0.7, l1_difficulty: {ar: 0.7, generic: 0.6}}}
+  - {key: en.pron.final_s_z, band: 5, title: "Final -s: /s/, /z/, /ɪz/ (cats, dogs, buses)", payload: {phonemes: ["s", "z"], examples: ["cats /s/", "dogs /z/", "buses /ɪz/"], functional_load: 0.8, l1_difficulty: {ar: 0.6, generic: 0.5}}}

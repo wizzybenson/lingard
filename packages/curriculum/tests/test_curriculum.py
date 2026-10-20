@@ -27,6 +27,141 @@ def test_seed_loads_and_every_grammar_node_has_a_lesson(language: Language) -> N
     assert {(n.skill, n.band) for n in candos} == {(s, b) for s in Skill for b in range(4, 11)}
 
 
+# The scope audited on 2026-10-20 against the British Council/EAQUALS Core Inventory (English) and France Éducation
+# international's inventory of CEFR key content (French), banded with North & Piccardo's CLB/NCLC–CEFR alignment
+# (CLB 4 = A2, 5–7 = B1, 8 = B2, 9 = B2+, 10 = C1). Removing any of these is a gap in what a learner is taught.
+SCOPE: dict[str, set[str]] = {
+    "fr": {
+        "present_regular",
+        "present_irregular",
+        "cest_il_est_il_y_a",
+        "articles_gender",
+        "adjectifs_accord",
+        "possessifs_demonstratifs",
+        "prepositions_lieu",
+        "negation",
+        "quantites",
+        "questions",
+        "futur_proche",
+        "verbes_pronominaux",
+        "passe_recent_en_train_de",
+        "passe_compose_avoir",
+        "passe_compose_etre",
+        "imparfait",
+        "passe_compose_ou_imparfait",
+        "expressions_de_temps",
+        "comparatif_superlatif",
+        "imperatif",
+        "pronoms_cod_coi",
+        "pronoms_y_en",
+        "adverbes",
+        "indefinis_ne_que",
+        "futur_simple",
+        "conditionnel_present",
+        "relatifs_qui_que_ou",
+        "si_present_futur",
+        "si_imparfait",
+        "relatif_dont",
+        "doubles_pronoms",
+        "pronoms_demonstratifs_possessifs",
+        "plus_que_parfait",
+        "subjonctif_present",
+        "gerondif",
+        "connecteurs_logiques",
+        "conditionnel_passe",
+        "futur_anterieur",
+        "accord_participe_avoir",
+        "si_plus_que_parfait",
+        "subjonctif_vs_indicatif",
+        "subjonctif_conjonctions",
+        "discours_rapporte",
+        "voix_passive",
+        "infinitif_passe_participe_present",
+        "concordance_des_temps",
+        "subjonctif_passe",
+        "relatifs_composes",
+        "nominalisation",
+        "mise_en_relief",
+        "hypothese_concession_nuancees",
+    },
+    "en": {
+        "present_simple_continuous",
+        "there_is_it_is",
+        "subject_verb_agreement",
+        "adverbs_of_frequency",
+        "articles",
+        "pronouns_possessives",
+        "prepositions_time_place",
+        "past_simple",
+        "comparatives",
+        "questions",
+        "can_could_be_able_to",
+        "countable_uncountable",
+        "quantifiers",
+        "present_perfect",
+        "past_continuous",
+        "future_forms",
+        "zero_conditional_time_clauses",
+        "modals_obligation",
+        "first_conditional",
+        "relative_clauses",
+        "gerund_infinitive",
+        "used_to_would",
+        "present_perfect_or_past_simple",
+        "too_enough_so_such",
+        "phrasal_verbs",
+        "substitution_ellipsis",
+        "second_conditional",
+        "past_perfect",
+        "passive_voice",
+        "linking_words",
+        "question_tags",
+        "present_perfect_continuous",
+        "modals_of_deduction",
+        "unless_in_case",
+        "word_formation",
+        "third_conditional",
+        "reported_speech",
+        "non_defining_relatives",
+        "wish_if_only",
+        "past_modals",
+        "causative",
+        "future_continuous_perfect",
+        "mixed_conditionals",
+        "participle_clauses",
+        "cleft_sentences",
+        "hedging",
+        "nominalisation",
+        "inversion",
+    },
+}
+
+
+@pytest.mark.parametrize("language", ["fr", "en"])
+def test_the_audited_grammar_scope_is_taught_in_order(language: Language) -> None:
+    nodes = {n.key: n for n in load_seed(CONTENT, language).nodes if n.kind == "grammar"}
+    assert {k.split(".")[-1] for k in nodes} >= SCOPE[language]
+    bundle = load_seed(CONTENT, language)
+    for edge in (e for e in bundle.edges if e.kind == "prereq" and e.from_key in nodes):
+        assert edge.to_key in nodes, f"{edge.from_key} needs a missing {edge.to_key}"
+        assert nodes[edge.to_key].band <= nodes[edge.from_key].band, f"{edge.from_key} needs a later {edge.to_key}"
+    for node in nodes.values():
+        lesson = node.payload["lesson"]
+        assert len(lesson["examples"]) >= 2 and lesson["common_errors"], node.key
+    assert {n.band for n in nodes.values()} == set(range(4, 11)), "grammar at every band from 4 to 10"
+
+
+def test_vocabulary_functions_and_sounds_cover_the_same_ground_in_both_languages() -> None:
+    def keys(language: Language, kind: str) -> set[str]:
+        return {n.key.split(".", 2)[2] for n in load_seed(CONTENT, language).nodes if n.kind == kind}
+
+    for kind in ("lexset", "function"):
+        assert keys("fr", kind) == keys("en", kind), kind
+    assert len(keys("fr", "lexset")) >= 30 and len(keys("fr", "function")) >= 30
+    for language in ("fr", "en"):
+        assert len(keys(language, "pron")) >= 15, language
+
+
 def test_auto_requires_and_task_exercises() -> None:
     bundle = load_seed(CONTENT, "fr")
     edges = {(e.from_key, e.to_key, e.kind) for e in bundle.edges}
