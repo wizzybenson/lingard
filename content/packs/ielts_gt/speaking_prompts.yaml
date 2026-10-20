@@ -1,0 +1,15 @@
+# IELTS Speaking practice tasks for mocks (original). Keys are the pack's speaking part ids.
+# interview: Part 1 (4–5 min) familiar topics; long_turn: Part 2 cue card (1 min to prepare, 1–2 min to talk);
+# discussion: Part 3 (4–5 min) abstract questions linked to the Part 2 topic.
+interview:
+  - "Let's talk about where you live. Do you live in a house or a flat? What do you like most about your neighbourhood? Is there anything you would change about it? Now let's talk about free time. What do you usually do at weekends? Do you prefer spending free time alone or with other people?"
+  - "Let's talk about your work or studies. What do you do? Why did you choose this work or subject? What is the most difficult part of it? Now let's talk about food. What kind of food do you enjoy? Do you often cook at home? Has your diet changed since you were a child?"
+  - "Let's talk about transport. How do you usually travel around your town? Do you think public transport is good where you live? Now let's talk about weather. What's your favourite kind of weather? Does the weather affect your mood?"
+long_turn:
+  - "Describe a time when you helped someone. You should say: who you helped, what the situation was, how you helped them, and explain how you felt about helping this person. You will have one minute to prepare. Then talk for one to two minutes."
+  - "Describe a skill you would like to learn. You should say: what the skill is, why you want to learn it, how you would learn it, and explain how it would change your life. You will have one minute to prepare. Then talk for one to two minutes."
+  - "Describe a place in your town where people like to meet. You should say: where it is, what it looks like, what people do there, and explain why it is popular. You will have one minute to prepare. Then talk for one to two minutes."
+discussion:
+  - "Let's talk about helping others. Why do some people volunteer more than others? Should schools require students to do community work? How has technology changed the way people help each other?"
+  - "Let's talk about learning new skills. Is it easier for children or adults to learn something new? Will people need to change careers more often in the future? What role should employers play in training workers?"
+  - "Let's talk about public spaces. Why are public spaces important in a city? Who should pay for parks and squares? How might town centres change in the next twenty years?"

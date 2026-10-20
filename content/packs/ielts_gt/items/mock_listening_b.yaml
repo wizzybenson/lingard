@@ -1,0 +1,268 @@
+# IELTS General Training Listening, paper B (original, written for Lingard). Covers the task types paper A does not:
+# note and table completion (Part 1), matching and sentence completion (Part 2), flow-chart completion (Part 3),
+# sentence completion and short answers (Part 4). Bands are CLB levels.
+defaults: {pack: ielts_gt, language: en, skill: listening, section: listening, plays: 1}
+sets:
+  - id: en-lm-b-p1
+    part: part1
+    band: 5
+    task_type: note_completion
+    instructions: "Questions 1–5. Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer."
+    stimulus: |
+      M1: Good afternoon, Hillside Van Hire, this is Jack.
+      F1: Hi. I'm moving house next month and I need to hire a van for a day. Could you tell me what you've got?
+      M1: Of course. When's the move?
+      F1: Saturday the fourteenth.
+      M1: The fourteenth. And roughly how much are you moving?
+      F1: It's a two-bedroom flat, but I haven't got much furniture. A sofa, a bed, a table, and lots of boxes.
+      M1: Then I'd suggest the medium van. Most people moving from a two-bedroom place find the small one isn't quite big enough.
+      F1: OK. And do I need a special licence?
+      M1: No, an ordinary car licence is fine for the small and medium vans. You only need a different licence for the large truck.
+      F1: Good. Do you deliver the van, or do I collect it?
+      M1: You collect it from our depot on Station Road. We open at half past seven on Saturdays.
+      F1: Seven thirty, great. And I can pay when I collect it?
+      M1: We take a deposit when you book, and the rest on the day. The deposit is fifty pounds, which you get back when the van is returned undamaged.
+      F1: Fine. Can you tell me the prices, then?
+      M1: Sure. For a full day, the small van is forty-five pounds, the medium is sixty, and the large truck is ninety-five. Those prices include insurance, but you pay for fuel yourself. We give you the van with a full tank and you return it full.
+      F1: And mileage?
+      M1: The first hundred miles are free with the small and medium vans. After that it's twenty pence a mile. With the truck, there's no free mileage, I'm afraid.
+      F1: That's fine, it's only about thirty miles. Do you hire out anything else? Like trolleys?
+      M1: Yes, we've got sack trolleys for eight pounds a day, and we sell boxes in packs of ten for twelve pounds. And blankets to protect the furniture are free if you ask.
+      F1: Perfect. I'll take a medium van and a trolley, please. My name's Grace Whitfield.
+    questions:
+      - {question: "Date of move: Saturday ______", response: text, accepted: [14th, "14", fourteenth], word_limit: 1, band: 4}
+      - {question: "Recommended van: the ______ van", response: text, accepted: [medium], word_limit: 1, band: 4}
+      - {question: "Licence: an ordinary ______ licence is fine", response: text, accepted: [car], word_limit: 1, band: 5}
+      - {question: "Collect the van from the depot on ______ Road", response: text, accepted: [Station], word_limit: 1, band: 5}
+      - {question: "Deposit: £______ (returned if no damage)", response: text, accepted: ["50", fifty], word_limit: 1, band: 5}
+      - question: "Price of the medium van for a full day: £______"
+        task_type: table_completion
+        instructions: "Questions 6–10. Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer."
+        response: text
+        accepted: ["60", sixty]
+        word_limit: 1
+        band: 5
+      - question: "What is included in the price: ______"
+        task_type: table_completion
+        instructions: "Questions 6–10. Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer."
+        response: text
+        accepted: [insurance]
+        word_limit: 1
+        band: 6
+      - question: "Free mileage with small and medium vans: the first ______ miles"
+        task_type: table_completion
+        instructions: "Questions 6–10. Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer."
+        response: text
+        accepted: ["100", hundred]
+        word_limit: 1
+        band: 6
+      - question: "Sack trolley: £______ a day"
+        task_type: table_completion
+        instructions: "Questions 6–10. Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer."
+        response: text
+        accepted: ["8", eight]
+        word_limit: 1
+        band: 6
+      - question: "Furniture ______: free on request"
+        task_type: table_completion
+        instructions: "Questions 6–10. Complete the table below. Write ONE WORD AND/OR A NUMBER for each answer."
+        response: text
+        accepted: [blankets]
+        word_limit: 1
+        band: 6
+
+  - id: en-lm-b-p2
+    part: part2
+    band: 6
+    task_type: matching
+    shuffle: false
+    instructions: "Questions 11–15. What does the speaker say about each stall? Choose FIVE answers from the list, A–G. A has won a prize  B is new this year  C is run by students  D only accepts cash  E has a long queue in the evening  F gives free samples  G is moving to a different place"
+    stimulus: |
+      M1: Good morning and welcome to Ashford Local Radio. I'm here to tell you about this weekend's Ashford Food Festival, which takes over the market square from Friday evening until Sunday afternoon. There are more than forty stalls this year, so I'll just mention a few highlights.
+      Let's start with Bayside Bakery. If you've been before, you'll know them for their sourdough, and this year they're giving away free tastings of a new rye loaf, so do stop by.
+      Then there's Spice Route, the Indian street food stall. Last year it was right at the back of the square, which a lot of people found a bit hidden, so this year it's been given a spot near the fountain.
+      A real first for the festival is the Green Bowl, which serves salads and grain bowls. It's the first time they've taken part, and they're hoping to open a café in town next year.
+      I should mention Hartley's Cheeses too. Mr Hartley's blue cheese was named best in the region at the county show in May, so expect a lot of interest.
+      And finally, the Ashford College catering stall. All the food is cooked and served by catering students from the college, and the money goes back into their course.
+      Now, some practical information. The festival opens at five on Friday, and from nine till five on Saturday and Sunday. Entry is free, but there's a suggested donation of two pounds, which goes to the town's food bank. Most stalls take cards, but a few smaller ones don't, so it's worth bringing some cash.
+      Parking in the town centre will be very limited, so the council is running a free park-and-ride bus from the leisure centre every fifteen minutes. And if you're cycling, there's extra bike parking on Church Street.
+      For families, there's a children's tent with cooking activities each morning. Places are limited, so you need to sign up at the information point when you arrive. And on Sunday at two o'clock, there's a cooking competition for local chefs, judged by festival visitors, so come along and vote.
+    questions:
+      - {question: "Bayside Bakery", options: [A, B, C, D, E, F, G], answer: 5, band: 6}
+      - {question: "Spice Route", options: [A, B, C, D, E, F, G], answer: 6, band: 7}
+      - {question: "Green Bowl", options: [A, B, C, D, E, F, G], answer: 1, band: 6}
+      - {question: "Hartley's Cheeses", options: [A, B, C, D, E, F, G], answer: 0, band: 7}
+      - {question: "Ashford College stall", options: [A, B, C, D, E, F, G], answer: 2, band: 6}
+      - question: "The suggested donation goes to the town's ______."
+        task_type: sentence_completion
+        instructions: "Questions 16–20. Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."
+        response: text
+        accepted: [food bank]
+        word_limit: 2
+        band: 6
+      - question: "The park-and-ride bus leaves from the ______."
+        task_type: sentence_completion
+        instructions: "Questions 16–20. Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."
+        response: text
+        accepted: [leisure centre, leisure center]
+        word_limit: 2
+        band: 6
+      - question: "Extra bike parking is available on ______."
+        task_type: sentence_completion
+        instructions: "Questions 16–20. Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."
+        response: text
+        accepted: [Church Street]
+        word_limit: 2
+        band: 7
+      - question: "To book the children's activities, go to the ______."
+        task_type: sentence_completion
+        instructions: "Questions 16–20. Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."
+        response: text
+        accepted: [information point]
+        word_limit: 2
+        band: 7
+      - question: "The cooking competition on Sunday is judged by ______."
+        task_type: sentence_completion
+        instructions: "Questions 16–20. Complete the sentences below. Write NO MORE THAN TWO WORDS for each answer."
+        response: text
+        accepted: [visitors, festival visitors]
+        word_limit: 2
+        band: 7
+
+  - id: en-lm-b-p3
+    part: part3
+    band: 7
+    task_type: multiple_choice
+    instructions: "Questions 21–24. Choose the correct letter, A, B or C."
+    stimulus: |
+      F2: So, Priya, Sam, how's the presentation on food waste coming along?
+      F1: Quite well, I think. We've decided to focus on what happens in restaurants rather than in people's homes.
+      F2: Why restaurants?
+      M1: Partly because there's already a lot of research on household waste, and partly because Priya works part-time in a restaurant, so we can get real figures.
+      F2: That's a real advantage. Have you got permission from the restaurant?
+      F1: Yes, the manager's happy for us to use the data, as long as we don't name the restaurant.
+      F2: Fine. And how are you going to structure the talk?
+      M1: We thought we'd start with a short video, about a minute, showing a week's waste from the kitchen. It's quite shocking.
+      F2: Good, but keep it short. Then?
+      F1: Then we explain the process we followed. First, we weighed all the food thrown away every night for two weeks. Then we sorted it into three groups: food spoiled before it was cooked, food left over in the kitchen, and food left on customers' plates.
+      M1: And the biggest group by far was the food left on plates. Almost half.
+      F2: Interesting. So what did you suggest?
+      F1: Well, we put that to the manager, and she agreed to try smaller portions, with free extra helpings if people wanted them.
+      M1: And she started offering boxes so customers could take leftovers home. We measured again for another two weeks after the changes.
+      F2: And the result?
+      F1: The waste from plates fell by about a third. The next step, which we'll mention at the end, is to look at the stock ordering, because that's where most of the spoiled food comes from.
+      F2: Excellent. One thing: make sure you explain the limits of your study. Two weeks in one restaurant isn't a large sample.
+      M1: We know. We'll say that in the conclusion.
+    questions:
+      - question: "Why did the students choose to study restaurants?"
+        options: [Restaurants waste more food than homes., Priya can get real data from her workplace., Their tutor suggested it.]
+        answer: 1
+        band: 6
+      - question: "What condition did the restaurant manager set?"
+        options: [The restaurant must not be named., The students must work unpaid., The results must be shown to her first.]
+        answer: 0
+        band: 7
+      - question: "What does the tutor say about the video?"
+        options: [It should be removed., It should be brief., It should come at the end.]
+        answer: 1
+        band: 7
+      - question: "What does the tutor want them to include in their conclusion?"
+        options: [the cost of the changes, the limits of the study, ideas for home cooks]
+        answer: 1
+        band: 8
+      - question: "Step 1: weigh all food thrown away every ______ for two weeks"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [night]
+        word_limit: 1
+        band: 6
+      - question: "Step 2: sort the waste into ______ groups"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [three, "3"]
+        word_limit: 1
+        band: 6
+      - question: "Finding: the largest group was food left on ______"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [plates]
+        word_limit: 1
+        band: 7
+      - question: "Changes: smaller ______ with free extra helpings"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [portions]
+        word_limit: 1
+        band: 7
+      - question: "Changes: ______ offered so customers can take leftovers home"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [boxes]
+        word_limit: 1
+        band: 8
+      - question: "Next step: study the stock ______"
+        task_type: flow_chart_completion
+        instructions: "Questions 25–30. Complete the flow chart below. Write ONE WORD ONLY for each answer."
+        response: text
+        accepted: [ordering]
+        word_limit: 1
+        band: 8
+
+  - id: en-lm-b-p4
+    part: part4
+    band: 8
+    task_type: sentence_completion
+    instructions: "Questions 31–35. Complete the sentences below. Write ONE WORD ONLY for each answer."
+    stimulus: |
+      F1: In today's lecture I want to talk about sleep, and in particular about why so many adults in developed countries don't get enough of it.
+      Let's begin with how much sleep we actually need. For most adults, the figure is between seven and nine hours a night. But surveys in several countries suggest that around a third of adults regularly sleep less than seven hours. Interestingly, people are often poor judges of their own sleep: when researchers compare what people report with what sleep monitors record, people tend to overestimate how long they sleep.
+      Why are we sleeping less? One obvious factor is light. Before electric lighting, people's sleep followed the sun much more closely. Today, bright screens in the evening delay the release of melatonin, the hormone that tells the body it's time to sleep. A second factor is work. Longer commutes and shift work mean many people simply don't have time for eight hours in bed. And a third is what researchers call social jet lag: people go to bed much later at weekends than on weekdays, which confuses the body clock in the same way as flying across time zones.
+      What are the consequences? In the short term, lack of sleep affects concentration and mood, and it slows reaction times. Studies of drivers have found that going without sleep for around eighteen hours affects driving about as much as drinking alcohol. In the long term, poor sleep has been linked with weight gain, heart disease and a weaker immune system, although the exact causes are still being studied.
+      So what can be done? The advice from sleep scientists is surprisingly simple. The most important thing is regularity: going to bed and getting up at the same time every day, including weekends. The bedroom should be cool, dark and quiet. Caffeine should be avoided in the afternoon, because its effects can last for six hours or more. And if you can't sleep, it's better to get up and do something calm in another room than to lie in bed worrying.
+      Some employers have started to take sleep seriously too. A few companies now offer later start times for staff who are naturally late sleepers, and some have introduced quiet rooms where employees can take a short nap. Whether these ideas spread will depend on whether they can be shown to improve productivity.
+    questions:
+      - {question: "Most adults need between seven and ______ hours of sleep a night.", response: text, accepted: [nine, "9"], word_limit: 1, band: 6}
+      - {question: "People tend to ______ how long they sleep.", response: text, accepted: [overestimate], word_limit: 1, band: 8}
+      - {question: "Screens in the evening delay the release of a ______ called melatonin.", response: text, accepted: [hormone], word_limit: 1, band: 8}
+      - {question: "Different bedtimes at weekends cause social ______ lag.", response: text, accepted: [jet], word_limit: 1, band: 8}
+      - {question: "In the short term, lack of sleep slows ______ times.", response: text, accepted: [reaction], word_limit: 1, band: 8}
+      - question: "According to sleep scientists, what is the most important thing for good sleep?"
+        task_type: short_answer
+        instructions: "Questions 36–40. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        accepted: [regularity]
+        word_limit: 3
+        band: 8
+      - question: "What should people avoid in the afternoon?"
+        task_type: short_answer
+        instructions: "Questions 36–40. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        accepted: [caffeine]
+        word_limit: 3
+        band: 7
+      - question: "For how many hours or more can the effects of caffeine last?"
+        task_type: short_answer
+        instructions: "Questions 36–40. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        accepted: [six, "6", six hours, 6 hours]
+        word_limit: 3
+        band: 8
+      - question: "What do some companies offer late sleepers?"
+        task_type: short_answer
+        instructions: "Questions 36–40. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        accepted: [later start times, later starts]
+        word_limit: 3
+        band: 9
+      - question: "Where can some employees take a short nap?"
+        task_type: short_answer
+        instructions: "Questions 36–40. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        accepted: [quiet rooms, in quiet rooms, a quiet room, quiet room]
+        word_limit: 3
+        band: 9

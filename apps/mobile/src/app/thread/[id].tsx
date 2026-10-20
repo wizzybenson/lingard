@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, View } from "react-native";
 
-import type { StepView } from "@/api/types";
+import type { SetAnswer, StepView } from "@/api/types";
+import { answeredCount, SetView } from "@/exam/SetView";
 import { clock, remaining, wordCount } from "@/games/exam";
 import { useApi } from "@/state/auth";
 import { PlayButton } from "@/live/PlayButton";
 import { Recorder } from "@/live/Recorder";
-import { Body, Button, Card, ErrorText, Field, Screen, Title } from "@/ui/kit";
+import { Body, Button, Card, Chip, ErrorText, Field, Overline, ProgressBar, Screen, Title } from "@/ui/kit";
+import { space } from "@/ui/theme";
 
 function sectionOf(step: StepView | null): string {
   const prompt = step?.prompt;
@@ -23,6 +25,7 @@ export default function Thread() {
   const language: "fr" | "en" = params.language === "en" ? "en" : "fr";
   const [step, setStep] = useState<StepView | null>(() => (params.first ? (JSON.parse(params.first) as StepView) : null));
   const [text, setText] = useState("");
+  const [setAnswers, setSetAnswers] = useState<{ set: string; values: SetAnswer[] }>({ set: "", values: [] });
   const [cloneConsent, setCloneConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +64,44 @@ export default function Thread() {
 
   if (!prompt) return <Screen back><Body>{t("exam.done")}</Body></Screen>;
   const withTime = (payload: Record<string, unknown>) => (section ? { ...payload, elapsed_s: elapsedS } : payload);
+
+  if (prompt.kind === "set") {
+    const served = prompt.set;
+    const values = setAnswers.set === served.set_id ? setAnswers.values : served.questions.map(() => null);
+    const left = remaining(sectionStart.at, prompt.minutes, now);
+    const answered = answeredCount(values);
+    return (
+      <Screen
+        key={served.set_id}
+        back
+        footer={
+          <Button
+            label={`${t("exam.next")} · ${t("exam.answered", { done: answered, total: served.questions.length })}`}
+            icon="arrow-forward"
+            busy={busy}
+            onPress={() => void send(withTime({ answers: values }))}
+          />
+        }
+      >
+        <View style={{ gap: space(1) }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: space(1) }}>
+            <Overline>{t(`exam.sections.${prompt.section}`)}</Overline>
+            <View style={{ flex: 1 }} />
+            <Chip label={clock(left)} tone={left < 300 ? "danger" : "plain"} icon="timer-outline" />
+          </View>
+          <ProgressBar value={prompt.progress.done / Math.max(prompt.progress.total, 1)} />
+        </View>
+        <ErrorText message={error} />
+        <SetView
+          api={api}
+          set={served}
+          first={prompt.progress.done + 1}
+          answers={values}
+          onChange={(i, v) => setSetAnswers({ set: served.set_id, values: values.map((x, j) => (j === i ? v : x)) })}
+        />
+      </Screen>
+    );
+  }
 
   return (
     <Screen back>

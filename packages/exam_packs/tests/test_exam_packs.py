@@ -3,13 +3,14 @@ from pathlib import Path
 
 import pytest
 from langchain_core.language_models import BaseChatModel
+from pydantic import ValidationError
 
 from lingard_contracts.common import Skill
 from lingard_curriculum.packs import PackLibrary
 from lingard_exam_packs.adaptive import estimate, next_item, should_stop
 from lingard_exam_packs.generator import ItemGenerator
 from lingard_exam_packs.items import Item, ItemBank, band_to_logit
-from lingard_exam_packs.serving import is_correct, serve, served_answer
+from lingard_exam_packs.serving import check, is_correct, serve, serve_set, served_answer, words
 from lingard_llm import LLMConfig, LLMRouter, ModelSpec, PromptRegistry
 from lingard_llm.testing import ScriptedChatModel
 
@@ -45,6 +46,7 @@ def test_item_validation() -> None:
 def test_shuffled_serving_maps_answers_back() -> None:
     item = ItemBank.load(ROOT / "content").get("fr-ce-001")
     served = serve(item, "learner-1")
+    assert isinstance(item.answer, int)
     correct_text = item.options[item.answer]
     assert is_correct(item, "learner-1", served.options.index(correct_text))
     assert not is_correct(item, "learner-1", (served.options.index(correct_text) + 1) % len(served.options))
@@ -123,3 +125,58 @@ async def test_generator_validates_and_drops_bad_items() -> None:
     pack = PackLibrary(ROOT / "content").pack("tef_canada")
     items = await ItemGenerator(router, PromptRegistry(ROOT / "prompts")).generate(pack, Skill.READING, 5, 2)
     assert len(items) == 1 and items[0].source == "generated" and items[0].section == "comprehension_ecrite"
+
+
+def _set_item(n: int, **fields: object) -> Item:
+    base: dict[str, object] = {
+        "id": f"s-q{n}",
+        "pack": "ielts_gt",
+        "language": "en",
+        "skill": "listening",
+        "section": "listening",
+        "part": "part1",
+        "task_type": "form_completion",
+        "band": 5,
+        "stimulus": "Agent: Can I take your name? Caller: It's Sarah Pike, P-I-K-E. The rent is 450 pounds.",
+        "set_id": "s",
+        "question": "Surname:",
+    }
+    return Item.model_validate({**base, **fields})
+
+
+def test_text_answers_follow_the_ielts_rules() -> None:
+    item = _set_item(1, response="text", accepted=["Pike"], word_limit=2)
+    assert check(item, "x", " pike. ") and check(item, "x", "PIKE")
+    assert not check(item, "x", "Pyke"), "spelling counts"
+    rent = _set_item(2, response="text", accepted=["450 pounds", "£450"], word_limit=1)
+    assert check(rent, "x", "£450") and check(rent, "x", "450 pounds"), "a number is not a word"
+    assert not check(rent, "x", "about 450 pounds"), "over the word limit loses the mark"
+    assert words("check-in desk") == 2 and words("12 March") == 1
+
+
+def test_multi_and_fixed_order_items() -> None:
+    multi = _set_item(3, response="multi", options=["a", "b", "c", "d", "e"], answer=[1, 3])
+    served = serve(multi, "learner")
+    picks = [served.options.index("b"), served.options.index("d")]
+    assert served.picks == 2 and check(multi, "learner", picks) and check(multi, "learner", picks[::-1])
+    assert not check(multi, "learner", picks[:1]) and not check(multi, "learner", "b")
+    tfng = _set_item(4, options=["TRUE", "FALSE", "NOT GIVEN"], answer=2, shuffle=False)
+    assert serve(tfng, "anyone").options == ["TRUE", "FALSE", "NOT GIVEN"] and check(tfng, "anyone", 2)
+    assert not check(tfng, "anyone", True), "a boolean is not an option index"
+
+
+def test_a_set_is_served_once_without_its_script_or_answers() -> None:
+    items = [_set_item(1, response="text", accepted=["Pike"], word_limit=2), _set_item(2, options=["a", "b"], answer=0)]
+    served = serve_set(items, "learner", audio_ref="tts:s-q1")
+    assert served.text is None and served.audio_ref == "tts:s-q1" and len(served.questions) == 2
+    dumped = served.model_dump_json()
+    assert "Pike" not in dumped and "accepted" not in dumped and "answer" not in dumped
+
+
+def test_invalid_shapes_are_refused() -> None:
+    with pytest.raises(ValidationError):
+        _set_item(1, response="text", accepted=[])
+    with pytest.raises(ValidationError):
+        _set_item(1, response="multi", options=["a", "b", "c"], answer=[1])
+    with pytest.raises(ValidationError):
+        _set_item(1, options=["a", "b"], answer=[0, 1])

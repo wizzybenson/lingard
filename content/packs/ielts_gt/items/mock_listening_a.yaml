@@ -1,0 +1,269 @@
+# IELTS General Training Listening, paper A: the official four parts, ten questions each (ielts.org, 2026-10-20).
+# Original content written for Lingard. Scripts are rendered by TTS, one voice per tagged speaker (M1, F1, F2…).
+# Bands are CLB levels: Part 1 is easiest, Part 4 hardest, as in the real test.
+defaults: {pack: ielts_gt, language: en, skill: listening, section: listening, plays: 1}
+sets:
+  - id: en-lm-a-p1
+    part: part1
+    band: 5
+    task_type: form_completion
+    instructions: "Questions 1–6. Complete the form below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer."
+    stimulus: |
+      F1: Good morning, Ashford Community Centre, Mia speaking. How can I help?
+      M1: Hello. I saw a leaflet about your evening courses, and I'd like to sign up for one if there are still places.
+      F1: Certainly. Which course were you interested in?
+      M1: The photography one. Digital photography for beginners, I think it's called.
+      F1: Yes, that starts next month. Let me take some details. Can I have your surname?
+      M1: It's Okafor. O-K-A-F-O-R.
+      F1: And your first name?
+      M1: Daniel.
+      F1: Thank you, Daniel. And your address?
+      M1: Flat 3, 27 Mill Lane. That's here in Ashford.
+      F1: Twenty-seven Mill Lane. And the postcode?
+      M1: A-S-4, 9-T-D.
+      F1: Lovely. And the best number to reach you on?
+      M1: My mobile is 07700 900 418.
+      F1: 07700 900 418. Now, how did you hear about the course?
+      M1: A friend of mine told me about it. She did the painting class last year. Oh, and then I saw the leaflet in the library.
+      F1: I'll put "friend", then, since that came first. Now, the course runs on Tuesday evenings.
+      M1: Tuesday? The leaflet said Thursday.
+      F1: It did, but we've had to move it because the main hall is booked on Thursdays now. It's Tuesdays from seven until half past nine.
+      M1: That's fine. Tuesdays actually suit me better.
+      F1: The fee is ninety-five pounds for the ten weeks, but there's a discount if you're a member of the centre.
+      M1: I'm not a member. How much is membership?
+      F1: It's twenty pounds a year, and members pay seventy-five for the course.
+      M1: So it comes to the same either way. I'll join anyway. I might take another class later in the year.
+      F1: Good idea. You'll need to bring a camera. It doesn't have to be expensive. A phone is fine for the first few weeks, but by week four you'll need one where you can change the settings by hand.
+      M1: I've got an old camera of my father's. I'll check it still works.
+      F1: And please bring a notebook. The tutor, Mr Hale, likes everyone to write down the settings they use.
+      M1: OK. Is there anywhere to park?
+      F1: There's a small car park behind the building, but it's usually full in the evenings. Most people use the one at the supermarket opposite. It's free after six.
+      M1: Great, that's easy. Thanks very much.
+    questions:
+      - {question: "Course: Digital ______ for beginners", response: text, accepted: [photography], word_limit: 2, band: 4}
+      - {question: "Surname: ______", response: text, accepted: [Okafor], word_limit: 2, band: 4}
+      - {question: "Address: Flat 3, ______ Mill Lane, Ashford", response: text, accepted: ["27"], word_limit: 2, band: 4}
+      - {question: "Postcode: ______", response: text, accepted: [AS4 9TD, AS49TD], word_limit: 2, band: 5}
+      - {question: "Mobile number: ______", response: text, accepted: [07700 900 418, "07700900418"], word_limit: 2, band: 5}
+      - {question: "Heard about the course from: a ______", response: text, accepted: [friend], word_limit: 2, band: 5}
+      - question: "The course now takes place on"
+        task_type: multiple_choice
+        instructions: "Questions 7–10. Choose the correct letter, A, B or C."
+        options: [Tuesdays, Wednesdays, Thursdays]
+        answer: 0
+        band: 5
+      - question: "Why does Daniel decide to become a member?"
+        task_type: multiple_choice
+        instructions: "Questions 7–10. Choose the correct letter, A, B or C."
+        options: [It makes the course cheaper., He may take another course., His friend recommended it.]
+        answer: 1
+        band: 6
+      - question: "By the fourth week, students must have"
+        task_type: multiple_choice
+        instructions: "Questions 7–10. Choose the correct letter, A, B or C."
+        options: [a notebook for the tutor., a camera with manual settings., a phone with a good camera.]
+        answer: 1
+        band: 6
+      - question: "Where does Mia suggest parking?"
+        task_type: multiple_choice
+        instructions: "Questions 7–10. Choose the correct letter, A, B or C."
+        options: [behind the centre, in the street outside, at the supermarket]
+        answer: 2
+        band: 5
+
+  - id: en-lm-a-p2
+    part: part2
+    band: 6
+    task_type: multiple_choice
+    instructions: "Questions 11–14. Choose the correct letter, A, B or C."
+    stimulus: |
+      F1: Good evening, everyone, and thank you for coming to this meeting about Riverside Park. I'm Helen Marsh, and I've managed the park for the council for the last six years. As most of you know, the park has been closed since March for improvement work, and I'm pleased to say it will reopen on the first of June. That's two weeks later than we'd planned, I'm afraid, because the heavy rain in April held up the work on the paths.
+      So what's new? The biggest change, and the one that took most of the budget, is the lake. It's been cleaned and made deeper, and the old wooden bridge has been replaced with a stone one. We had hoped to bring back the rowing boats, but sadly the cost of insurance has made that impossible for now.
+      Let me take you round the new plan. You'll come in through the south gate, which is still the main entrance, and you'll be on the main path heading north. The first thing you'll see, on your left, is the new children's playground, in the corner of the park nearest the entrance. Opposite the playground, on the right of the main path, is a new outdoor gym. That was a request from many of you in last year's survey.
+      Walk on up the path and you come to the café, which is in the middle of the park, just south of the lake. It's been completely rebuilt. To the left of the café, on the western side of the park, you'll find the toilets, which are now open all day rather than just at weekends.
+      Now, at the top of the park there are two areas, one on each side of the lake. On the west side, in the north-west corner, is the wildlife garden, which local schools helped to plant. And across the lake, in the north-east corner, we've put the picnic area, with twelve new tables.
+      A few rules have changed. Dogs are now welcome everywhere except the playground and the wildlife garden, but they must be kept on a lead near the lake. Cycling is allowed on the main path only. And barbecues, which I know is a popular question, are still not permitted anywhere in the park, because of the risk of fire.
+      Finally, we're looking for volunteers to help in the wildlife garden on Saturday mornings. You don't need any experience. The most important thing is that you can come regularly. If you're interested, please speak to me afterwards, or leave your name at the café.
+    questions:
+      - question: "The park will open later than planned because of"
+        options: [a lack of money., bad weather., problems with the lake.]
+        answer: 1
+        band: 5
+      - question: "Most of the budget was spent on"
+        options: [the lake., the paths., the café.]
+        answer: 0
+        band: 6
+      - question: "Rowing boats will not return because"
+        options: [the lake is too shallow., insurance costs too much., the council voted against them.]
+        answer: 1
+        band: 6
+      - question: "Which is still not allowed anywhere in the park?"
+        options: [dogs without a lead, cycling, barbecues]
+        answer: 2
+        band: 6
+      - question: "Children's playground"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 5
+        band: 6
+      - question: "Outdoor gym"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 6
+        band: 7
+      - question: "Café"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 3
+        band: 6
+      - question: "Toilets"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 2
+        band: 7
+      - question: "Wildlife garden"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 0
+        band: 7
+      - question: "Picnic area"
+        task_type: map_labelling
+        instructions: "Questions 15–20. Label the plan below. Write the correct letter, A–G, next to each place."
+        options: [A, B, C, D, E, F, G]
+        shuffle: false
+        answer: 1
+        band: 7
+    figure: |2
+                    RIVERSIDE PARK            (north ↑)
+      +--------------------------------------------+
+      |  [A]            ~~ LAKE ~~            [B]  |
+      |                 = bridge =                 |
+      |  [C]               [D]                [E]  |
+      |                     |                      |
+      |                 main path                  |
+      |  [F]                |                 [G]  |
+      +---------------------|  |-------------------+
+                         SOUTH GATE
+
+  - id: en-lm-a-p3
+    part: part3
+    band: 7
+    task_type: multiple_choice
+    instructions: "Questions 21–24. Choose the correct letter, A, B or C."
+    stimulus: |
+      F2: Come in, both of you. So, you wanted to talk about your project for the retail management module?
+      F1: Yes. We've decided to look at why people in Ashford choose the market over the supermarkets, or why they don't.
+      F2: That's a good local topic. How are you planning to collect your data?
+      M1: We were going to put a questionnaire online, but we've changed our minds. We think the people who actually use the market are less likely to fill in an online form, so we'll interview shoppers at the market itself.
+      F2: Sensible. How many?
+      F1: We're aiming for fifty, on two different days, a Wednesday and a Saturday, because the people who shop on Saturdays are very different from the weekday crowd.
+      F2: Good. Have you thought about what could go wrong?
+      M1: The weather, mainly. If it rains, fewer people come, and nobody wants to stop and talk.
+      F1: And some of the stall holders might not like us standing near their stalls, so we wrote to the market manager to ask permission first. She's already replied and said yes, as long as we don't block the walkways.
+      F2: Excellent. That's exactly the kind of thing examiners look for. Now, the literature review. What have you read?
+      M1: Quite a lot on supermarkets, but there's much less on street markets. The most useful thing was actually a report from the council on the history of the market.
+      F2: Make sure you say in your review why there's so little research. That's a finding in itself.
+      F1: OK. And what we expect to find is that price matters less than people imagine. When we did a pilot with ten shoppers, most of them talked about freshness and about knowing the stall holders personally.
+      M1: Though I think convenience will come up a lot for the supermarkets. You know, late opening, easy parking.
+      F2: Then design your questions so that you don't push people towards your own ideas. Who's doing what?
+      F1: I'll write the questions, because I ran the pilot. Tom's better with numbers, so he'll do the analysis.
+      M1: And we'll both do the interviews, obviously. Lucy's going to write the introduction and the review, and I'll write up the results.
+      F2: And the presentation?
+      F1: We'll share that.
+      F2: Fine. Just remember the deadline has moved. It's the twelfth of December now, not the fifth.
+    questions:
+      - question: "Why did the students decide not to use an online questionnaire?"
+        options: [It would take too long to design., Market shoppers might not complete it., Their tutor advised against it.]
+        answer: 1
+        band: 6
+      - question: "Why will they collect data on two different days?"
+        options: [to get a larger sample, because Saturday shoppers are different, because the market is closed on other days]
+        answer: 1
+        band: 6
+      - question: "What did the market manager ask them to do?"
+        options: [keep the walkways clear, interview the stall holders too, wear some identification]
+        answer: 0
+        band: 7
+      - question: "The tutor says the lack of research on street markets"
+        options: [should be avoided as a topic., should be reported as a finding., should be solved by reading more.]
+        answer: 1
+        band: 8
+      - question: "Which TWO things did shoppers in the pilot mention most?"
+        task_type: multi_choice
+        instructions: "Questions 25–26. Choose TWO letters, A–E."
+        response: multi
+        options: [price, freshness, parking, knowing the stall holders, late opening]
+        answer: [1, 3]
+        shuffle: false
+        band: 8
+      - question: "The deadline for the project is now the ______ of December."
+        task_type: sentence_completion
+        instructions: "Question 27. Complete the sentence below. Write ONE WORD AND/OR A NUMBER."
+        response: text
+        accepted: [twelfth, 12th, "12"]
+        word_limit: 1
+        band: 7
+      - question: "write the interview questions"
+        task_type: matching
+        instructions: "Questions 28–30. Who will do each task? Choose A, B or C. A Lucy  B Tom  C both students"
+        options: [Lucy, Tom, Both students]
+        shuffle: false
+        answer: 0
+        band: 7
+      - question: "analyse the data"
+        task_type: matching
+        instructions: "Questions 28–30. Who will do each task? Choose A, B or C. A Lucy  B Tom  C both students"
+        options: [Lucy, Tom, Both students]
+        shuffle: false
+        answer: 1
+        band: 7
+      - question: "give the presentation"
+        task_type: matching
+        instructions: "Questions 28–30. Who will do each task? Choose A, B or C. A Lucy  B Tom  C both students"
+        options: [Lucy, Tom, Both students]
+        shuffle: false
+        answer: 2
+        band: 7
+      - question: "write the literature review"
+        task_type: matching
+        instructions: "Questions 28–30. Who will do each task? Choose A, B or C. A Lucy  B Tom  C both students"
+        options: [Lucy, Tom, Both students]
+        shuffle: false
+        answer: 0
+        band: 8
+
+  - id: en-lm-a-p4
+    part: part4
+    band: 8
+    task_type: note_completion
+    instructions: "Questions 31–40. Complete the notes below. Write ONE WORD ONLY for each answer."
+    stimulus: |
+      M1: Today I want to look at a trend that has grown remarkably over the last twenty years: keeping honeybees in cities. When people first hear about it, they're usually surprised that bees can survive in cities at all. In fact, urban bees often do better than bees in the countryside, and the main reason is variety. Modern farmland is often planted with a single crop over a huge area, so bees there have plenty to eat for a few weeks and then very little. In a city, parks, gardens, street trees and even window boxes flower at different times, so there is food from early spring to late autumn.
+      A second advantage is temperature. Cities are usually a few degrees warmer than the land around them, the so-called heat island effect, and this means urban colonies can become active earlier in the year.
+      So who keeps bees in cities? Hobbyists, of course, but also businesses. Hotels and office blocks have put hives on their roofs, partly to produce honey for their own restaurants, but mainly, it has to be said, for publicity. Some critics call this greenwashing: it looks good, but it may do little for the environment.
+      And that brings me to the problems. The first is competition. Honeybees are just one of hundreds of bee species, and most of the others are wild bees that don't live in hives at all. Researchers in several European cities have found that where the number of hives rises quickly, wild bees can struggle, because there simply aren't enough flowers to go round. In one city, the number of hives went up four times in ten years, while the number of flowers hardly changed.
+      The second problem is disease. When hives are kept close together, infections spread more easily between colonies, and many new beekeepers don't have the training to recognise the signs early.
+      So what's being done? Several cities now ask beekeepers to register their hives, so that numbers can be monitored. Others have introduced courses that new keepers must complete before they're allowed a hive. But many experts argue that the most effective step is simply to plant more. If the problem is a shortage of flowers, the answer is to increase the supply, and here the choice of plant matters. Native wildflowers support far more species than the decorative plants often chosen for gardens.
+      Finally, a word about the honey itself. City honey is often said to taste stronger than country honey, because it comes from such a mixture of plants. And although people worry about pollution, tests have generally found the levels in city honey to be well below safety limits.
+      For next week, please read chapter six, which looks at the history of beekeeping.
+    questions:
+      - {question: "Why urban bees do well: cities offer a ______ of plants flowering at different times", response: text, accepted: [variety], word_limit: 1, band: 7}
+      - {question: "Cities are warmer because of the heat ______ effect", response: text, accepted: [island], word_limit: 1, band: 7}
+      - {question: "Who keeps bees: businesses mainly keep hives for ______", response: text, accepted: [publicity], word_limit: 1, band: 8}
+      - {question: "Critics call this ______", response: text, accepted: [greenwashing, green-washing], word_limit: 1, band: 8}
+      - {question: "Problems: ______ with wild bees for flowers", response: text, accepted: [competition], word_limit: 1, band: 8}
+      - {question: "In one city, hives increased four times but the number of ______ hardly changed", response: text, accepted: [flowers], word_limit: 1, band: 8}
+      - {question: "Disease spreads when hives are kept close ______", response: text, accepted: [together], word_limit: 1, band: 9}
+      - {question: "Many new beekeepers lack ______", response: text, accepted: [training], word_limit: 1, band: 9}
+      - {question: "Solutions: some cities ask beekeepers to ______ their hives", response: text, accepted: [register], word_limit: 1, band: 9}
+      - {question: "Experts recommend planting ______ wildflowers", response: text, accepted: [native], word_limit: 1, band: 10}

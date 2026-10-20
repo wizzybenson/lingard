@@ -46,6 +46,7 @@ export interface StepView {
 
 export type ThreadPrompt =
   | { kind: "item"; skill?: string; section?: string; minutes?: number; item: ServedItem }
+  | { kind: "set"; section: string; minutes: number; progress: { done: number; total: number }; set: ServedSet }
   | { kind: "writing"; prompt: string; min_words: number; minutes?: number; task?: string }
   | { kind: "speaking"; prompt: string; level?: number; part?: string; minutes?: number | number[] }
   | { kind: "read_aloud"; text: string; asks_clone_consent: boolean };
@@ -53,10 +54,32 @@ export type ThreadPrompt =
 export interface ServedItem {
   item_id: string;
   question: string;
+  /** choice: one option; multi: ``picks`` options; text: a few typed words, at most ``word_limit``. */
+  response?: "choice" | "multi" | "text";
   options: string[];
+  picks?: number;
+  word_limit?: number | null;
+  /** Shown above this question where the instructions change within a set. */
+  instructions?: string | null;
   text: string | null;
   audio_ref: string | null;
 }
+
+/** Questions sharing one text or recording, answered on one screen (Exam Hall). */
+export interface ServedSet {
+  set_id: string;
+  part: string | null;
+  instructions: string | null;
+  /** A plan or chart drawn in monospace text. */
+  figure: string | null;
+  text: string | null;
+  audio_ref: string | null;
+  /** How many times the recording may be heard. */
+  plays: number;
+  questions: ServedItem[];
+}
+
+export type SetAnswer = number | number[] | string | null;
 
 export interface Notebook {
   corrections: { node_key: string; learner_said: string; correction: string; explanation: string }[];

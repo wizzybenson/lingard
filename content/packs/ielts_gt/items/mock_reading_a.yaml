@@ -1,0 +1,255 @@
+# IELTS General Training Reading, paper A: three sections of increasing difficulty, 40 questions
+# (ielts.org, 2026-10-20). Original texts and questions written for Lingard. Bands are CLB levels.
+defaults: {pack: ielts_gt, language: en, skill: reading, section: reading}
+sets:
+  - id: en-rm-a-s1a
+    part: section1
+    band: 5
+    task_type: matching_information
+    shuffle: false
+    options: [A, B, C, D, E, F]
+    instructions: "Questions 1–7. Look at the six advertisements, A–F. Which advertisement mentions each of the following? Write the correct letter, A–F. You may use any letter more than once."
+    stimulus: |
+      ASHFORD ADULT LEARNING: EVENING AND WEEKEND CLASSES
+
+      A  Conversational Spanish
+      Ten Monday evenings, 7–9 pm, Ashford College, room 12. For people who already know a little Spanish and want to speak with more confidence. £85. Free for anyone receiving Jobseeker's Allowance.
+
+      B  Bread and Pastry
+      Six Saturday mornings in the college's training kitchen. All ingredients are provided, and you take home everything you bake. Please tell us about any food allergies when you book. £120.
+
+      C  Introduction to Bookkeeping
+      Learn to keep simple accounts for a small business or club. Twelve Wednesday evenings. Students who complete the course and pass a short online test receive a certificate recognised by local employers. £140.
+
+      D  Family Swimming
+      Sunday mornings at the Riverside Leisure Centre. Parents and children (ages 4–10) learn together in the small pool. Children must be accompanied at all times. £6 per family per session; no need to book.
+
+      E  Gardening for Beginners
+      Eight Thursday afternoons at the community allotments on Hill Road. Wear old clothes and strong shoes. Tools are lent free of charge. Places are limited to ten, so book early. £60.
+
+      F  Digital Skills Drop-in
+      Every Tuesday, 10 am–12 noon, Ashford Central Library. Bring your own phone or laptop, or use ours. Help with email, online banking and filling in forms. Free; no booking required.
+    questions:
+      - {question: "a class where you do not need to reserve a place", answer: 3, band: 5}
+      - {question: "a qualification at the end of the course", answer: 2, band: 5}
+      - {question: "equipment that you can borrow", answer: 4, band: 5}
+      - {question: "a class that is not suitable for complete beginners", answer: 0, band: 6}
+      - {question: "a class that takes place during the morning on weekdays", answer: 5, band: 6}
+      - {question: "a request for information about health", answer: 1, band: 6}
+      - {question: "a reduced price for some people", answer: 0, band: 6}
+
+  - id: en-rm-a-s1b
+    part: section1
+    band: 5
+    task_type: true_false_not_given
+    shuffle: false
+    options: ["TRUE", "FALSE", "NOT GIVEN"]
+    instructions: "Questions 8–14. Do the following statements agree with the information in the text? Choose TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this."
+    stimulus: |
+      ASHFORD CENTRAL LIBRARY: CHANGES FROM 1 SEPTEMBER
+
+      Opening hours
+      From 1 September the library will open at 9 am instead of 10 am from Monday to Friday, following requests from parents who want to visit after taking their children to school. To make this possible, it will close at 7 pm on weekdays, one hour earlier than now. Saturday hours (9 am–5 pm) are unchanged, and the library will remain closed on Sundays.
+
+      Borrowing
+      Members will be able to borrow up to fifteen items at a time, an increase from ten. The loan period stays at three weeks. Late fees for children's books have been removed completely; adult members will still pay 25p per item per day.
+
+      Self-service
+      Four new self-service machines will be installed by the main entrance. Staff will be on hand to help during the first month. The old machine on the first floor will be removed.
+
+      Study room
+      The quiet study room on the second floor will now need to be booked in advance, either online or at the front desk. Bookings are for a maximum of three hours. The room has been fitted with new desks and power sockets.
+    questions:
+      - {question: "The new weekday opening time was suggested by parents.", answer: 0, band: 5}
+      - {question: "The library will be open for fewer hours on weekdays than before.", answer: 2, band: 7}
+      - {question: "The library will start opening on Sundays.", answer: 1, band: 4}
+      - {question: "Members will be allowed to keep books for longer.", answer: 1, band: 6}
+      - {question: "Adults will no longer pay late fees.", answer: 1, band: 5}
+      - {question: "The new self-service machines were chosen by library members.", answer: 2, band: 6}
+      - {question: "The study room can be used for up to three hours at a time.", answer: 0, band: 5}
+
+  - id: en-rm-a-s2a
+    part: section2
+    band: 6
+    task_type: note_completion
+    response: text
+    word_limit: 2
+    instructions: "Questions 15–21. Complete the notes below. Choose NO MORE THAN TWO WORDS from the text for each answer."
+    stimulus: |
+      BRIGHTWELL LOGISTICS: ANNUAL LEAVE, A GUIDE FOR NEW STAFF
+
+      Your entitlement
+      Full-time staff receive 25 days of paid annual leave each year, in addition to public holidays. Part-time staff receive the same entitlement calculated in proportion to the hours they work. In your first year, leave builds up month by month, so you may not be able to take a long holiday until you have been with us for several months.
+
+      Booking leave
+      All requests must be made through the staff portal, not by email or in person. Your line manager will normally reply within five working days. Requests for more than two consecutive weeks need the approval of the operations director as well as your line manager. During our busiest period, from mid-November to the end of December, no more than two people from each team may be on leave at the same time, and requests are dealt with in the order they are received.
+
+      Carrying leave over
+      You may carry up to five unused days into the following year, but these must be taken by the end of March. Any days not taken by then will be lost. In exceptional circumstances, such as long-term sickness, your manager may agree to a longer period.
+
+      Buying and selling leave
+      Each January, staff can choose to buy up to five extra days of leave, paid for through a small deduction from their monthly salary. It is not possible to sell leave back to the company.
+    questions:
+      - {question: "Part-time staff: leave depends on the ______ they work", accepted: [hours], band: 5}
+      - {question: "First year: leave builds up month by ______", accepted: [month], band: 6}
+      - {question: "Requests must be made through the ______", accepted: [staff portal, portal], band: 5}
+      - {question: "More than two weeks in a row: also needs approval from the ______", accepted: [operations director], band: 6}
+      - {question: "Busy period: a maximum of ______ per team on leave", accepted: [two people, two, "2"], band: 6}
+      - {question: "Unused days carried over must be taken by the end of ______", accepted: [March], band: 6}
+      - {question: "Extra days can be bought each ______", accepted: [January], band: 6}
+
+  - id: en-rm-a-s2b
+    part: section2
+    band: 7
+    task_type: short_answer
+    stimulus: |
+      WORKING SAFELY IN THE WAREHOUSE
+
+      Everyone who works in or visits the warehouse floor must wear a high-visibility vest and safety boots. Vests are kept in the cupboard next to the security office; boots are issued during your first week, and you should not go onto the floor until you have received them.
+
+      Forklift trucks are the greatest single risk in the building. Pedestrians must stay inside the areas marked with green lines, and must never walk behind a reversing vehicle. If you need to cross a loading bay, wait until the driver has seen you and signalled that it is safe.
+
+      Manual handling causes more injuries in our industry than any other activity. Before lifting anything, check its weight on the label. Items over 20 kg must be lifted by two people or with a trolley. If you have had a back injury in the past, tell your supervisor, who will arrange a short assessment with our occupational health adviser.
+
+      All accidents, however minor, must be recorded in the accident book at the first-aid station. Near misses, where nobody was hurt but someone could have been, should also be reported, using the form on the staff portal. These reports help us to find risks before they cause harm, and nobody will be blamed for reporting honestly.
+
+      Fire alarms are tested every Monday at 10 am. If the alarm sounds at any other time, leave the building by the nearest exit and go to the assembly point in the staff car park. Do not stop to collect personal belongings.
+    questions:
+      - question: "The cupboard where vests are kept is next to which room?"
+        instructions: "Questions 22–24. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        word_limit: 3
+        accepted: [the security office, security office]
+        band: 6
+      - question: "What colour are the lines that mark the safe walking areas?"
+        instructions: "Questions 22–24. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        word_limit: 3
+        accepted: [green]
+        band: 5
+      - question: "Where must accidents be recorded?"
+        instructions: "Questions 22–24. Answer the questions below. Write NO MORE THAN THREE WORDS for each answer."
+        response: text
+        word_limit: 3
+        accepted: [the accident book, accident book]
+        band: 6
+      - question: "According to the text, which activity causes the most injuries in the industry?"
+        task_type: multiple_choice
+        instructions: "Questions 25–27. Choose the correct letter, A, B, C or D."
+        options: [driving forklift trucks, lifting and carrying, crossing loading bays, working at height]
+        answer: 1
+        band: 7
+      - question: "Why does the company want staff to report near misses?"
+        task_type: multiple_choice
+        instructions: "Questions 25–27. Choose the correct letter, A, B, C or D."
+        options: [to identify dangers early, to decide who was responsible, to meet a legal requirement, to reduce insurance costs]
+        answer: 0
+        band: 8
+      - question: "What should staff do if the fire alarm rings at 2 pm on a Wednesday?"
+        task_type: multiple_choice
+        instructions: "Questions 25–27. Choose the correct letter, A, B, C or D."
+        options: [wait for a supervisor's instructions, collect their belongings and leave, assume it is a weekly test, leave by the closest exit]
+        answer: 3
+        band: 7
+
+  - id: en-rm-a-s3
+    part: section3
+    band: 8
+    task_type: matching_headings
+    shuffle: false
+    stimulus: |
+      THE RETURN OF THE NIGHT TRAIN
+
+      A  For much of the twentieth century, the sleeper train was the ordinary way to cross Europe. Business travellers left one capital after dinner and woke up in another in time for breakfast meetings; families spent the first night of their holidays rocking gently through the countryside. By the early 2000s, however, the network was disappearing. Cheap flights, faster daytime trains and the high cost of running carriages that are used only once a day made sleeper services unprofitable, and one operator after another cancelled its routes.
+
+      B  The decline was not simply a matter of passenger numbers. Night trains are expensive in ways that are not obvious to the traveller. A sleeper carriage carries far fewer people than a daytime carriage of the same length, because beds take up more space than seats. Staff must work through the night and are paid accordingly. And because each country charges its own fee for the use of its tracks, a train crossing four borders pays four separate bills, often without any discount for running at night, when the tracks are otherwise empty.
+
+      C  What changed was public opinion about flying. From around 2018, concern about the climate made many travellers in northern and western Europe look for alternatives to short flights. Swedish even gave the world a new word, flygskam, or "flight shame". A night train between two cities a thousand kilometres apart produces only a small fraction of the emissions of the same journey by air, and, crucially, it does not waste a day of the traveller's life, because the journey happens while they sleep.
+
+      D  Operators were quick to notice. Austria's national railway, which had kept some sleeper routes running when others gave up, expanded its network and bought second-hand carriages from operators that had closed. New private companies appeared, promising modern compartments, better food and online booking that was as simple as booking a flight. Several governments, keen to show progress on climate targets, offered subsidies or reduced track charges for night services.
+
+      E  The revival has not been smooth. Second-hand carriages break down; new ones take years to build. Some routes launched with great publicity have been suspended within a year, either because the operator could not find enough reliable rolling stock or because engineering work closed the line at night, which is when most maintenance is done. Passengers have complained of cancelled trains, broken air-conditioning and tickets that cost more than a flight and a hotel combined.
+
+      F  Price remains the central problem. A bed in a shared compartment may be reasonable, but a private cabin for a couple can cost several hundred euros, and airlines can still sell seats very cheaply because aviation fuel is taxed lightly or not at all on international routes. Supporters of night trains argue that the competition is unfair, and that until the true environmental cost of flying is reflected in ticket prices, rail will struggle to compete on cost alone.
+
+      G  Even so, the long-term outlook is more hopeful than it has been for decades. The European Union has set out plans to make cross-border rail easier to book and to remove some of the obstacles created by different national rules. Manufacturers are developing carriages designed specifically for night travel, with more compact private cabins. For the traveller who values time as much as money, and who would rather fall asleep in one city and wake up in another than queue at an airport, the night train may at last have found its moment again.
+    questions:
+      - question: "Paragraph B"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 1
+        band: 7
+      - question: "Paragraph C"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 3
+        band: 7
+      - question: "Paragraph D"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 6
+        band: 8
+      - question: "Paragraph E"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 0
+        band: 8
+      - question: "Paragraph F"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 4
+        band: 9
+      - question: "Paragraph G"
+        instructions: "Questions 28–33. The text has seven paragraphs, A–G. Choose the correct heading for paragraphs B–G from the list of headings. i Problems with equipment and reliability  ii Why sleeper trains cost so much to run  iii A golden age of rail travel  iv A change in how travellers feel about flying  v The question of fair competition  vi Reasons for optimism  vii Businesses and governments respond  viii The most popular routes today"
+        options: [i, ii, iii, iv, v, vi, vii, viii]
+        answer: 5
+        band: 8
+      - question: "According to paragraph B, one reason sleeper trains are expensive is that"
+        task_type: multiple_choice
+        instructions: "Questions 34–36. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [they need more powerful engines., each carriage holds fewer passengers., they must stop at every border., they can only run in summer.]
+        answer: 1
+        band: 8
+      - question: "The writer mentions the word flygskam to show"
+        task_type: multiple_choice
+        instructions: "Questions 34–36. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [how popular Swedish night trains have become., that attitudes to flying had changed., that flying had become more expensive., why Swedish airlines had closed routes.]
+        answer: 1
+        band: 9
+      - question: "What does the writer say about routes launched with publicity?"
+        task_type: multiple_choice
+        instructions: "Questions 34–36. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [Most of them are now profitable., Some were stopped within a year., They were all run by private companies., They used only new carriages.]
+        answer: 1
+        band: 8
+      - question: "Airlines can sell cheap tickets partly because international aviation ______ is taxed lightly or not at all."
+        task_type: summary_completion
+        instructions: "Questions 37–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [fuel]
+        band: 8
+      - question: "Supporters of night trains say this makes the competition ______."
+        task_type: summary_completion
+        instructions: "Questions 37–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [unfair]
+        band: 8
+      - question: "The European Union plans to make cross-border rail easier to ______."
+        task_type: summary_completion
+        instructions: "Questions 37–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [book]
+        band: 9
+      - question: "New carriages will have more ______ private cabins."
+        task_type: summary_completion
+        instructions: "Questions 37–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [compact]
+        band: 10

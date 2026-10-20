@@ -1,0 +1,21 @@
+# Exam Hall: start a TEF Canada mock and work through the first reading sets. No paid calls (authored items only).
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "Exam Hall, tab.*"
+- scrollUntilVisible:
+    element: "Start a full mock"
+    direction: DOWN
+- tapOn: "Start a full mock"
+- extendedWaitUntil:
+    visible: "Reading|Compréhension écrite"
+    timeout: 20000
+- takeScreenshot: mock-01-first-set
+- tapOn:
+    id: "choice-1"
+- takeScreenshot: mock-02-picked
+- tapOn: "Next.*"
+- extendedWaitUntil:
+    visible: "Questions 2.*"
+    timeout: 10000
+- takeScreenshot: mock-03-second-set

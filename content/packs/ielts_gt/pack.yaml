@@ -10,16 +10,24 @@ sections:
     skill: listening
     minutes: 30
     transfer_minutes: {paper: 10, computer: 2}
-    parts: 4
     items: 40
     order: 1
+    plays: 1            # each recording is heard once
+    parts:              # ielts.org: 4 parts, 10 questions each, of increasing difficulty
+      - {id: part1, kind: conversation_everyday, items: 10, task_types: [form_completion, note_completion, table_completion, multiple_choice]}
+      - {id: part2, kind: monologue_everyday, items: 10, task_types: [multiple_choice, matching, map_labelling, sentence_completion]}
+      - {id: part3, kind: conversation_training, items: 10, task_types: [multiple_choice, multi_choice, matching, sentence_completion, flow_chart_completion]}
+      - {id: part4, kind: lecture, items: 10, task_types: [note_completion, sentence_completion, short_answer]}
   - id: reading
     skill: reading
     minutes: 60
-    parts: 3
     items: 40
     order: 2
     text_types: [notices, advertisements, timetables, workplace_documents, general_interest_article]
+    parts:              # ielts.org: 3 sections of increasing difficulty, 2,150–2,375 words in all
+      - {id: section1, kind: everyday_short_texts, items: 14, task_types: [true_false_not_given, matching_information, sentence_completion, short_answer]}
+      - {id: section2, kind: workplace_texts, items: 13, task_types: [matching_features, note_completion, short_answer, multiple_choice, diagram_label_completion]}
+      - {id: section3, kind: general_interest_long_text, items: 13, task_types: [matching_headings, multiple_choice, true_false_not_given, summary_completion]}
   - id: writing
     skill: writing
     minutes: 60
@@ -44,5 +52,7 @@ sources:
   - {source_url: "https://www.britishcouncil.es/en/exam/ielts/general", as_of: "2026-10-14"}
   - {source_url: "https://www.idp.com/malaysia/ielts/test-format/", as_of: "2026-10-14"}
   - {source_url: "https://takeielts.britishcouncil.org/sites/default/files/ielts_guide_for_teachers.pdf", as_of: "2026-10-14"}
+  - {source_url: "https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-listening", as_of: "2026-10-20"}
+  - {source_url: "https://ielts.org/take-a-test/test-types/ielts-general-training-test/ielts-general-training-format-reading", as_of: "2026-10-20"}
 source_url: https://www.britishcouncil.es/en/exam/ielts/general
 as_of: "2026-10-14"

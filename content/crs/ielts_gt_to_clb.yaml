@@ -1,7 +1,7 @@
 # IELTS General Training band → CLB, per skill. Minimum band for each CLB level.
 source_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html
 as_of: "2026-06-22"
-verified_at: "2026-10-14"
+verified_at: "2026-10-20"
 pack: ielts_gt
 scale: band
 # clb: {speaking, listening, reading, writing} minimum score

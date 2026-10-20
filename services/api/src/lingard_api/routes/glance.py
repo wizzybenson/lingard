@@ -15,9 +15,9 @@ from pydantic import BaseModel
 from sqlalchemy import select
 
 from lingard_api.deps import Db, Principal, State
+from lingard_api.routes.speech import item_bank
 from lingard_contracts.common import LANGUAGE_PACK, Language, Skill
 from lingard_db.models import FsrsItem, LearnerProfile
-from lingard_exam_packs.items import ItemBank
 from lingard_exam_packs.serving import serve, served_answer
 from lingard_graphs.pedagogy.review import new_card, review
 from lingard_live.languages import load_language
@@ -82,9 +82,9 @@ async def _queue(state: State, db: Db, user_id: str, language: Language) -> list
             node_key=card.item_key,
         )
         quests.append((quest, {"answer": options.index(example["right"]), "node": card.item_key}))
-    bank = ItemBank.load(state.settings.content_root)
+    bank = item_bank(state.settings.content_root)
     rng = random.Random(f"{user_id}:{now.date()}")  # noqa: S311
-    items = bank.select(LANGUAGE_PACK[language], Skill.READING)
+    items = bank.select(LANGUAGE_PACK[language], Skill.READING, standalone=True)
     for item in rng.sample(items, min(len(items), QUEUE_SIZE - len(quests))):
         served = serve(item, user_id)
         quests.append(
@@ -121,7 +121,7 @@ async def answer(
     quest, key = match
     await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
     if "item" in key:
-        item = ItemBank.load(state.settings.content_root).get(key["item"])
+        item = item_bank(state.settings.content_root).get(key["item"])
         right = served_answer(item, user)
         return {"correct": int(body.answer) == right, "answer": right}
     correct = int(body.answer) == key["answer"]

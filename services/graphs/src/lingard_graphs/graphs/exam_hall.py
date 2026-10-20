@@ -8,6 +8,7 @@ productive sections by an examiner ensemble (three samples, median). No hints ar
 from __future__ import annotations
 
 import asyncio
+import random
 import statistics
 import uuid
 from typing import Any
@@ -21,13 +22,13 @@ from langgraph.types import interrupt
 from pydantic import BaseModel, ConfigDict
 
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_NAME, PackId, Skill
-from lingard_curriculum.packs import ExamPack, ielts_overall
+from lingard_curriculum.packs import ExamPack, PartDef, ielts_overall
 from lingard_economy.events import landing_day_unlocked
 from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_exam_packs.adaptive import estimate
 from lingard_exam_packs.generator import ItemGenerator
 from lingard_exam_packs.items import Item, ItemBank
-from lingard_exam_packs.serving import is_correct, serve
+from lingard_exam_packs.serving import check, serve_set
 from lingard_graphs.agents.writing import WritingExaminer, rubric_text
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.pedagogy.bands import observe, prior
@@ -65,6 +66,8 @@ class ExamState(BaseModel):
     pack: PackId
     trace_id: str | None = None
     item_ids: dict[str, list[str]] = {}
+    sets: dict[str, list[list[str]]] = {}
+    """Per receptive section, the question groups in serving order (one screen each)."""
     tasks: MockTasks | None = None
     answers: dict[str, list[tuple[str, bool]]] = {}
     writing: dict[str, str] = {}
@@ -91,28 +94,62 @@ def build_exam_hall(
     rules = deps.pedagogy
 
     async def assemble(state: ExamState) -> dict[str, Any]:
-        """Fill every receptive section to its official item count (bank first, then fresh generated items)."""
+        """Fill every receptive section part by part to its official count from whole question sets in the bank,
+        a fresh choice each attempt; generated items only top up a part the bank cannot fill."""
         pack = deps.packs.pack(state.pack)
-        item_ids: dict[str, list[str]] = {}
+        rng = random.Random(uuid.uuid4().hex)  # noqa: S311 - varies the paper between attempts; checkpointed
+        sets: dict[str, list[list[str]]] = {}
         for section in pack.ordered_sections():
             if section.items is None:
                 continue
-            chosen: list[Item] = sorted(bank.select(state.pack, section.skill), key=lambda i: (i.band, i.id))
-            needed = section.items - len(chosen)
-            if needed > 0:
-                bands = spread_bands(needed)
-                for band in sorted(set(bands)):
-                    generated = await generator.generate(
-                        pack, section.skill, band, bands.count(band), trace_id=state.trace_id
-                    )
-                    for item in generated:
-                        if item.id not in {i.id for i in chosen}:
-                            bank.add(item)
-                            chosen.append(item)
-            item_ids[section.id] = [i.id for i in sorted(chosen, key=lambda i: (i.band, i.id))[: section.items]]
+            parts = section.part_list() or [PartDef(id="", items=section.items)]
+            groups: list[list[Item]] = []
+            for part in parts:
+                needed = part.items or 0
+                pool = [g for g in bank.sets(state.pack, section.id).values() if (g[0].part or "") == part.id]
+                rng.shuffle(pool)
+                chosen = fill(pool, needed)
+                short = needed - sum(len(g) for g in chosen)
+                if short > 0:
+                    chosen += [[i] for i in await top_up(pack, section.skill, part.id, short, state.trace_id)]
+                groups += sorted(chosen, key=lambda g: min(i.band for i in g))  # easier first within a part
+            sets[section.id] = [[i.id for i in g] for g in groups]
+        tasks = authored_tasks(state.pack) or await generated_tasks(pack, state)
+        return {"sets": sets, "item_ids": {k: [i for g in v for i in g] for k, v in sets.items()}, "tasks": tasks}
+
+    async def top_up(pack: ExamPack, skill: Skill, part: str, count: int, trace_id: str | None) -> list[Item]:
+        bands = spread_bands(count)
+        items: list[Item] = []
+        for band in sorted(set(bands)):
+            for item in await generator.generate(pack, skill, band, bands.count(band), trace_id=trace_id):
+                item = item.model_copy(update={"part": part or None})
+                if item.id not in {i.id for i in items}:
+                    bank.add(item)
+                    items.append(item)
+        return items[:count]
+
+    def authored_tasks(pack_id: PackId) -> MockTasks | None:
+        """Writing and speaking tasks from the pack's own prompt files, so a mock starts at once and costs nothing."""
+        folder = deps.content_root / "packs" / pack_id
+        writing_file, speaking_file = folder / "writing_prompts.yaml", folder / "speaking_prompts.yaml"
+        if not (writing_file.exists() and speaking_file.exists()):
+            return None
+        writing, speaking = yaml.safe_load(writing_file.read_text()), yaml.safe_load(speaking_file.read_text())
+        pack = deps.packs.pack(pack_id)
+        task_ids = [t.id for s in pack.sections for t in s.tasks]
+        part_ids = [p.id for s in pack.sections if s.skill is Skill.SPEAKING for p in s.part_list()]
+        if not all(writing.get(t) for t in task_ids) or not all(speaking.get(p) for p in part_ids):
+            return None
+        pick = random.Random(uuid.uuid4().hex)  # noqa: S311
+        return MockTasks(
+            writing=[MockTasks.Writing(task_id=t, prompt=pick.choice(writing[t])) for t in task_ids],
+            speaking=[MockTasks.Speaking(part_id=p, prompt=pick.choice(speaking[p])) for p in part_ids],
+        )
+
+    async def generated_tasks(pack: ExamPack, state: ExamState) -> MockTasks:
         writing_tasks = ", ".join(t.id for s in pack.sections for t in s.tasks)
-        speaking_parts = ", ".join(p.id for s in pack.sections if isinstance(s.parts, list) for p in s.parts)
-        tasks = await deps.router.structured(
+        speaking_parts = ", ".join(p.id for s in pack.sections if s.skill is Skill.SPEAKING for p in s.part_list())
+        return await deps.router.structured(
             "frontier",
             tasks_prompt,
             MockTasks,
@@ -128,7 +165,6 @@ def build_exam_hall(
             ],
             trace_id=state.trace_id,
         )
-        return {"item_ids": item_ids, "tasks": tasks}
 
     async def run_section(state: ExamState) -> dict[str, Any]:
         """One section at a time, strictly timed. On resume, answers carry ``elapsed_s`` from the section start."""
@@ -139,14 +175,25 @@ def build_exam_hall(
         update: dict[str, Any] = {"section_index": state.section_index + 1}
         if section.items is not None:
             answers: list[tuple[str, bool]] = []
-            for item_id in state.item_ids[section.id]:
-                item = bank.get(item_id)
-                served = serve(item, seed, audio_ref=f"tts:{item.id}" if section.skill is Skill.LISTENING else None)
+            groups = state.sets.get(section.id) or [[i] for i in state.item_ids[section.id]]
+            total = sum(len(g) for g in groups)
+            for group in groups:
+                items = [bank.get(i) for i in group]
+                audio = f"tts:{items[0].id}" if section.skill is Skill.LISTENING else None
                 reply = interrupt(
-                    {"kind": "item", "section": section.id, "minutes": section.max_minutes, "item": served.model_dump()}
+                    {
+                        "kind": "set",
+                        "section": section.id,
+                        "minutes": section.max_minutes,
+                        "progress": {"done": len(answers), "total": total},
+                        "set": serve_set(items, seed, audio_ref=audio).model_dump(),
+                    }
                 )
                 late = float(reply.get("elapsed_s", 0)) > limit_s
-                answers.append((item_id, not late and is_correct(item, seed, int(reply.get("choice", -1)))))
+                given = reply.get("answers") or []
+                for n, item in enumerate(items):
+                    value = given[n] if n < len(given) else None
+                    answers.append((item.id, not late and check(item, seed, value)))
             update["answers"] = {**state.answers, section.id: answers}
         elif section.tasks:
             assert state.tasks is not None
@@ -328,3 +375,20 @@ def _to_pack_score(pack: ExamPack, conversion: Any, skill: Skill, level: float) 
     if pack.scale.type == "band":
         return float(round(score * 2) / 2)
     return float(round(score))
+
+
+def fill(pool: list[list[Item]], needed: int) -> list[list[Item]]:
+    """Whole sets until the part is full; the last set is cut short if nothing else fits exactly."""
+    chosen: list[list[Item]] = []
+    total = 0
+    for group in pool:
+        if total + len(group) <= needed:
+            chosen.append(group)
+            total += len(group)
+    for group in pool:
+        if total >= needed:
+            break
+        if group not in chosen:
+            chosen.append(group[: needed - total])
+            total += len(chosen[-1])
+    return chosen

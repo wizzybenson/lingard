@@ -18,17 +18,17 @@
     {
       "language": "fr",
       "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "fr",
+      "true": 4.5,
+      "placed": 4
+    },
+    {
+      "language": "fr",
+      "true": 4.5,
       "placed": 5
-    },
-    {
-      "language": "fr",
-      "true": 4.5,
-      "placed": 4
-    },
-    {
-      "language": "fr",
-      "true": 4.5,
-      "placed": 4
     },
     {
       "language": "fr",
@@ -48,7 +48,7 @@
     {
       "language": "fr",
       "true": 6.5,
-      "placed": 6
+      "placed": 7
     },
     {
       "language": "fr",
@@ -166,6 +166,6 @@
       "placed": 9
     }
   ],
-  "ran_at": "2026-10-14T20:58:33+00:00",
+  "ran_at": "2026-10-20T07:10:42+00:00",
   "status": "PASS"
 }

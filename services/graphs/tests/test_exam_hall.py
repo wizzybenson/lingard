@@ -8,7 +8,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
-from lingard_exam_packs.items import ItemBank
+from lingard_exam_packs.items import Item, ItemBank
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.graphs.exam_hall import ExamState, build_exam_hall
 from lingard_graphs.store import MemoryStore
@@ -34,6 +34,22 @@ def generated_items(messages: list[BaseMessage]) -> dict[str, Any]:
             }
         )
     return {"items": items}
+
+
+def right_answer(item: Item, served: dict[str, Any]) -> Any:
+    if item.response == "text":
+        return item.accepted[0]
+    if isinstance(item.answer, list):
+        return [served["options"].index(item.options[k]) for k in item.answer]
+    assert item.answer is not None
+    return served["options"].index(item.options[item.answer])
+
+
+def wrong_answer(item: Item, served: dict[str, Any]) -> Any:
+    if item.response == "text":
+        return "nothing like it"
+    right = right_answer(item, served)
+    return [0] if isinstance(right, list) else (right + 1) % len(served["options"])
 
 
 def criteria_scores(level: float) -> Any:
@@ -68,19 +84,26 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
         request = result["__interrupt__"][0].value
         if not sections_seen or sections_seen[-1] != request["section"]:
             sections_seen.append(request["section"])
-        if request["kind"] == "item":
-            item = bank.get(request["item"]["item_id"])
-            options = request["item"]["options"]
-            right = options.index(item.options[item.answer])
-            elapsed = 9999 if late_answers < 5 and request["section"] == "comprehension_orale" else 60
+        if request["kind"] == "set":
+            served = request["set"]
+            elapsed = 9999 if late_answers < 2 and request["section"] == "comprehension_orale" else 60
             late_answers += elapsed == 9999
-            resume: Any = {"choice": right if item.band <= 7 else (right + 1) % 4, "elapsed_s": elapsed}
+            given = []
+            for question in served["questions"]:
+                item = bank.get(question["item_id"])
+                right = right_answer(item, question)
+                given.append(right if item.band <= 7 else wrong_answer(item, question))
+            resume: Any = {"answers": given, "elapsed_s": elapsed}
         elif request["kind"] == "writing":
             resume = {"text": "Texte assez long. " * 60, "elapsed_s": 1200}
         else:
             resume = {"transcript": "Bonjour, je voudrais des renseignements sur les cours du soir."}
         result = await graph.ainvoke(Command(resume=resume), config)
     assert sections_seen == ["comprehension_ecrite", "comprehension_orale", "expression_ecrite", "expression_orale"]
+    for section, count in (("comprehension_ecrite", 40), ("comprehension_orale", 40)):
+        parts = [bank.get(i).part for i in result["item_ids"][section]]
+        blueprint = {p.id: p.items for p in deps.packs.pack("tef_canada").section(section).part_list()}
+        assert len(parts) == count and {p: parts.count(p) for p in blueprint} == blueprint, "the official blueprint"
     assert (
         len(result["item_ids"]["comprehension_ecrite"]) == 40 and len(result["item_ids"]["comprehension_orale"]) == 40
     )

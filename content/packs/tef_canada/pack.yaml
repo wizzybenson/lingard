@@ -12,12 +12,25 @@ sections:
     items: 40
     order: 1
     scoring: one_point_per_correct
+    navigation: free     # the candidate moves freely between questions; the test ends itself at the time limit
+    # The publisher gives the total (40) and the activity types, not a per-activity count: the split is Lingard's.
+    parts:
+      - {id: ce_documents, kind: everyday_documents, items: 10, task_types: [document_context, document_detail]}
+      - {id: ce_lacunes, kind: gapped_sentences_and_texts, items: 10, task_types: [gapped_sentence, gapped_text]}
+      - {id: ce_rapide, kind: quick_reading_short_texts_and_charts, items: 6, task_types: [quick_reading, chart_reading]}
+      - {id: ce_articles, kind: press_articles_and_long_texts, items: 14, task_types: [article_detail, article_opinion, article_inference]}
   - id: comprehension_orale
     skill: listening
     minutes: 40
     items: 40
     order: 2
     scoring: one_point_per_correct
+    navigation: forward_only   # activities advance by themselves; no going back
+    parts:
+      - {id: co_scenes, kind: short_dialogues_with_pictures, items: 6, task_types: [picture_match]}
+      - {id: co_messages, kind: voicemails_and_public_announcements, items: 10, task_types: [message_detail, announcement_detail]}
+      - {id: co_micro, kind: street_interviews, items: 8, task_types: [vox_pop_opinion]}
+      - {id: co_reportage, kind: radio_report_and_interview, items: 16, task_types: [report_detail, interview_detail, report_inference]}
   - id: expression_ecrite
     skill: writing
     minutes: 60
@@ -39,8 +52,12 @@ scale_description: "NCLC levels 1–12"
 scene_alignment: {default: tef_canada.eo.section_a, persuasive: tef_canada.eo.section_b}
 sources:
   - {source_url: "https://www.lefrancaisdesaffaires.fr/tests-diplomes/test-evaluation-francais-tef/tef-canada/", as_of: "2026-10-14"}
-  - {source_url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html", as_of: "2026-06-22"}
+  - {source_url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html", as_of: "2026-10-20"}
+  - {source_url: "https://www.lefrancaisdesaffaires.fr/evolutions-tef-2023/", as_of: "2026-10-20"}
+  - {source_url: "https://www.lefrancaisdesaffaires.fr/wp-content/uploads/2026/04/2026-livret-du-responsable-tef.pdf", as_of: "2026-10-20"}
 source_url: https://www.lefrancaisdesaffaires.fr/tests-diplomes/test-evaluation-francais-tef/tef-canada/
 as_of: "2026-10-14"
 notes:
+  - Since 11 Dec 2023 CE and CO have 40 questions each (was 50/60), same durations; activity types from the publisher's change notice. Per-activity counts above are Lingard's.
+  - Street-interview (micro-trottoir) questions have 3 options; interview extracts may be heard twice (third-party guides, 2025; not in the publisher's notice).
   - Rubric dimension names for TEF expression tasks are Lingard's internal labels (the publisher does not publish a public analytic rubric); they are mapped to NCLC descriptors.

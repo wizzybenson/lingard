@@ -27,10 +27,15 @@ class TaskDef(_Model):
 
 
 class PartDef(_Model):
+    """A speaking part (timed), or a receptive part with its share of the section's questions."""
+
     id: str
     kind: str | None = None
-    minutes: int | list[int]
+    minutes: int | list[int] | None = None
     prep_minutes: int | None = None
+    items: int | None = None
+    task_types: list[str] = Field(default_factory=list)
+    """The question types this part uses; the bank must cover each one."""
 
 
 class SectionDef(_Model):
@@ -43,9 +48,19 @@ class SectionDef(_Model):
     parts: int | list[PartDef] | None = None
     rubric: list[str] = Field(default_factory=list)
 
+    @model_validator(mode="after")
+    def _parts_add_up(self) -> SectionDef:
+        counted = [p.items for p in self.part_list() if p.items is not None]
+        if self.items is not None and counted and sum(counted) != self.items:
+            raise ValueError(f"{self.id}: parts hold {sum(counted)} questions, the section {self.items}")
+        return self
+
     @property
     def max_minutes(self) -> int:
         return max(self.minutes) if isinstance(self.minutes, list) else self.minutes
+
+    def part_list(self) -> list[PartDef]:
+        return self.parts if isinstance(self.parts, list) else []
 
 
 class Scale(_Model):

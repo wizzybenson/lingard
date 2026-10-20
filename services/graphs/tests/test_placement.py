@@ -59,6 +59,7 @@ async def run_placement(deps: GraphDeps, script: Script, true_band: float, speak
         if request["kind"] == "item":
             item = bank.get(request["item"]["item_id"])
             p = 1 / (1 + math.exp(-(band_to_logit(true_band) - item.difficulty)))
+            assert isinstance(item.answer, int), "placement serves single-choice questions only"
             correct_text = item.options[item.answer]
             options = request["item"]["options"]
             choice = (

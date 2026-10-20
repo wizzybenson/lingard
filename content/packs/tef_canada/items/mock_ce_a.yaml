@@ -1,0 +1,299 @@
+# TEF Canada, compréhension écrite, épreuve A : 40 questions, 60 minutes, QCM (le français des affaires, 2026-10-20).
+# Activités depuis décembre 2023 : documents du quotidien, phrases et textes lacunaires, lecture rapide de textes courts
+# et de graphiques, articles de presse. Contenu original écrit pour Lingard. Niveaux : NCLC.
+defaults: {pack: tef_canada, language: fr, skill: reading, section: comprehension_ecrite}
+items:
+  # Documents du quotidien
+  - id: fr-cem-a-d01
+    part: ce_documents
+    task_type: document_context
+    band: 4
+    stimulus: "PISCINE MUNICIPALE DE RIVEMONT — Bassin fermé du 3 au 9 juin pour vidange annuelle. Réouverture le lundi 10 juin à 7 h. Merci de votre compréhension."
+    question: "Pourquoi la piscine est-elle fermée ?"
+    options: ["Pour des travaux d'agrandissement", "Pour un nettoyage annuel", "Pour une compétition", "Pour manque de personnel"]
+    answer: 1
+  - id: fr-cem-a-d02
+    part: ce_documents
+    task_type: document_context
+    band: 4
+    stimulus: "Bonjour Karim, je ne pourrai pas te ramener ce soir, ma voiture est au garage. Tu peux prendre le 14, il s'arrête juste devant le cégep. À demain ! Nadia"
+    question: "Que propose Nadia à Karim ?"
+    options: ["De réparer sa voiture", "De prendre l'autobus", "De dormir chez elle", "D'aller au cégep à pied"]
+    answer: 1
+  - id: fr-cem-a-d03
+    part: ce_documents
+    task_type: document_detail
+    band: 5
+    stimulus: "À LOUER — 4 ½ lumineux, quartier Saint-Roch. Chauffage et eau chaude inclus. Électricité non incluse. Animaux non acceptés. Libre le 1er juillet. 1 150 $/mois. Visites le samedi seulement."
+    question: "Qu'est-ce que le locataire devra payer en plus du loyer ?"
+    options: ["Le chauffage", "L'eau chaude", "L'électricité", "Le stationnement"]
+    answer: 2
+  - id: fr-cem-a-d04
+    part: ce_documents
+    task_type: document_context
+    band: 5
+    stimulus: "Objet : votre demande du 12 mars. Madame, nous avons bien reçu votre formulaire de changement d'adresse. Toutefois, il manque une copie d'une pièce justificative datant de moins de trois mois. Nous vous prions de nous la faire parvenir afin que nous puissions traiter votre dossier."
+    question: "Quel est le but de ce courriel ?"
+    options: ["Confirmer un changement d'adresse", "Demander un document manquant", "Refuser une demande", "Annoncer un rendez-vous"]
+    answer: 1
+  - id: fr-cem-a-d05
+    part: ce_documents
+    task_type: document_detail
+    band: 5
+    stimulus: "CLINIQUE DU VIEUX-PORT — Sans rendez-vous du lundi au vendredi de 8 h à 11 h. Après 11 h, sur rendez-vous seulement. Apportez votre carte d'assurance maladie. Les enfants de moins de 14 ans doivent être accompagnés."
+    question: "Une personne arrive à la clinique à 14 h sans rendez-vous. Que va-t-il se passer ?"
+    options: ["Elle sera reçue tout de suite", "Elle ne sera pas reçue", "Elle devra revenir avec un adulte", "Elle devra payer plus cher"]
+    answer: 1
+  - id: fr-cem-a-d06
+    part: ce_documents
+    task_type: document_detail
+    band: 6
+    stimulus: "Chers parents, la sortie au musée prévue le jeudi 18 est reportée au mardi 23 en raison de la grève des transports. Le départ reste fixé à 8 h 30 devant l'école. Les enfants doivent apporter un lunch froid. Merci de signer l'autorisation ci-jointe avant lundi."
+    question: "Qu'est-ce qui a changé pour la sortie ?"
+    options: ["L'heure de départ", "Le lieu de rendez-vous", "La date", "La destination"]
+    answer: 2
+  - id: fr-cem-a-d07
+    part: ce_documents
+    task_type: document_context
+    band: 6
+    stimulus: "Avis aux résidents : en raison de travaux sur la conduite principale, l'eau pourrait être brouillée mardi entre 9 h et 15 h. Elle demeure potable, mais nous recommandons de la laisser couler quelques minutes avant de la boire. — Ville de Rivemont, Service des travaux publics"
+    question: "Qui a écrit ce message ?"
+    options: ["Un syndic de copropriété", "La municipalité", "Une entreprise d'eau embouteillée", "Le ministère de la Santé"]
+    answer: 1
+  - id: fr-cem-a-d08
+    part: ce_documents
+    task_type: document_detail
+    band: 6
+    stimulus: "OFFRE D'EMPLOI — Commis d'entrepôt (temps plein, poste permanent). Horaire de jour, du lundi au vendredi. Permis de conduire chariot élévateur un atout. Formation offerte sur place. Salaire selon l'expérience. Envoyez votre CV avant le 30 avril."
+    question: "Pour ce poste, le permis de chariot élévateur est…"
+    options: ["obligatoire", "souhaitable mais pas nécessaire", "fourni après l'embauche seulement", "exigé pour les postes de nuit"]
+    answer: 1
+  - id: fr-cem-a-d09
+    part: ce_documents
+    task_type: document_context
+    band: 7
+    stimulus: "Madame Tremblay, à la suite de notre entretien de vendredi, j'ai le plaisir de vous confirmer que votre candidature a été retenue. Votre période de probation de trois mois débutera le 2 septembre. Je vous invite à vous présenter à la réception à 8 h, munie de votre numéro d'assurance sociale et d'un spécimen de chèque."
+    question: "Ce courriel a pour objectif principal…"
+    options: ["d'inviter Mme Tremblay à un entretien.", "d'annoncer une embauche.", "de mettre fin à une période de probation.", "de demander des références."]
+    answer: 1
+  - id: fr-cem-a-d10
+    part: ce_documents
+    task_type: document_detail
+    band: 7
+    stimulus: "Conditions de retour : tout article peut être échangé ou remboursé dans les 30 jours suivant l'achat, sur présentation du reçu. Les articles en solde sont échangeables seulement. Les produits électroniques ouverts ne sont ni repris ni échangés, sauf s'ils sont défectueux."
+    question: "Un client a acheté un chandail en solde il y a une semaine. Que peut-il faire ?"
+    options: ["Se faire rembourser", "L'échanger contre un autre article", "Rien, car l'article est en solde", "Le rapporter après 30 jours"]
+    answer: 1
+
+  # Phrases lacunaires (un mot manquant)
+  - id: fr-cem-a-l01
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 4
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Je suis désolé, je ne peux pas venir à la réunion ______ je suis malade."
+    question: "Quel mot complète la phrase ?"
+    options: ["parce que", "pourtant", "donc", "alors que"]
+    answer: 0
+  - id: fr-cem-a-l02
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 5
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Il a beaucoup neigé cette nuit ; les écoles sont ______ fermées aujourd'hui."
+    question: "Quel mot complète la phrase ?"
+    options: ["donc", "pourtant", "cependant", "néanmoins"]
+    answer: 0
+  - id: fr-cem-a-l03
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 5
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Pour obtenir votre permis, vous devez d'abord ______ un examen théorique."
+    question: "Quel mot complète la phrase ?"
+    options: ["réussir", "gagner", "remporter", "atteindre"]
+    answer: 0
+  - id: fr-cem-a-l04
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 6
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Il faut que vous ______ votre demande avant la fin du mois."
+    question: "Quel mot complète la phrase ?"
+    options: ["envoyez", "envoyiez", "enverrez", "envoyer"]
+    answer: 1
+  - id: fr-cem-a-l05
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 7
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "______ les efforts de la municipalité, la circulation reste difficile au centre-ville aux heures de pointe."
+    question: "Quel mot complète la phrase ?"
+    options: ["Grâce à", "Malgré", "Afin de", "Puisque"]
+    answer: 1
+  - id: fr-cem-a-l06
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 8
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Le rapport, ______ conclusions ont surpris les élus, sera rendu public la semaine prochaine."
+    question: "Quel mot complète la phrase ?"
+    options: ["que", "dont", "les", "où"]
+    answer: 1
+sets:
+  - id: fr-cem-a-lt
+    part: ce_lacunes
+    task_type: gapped_text
+    band: 7
+    instructions: "Lisez le texte et choisissez le mot qui convient pour chaque espace."
+    stimulus: |
+      Depuis le printemps, les résidents du Vieux-Port peuvent emprunter des outils comme on emprunte des livres. L'« outilthèque », installée dans un ancien entrepôt, compte déjà plus de quatre cents objets : perceuses, échelles, tondeuses… L'idée est simple : (1) ______ d'acheter un outil qu'on utilisera deux fois par an, on l'emprunte pour quelques jours. L'abonnement coûte vingt dollars par année, (2) ______ il est gratuit pour les personnes à faible revenu. Les bénévoles vérifient chaque objet à son retour (3) ______ de s'assurer qu'il est prêt pour le prochain utilisateur. Le succès est tel que la Ville envisage d'ouvrir un deuxième point de prêt, (4) ______ dans le quartier Saint-Roch.
+    questions:
+      - {question: "Espace (1)", options: ["Au lieu", "À cause", "En raison", "Au cours"], answer: 0}
+      - {question: "Espace (2)", options: ["donc", "mais", "car", "ni"], answer: 1, band: 6}
+      - {question: "Espace (3)", options: ["afin", "pour", "de sorte", "bien"], answer: 0, band: 8}
+      - {question: "Espace (4)", options: ["probablement", "lentement", "difficilement", "rarement"], answer: 0, band: 7}
+
+  # Lecture rapide : textes courts et graphique
+  - id: fr-cem-a-r1
+    part: ce_rapide
+    task_type: quick_reading
+    band: 6
+    shuffle: false
+    options: ["Annonce A", "Annonce B", "Annonce C", "Annonce D"]
+    instructions: "Lisez rapidement les quatre annonces et répondez aux questions."
+    stimulus: |
+      A — Cours de cuisine du monde, samedi 10 h. Matériel fourni. 45 $ la séance. Inscription en ligne.
+      B — Club de lecture de la bibliothèque, un mardi par mois, 19 h. Gratuit. Café offert.
+      C — Atelier de réparation de vélos, dimanche 13 h, au parc des Érables. Apportez votre vélo. Contribution volontaire.
+      D — Initiation à l'escalade pour adultes, jeudi 18 h. Chaussures en location sur place (5 $). Places limitées : 8 personnes.
+    questions:
+      - {question: "Quelle activité est entièrement gratuite ?", answer: 1}
+      - {question: "Pour quelle activité faut-il apporter un objet personnel ?", answer: 2}
+      - {question: "Quelle activité accepte le plus petit nombre de participants ?", answer: 3, band: 7}
+  - id: fr-cem-a-r2
+    part: ce_rapide
+    task_type: chart_reading
+    band: 7
+    instructions: "Observez le graphique et répondez aux questions."
+    stimulus: "Sondage auprès de 800 résidents de Rivemont : « Comment vous rendez-vous principalement au travail ? » (2025 et 2015)"
+    figure: |2
+        Mode de transport      2015    2025
+        Voiture (seul)          58 %    44 %
+        Transport en commun     21 %    27 %
+        Vélo                     6 %    12 %
+        Marche                   9 %     9 %
+        Covoiturage              6 %     8 %
+    questions:
+      - question: "Quel mode de transport a le plus augmenté en dix ans, en proportion ?"
+        options: ["Le transport en commun", "Le vélo", "La marche", "Le covoiturage"]
+        answer: 1
+      - question: "Selon le sondage, en 2025…"
+        options: ["moins de la moitié des résidents vont au travail seuls en voiture.", "la marche a progressé autant que le vélo.", "le transport en commun est le mode le plus utilisé.", "le covoiturage a diminué."]
+        answer: 0
+        band: 8
+      - question: "Quel mode de transport est resté stable ?"
+        options: ["La voiture", "Le vélo", "La marche", "Le covoiturage"]
+        answer: 2
+        band: 6
+
+  # Articles de presse
+  - id: fr-cem-a-a1
+    part: ce_articles
+    task_type: article_detail
+    band: 7
+    stimulus: |
+      LES ÉPICERIES DE QUARTIER FONT LEUR RETOUR
+
+      On les croyait condamnées par les grandes surfaces. Pourtant, depuis trois ans, une dizaine de petites épiceries ont ouvert à Rivemont, la plupart dans des quartiers où il fallait prendre la voiture pour faire ses courses. « Nos clients viennent à pied, deux ou trois fois par semaine, et achètent un peu à la fois », explique Mélanie Gagnon, propriétaire de L'Épicerie du coin, rue Saint-Jean.
+
+      Le phénomène s'explique en partie par le vieillissement de la population : de nombreux aînés ne conduisent plus et apprécient de trouver l'essentiel près de chez eux. Mais les jeunes familles sont aussi au rendez-vous. Elles recherchent des produits locaux et veulent réduire leurs déplacements en voiture.
+
+      Les prix restent toutefois un obstacle. Faute de pouvoir acheter en grandes quantités, ces commerces vendent souvent plus cher que les supermarchés. Pour compenser, plusieurs d'entre eux misent sur le service : livraison gratuite aux personnes âgées, commandes par téléphone, conseils personnalisés. D'autres se regroupent pour négocier ensemble avec les fournisseurs.
+
+      La Ville, de son côté, a modifié son règlement de zonage l'an dernier afin de faciliter l'ouverture de commerces au rez-de-chaussée des immeubles résidentiels. Une décision saluée par les commerçants, mais critiquée par certains résidents qui craignent davantage de bruit et de livraisons dans leur rue.
+    questions:
+      - question: "Selon l'article, ces nouvelles épiceries se trouvent surtout…"
+        options: ["au centre-ville.", "près des grands supermarchés.", "dans des quartiers mal desservis en commerces.", "dans des zones industrielles."]
+        answer: 2
+      - question: "Comment les clients de Mme Gagnon font-ils leurs courses ?"
+        options: ["Une fois par semaine, en voiture", "Souvent et en petites quantités", "Uniquement par téléphone", "Surtout le week-end"]
+        answer: 1
+        band: 6
+      - question: "Quel est le principal désavantage de ces épiceries ?"
+        options: ["Leurs heures d'ouverture", "Leurs prix", "Le choix de produits", "Le manque de stationnement"]
+        answer: 1
+      - question: "Pourquoi certaines épiceries se regroupent-elles ?"
+        options: ["Pour partager un même local", "Pour obtenir de meilleurs prix auprès des fournisseurs", "Pour organiser des livraisons communes", "Pour demander une aide de la Ville"]
+        answer: 1
+        band: 8
+      - question: "Quelle est la position de certains résidents face au nouveau règlement de zonage ?"
+        options: ["Ils l'approuvent entièrement.", "Ils craignent des nuisances.", "Ils demandent plus de commerces.", "Ils ne sont pas au courant."]
+        answer: 1
+        band: 8
+  - id: fr-cem-a-a2
+    part: ce_articles
+    task_type: article_opinion
+    band: 8
+    stimulus: |
+      LA SEMAINE DE QUATRE JOURS : FAUSSE BONNE IDÉE ?
+
+      Depuis qu'une entreprise de logiciels de Rivemont a adopté la semaine de quatre jours, sans baisse de salaire, les demandes se multiplient dans d'autres secteurs. Les résultats annoncés par l'entreprise sont impressionnants : moins d'absences, des employés plus motivés et une productivité stable, voire en légère hausse.
+
+      Faut-il pour autant généraliser le modèle ? Rien n'est moins sûr. Ce qui fonctionne dans un bureau où le travail se mesure en projets terminés s'applique mal à un hôpital, à une école ou à un commerce, où il faut assurer une présence continue. Dans ces milieux, réduire le temps de travail sans réduire les salaires signifie embaucher davantage, et donc augmenter les coûts — ou demander aux employés de faire en quatre jours ce qu'ils faisaient en cinq, avec le risque d'épuisement que cela comporte.
+
+      Il serait néanmoins dommage de rejeter l'idée en bloc. L'expérience montre surtout qu'une bonne partie du temps de travail est perdue en réunions inutiles et en interruptions. Plutôt que d'imposer un modèle unique, les employeurs auraient intérêt à revoir l'organisation du travail, quitte à offrir plus de souplesse à ceux qui le souhaitent. La vraie question n'est peut-être pas le nombre de jours, mais la façon dont on les utilise.
+    questions:
+      - question: "Quel résultat l'entreprise de logiciels a-t-elle observé ?"
+        options: ["Une hausse importante des salaires", "Une diminution des absences", "Une baisse de la productivité", "Des embauches plus nombreuses"]
+        answer: 1
+        band: 6
+      - question: "Selon l'auteur, la semaine de quatre jours s'applique difficilement…"
+        options: ["aux entreprises de logiciels.", "aux milieux qui exigent une présence continue.", "aux petites entreprises.", "aux employés à temps partiel."]
+        answer: 1
+        band: 7
+      - question: "Quel risque l'auteur mentionne-t-il pour les employés ?"
+        options: ["Une baisse de salaire", "La perte de leur emploi", "L'épuisement", "L'isolement"]
+        answer: 2
+        band: 7
+      - question: "Quelle est la position générale de l'auteur ?"
+        options: ["Il est entièrement favorable à la semaine de quatre jours.", "Il la rejette totalement.", "Il est nuancé et propose de repenser l'organisation du travail.", "Il ne donne pas son avis."]
+        answer: 2
+        task_type: article_inference
+        band: 8
+      - question: "Dans la dernière phrase, l'auteur suggère que…"
+        options: ["le nombre de jours travaillés est le seul enjeu.", "l'organisation du temps compte plus que sa durée.", "il faut travailler davantage.", "les réunions sont indispensables."]
+        answer: 1
+        task_type: article_inference
+        band: 9
+  - id: fr-cem-a-a3
+    part: ce_articles
+    task_type: article_inference
+    band: 9
+    stimulus: |
+      LE FLEUVE, CE VOISIN QU'ON AVAIT OUBLIÉ
+
+      Pendant des décennies, les habitants de Rivemont ont tourné le dos au fleuve. Les quais étaient réservés aux activités portuaires, et une autoroute surélevée coupait la ville de ses berges. Il fallait franchir des clôtures et traverser des terrains vagues pour apercevoir l'eau.
+
+      La démolition de l'autoroute, achevée il y a cinq ans, a tout changé. À sa place, une promenade de trois kilomètres relie désormais le Vieux-Port au parc des Îles. Les urbanistes avaient prévu une fréquentation modeste ; dès le premier été, on y comptait pourtant plus de dix mille passants les fins de semaine.
+
+      Ce succès n'est pas sans effets secondaires. Les loyers des immeubles qui donnent sur la promenade ont grimpé de près de trente pour cent, et plusieurs locataires de longue date ont dû quitter le quartier. Des organismes communautaires reprochent à la Ville d'avoir embelli les berges sans prévoir de logements abordables. La mairie répond qu'un programme de construction de logements sociaux est en cours, mais les premiers appartements ne seront pas livrés avant trois ans.
+
+      Reste que, pour la majorité des Rivemontais, le fleuve est redevenu un lieu de vie. On s'y promène, on y fait du vélo, on s'y baigne même depuis l'ouverture, l'an dernier, d'une plage urbaine surveillée. Le défi, désormais, est de faire en sorte que tous les habitants, et non seulement les plus aisés, puissent en profiter.
+    questions:
+      - question: "Avant la démolition de l'autoroute, le fleuve était…"
+        options: ["très fréquenté par les familles.", "difficile d'accès pour les habitants.", "réservé aux baigneurs.", "entouré de logements sociaux."]
+        answer: 1
+        band: 7
+      - question: "La fréquentation de la promenade a été…"
+        options: ["conforme aux prévisions.", "inférieure aux prévisions.", "bien supérieure aux prévisions.", "limitée aux fins de semaine."]
+        answer: 2
+        band: 8
+      - question: "Que reprochent les organismes communautaires à la Ville ?"
+        options: ["D'avoir démoli l'autoroute", "De ne pas avoir pensé au logement abordable", "D'avoir ouvert une plage dangereuse", "D'avoir réduit les pistes cyclables"]
+        answer: 1
+        band: 8
+      - question: "Quel est, selon l'auteur, le principal enjeu pour l'avenir ?"
+        options: ["Attirer davantage de touristes", "Reconstruire une route rapide", "Rendre les berges accessibles à tous", "Augmenter les loyers du quartier"]
+        answer: 2
+        band: 9

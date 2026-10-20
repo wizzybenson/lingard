@@ -1,0 +1,206 @@
+# IELTS General Training Reading, paper B (original, written for Lingard). Covers the task types paper A does not:
+# sentence completion and short answers (Section 1), matching features and diagram labels (Section 2),
+# True/False/Not Given on a long text (Section 3). Bands are CLB levels.
+defaults: {pack: ielts_gt, language: en, skill: reading, section: reading}
+sets:
+  - id: en-rm-b-s1a
+    part: section1
+    band: 5
+    task_type: sentence_completion
+    response: text
+    word_limit: 2
+    instructions: "Questions 1–7. Complete the sentences below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the text for each answer."
+    stimulus: |
+      ASHFORD TRAVELCARD: WHICH TICKET IS RIGHT FOR YOU?
+
+      Day Saver
+      Unlimited travel on all Ashford buses for one day, until 4 am the following morning. £5.20 for adults, £2.60 for children under 16. Buy it from the driver using a card or phone; cash is not accepted.
+
+      Weekly Pass
+      Seven days of unlimited travel from the first day you use it. £19.50. Available on the Ashford Buses app only. If you lose your phone, contact customer services and we will move your pass to a new device free of charge.
+
+      Student Pass
+      For full-time students aged 16 to 25. £180 for a term, or £480 for the whole academic year. You will need to upload a photo and a letter from your college when you apply online. Passes are posted within ten working days.
+
+      Senior and Disabled Persons' Pass
+      Free travel after 9.30 am on weekdays and all day at weekends. Apply to Ashford Borough Council, not to Ashford Buses.
+
+      Group Ticket
+      Up to five people travelling together can buy one ticket for £12, valid for the whole day. At least one member of the group must be an adult.
+    questions:
+      - {question: "A Day Saver can be used until ______ the next morning.", accepted: [4 am, 4am, "4"], band: 4}
+      - {question: "The driver will not accept ______ for a Day Saver.", accepted: [cash], band: 5}
+      - {question: "The Weekly Pass can only be bought on the ______.", accepted: [Ashford Buses app, app], word_limit: 3, band: 5}
+      - {question: "Customer services can transfer a Weekly Pass to a new ______ for free.", accepted: [device], band: 6}
+      - {question: "Student Pass applicants must send a photo and a ______ from their college.", accepted: [letter], band: 5}
+      - {question: "Seniors should apply for their pass to the Borough ______.", accepted: [Council], band: 6}
+      - {question: "A Group Ticket covers up to ______ people.", accepted: [five, "5"], band: 5}
+  - id: en-rm-b-s1b
+    part: section1
+    band: 6
+    task_type: short_answer
+    response: text
+    word_limit: 3
+    instructions: "Questions 8–14. Answer the questions below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the text for each answer."
+    stimulus: |
+      HILL ROAD RECYCLING CENTRE: INFORMATION FOR RESIDENTS
+
+      The centre is open every day except Christmas Day and New Year's Day, from 8 am to 6 pm in summer (April to September) and from 8 am to 4 pm in winter. The last vehicles are admitted fifteen minutes before closing.
+
+      Residents of Ashford may use the centre free of charge. You may be asked to show proof of address, such as a council tax bill or a driving licence. Vans and trailers need a permit, which can be requested online and is valid for twelve visits a year.
+
+      Please sort your waste before you arrive, as this makes your visit much quicker. Garden waste, wood, metal, glass, paper and electrical items each have their own container. Staff in orange jackets are there to help, but for safety reasons they cannot lift heavy items for you.
+
+      Some items are not accepted, including asbestos, gas bottles and tyres. Paint can be left at the centre only if it is water-based; other paints must be taken to the hazardous waste day held on the first Sunday of each month.
+
+      Good-quality furniture and bicycles can be left at the reuse shop next to the entrance. They are repaired by volunteers and sold at low prices, and all profits go to local charities.
+    questions:
+      - {question: "Until what time is the centre open in winter?", accepted: [4 pm, 4pm, "4"], band: 5}
+      - {question: "Name ONE document that residents can show as proof of address.", accepted: [council tax bill, driving licence, a driving licence], band: 6}
+      - {question: "What do people with vans need to obtain?", accepted: [a permit, permit], band: 5}
+      - {question: "How many visits a year does this cover?", accepted: [twelve, "12", twelve visits, 12 visits], band: 6}
+      - {question: "What colour jackets do the staff wear?", accepted: [orange], band: 5}
+      - {question: "What kind of paint does the centre accept?", accepted: [water-based, water-based paint, water based], band: 7}
+      - {question: "Who repairs the items sold in the reuse shop?", accepted: [volunteers], band: 6}
+
+  - id: en-rm-b-s2a
+    part: section2
+    band: 7
+    task_type: matching_features
+    shuffle: false
+    options: [A, B, C, D]
+    instructions: "Questions 15–21. Look at the descriptions of four training providers, A–D. Which provider does each statement refer to? Write the correct letter, A–D. You may use any letter more than once."
+    stimulus: |
+      STAFF DEVELOPMENT SCHEME: APPROVED TRAINING PROVIDERS
+
+      A  Ashford College Business School
+      Evening and weekend courses in management, finance and marketing, taught by staff with industry experience. Most courses lead to a nationally recognised qualification. Classes are held on campus, which has free parking. Courses usually start in September and January only.
+
+      B  LearnWell Online
+      More than two hundred short online courses that can be completed at any time and from anywhere. Each course takes between two and ten hours. There are no qualifications, but learners receive a digital badge on completion. Our company licence means staff can take as many courses as they like at no cost to their department.
+
+      C  Brightside Coaching
+      One-to-one coaching for team leaders and managers, delivered in our own meeting rooms or by video call. Each programme is designed around the individual after an initial interview. Places are limited and must be approved by a head of department.
+
+      D  Kingsway Safety Training
+      Practical courses in first aid, fire safety and manual handling, run on our own premises so that staff can practise with real equipment. Certificates are valid for three years and some roles require them by law. New courses begin every month.
+    questions:
+      - {question: "Its training is planned around each person's needs.", answer: 2, band: 7}
+      - {question: "It offers courses that some employees must take for legal reasons.", answer: 3, band: 7}
+      - {question: "Its courses can be started at any time.", answer: 1, band: 7}
+      - {question: "It only has two start dates a year.", answer: 0, band: 6}
+      - {question: "Staff can use it without any charge to their department.", answer: 1, band: 7}
+      - {question: "Its teachers have worked in the industry.", answer: 0, band: 7}
+      - {question: "A senior manager has to agree before staff can take part.", answer: 2, band: 8}
+  - id: en-rm-b-s2b
+    part: section2
+    band: 7
+    task_type: diagram_label_completion
+    response: text
+    word_limit: 2
+    instructions: "Questions 22–27. Label the diagram below. Choose NO MORE THAN TWO WORDS from the text for each answer."
+    stimulus: |
+      USING THE NEW FIRE EXTINGUISHERS
+
+      All extinguishers in the building have been replaced with a new model. Please take a few minutes to learn how they work.
+
+      At the top of the extinguisher is the operating handle. Before it can be squeezed, you must pull out the safety pin, which is held in place by a plastic seal. A broken seal tells the fire officer that the extinguisher may have been used and must be checked.
+
+      On the front, just below the handle, is a small pressure gauge. The needle should always be in the green zone; if it is in the red, report it immediately.
+
+      A short black hose is attached to the side. Hold the nozzle at the end of the hose and aim at the base of the fire, not at the flames.
+
+      Every extinguisher has a coloured band around the body showing what it contains. Our new extinguishers have a cream band, which means foam. Foam is suitable for paper, wood and fabric fires, but must never be used on electrical equipment that is switched on.
+
+      The extinguisher stands on a plastic base, which protects the floor and keeps the bottom of the cylinder dry.
+    figure: |2
+                  ┌───── (22) ______ (squeeze to operate)
+                  │   ┌─ (23) ______ (pull out first)
+             ┌────┴───┴──┐
+             │  ( 24 )   │  ← small dial: (24) ______
+             │           │──────╮
+             │           │      │ hose
+             │═══(25)════│      ╰── (26) ______ (aim at the base of the fire)
+             │  band     │
+             │           │
+             └───────────┘
+               (27) ______ (protects the floor)
+    questions:
+      - {question: "(22)", accepted: [operating handle, handle], band: 6}
+      - {question: "(23)", accepted: [safety pin, pin], band: 6}
+      - {question: "(24)", accepted: [pressure gauge, gauge], band: 7}
+      - {question: "(25) colour of the band", accepted: [cream], band: 7}
+      - {question: "(26)", accepted: [nozzle], band: 7}
+      - {question: "(27)", accepted: [plastic base, base], band: 6}
+
+  - id: en-rm-b-s3
+    part: section3
+    band: 8
+    task_type: true_false_not_given
+    shuffle: false
+    options: ["TRUE", "FALSE", "NOT GIVEN"]
+    instructions: "Questions 28–34. Do the following statements agree with the information in the text? Choose TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this."
+    stimulus: |
+      WHY WE NEVER FORGET A SONG
+
+      Most people have had the experience of hearing a song on the radio that they have not heard for twenty years and finding that they can still sing every word. The same people may struggle to remember what they read in a newspaper last week. Why should song lyrics be so much easier to remember than ordinary language?
+
+      Part of the answer lies in rhythm. A melody divides words into regular units, and those units act like a frame: if you remember one part of a line, the rhythm tells you how many syllables must come next, which narrows down the possibilities. Rhyme works in a similar way. In experiments, people who were asked to recall lists of words remembered more when the words were set to a simple tune than when they were spoken, although the advantage disappeared if the tune was complicated or unfamiliar.
+
+      Repetition matters too. Popular songs often repeat their chorus four or five times, and listeners hear the same song many times over weeks or months. Psychologists have long known that information which is repeated at intervals, rather than all at once, is remembered far better, and the way we listen to music follows this pattern almost exactly.
+
+      Emotion is a third factor. Music has a strong effect on mood, and memories formed at moments of strong feeling tend to last longer. This may explain why many people remember the songs of their teenage years so clearly: adolescence is a time of intense emotions, and music often plays a central part in young people's social lives.
+
+      These findings have practical uses. Teachers have long used songs to help young children learn the alphabet or the days of the week, and some language teachers now use music to help adult learners remember vocabulary and grammar. There is also growing interest in music in the care of people with dementia. Even when patients have lost much of their memory for recent events, many can still sing songs from their youth, and some care homes report that singing sessions improve residents' mood and make them more willing to talk.
+
+      Researchers are careful not to claim too much, however. Remembering the words of a song is not the same as understanding them; children who can sing the alphabet perfectly may still not know which letter comes after "k" without singing from the beginning. And while music seems to help people remember words, there is little evidence so far that it improves memory in general.
+    questions:
+      - {question: "People generally find it harder to remember newspaper articles than song lyrics.", answer: 0, band: 7}
+      - {question: "Rhythm helps people predict how many syllables come next in a line.", answer: 0, band: 8}
+      - {question: "Complicated tunes help people remember words better than simple ones.", answer: 1, band: 8}
+      - {question: "Most popular songs are between three and four minutes long.", answer: 2, band: 7}
+      - {question: "Information is remembered better when it is repeated over a period of time.", answer: 0, band: 8}
+      - {question: "Teenagers listen to more music than any other age group.", answer: 2, band: 8}
+      - {question: "Some care homes say singing makes residents more talkative.", answer: 0, band: 8}
+      - question: "The writer mentions the alphabet song in the last paragraph to show that"
+        task_type: multiple_choice
+        instructions: "Questions 35–37. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [children learn letters faster with music., remembering is different from understanding., the alphabet is easy to learn., music is more useful for children than adults.]
+        answer: 1
+        band: 9
+      - question: "According to the text, emotion helps memory because"
+        task_type: multiple_choice
+        instructions: "Questions 35–37. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [teenagers have better memories than adults., strong feelings make memories last longer., sad songs are more memorable than happy ones., music makes people concentrate harder.]
+        answer: 1
+        band: 8
+      - question: "What is the writer's main conclusion?"
+        task_type: multiple_choice
+        instructions: "Questions 35–37. Choose the correct letter, A, B, C or D."
+        shuffle: true
+        options: [Music improves memory in general., Music helps people remember words, but its wider effects are unproven., Music should replace other teaching methods., Music is the best treatment for dementia.]
+        answer: 1
+        band: 9
+      - question: "Melodies divide words into regular units that act like a ______."
+        task_type: summary_completion
+        instructions: "Questions 38–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [frame]
+        band: 8
+      - question: "Popular songs repeat their ______ several times."
+        task_type: summary_completion
+        instructions: "Questions 38–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [chorus]
+        band: 8
+      - question: "Some language teachers use music to help adults remember vocabulary and ______."
+        task_type: summary_completion
+        instructions: "Questions 38–40. Complete the summary below. Choose ONE WORD ONLY from the text for each answer."
+        response: text
+        word_limit: 1
+        accepted: [grammar]
+        band: 9

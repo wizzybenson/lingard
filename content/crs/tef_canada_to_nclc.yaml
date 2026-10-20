@@ -1,7 +1,7 @@
 # TEF Canada ("équivalence ancien score" scale) → NCLC, per skill. Minimum score for each NCLC level.
 source_url: https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html
 as_of: "2026-06-22"
-verified_at: "2026-10-14"
+verified_at: "2026-10-20"
 pack: tef_canada
 scale: points
 note: IRCC reverted the Dec 2023–May 2024 raw-score grid; profiles use the "Équivalence ancien score" column.

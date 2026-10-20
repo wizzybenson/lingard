@@ -1,0 +1,293 @@
+# TEF Canada, compréhension orale, épreuve A : 40 questions, 40 minutes, QCM, enregistrements entendus une fois
+# (les entretiens deux fois). Activités depuis décembre 2023 : dialogues avec images, messages sur répondeur et annonces,
+# micro-trottoirs (3 réponses), reportage radio et entretien. Contenu original écrit pour Lingard. Niveaux : NCLC.
+# Les images sont décrites en mots (l'application n'affiche pas de dessins).
+defaults: {pack: tef_canada, language: fr, skill: listening, section: comprehension_orale, plays: 1}
+items:
+  - id: fr-com-a-s01
+    part: co_scenes
+    task_type: picture_match
+    band: 4
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Bonjour, je voudrais un café et un croissant, s'il vous plaît.
+      M1: Sur place ou pour emporter ?
+      F1: Pour emporter. Je peux payer par carte ?
+      M1: Bien sûr, approchez votre carte du terminal.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : une femme commande au comptoir d'un café", "Image B : une femme cuisine chez elle", "Image C : une femme attend l'autobus", "Image D : une femme fait ses courses au marché"]
+    answer: 0
+  - id: fr-com-a-s02
+    part: co_scenes
+    task_type: picture_match
+    band: 4
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: Excusez-moi, la gare, c'est loin ?
+      F1: Non, c'est tout droit, puis la deuxième rue à gauche. Vous en avez pour cinq minutes à pied.
+      M1: Merci beaucoup !
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un homme achète un billet de train", "Image B : un homme demande son chemin dans la rue", "Image C : un homme conduit une voiture", "Image D : un homme lit un plan dans le train"]
+    answer: 1
+  - id: fr-com-a-s03
+    part: co_scenes
+    task_type: picture_match
+    band: 5
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Alors, qu'est-ce qui ne va pas ?
+      M1: J'ai mal à la gorge depuis trois jours, et un peu de fièvre la nuit.
+      F1: Ouvrez la bouche, s'il vous plaît… Oui, c'est bien rouge. Je vais vous prescrire quelque chose.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un homme achète des médicaments à la pharmacie", "Image B : un homme se repose au lit", "Image C : un médecin examine un patient", "Image D : un homme fait du sport"]
+    answer: 2
+  - id: fr-com-a-s04
+    part: co_scenes
+    task_type: picture_match
+    band: 5
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: On met le canapé où ?
+      F1: Contre le mur du fond, sous la fenêtre. Et attention à la porte, elle est étroite !
+      M2: Ça va, on tient le bon bout… Encore deux boîtes dans le camion et on a fini.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : des gens achètent des meubles dans un magasin", "Image B : des gens font un déménagement", "Image C : des gens peignent un mur", "Image D : des gens réparent une fenêtre"]
+    answer: 1
+  - id: fr-com-a-s05
+    part: co_scenes
+    task_type: picture_match
+    band: 6
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Je suis désolée, le vol pour Vancouver est complet. Je peux vous proposer celui de 18 h 40, avec une escale à Calgary.
+      M1: Une escale ? J'ai une réunion à neuf heures demain matin…
+      F1: Vous arriveriez à 23 h 15, heure locale. C'est la seule option ce soir.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un homme parle à une employée au comptoir d'un aéroport", "Image B : un homme est assis dans un avion", "Image C : un homme fait sa valise à l'hôtel", "Image D : un homme est en réunion"]
+    answer: 0
+  - id: fr-com-a-s06
+    part: co_scenes
+    task_type: picture_match
+    band: 6
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: Bon, il nous manque les œufs, la farine… Tu as la liste ?
+      F1: Je l'ai laissée sur le frigo. Prends aussi du lait, il n'en reste presque plus.
+      M1: Et on paie à la caisse libre-service, il y a moins d'attente.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un couple prépare un gâteau", "Image B : un couple fait les courses au supermarché", "Image C : un couple mange au restaurant", "Image D : un couple range le réfrigérateur"]
+    answer: 1
+sets:
+  # Messages et annonces
+  - id: fr-com-a-m1
+    part: co_messages
+    task_type: message_detail
+    band: 5
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      F1: Bonjour monsieur Bélanger, ici Julie, de la clinique dentaire du Vieux-Port. J'appelle pour votre rendez-vous de jeudi à 14 h. Le docteur Roy sera absent ce jour-là ; nous pouvons vous proposer vendredi à la même heure, ou lundi à 9 h. Pouvez-vous nous rappeler avant mercredi midi pour confirmer ? Notre numéro est le 418 555 0192. Merci et bonne journée.
+    questions:
+      - question: "Pourquoi Julie appelle-t-elle ?"
+        options: ["Pour confirmer un rendez-vous", "Pour déplacer un rendez-vous", "Pour annuler un traitement", "Pour demander un paiement"]
+        answer: 1
+      - question: "Que doit faire M. Bélanger ?"
+        options: ["Venir jeudi comme prévu", "Rappeler la clinique avant mercredi midi", "Envoyer un courriel", "Prendre rendez-vous en ligne"]
+        answer: 1
+        band: 6
+  - id: fr-com-a-m2
+    part: co_messages
+    task_type: announcement_detail
+    band: 5
+    instructions: "Écoutez l'annonce et répondez aux questions."
+    stimulus: |
+      M1: Mesdames et messieurs, votre attention, s'il vous plaît. En raison de travaux sur la voie, le train 642 à destination de Québec partira exceptionnellement du quai numéro 7, et non du quai 3. Le départ est retardé d'environ vingt minutes. Les voyageurs en correspondance pour Rimouski sont priés de se présenter au guichet. Merci de votre compréhension.
+    questions:
+      - question: "Qu'est-ce qui a changé pour le train 642 ?"
+        options: ["Sa destination", "Son quai de départ", "Son numéro", "Son prix"]
+        answer: 1
+      - question: "Que doivent faire les voyageurs qui vont à Rimouski ?"
+        options: ["Prendre un autobus", "Attendre sur le quai 3", "Aller au guichet", "Changer de train à Québec sans rien faire"]
+        answer: 2
+        band: 6
+  - id: fr-com-a-m3
+    part: co_messages
+    task_type: message_detail
+    band: 6
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      M1: Salut Sophie, c'est Marc. Écoute, pour samedi, finalement on ne fait pas le pique-nique au parc, la météo annonce de la pluie toute la journée. On se retrouve plutôt chez moi vers midi. Chacun apporte un plat, comme prévu. Et si tu peux, passe prendre Léa en chemin, elle n'a pas de voiture cette semaine. Rappelle-moi si ça pose problème !
+    questions:
+      - question: "Pourquoi le pique-nique est-il annulé ?"
+        options: ["Le parc est fermé", "Il va pleuvoir", "Marc est malade", "Il n'y a pas assez de monde"]
+        answer: 1
+      - question: "Que demande Marc à Sophie ?"
+        options: ["D'apporter deux plats", "D'aller chercher Léa", "De réserver un restaurant", "D'arriver plus tôt"]
+        answer: 1
+  - id: fr-com-a-m4
+    part: co_messages
+    task_type: announcement_detail
+    band: 6
+    instructions: "Écoutez l'annonce et répondez aux questions."
+    stimulus: |
+      F1: Chers clients, le magasin fermera ses portes dans quinze minutes. Nous vous invitons à vous diriger vers les caisses. Nous vous rappelons que, dès lundi prochain, le magasin sera ouvert jusqu'à 21 h du lundi au vendredi. Profitez également de notre promotion de la semaine : vingt pour cent de rabais sur tous les articles de jardinage, sur présentation de votre carte de membre.
+    questions:
+      - question: "Qu'est-ce qui changera à partir de lundi prochain ?"
+        options: ["Les prix", "Les heures d'ouverture en semaine", "L'emplacement des caisses", "La carte de membre"]
+        answer: 1
+        band: 5
+      - question: "Pour obtenir le rabais sur le jardinage, il faut…"
+        options: ["acheter deux articles.", "présenter sa carte de membre.", "payer comptant.", "venir le samedi."]
+        answer: 1
+  - id: fr-com-a-m5
+    part: co_messages
+    task_type: message_detail
+    band: 7
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      F1: Bonjour, vous êtes bien au service à la clientèle d'Hydro Rivemont. En raison d'un volume d'appels exceptionnellement élevé à la suite de la tempête d'hier, le temps d'attente est actuellement de plus de quarante minutes. Si vous souhaitez signaler une panne, nous vous invitons à utiliser notre site web ou notre application, où vous pourrez également suivre l'état du rétablissement dans votre secteur. Pour toute autre demande, restez en ligne ou rappelez demain.
+    questions:
+      - question: "Pourquoi le temps d'attente est-il si long ?"
+        options: ["Le service est fermé", "Beaucoup de gens appellent après une tempête", "Il y a une grève", "Le site web ne fonctionne pas"]
+        answer: 1
+      - question: "Que conseille-t-on aux personnes qui veulent signaler une panne ?"
+        options: ["De rappeler demain", "De rester en ligne", "D'utiliser le site web ou l'application", "De se rendre au bureau"]
+        answer: 2
+        band: 6
+
+  # Micro-trottoirs : trois réponses possibles
+  - id: fr-com-a-v1
+    part: co_micro
+    task_type: vox_pop_opinion
+    band: 6
+    shuffle: false
+    options: ["Elle est pour.", "Elle est contre.", "Elle hésite ou voit des avantages et des inconvénients."]
+    instructions: "Micro-trottoir : « Faut-il interdire les voitures au centre-ville ? » Quelle est l'opinion de chaque personne ?"
+    stimulus: |
+      M1: Personne 1. Moi, je trouve ça excellent. Le centre-ville serait plus calme, plus agréable pour les familles. On a des autobus, on a des vélos, on n'a pas besoin de voitures là.
+      F1: Personne 2. Franchement, c'est une mauvaise idée. Je suis commerçante, et la moitié de mes clients viennent en auto. Sans stationnement, ils iront au centre commercial.
+      M2: Personne 3. Bof… Pour l'air, ce serait mieux, c'est sûr. Mais pour les personnes âgées ou handicapées, comment elles feraient ? Je ne sais pas trop.
+      F2: Personne 4. Moi, je suis tout à fait d'accord, à condition d'augmenter la fréquence des autobus. Mais sur le principe, oui, j'y crois vraiment.
+    questions:
+      - {question: "Personne 1", answer: 0}
+      - {question: "Personne 2", answer: 1}
+      - {question: "Personne 3", answer: 2, band: 7}
+      - {question: "Personne 4", answer: 0, band: 7}
+  - id: fr-com-a-v2
+    part: co_micro
+    task_type: vox_pop_opinion
+    band: 7
+    shuffle: false
+    options: ["Elle est pour.", "Elle est contre.", "Elle hésite ou voit des avantages et des inconvénients."]
+    instructions: "Micro-trottoir : « Que pensez-vous du télétravail ? » Quelle est l'opinion de chaque personne ?"
+    stimulus: |
+      F1: Personne 1. Le télétravail, pour moi, ça a été une vraie libération. Plus de trajet, je vois mes enfants le matin. Je ne retournerais au bureau pour rien au monde.
+      M1: Personne 2. C'est pratique, oui, mais on perd le contact avec les collègues. Moi, deux jours par semaine à la maison, ça me suffit. Au-delà, je m'ennuie.
+      F2: Personne 3. Ah non, très peu pour moi. Je vis dans un petit appartement, je travaillais sur la table de la cuisine. J'étais soulagée de revenir au bureau.
+      M2: Personne 4. Écoutez, ça dépend complètement du métier et de la personne. Pour certains c'est idéal, pour d'autres c'est un enfer. Je ne peux pas vous donner une réponse simple.
+    questions:
+      - {question: "Personne 1", answer: 0, band: 6}
+      - {question: "Personne 2", answer: 2, band: 8}
+      - {question: "Personne 3", answer: 1}
+      - {question: "Personne 4", answer: 2, band: 8}
+
+  # Reportages et entretien
+  - id: fr-com-a-r1
+    part: co_reportage
+    task_type: report_detail
+    band: 7
+    instructions: "Écoutez le reportage et répondez aux questions."
+    stimulus: |
+      F1: À Rivemont, la bibliothèque du quartier Saint-Roch ne prête plus seulement des livres. Depuis septembre, on peut y emprunter des instruments de musique : guitares, ukulélés, claviers, et même un violoncelle. L'initiative vient d'un groupe de parents qui constataient que beaucoup d'enfants abandonnaient la musique faute de pouvoir acheter un instrument.
+      M1: Le principe est le même que pour un livre : on présente sa carte, et on repart avec l'instrument pour trois semaines. Pour les plus jeunes, un parent doit signer un formulaire de responsabilité.
+      F1: Les instruments proviennent pour la plupart de dons. Un luthier du quartier les vérifie et les répare bénévolement une fois par mois. Résultat : la liste d'attente compte déjà plus de quatre-vingts noms, surtout pour les guitares. La bibliothèque espère obtenir une subvention de la Ville pour acheter une vingtaine d'instruments supplémentaires et offrir, dès le printemps, des ateliers d'initiation gratuits.
+    questions:
+      - question: "Qu'est-ce qui est nouveau à la bibliothèque Saint-Roch ?"
+        options: ["Elle propose des cours de musique payants", "Elle prête des instruments de musique", "Elle vend des instruments d'occasion", "Elle organise des concerts"]
+        answer: 1
+        band: 5
+      - question: "Pourquoi des parents ont-ils lancé ce projet ?"
+        options: ["Les écoles n'enseignaient plus la musique", "Les instruments coûtent trop cher pour certaines familles", "La bibliothèque manquait de visiteurs", "Un musicien célèbre l'a proposé"]
+        answer: 1
+      - question: "Pour un enfant, que faut-il en plus de la carte ?"
+        options: ["Payer une caution", "Une signature d'un parent", "Une lettre de l'école", "Un examen de musique"]
+        answer: 1
+      - question: "Qui entretient les instruments ?"
+        options: ["Les employés de la bibliothèque", "Un artisan bénévole", "Les enfants eux-mêmes", "Une entreprise privée"]
+        answer: 1
+        band: 8
+      - question: "Que souhaite faire la bibliothèque au printemps ?"
+        options: ["Fermer la liste d'attente", "Proposer des ateliers gratuits", "Vendre les guitares", "Ouvrir une deuxième succursale"]
+        answer: 1
+        band: 8
+  - id: fr-com-a-e1
+    part: co_reportage
+    task_type: interview_detail
+    band: 8
+    plays: 2
+    instructions: "Écoutez l'entretien. Vous l'entendrez deux fois. Répondez aux questions."
+    stimulus: |
+      F1: Nadia Haddad, vous avez fondé il y a deux ans une entreprise qui aide les nouveaux arrivants à trouver un emploi dans leur domaine. D'où est venue l'idée ?
+      F2: De ma propre expérience. Je suis arrivée au Canada avec un diplôme d'ingénieure et dix ans d'expérience, et pendant presque deux ans, j'ai travaillé dans un entrepôt. Ce n'était pas une question de compétences : je ne connaissais personne, et je ne savais pas comment présenter mon parcours aux employeurs d'ici.
+      F1: Concrètement, que faites-vous ?
+      F2: Nous jumelons chaque personne avec un mentor qui travaille dans le même secteur. Le mentor ne cherche pas un emploi à sa place, mais il l'aide à comprendre les codes : comment rédiger un CV à la canadienne, comment se préparer à une entrevue, et surtout, il lui ouvre son réseau.
+      F1: Et les résultats ?
+      F2: Environ sept personnes sur dix trouvent un emploi qualifié dans les six mois. Ce qui me frappe, c'est que les employeurs reviennent nous voir : au début, c'était nous qui les sollicitions, aujourd'hui ce sont eux qui nous appellent.
+      F1: Quelles difficultés rencontrez-vous ?
+      F2: La reconnaissance des diplômes reste le principal obstacle, surtout pour les professions réglementées comme les infirmières ou les ingénieurs. Les démarches sont longues et coûteuses. Là-dessus, nous ne pouvons pas faire grand-chose seuls ; il faudrait que les ordres professionnels simplifient leurs procédures.
+      F1: Un conseil aux nouveaux arrivants ?
+      F2: Ne restez pas seuls. Faites du bénévolat, participez à des activités, parlez à vos voisins. Au Canada, beaucoup d'emplois ne sont jamais affichés : on les obtient grâce aux personnes qu'on connaît.
+    questions:
+      - question: "Pourquoi Nadia Haddad a-t-elle travaillé dans un entrepôt à son arrivée ?"
+        options: ["Elle n'avait pas de diplôme", "Elle manquait de contacts et de repères", "Elle préférait le travail manuel", "Son diplôme était faux"]
+        answer: 1
+        band: 7
+      - question: "Quel est le rôle du mentor ?"
+        options: ["Trouver un emploi à la place de la personne", "Aider la personne à comprendre le marché du travail et lui présenter des contacts", "Traduire les diplômes", "Payer la formation"]
+        answer: 1
+      - question: "Qu'est-ce qui a changé dans la relation avec les employeurs ?"
+        options: ["Ils refusent désormais de collaborer", "Ce sont maintenant eux qui contactent l'entreprise", "Ils exigent plus d'expérience", "Ils paient les mentors"]
+        answer: 1
+        band: 9
+      - question: "Selon elle, qui devrait agir pour faciliter la reconnaissance des diplômes ?"
+        options: ["Les nouveaux arrivants", "Les mentors", "Les ordres professionnels", "Les employeurs"]
+        answer: 2
+        band: 9
+      - question: "Quel est son principal conseil ?"
+        options: ["Retourner aux études", "Se créer un réseau", "Accepter n'importe quel emploi", "Changer de domaine"]
+        answer: 1
+        band: 7
+      - question: "D'après elle, beaucoup d'emplois au Canada…"
+        options: ["exigent un diplôme canadien.", "ne sont jamais annoncés publiquement.", "sont réservés aux bénévoles.", "sont mal payés."]
+        answer: 1
+        band: 8
+  - id: fr-com-a-r2
+    part: co_reportage
+    task_type: report_inference
+    band: 9
+    instructions: "Écoutez le reportage et répondez aux questions."
+    stimulus: |
+      M1: Chaque automne, le même débat revient à Rivemont : faut-il continuer à ramasser les feuilles mortes dans les rues ? Cette année, la Ville a tenté une expérience dans trois quartiers. Au lieu d'envoyer des camions, elle a demandé aux résidents de laisser une partie des feuilles sur leur terrain, au pied des arbres et dans les plates-bandes.
+      F1: Selon les biologistes, les feuilles protègent le sol du froid, nourrissent la terre en se décomposant et servent d'abri à de nombreux insectes pendant l'hiver. Les ramasser systématiquement, c'est en quelque sorte jeter un engrais naturel pour ensuite racheter des engrais au printemps.
+      M1: L'expérience n'a pas fait l'unanimité. Certains résidents ont apprécié de ne plus avoir à remplir des dizaines de sacs. D'autres se sont plaints de l'apparence « négligée » des terrains, et quelques-uns craignaient que les feuilles bouchent les égouts. Sur ce point, la Ville précise que les feuilles tombées dans la rue continueront d'être ramassées : seules celles des terrains privés sont concernées.
+      F1: Un bilan sera présenté au conseil municipal en janvier. S'il est positif, le programme pourrait s'étendre à toute la ville dès l'an prochain, ce qui permettrait aussi de réduire de façon importante les coûts de collecte.
+    questions:
+      - question: "Qu'a demandé la Ville aux résidents de trois quartiers ?"
+        options: ["De ramasser plus souvent les feuilles", "De laisser une partie des feuilles sur leur terrain", "De brûler les feuilles", "D'apporter les feuilles à la déchetterie"]
+        answer: 1
+        band: 7
+      - question: "Selon les biologistes, ramasser toutes les feuilles revient à…"
+        options: ["protéger les insectes.", "gaspiller un engrais naturel.", "éviter les maladies des arbres.", "rendre le sol plus chaud."]
+        answer: 1
+        band: 9
+      - question: "Quelle crainte certains résidents ont-ils exprimée ?"
+        options: ["Que les feuilles attirent des animaux", "Que les feuilles bouchent les égouts", "Que la collecte coûte plus cher", "Que les arbres soient coupés"]
+        answer: 1
+        band: 8
+      - question: "Qu'est-ce que la Ville précise au sujet des rues ?"
+        options: ["Les feuilles n'y seront plus ramassées", "Les feuilles y seront toujours ramassées", "Les rues seront fermées en automne", "Les résidents devront les nettoyer"]
+        answer: 1
+        band: 8
+      - question: "Quel avantage supplémentaire le programme présenterait-il pour la Ville ?"
+        options: ["Attirer des touristes", "Réduire les coûts de collecte", "Créer des emplois", "Vendre du compost"]
+        answer: 1
+        band: 8

@@ -84,7 +84,7 @@ def build_placement(
             current = estimate([], prior_mean=band_to_logit(START_BAND))
             while not should_stop(current, len(answers), se_threshold=SE_THRESHOLD, max_items=MAX_ITEMS):
                 seen = {i for i, _ in answers}
-                item = next_item(bank.select(pack, skill, exclude=seen), current)
+                item = next_item(bank.select(pack, skill, exclude=seen, standalone=True), current)
                 if item is None:
                     break
                 served = serve(item, seed, audio_ref=f"tts:{item.id}" if skill is Skill.LISTENING else None)
