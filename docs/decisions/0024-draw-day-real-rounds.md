@@ -22,12 +22,28 @@ any, so the Passport goal was hidden, and the 150-coin `draw_invitation` reward 
 - The Passport names the round's date, the cutoff and the reward. The text says "latest round", not "next draw":
   nobody can know the next cutoff.
 
+## Both exams (amendment, same day)
+
+A learner preparing only for IELTS would have been measured against French-language rounds, which they can't enter.
+`draws.yaml` therefore lists categories, each tied to exam packs:
+
+- `french` (round names containing "French") for `tef_canada`;
+- `cec` (Canadian Experience Class) for `ielts_gt`.
+
+A learner follows the first category that matches one of their exams, so French-language rounds win when they
+prepare for both. On 2026-10-20 the latest CEC round was 15 Oct 2026, cutoff 519.
+
+`draws.category` was added by migration 0005; existing rows are French-language. The refresh tool keeps the
+categories and rewrites their rounds. The Passport names the category in the learner's interface language.
+
 ## Evidence
 
 - `tools/content_cli/tests/test_draws.py`:
   - only the last year's French-language rounds are kept, newest first;
   - the shipped file carries its source.
+- `tools/content_cli/tests/test_draws.py`: a learner's exams choose the category.
 - `services/api/tests/test_phase2_to_5_api.py`:
+  - an IELTS-only learner gets the CEC round; with TEF as well, the French-language round;
   - seeding is idempotent;
   - the latest cutoff is served with its source;
   - there is no invitation without a score;

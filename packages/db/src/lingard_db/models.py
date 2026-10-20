@@ -301,6 +301,8 @@ class SimCrsSnapshot(Owned, Base):
 
 class Draw(Timestamped, Base):
     __tablename__ = "draws"
+    category: Mapped[str] = mapped_column(String(32), default="french", server_default="french")
+    """Which kind of round (``content/crs/draws.yaml``): a learner's exams decide which one Draw Day follows."""
     held_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     cutoff: Mapped[int] = mapped_column(Integer)
     source_note: Mapped[str] = mapped_column(Text)

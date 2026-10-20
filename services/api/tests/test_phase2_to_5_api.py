@@ -207,11 +207,14 @@ async def test_shop_items_take_effect_and_rewards_are_per_learner(api) -> None: 
         played.started_at = datetime.now(UTC)
         db.add(played)
         await db.flush()
-        contract = {"cast": [{"npc_key": "landlord_martin"}]}
-        db.add(Scene(tenant_id=tenant, user_id=user, session_id=played.id, contract=contract, status="done"))
+        for npc in ("examinatrice_claire", "landlord_martin"):  # an examiner from before decision 0019 too
+            contract = {"cast": [{"npc_key": npc}]}
+            db.add(Scene(tenant_id=tenant, user_id=user, session_id=played.id, contract=contract, status="done"))
         await db.commit()
     friends = (await api.client.get("/v1/shop/friends", params={"city": "rivemont"}, headers=auth)).json()
-    assert [f["npc_key"] for f in friends] == ["landlord_martin"] and not friends[0]["gifted_today"]
+    assert [f["npc_key"] for f in friends] == ["landlord_martin"] and not friends[0]["gifted_today"], "no examiners"
+    nowhere = await api.client.get("/v1/shop/friends", params={"city": "atlantis"}, headers=auth)
+    assert nowhere.status_code == 422
     given = await api.client.post("/v1/shop/npc_gift", json=gift, headers=auth)
     assert given.status_code == 200 and given.json()["coins"] == 310 - 100 - 30 - 60
     assert (await store.relationship(user, "landlord_martin"))[0] == 0.2
@@ -228,15 +231,27 @@ async def test_draw_day_uses_real_rounds_and_pays_the_invitation_once(api) -> No
     from lingard_economy.events import load_draws
 
     path = api.settings.content_root / "crs" / "draws.yaml"
-    latest = load_draws(path)[0]
-    assert await seed_draws(api.state, path) == len(load_draws(path))
+    rounds = load_draws(path)
+    french = next(d for d in rounds if d.category == "french")
+    cec = next(d for d in rounds if d.category == "cec")
+    assert await seed_draws(api.state, path) == len(rounds)
     assert await seed_draws(api.state, path) == 0, "seeding again adds nothing"
     token, user_id = await learner(api, "Noor")
     auth, user = api.bearer(token), uuid_mod.UUID(user_id)
+    assert (await api.client.get("/v1/draws/latest", headers=auth)).json()["draw"] is None, "no exam chosen yet"
+
+    await api.client.patch("/v1/me", json={"exam_dates": {"ielts_gt": "2027-03-01"}}, headers=auth)
+    english = (await api.client.get("/v1/draws/latest", headers=auth)).json()
+    assert english["draw"]["category"] == "cec" and english["draw"]["cutoff"] == cec.cutoff
+
+    await api.client.patch(
+        "/v1/me", json={"exam_dates": {"ielts_gt": "2027-03-01", "tef_canada": "2027-03-01"}}, headers=auth
+    )
     before = (await api.client.get("/v1/draws/latest", headers=auth)).json()
-    assert before["draw"]["cutoff"] == latest.cutoff and "canada.ca" in before["draw"]["source_note"]
+    assert before["draw"]["category"] == "french" and before["draw"]["cutoff"] == french.cutoff
+    assert "canada.ca" in before["draw"]["source_note"]
     assert before["invited"] is False, "no simulated score yet"
-    await api.state.graph_deps.store.save_crs_snapshot(user, latest.cutoff + 5, {})
+    await api.state.graph_deps.store.save_crs_snapshot(user, french.cutoff + 5, {})
     coins = (await api.client.get("/v1/wallet", headers=auth)).json()["coins"]
     for _ in range(2):
         invited = (await api.client.get("/v1/draws/latest", headers=auth)).json()

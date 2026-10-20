@@ -47,8 +47,12 @@ export default function Shop() {
     [api, city],
   );
   const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [bought, setBought] = useState<string | null>(null);
+  // What happened to the last purchase, shown in that item's card, where the learner is looking.
+  const [result, setResult] = useState<{
+    item: string;
+    ok: boolean;
+    text: string;
+  } | null>(null);
   const [giving, setGiving] = useState(false);
 
   if (!wallet.data) {
@@ -66,17 +70,20 @@ export default function Shop() {
 
   const buy = async (item: string, body: Record<string, string> = {}) => {
     setBusy(item);
-    setError(null);
-    setBought(null);
+    setResult(null);
     try {
       await api.post<Wallet>(`/v1/shop/${item}`, body);
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setBought(item);
+      setResult({ item, ok: true, text: t(`shop.done.${item}`) });
       setGiving(false);
       wallet.reload();
       friends.reload();
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setResult({
+        item,
+        ok: false,
+        text: e instanceof Error ? e.message : String(e),
+      });
     } finally {
       setBusy(null);
     }
@@ -114,15 +121,6 @@ export default function Shop() {
           onChange={setChosen}
         />
       )}
-      {bought && (
-        <View style={styles.done} accessibilityLiveRegion="polite">
-          <Ionicons name="checkmark-circle" size={18} color={colors.success} />
-          <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
-            {t(`shop.done.${bought}`)}
-          </Text>
-        </View>
-      )}
-      <ErrorText message={error} />
       {wallet.data.items.map((item) => (
         <Card key={item.key}>
           <View style={styles.item}>
@@ -162,6 +160,21 @@ export default function Shop() {
             disabled={full(item) || coins < item.price || busy !== null}
             onPress={action(item)}
           />
+          {result?.item === item.key &&
+            (result.ok ? (
+              <View style={styles.done} accessibilityLiveRegion="polite">
+                <Ionicons
+                  name="checkmark-circle"
+                  size={18}
+                  color={colors.success}
+                />
+                <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
+                  {result.text}
+                </Text>
+              </View>
+            ) : (
+              <ErrorText message={result.text} />
+            ))}
           {item.key === "npc_gift" && giving && (
             <View style={{ gap: space(1) }}>
               {friends.data && friends.data.length === 0 && (
@@ -177,7 +190,7 @@ export default function Shop() {
                       leading={<Avatar name={f.name} size={36} />}
                       disabled={f.gifted_today || busy !== null}
                       onPress={
-                        city
+                        city && !f.gifted_today
                           ? () =>
                               void buy("npc_gift", { city, npc_key: f.npc_key })
                           : undefined

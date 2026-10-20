@@ -38,13 +38,14 @@ async def seed(settings: Settings) -> dict[str, int]:
 
 
 async def seed_draws(state: AppState, path: Path) -> int:
-    """Adds the recorded real rounds the ``draws`` table doesn't have yet (matched by date); returns how many."""
+    """Adds the recorded real rounds the ``draws`` table doesn't have yet (matched by category and date); returns how
+    many."""
     async with state.sessions() as db:
-        held = {d.date() for d in (await db.execute(select(Draw.held_at))).scalars()}
-        new = [d for d in load_draws(path) if d.held_on not in held]
+        held = {(c, d.date()) for c, d in await db.execute(select(Draw.category, Draw.held_at))}
+        new = [d for d in load_draws(path) if (d.category, d.held_on) not in held]
         for draw in new:
             when = datetime.combine(draw.held_on, time(12), tzinfo=UTC)
-            db.add(Draw(held_at=when, cutoff=draw.cutoff, source_note=draw.note))
+            db.add(Draw(category=draw.category, held_at=when, cutoff=draw.cutoff, source_note=draw.note))
         await db.commit()
     return len(new)
 

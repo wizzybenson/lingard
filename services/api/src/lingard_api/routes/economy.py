@@ -12,10 +12,10 @@ from sqlalchemy import func, select
 
 from lingard_api.deps import Db, Principal, State
 from lingard_api.state import AppState
-from lingard_contracts.common import CITY_LANGUAGE
+from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_db.models import Draw, LearnerProfile, Ledger, Scene, Session, SimCrsSnapshot, User, Wallet
 from lingard_economy.crs import DISCLAIMER
-from lingard_economy.events import draw_day, league
+from lingard_economy.events import draw_category, draw_day, league
 from lingard_economy.rewards import COINS, HOLD, SHOP, LedgerEntry
 from lingard_graphs.streaks import learner_streak
 from lingard_world import load_city
@@ -24,6 +24,8 @@ router = APIRouter(prefix="/v1", tags=["economy"])
 
 GIFT_WARMTH = 0.2
 """How much warmer a character feels after a gift (relationships run from -1 to 1)."""
+MAX_BAND = 12
+"""Every district open: who could ever appear in the story."""
 
 
 class ShopItem(BaseModel):
@@ -95,26 +97,26 @@ async def wallet(principal: Principal, state: State, db: Db) -> WalletView:
     )
 
 
-async def _met(db: Db, user_id: uuid.UUID, city: str) -> list[str]:
-    """Characters the learner has spoken with in this city, most recent first."""
+async def _met(state: AppState, db: Db, user_id: uuid.UUID, city: str) -> list[str]:
+    """Story characters the learner has spoken with in this city, most recent first (never an examiner: they only
+    appear in mocks, decision 0019)."""
     rows = await db.execute(
         select(Scene.contract["cast"][0]["npc_key"].astext)
         .join(Session, Session.id == Scene.session_id)
         .where(Scene.user_id == user_id, Scene.status != "planned", Session.kind == "live", Session.city == city)
         .order_by(Scene.updated_at.desc())
     )
-    return list(dict.fromkeys(k for k in rows.scalars() if k))
+    story = {npc for _, npc in load_city(state.settings.content_root, city).story_settings(MAX_BAND)}
+    return list(dict.fromkeys(k for k in rows.scalars() if k in story))
 
 
 @router.get("/shop/friends", response_model=list[Friend])
-async def friends(city: str, principal: Principal, state: State, db: Db) -> list[Friend]:
+async def friends(city: CityKey, principal: Principal, state: State, db: Db) -> list[Friend]:
     content = load_city(state.settings.content_root, city)
     today = datetime.now(UTC).date().isoformat()
     gifted = set(await state.graph_deps.store.ledger_refs(principal.user_id, "shop:npc_gift"))
     out = []
-    for key in await _met(db, principal.user_id, city):
-        if key not in content.npcs:
-            continue
+    for key in await _met(state, db, principal.user_id, city):
         npc = content.npc(key)
         warmth, _ = await state.graph_deps.store.relationship(principal.user_id, key)
         out.append(
@@ -148,7 +150,7 @@ async def buy(item: str, principal: Principal, state: State, db: Db, body: BuyBo
             raise HTTPException(status.HTTP_409_CONFLICT, "No café is open to you yet")
         ref = f"{place}:{ref}"
     if item == "npc_gift":
-        if npc_key not in await _met(db, user, place):
+        if npc_key not in await _met(state, db, user, place):
             raise HTTPException(status.HTTP_409_CONFLICT, "Meet them in the story first")
         ref = key = f"{npc_key}:{today}"  # one gift per character a day
     entry = LedgerEntry("coins", -SHOP[item], f"shop:{item}", ref, f"spend:{item}:{key or ref}")
@@ -170,9 +172,14 @@ async def buy(item: str, principal: Principal, state: State, db: Db, body: BuyBo
 
 @router.get("/draws/latest")
 async def latest_draw(principal: Principal, state: State, db: Db) -> dict[str, Any]:
-    """The latest real round's cutoff against the learner's simulated score. Reaching it is an Invitation to Apply,
-    paid once per round (``draw_invitation`` coins)."""
-    draw = (await db.execute(select(Draw).order_by(Draw.held_at.desc()).limit(1))).scalar_one_or_none()
+    """The latest real round of the learner's category (from their exams) against their simulated score. Reaching it
+    is an Invitation to Apply, paid once per round (``draw_invitation`` coins)."""
+    profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
+    packs = set(profile.settings.get("exam_dates", {}))
+    category = draw_category(state.settings.content_root / "crs" / "draws.yaml", packs)
+    draw = (
+        await db.execute(select(Draw).where(Draw.category == category).order_by(Draw.held_at.desc()).limit(1))
+    ).scalar_one_or_none()
     snapshot = (
         await db.execute(
             select(SimCrsSnapshot.value)
@@ -189,7 +196,12 @@ async def latest_draw(principal: Principal, state: State, db: Db) -> dict[str, A
         await state.graph_deps.store.apply_ledger(principal.user_id, [reward])
     return {
         "reward": reward.delta,
-        "draw": {"held_at": draw.held_at, "cutoff": draw.cutoff, "source_note": draw.source_note},
+        "draw": {
+            "category": draw.category,
+            "held_at": draw.held_at,
+            "cutoff": draw.cutoff,
+            "source_note": draw.source_note,
+        },
         "sim_crs": snapshot,
         "invited": outcome.invited,
         "margin": outcome.margin,

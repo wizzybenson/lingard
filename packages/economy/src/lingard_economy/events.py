@@ -25,6 +25,7 @@ def draw_day(sim_crs: int, cutoff: int) -> DrawOutcome:
 class RealDraw:
     """A real Express Entry round whose cutoff Draw Day uses (``content/crs/draws.yaml``)."""
 
+    category: str
     number: int
     held_on: date
     cutoff: int
@@ -32,20 +33,28 @@ class RealDraw:
 
 
 def load_draws(path: Path) -> list[RealDraw]:
-    """The recorded rounds, each with a note naming its source and the date it was checked."""
+    """The recorded rounds of every category, each with a note naming its source and the date it was checked."""
     data = yaml.safe_load(path.read_text())
     return [
         RealDraw(
+            category=key,
             number=d["number"],
             held_on=date.fromisoformat(d["held_on"]),
             cutoff=d["cutoff"],
             note=(
-                f"IRCC Express Entry round {d['number']} ({data['category']}, {d['invitations']} invitations). "
+                f"IRCC Express Entry round {d['number']} ({category['round_name']}, {d['invitations']} invitations). "
                 f"Source: {data['source_url']} (as of {data['as_of']})"
             ),
         )
-        for d in data["draws"]
+        for key, category in data["categories"].items()
+        for d in category["draws"]
     ]
+
+
+def draw_category(path: Path, packs: set[str]) -> str | None:
+    """The first category whose packs include one of the learner's exams (French-language rounds for TEF)."""
+    categories: dict[str, dict[str, list[str]]] = yaml.safe_load(path.read_text())["categories"]
+    return next((key for key, c in categories.items() if packs & set(c["packs"])), None)
 
 
 def streak(

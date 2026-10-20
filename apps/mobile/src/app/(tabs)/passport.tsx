@@ -28,7 +28,12 @@ import {
 import { colors, fonts, space, type } from "@/ui/theme";
 
 interface DrawView {
-  draw: { held_at: string; cutoff: number; source_note: string } | null;
+  draw: {
+    category: string;
+    held_at: string;
+    cutoff: number;
+    source_note: string;
+  } | null;
   sim_crs?: number | null;
   invited?: boolean;
   reward?: number;
@@ -135,6 +140,9 @@ export default function PassportScreen() {
                       : "passport.drawGoal",
                     {
                       cutoff: draw.data.draw.cutoff,
+                      category: t(
+                        `passport.drawCategory.${draw.data.draw.category}`,
+                      ),
                       date: new Date(draw.data.draw.held_at).toLocaleDateString(
                         i18n.language,
                         { day: "numeric", month: "long" },

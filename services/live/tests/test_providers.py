@@ -14,6 +14,13 @@ from lingard_live.voices import OPENAI_VOICES, gender_of, pick
 PCM = b"\x00\x01" * 1600
 
 
+@pytest.fixture(autouse=True)
+def _no_real_keys(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Settings read the environment too: a shell that loaded ``.env`` must not change what these tests see."""
+    for field in LiveSettings.model_fields:
+        monkeypatch.delenv(field.upper(), raising=False)
+
+
 def _settings(**keys: str) -> LiveSettings:
     secrets = {k: SecretStr(v) for k, v in keys.items() if k.endswith("_key")}
     return LiveSettings(_env_file=None, **{**keys, **secrets})  # type: ignore[arg-type]

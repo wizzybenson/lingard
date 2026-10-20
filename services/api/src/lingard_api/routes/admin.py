@@ -51,6 +51,7 @@ class UserView(BaseModel):
 
 
 class DrawBody(BaseModel):
+    category: str = Field("french", max_length=32, description="A category key from content/crs/draws.yaml")
     held_at: datetime
     cutoff: int = Field(ge=0, le=1200)
     source_note: str = Field(min_length=5, description="Where the real cutoff came from (IRCC round page, date)")
@@ -146,12 +147,15 @@ async def review_node(key: str, admin: Admin, state: State, db: Db, reviewed: bo
 @router.get("/draws", response_model=list[DrawView])
 async def list_draws(admin: Admin, db: Db) -> list[DrawView]:
     rows = await db.execute(select(Draw).order_by(Draw.held_at.desc()))
-    return [DrawView(id=d.id, held_at=d.held_at, cutoff=d.cutoff, source_note=d.source_note) for d in rows.scalars()]
+    return [
+        DrawView(id=d.id, category=d.category, held_at=d.held_at, cutoff=d.cutoff, source_note=d.source_note)
+        for d in rows.scalars()
+    ]
 
 
 @router.post("/draws", response_model=DrawView, status_code=201)
 async def add_draw(body: DrawBody, admin: Admin, db: Db) -> DrawView:
-    draw = Draw(held_at=body.held_at, cutoff=body.cutoff, source_note=body.source_note)
+    draw = Draw(category=body.category, held_at=body.held_at, cutoff=body.cutoff, source_note=body.source_note)
     db.add(draw)
     audit.record(db, "draw_added", actor_id=admin.user_id, target=str(body.cutoff))
     await db.commit()
