@@ -170,6 +170,7 @@ class WritingTask(BaseModel):
     task_id: str
     kind: str
     min_words: int
+    suggested_minutes: int
     prompts: list[str]
 
 
@@ -188,6 +189,7 @@ async def writing_tasks(principal: Principal, state: State) -> list[WritingTask]
                     task_id=task.id,
                     kind=task.kind,
                     min_words=task.min_words,
+                    suggested_minutes=task.suggested_minutes,
                     prompts=prompts.get(task.id, []),
                 )
             )

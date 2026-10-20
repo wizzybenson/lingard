@@ -174,6 +174,7 @@ export interface WritingTask {
   task_id: string;
   kind: string;
   min_words: number;
+  suggested_minutes: number;
   prompts: string[];
 }
 
