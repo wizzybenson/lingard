@@ -66,7 +66,7 @@ function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswe
   return (
     <View style={styles.item}>
       {game.kind === "dictation" ? (
-        <PlayButton api={api} path={`/v1/lessons/${lessonId}/audio?game=${gameIndex}&item=${index}`} label="🔊" />
+        <PlayButton api={api} path={`/v1/lessons/${lessonId}/audio?game=${gameIndex}&item=${index}`} />
       ) : game.kind === "spot_the_error" ? (
         <Text style={type.callout}>{t("school.tapToAnswer")}</Text>
       ) : game.kind === "sentence_race" ? null : (

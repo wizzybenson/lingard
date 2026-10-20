@@ -1,13 +1,16 @@
 import { useAudioPlayer } from "expo-audio";
 import { useEffect, useState } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import type { ApiClient } from "@/api/client";
 import { Button, ErrorText } from "@/ui/kit";
 
 /** Plays an authenticated server audio resource (scripts never leave the server). If the server can't render it
  * (no text-to-speech provider configured, say), the button is disabled and the reason is shown instead of a silent
  * failure. The check request warms the server's synthesis cache, so the player's own fetch is cheap. */
-export function PlayButton({ api, path, label }: { api: ApiClient; path: string; label: string }) {
+export function PlayButton({ api, path, label }: { api: ApiClient; path: string; label?: string }) {
+  const { t } = useTranslation();
   // Results are tagged with their path, so a new path shows nothing until its own check finishes.
   const [checked, setChecked] = useState<{ path: string; source?: { uri: string; headers: Record<string, string> }; error?: string } | null>(null);
   useEffect(() => {
@@ -27,7 +30,14 @@ export function PlayButton({ api, path, label }: { api: ApiClient; path: string;
   const player = useAudioPlayer(source);
   return (
     <>
-      <Button label={label} kind="secondary" disabled={!source} onPress={() => player.play()} />
+      <Button
+        label={label ?? t("studio.listen")}
+        icon="volume-high"
+        kind="secondary"
+        busy={current === null}
+        disabled={!source}
+        onPress={() => player.play()}
+      />
       <ErrorText message={error} />
     </>
   );

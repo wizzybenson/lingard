@@ -113,7 +113,7 @@ export default function Thread() {
       {prompt.kind === "item" && (
         <Card>
           {prompt.item.text && <Body>{prompt.item.text}</Body>}
-          {prompt.item.audio_ref && <PlayButton api={api} path={`/v1/items/${prompt.item.item_id}/audio`} label="🔊" />}
+          {prompt.item.audio_ref && <PlayButton api={api} path={`/v1/items/${prompt.item.item_id}/audio`} />}
           <Title>{prompt.item.question}</Title>
           {prompt.item.options.map((option, i) => (
             <Button key={option} label={option} kind="secondary" busy={busy} onPress={() => void send(section ? withTime({ choice: i }) : i)} />

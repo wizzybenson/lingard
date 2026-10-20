@@ -7,13 +7,11 @@ import type { Passport, Profile, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { levelProgress, levelWords } from "@/home/levels";
 import { Body, Caption, Card, Chip, ErrorText, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
 import { colors, fonts, space, type } from "@/ui/theme";
-
-
 
 export default function PassportScreen() {
   const { t } = useTranslation();
@@ -40,10 +38,14 @@ export default function PassportScreen() {
         <Card>
           <Overline>{t("passport.simCrs")}</Overline>
           <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: space(2) }}>
-            <Text style={{ fontFamily: fonts.displayBold, fontSize: 48, lineHeight: 54, color: colors.ink }}>{passport.data.sim_crs ?? "—"}</Text>
+            {passport.data.sim_crs === null ? (
+              <Text style={[type.callout, { flex: 1 }]}>{t("passport.crsPending")}</Text>
+            ) : (
+              <Text style={{ fontFamily: fonts.displayBold, fontSize: 48, lineHeight: 54, color: colors.ink }}>{passport.data.sim_crs}</Text>
+            )}
             {wallet.data && (
               <View style={{ flexDirection: "row", gap: space(2), paddingBottom: space(1) }}>
-                <Stat icon="logo-bitcoin" value={wallet.data.coins} label={t("wallet.coins")} />
+                <Stat icon="cash" value={wallet.data.coins} label={t("wallet.coins")} />
                 <Stat icon="star" value={wallet.data.stars_total} label={t("wallet.stars")} />
               </View>
             )}
@@ -61,23 +63,28 @@ export default function PassportScreen() {
           <View key={pack} style={{ gap: space(1.5) }}>
             <Title>{packOf(pack)?.pack_name ?? pack}</Title>
             {packOf(pack)?.level_scale && <Caption>{t("today.levelsHint", { scale: packOf(pack)!.level_scale })}</Caption>}
-            {passport.data!.bands
-              .filter((b) => b.pack === pack)
-              .map((band) => {
-                const target = profile.data?.target_bands[band.pack]?.[band.skill];
-                const reach = target ? levelProgress(band.clb_nclc_low, band.clb_nclc_high, target) : 0;
-                return (
-                  <Card key={`${band.pack}-${band.skill}`}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: space(1), flexWrap: "wrap" }}>
-                      <Text style={type.headline}>{t(`skills.${band.skill}`)}</Text>
-                      {target !== undefined && <Chip label={t("today.goalLevel", { level: target })} tone="accent" icon="flag" />}
+            <Card style={{ gap: 0, paddingVertical: space(0.5) }}>
+              {passport.data!.bands
+                .filter((b) => b.pack === pack)
+                .map((band, i) => {
+                  const target = profile.data?.target_bands[band.pack]?.[band.skill];
+                  const reach = target ? levelProgress(band.clb_nclc_low, band.clb_nclc_high, target) : 0;
+                  return (
+                    <View
+                      key={`${band.pack}-${band.skill}`}
+                      style={[{ gap: space(0.75), paddingVertical: space(1.5) }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}
+                    >
+                      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: space(1), flexWrap: "wrap" }}>
+                        <Text style={type.headline}>{t(`skills.${band.skill}`)}</Text>
+                        {target !== undefined && <Chip label={t("today.goalLevel", { level: target })} tone="accent" icon="flag" />}
+                      </View>
+                      <ProgressBar value={reach} tone={reach >= 1 ? "success" : reach >= 0.8 ? "warning" : "accent"} />
+                      <Text style={type.callout}>{t("passport.levelEstimate", { range: levelWords(t, band.clb_nclc_low, band.clb_nclc_high) })}</Text>
+                      <Caption>{t("passport.scoreEstimate", { mean: band.mean, low: band.low80, high: band.high80 })}</Caption>
                     </View>
-                    <ProgressBar value={reach} tone={reach >= 1 ? "success" : reach >= 0.8 ? "warning" : "accent"} />
-                    <Body>{t("passport.levelEstimate", { range: levelWords(t, band.clb_nclc_low, band.clb_nclc_high) })}</Body>
-                    <Caption>{t("passport.scoreEstimate", { mean: band.mean, low: band.low80, high: band.high80 })}</Caption>
-                  </Card>
-                );
-              })}
+                  );
+                })}
+            </Card>
           </View>
         ))}
       <Section>
@@ -88,7 +95,7 @@ export default function PassportScreen() {
   );
 }
 
-function Stat({ icon, value, label }: { icon: "logo-bitcoin" | "star"; value: number; label: string }) {
+function Stat({ icon, value, label }: { icon: "cash" | "star"; value: number; label: string }) {
   return (
     <View style={{ alignItems: "center" }} accessible accessibilityLabel={`${label}: ${value}`}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>

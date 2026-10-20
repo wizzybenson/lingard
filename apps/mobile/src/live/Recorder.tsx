@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 
 import type { ApiClient } from "@/api/client";
-import { Body, Button, ErrorText } from "@/ui/kit";
+import { Button, ErrorText } from "@/ui/kit";
 
 export interface Recording {
   text: string;
@@ -84,11 +84,10 @@ export function Recorder<T = Omit<Recording, "uri">>({
   return (
     <>
       {state.isRecording ? (
-        <Button label={`■ ${t("units.seconds", { count: Math.round((state.durationMillis ?? 0) / 1000) })}`} kind="danger" onPress={() => void stop()} />
+        <Button label={t("units.seconds", { count: Math.round((state.durationMillis ?? 0) / 1000) })} icon="stop" kind="danger" onPress={() => void stop()} />
       ) : (
-        <Button label={`● ${t("exam.record")}`} busy={busy} disabled={disabled} onPress={() => void start()} />
+        <Button label={t("exam.record")} icon="mic" busy={busy} disabled={disabled} onPress={() => void start()} />
       )}
-      {busy && <Body muted>…</Body>}
       <ErrorText message={error} />
     </>
   );
