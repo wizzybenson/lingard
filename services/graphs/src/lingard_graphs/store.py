@@ -122,6 +122,10 @@ class LearnerStore(Protocol):
         """Append idempotently (``idempotency_key``) and update the wallet; returns how many were new."""
         ...
 
+    async def ledger_refs(self, user_id: uuid.UUID, reason: str) -> list[str]:
+        """The ``ref_id`` of each of the learner's ledger entries with this reason, oldest first."""
+        ...
+
     async def wallet(self, user_id: uuid.UUID) -> tuple[int, int]:
         """(coins, stars_total)."""
         ...
@@ -297,6 +301,9 @@ class MemoryStore:
         new = [e for e in entries if e.idempotency_key not in seen]
         self.ledgers[user_id].extend(new)
         return len(new)
+
+    async def ledger_refs(self, user_id: uuid.UUID, reason: str) -> list[str]:
+        return [e.ref_id for e in self.ledgers[user_id] if e.reason == reason]
 
     async def wallet(self, user_id: uuid.UUID) -> tuple[int, int]:
         entries = self.ledgers[user_id]

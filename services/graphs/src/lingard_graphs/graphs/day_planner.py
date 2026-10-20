@@ -137,6 +137,7 @@ def build_day_planner(
         offset = state.day % len(state.settings) if state.settings else 0
         rotated = state.settings[offset:] + state.settings[:offset]
         chosen_settings = [loc for loc, _ in rotated[:count]]
+        chosen_settings += await _bonus_places(state, rotated, chosen_settings)
         slots = plan_targets(ticket_candidates, fresh, chosen_settings, rules.director)
         lessons = [
             LessonSlot(node_key=k, reason="ticket_reopened")
@@ -144,6 +145,23 @@ def build_day_planner(
             if t.reopen_count >= rules.tickets.lesson_after_reopens
         ]
         return {"slots": slots, "lessons": lessons}
+
+    async def _bonus_places(state: PlanState, rotated: list[tuple[str, str]], chosen: list[str]) -> list[str]:
+        """A café visit bought in the shop (decision 0023): one extra mission today, and the day takes in a café.
+        The visit is used up here, whether the café was already on today's route or not."""
+        world = await deps.store.world_state(state.user_id, state.city)
+        inventory: list[str] = list(world.get("inventory", []))
+        if "cafe_visit" not in inventory:
+            return []
+        city = load_city(deps.content_root, state.city)
+        inventory.remove("cafe_visit")
+        kind = "cafe"
+        unused = [loc for loc, _ in rotated if loc not in chosen]
+        place = next((loc for loc in unused if city.location(loc).kind == kind), None)
+        if place is None and any(city.location(loc).kind == kind for loc in chosen):
+            place = unused[0] if unused else None  # the café is already on the route: the extra mission is elsewhere
+        await deps.store.save_world_state(state.user_id, state.city, {**world, "inventory": inventory})
+        return [place] if place else []
 
     async def plan_story_beats(state: PlanState) -> dict[str, Any]:
         assert state.profile is not None

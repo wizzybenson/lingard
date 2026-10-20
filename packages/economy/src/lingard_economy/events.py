@@ -18,24 +18,39 @@ def draw_day(sim_crs: int, cutoff: int) -> DrawOutcome:
     return DrawOutcome(invited=sim_crs >= cutoff, cutoff=cutoff, score=sim_crs, margin=sim_crs - cutoff)
 
 
-def streak(active_days: list[date], today: date) -> tuple[int, int]:
-    """(current streak, freezes used). One free freeze per ISO week covers a single missed day; no punishment."""
+def streak(
+    active_days: list[date], today: date, *, covered: frozenset[date] = frozenset(), spare: int = 0
+) -> tuple[int, int, list[date]]:
+    """(current streak, freezes used, days newly covered by a bought freeze).
+
+    One free freeze per ISO week covers a single missed day; no punishment. ``covered`` are days a bought freeze
+    already covered (they stay covered); ``spare`` bought freezes not yet used cover a single missed day each once
+    the week's free one is gone. The caller records the newly covered days so a freeze is spent only once.
+    """
     days = set(active_days)
     count, freezes_used, cursor = 0, 0, today
     used_weeks: set[tuple[int, int]] = set()
+    newly: list[date] = []
     if cursor not in days:
         cursor -= timedelta(days=1)
     while True:
         if cursor in days:
             count += 1
-        else:
-            week = cursor.isocalendar()[:2]
-            if week in used_weeks or (cursor - timedelta(days=1)) not in days:
-                break
+        elif (cursor - timedelta(days=1)) not in days:
+            break
+        elif cursor in covered:
+            freezes_used += 1
+        elif (week := cursor.isocalendar()[:2]) not in used_weeks:
             used_weeks.add(week)
             freezes_used += 1
+        elif spare > 0:
+            spare -= 1
+            newly.append(cursor)
+            freezes_used += 1
+        else:
+            break
         cursor -= timedelta(days=1)
-    return count, freezes_used
+    return count, freezes_used, newly
 
 
 def league(gains: dict[str, int], opted_in: set[str]) -> list[tuple[str, int]]:

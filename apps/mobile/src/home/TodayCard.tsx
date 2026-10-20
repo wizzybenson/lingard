@@ -6,14 +6,29 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, I18nManager, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  I18nManager,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import type { SkillStatus, Today } from "@/api/types";
 import { levelProgress, levelRange } from "@/home/levels";
 import { openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
 import { Card, ProgressBar } from "@/ui/kit";
-import { colors, fonts, gradients, radius, shadow, space, type } from "@/ui/theme";
+import {
+  colors,
+  fonts,
+  gradients,
+  radius,
+  shadow,
+  space,
+  type,
+} from "@/ui/theme";
 
 const STATUS_COLOR: Record<SkillStatus, string> = {
   met: colors.success,
@@ -36,17 +51,42 @@ function Onboarding({ today }: { today: Today }) {
     <Card>
       <View style={styles.rowBetween}>
         <Text style={type.headline}>{t("onboarding.title")}</Text>
-        <Text style={type.caption}>{t("onboarding.progress", { done, total: steps.length })}</Text>
+        <Text style={type.caption}>
+          {t("onboarding.progress", { done, total: steps.length })}
+        </Text>
       </View>
       <ProgressBar value={done / steps.length} tone="success" />
-      <View style={{ gap: space(1.25), marginTop: space(0.5) }} accessible accessibilityLabel={t("onboarding.title")}>
+      <View
+        style={{ gap: space(1.25), marginTop: space(0.5) }}
+        accessible
+        accessibilityLabel={t("onboarding.title")}
+      >
         {steps.map((s, i) => (
           <View key={s.label} style={styles.step}>
             {s.done ? (
-              <Ionicons name="checkmark-circle" size={22} color={colors.success} />
+              <Ionicons
+                name="checkmark-circle"
+                size={22}
+                color={colors.success}
+              />
             ) : (
-              <View style={[styles.stepNumber, i === current && styles.stepNumberCurrent]}>
-                <Text style={[type.caption, { color: i === current ? colors.accentInk : colors.muted, fontFamily: fonts.semibold }]}>{i + 1}</Text>
+              <View
+                style={[
+                  styles.stepNumber,
+                  i === current && styles.stepNumberCurrent,
+                ]}
+              >
+                <Text
+                  style={[
+                    type.caption,
+                    {
+                      color: i === current ? colors.accentInk : colors.muted,
+                      fontFamily: fonts.semibold,
+                    },
+                  ]}
+                >
+                  {i + 1}
+                </Text>
               </View>
             )}
             <Text
@@ -105,27 +145,62 @@ export function TodayCard({
     : today.next_step === "key_points" && today.next_key_point
       ? t("today.next.key_points", { title: today.next_key_point.title })
       : today.next_step === "story"
-      ? day
-        ? t("today.next.story", { day })
-        : t("city.startDay")
-      : t(`today.next.${today.next_step}`);
+        ? day
+          ? t("today.next.story", { day })
+          : t("city.startDay")
+        : t(`today.next.${today.next_step}`);
   return (
     <View style={{ gap: space(1.5) }}>
       <Onboarding today={today} />
-      <LinearGradient colors={gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadow(3)]}>
+      <LinearGradient
+        colors={gradients.dusk}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.hero, shadow(3)]}
+      >
         <View style={styles.rowBetween}>
           <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
-          <View style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}>
-            <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
-              <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
+          <View
+            style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}
+          >
+            <View
+              style={styles.streak}
+              accessible
+              accessibilityLabel={
+                today.streak > 0
+                  ? t("today.streak", { count: today.streak })
+                  : t("today.noStreak")
+              }
+            >
+              <Ionicons
+                name={today.streak > 0 ? "flame" : "flame-outline"}
+                size={16}
+                color="#FFB37D"
+              />
               <Text style={styles.streakText} numberOfLines={1}>
-                {today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}
+                {today.streak > 0
+                  ? t("today.streak", { count: today.streak })
+                  : t("today.noStreak")}
               </Text>
+              {today.freezes > 0 && (
+                <View
+                  style={styles.freezes}
+                  accessible
+                  accessibilityLabel={t("shop.freezesHeld", {
+                    count: today.freezes,
+                  })}
+                >
+                  <Ionicons name="snow" size={13} color="#BFE3FF" />
+                  <Text style={styles.streakText}>{today.freezes}</Text>
+                </View>
+              )}
             </View>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={t("wallet.coinsCount", { count: today.coins })}
-              onPress={() => router.push("/(tabs)/passport")}
+              accessibilityLabel={t("wallet.coinsCount", {
+                count: today.coins,
+              })}
+              onPress={() => router.push("/shop")}
               style={styles.streak}
             >
               <Ionicons name="cash" size={16} color="#FFD38A" />
@@ -139,19 +214,41 @@ export function TodayCard({
           accessibilityState={{ busy: working, disabled: working }}
           disabled={working}
           onPress={go}
-          style={({ pressed }) => [styles.heroButton, { transform: [{ scale: pressed ? 0.98 : 1 }], opacity: pressed ? 0.92 : 1 }]}
+          style={({ pressed }) => [
+            styles.heroButton,
+            {
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+              opacity: pressed ? 0.92 : 1,
+            },
+          ]}
         >
-          {working ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
+          {working ? (
+            <ActivityIndicator color={colors.accent} />
+          ) : (
+            <Ionicons name="play" size={18} color={colors.accent} />
+          )}
           <Text style={styles.heroButtonText} numberOfLines={2}>
             {action}
           </Text>
         </Pressable>
-        {busy && <Text style={[styles.heroNote, { textAlign: "center" }]}>{t("city.planningHint")}</Text>}
-        {(today.reviews_due > 0 || (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
+        {busy && (
+          <Text style={[styles.heroNote, { textAlign: "center" }]}>
+            {t("city.planningHint")}
+          </Text>
+        )}
+        {(today.reviews_due > 0 ||
+          (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
           // Reviews and waiting lessons sit beside the story and never stand in its way.
           <View style={styles.extras}>
             {today.reviews_due > 0 && (
-              <Pressable accessibilityRole="button" onPress={() => router.push("/(tabs)/phone")} style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push("/(tabs)/phone")}
+                style={({ pressed }) => [
+                  styles.extra,
+                  pressed && { opacity: 0.7 },
+                ]}
+              >
                 <Ionicons name="flash" size={14} color="#fff" />
                 <Text style={styles.extraText} numberOfLines={1}>
                   {t("today.reviewsAction", { count: today.reviews_due })}
@@ -159,7 +256,14 @@ export function TodayCard({
               </Pressable>
             )}
             {today.lessons_waiting > 0 && today.next_step !== "lesson" && (
-              <Pressable accessibilityRole="button" onPress={() => router.push("/(tabs)/school")} style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push("/(tabs)/school")}
+                style={({ pressed }) => [
+                  styles.extra,
+                  pressed && { opacity: 0.7 },
+                ]}
+              >
                 <Ionicons name="school" size={14} color="#fff" />
                 <Text style={styles.extraText} numberOfLines={1}>
                   {t("today.lessonsWaiting", { count: today.lessons_waiting })}
@@ -183,10 +287,17 @@ function ExamProgress({ today }: { today: Today }) {
       accessibilityRole="button"
       accessibilityHint={t("today.examDetails")}
       onPress={() => router.push("/(tabs)/passport")}
-      style={({ pressed }) => [styles.exams, shadow(1), pressed && { opacity: 0.85 }]}
+      style={({ pressed }) => [
+        styles.exams,
+        shadow(1),
+        pressed && { opacity: 0.85 },
+      ]}
     >
       {today.goals.map((goal, i) => (
-        <View key={goal.pack} style={[{ gap: space(1) }, i > 0 && styles.examDivider]}>
+        <View
+          key={goal.pack}
+          style={[{ gap: space(1) }, i > 0 && styles.examDivider]}
+        >
           <View style={styles.rowBetween}>
             <Text style={[type.headline, { flexShrink: 1 }]} numberOfLines={1}>
               {goal.pack_name}
@@ -211,7 +322,15 @@ function ExamProgress({ today }: { today: Today }) {
                   {t(`skills.${s.skill}`)}
                 </Text>
                 <View style={styles.skillTrack}>
-                  <View style={[styles.skillFill, { width: `${Math.max(levelProgress(s.level_low, s.level_high, s.target), 0.04) * 100}%`, backgroundColor: STATUS_COLOR[s.status] }]} />
+                  <View
+                    style={[
+                      styles.skillFill,
+                      {
+                        width: `${Math.max(levelProgress(s.level_low, s.level_high, s.target), 0.04) * 100}%`,
+                        backgroundColor: STATUS_COLOR[s.status],
+                      },
+                    ]}
+                  />
                 </View>
               </View>
             ))}
@@ -221,30 +340,91 @@ function ExamProgress({ today }: { today: Today }) {
       <View style={styles.legend}>
         {(["met", "close", "behind"] as const).map((status) => (
           <View key={status} style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: STATUS_COLOR[status] }]} />
+            <View
+              style={[
+                styles.legendDot,
+                { backgroundColor: STATUS_COLOR[status] },
+              ]}
+            />
             <Text style={type.caption}>{t(`today.status.${status}`)}</Text>
           </View>
         ))}
         <View style={{ flex: 1 }} />
-        <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={16} color={colors.muted} />
+        <Ionicons
+          name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"}
+          size={16}
+          color={colors.muted}
+        />
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  rowBetween: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space(1) },
+  rowBetween: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: space(1),
+  },
   step: { flexDirection: "row", alignItems: "center", gap: space(1.25) },
-  stepNumber: { width: 22, height: 22, borderRadius: 11, borderWidth: 1.5, borderColor: colors.border, alignItems: "center", justifyContent: "center" },
-  stepNumberCurrent: { backgroundColor: colors.accent, borderColor: colors.accent },
+  stepNumber: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  stepNumberCurrent: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
   hero: { borderRadius: radius.xl, padding: space(2.25), gap: space(1.5) },
   heroOverline: { ...type.overline, color: "rgba(255,255,255,0.72)" },
-  streak: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,255,255,0.14)", borderRadius: radius.pill, paddingHorizontal: space(1.25), paddingVertical: 4 },
+  streak: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderRadius: radius.pill,
+    paddingHorizontal: space(1.25),
+    paddingVertical: 4,
+  },
+  freezes: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    marginStart: space(0.5),
+  },
   streakText: { fontFamily: fonts.semibold, fontSize: 13, color: "#fff" },
-  heroNote: { fontFamily: fonts.medium, fontSize: 13, color: "rgba(255,255,255,0.8)" },
-  extras: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: space(1) },
-  extra: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 36, paddingHorizontal: space(1.25), borderRadius: radius.pill, backgroundColor: "rgba(255,255,255,0.14)" },
-  extraText: { fontFamily: fonts.semibold, fontSize: 13, color: "#fff", flexShrink: 1 },
+  heroNote: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: "rgba(255,255,255,0.8)",
+  },
+  extras: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: space(1),
+  },
+  extra: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    minHeight: 36,
+    paddingHorizontal: space(1.25),
+    borderRadius: radius.pill,
+    backgroundColor: "rgba(255,255,255,0.14)",
+  },
+  extraText: {
+    fontFamily: fonts.semibold,
+    fontSize: 13,
+    color: "#fff",
+    flexShrink: 1,
+  },
   heroButton: {
     minHeight: 54,
     borderRadius: radius.md,
@@ -255,13 +435,32 @@ const styles = StyleSheet.create({
     gap: space(1),
     paddingHorizontal: space(2),
   },
-  heroButtonText: { fontFamily: fonts.semibold, fontSize: 16, color: colors.accentDeep, flexShrink: 1 },
-  exams: { backgroundColor: colors.card, borderRadius: radius.lg, padding: space(2), gap: space(1.5) },
-  examDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, paddingTop: space(1.5) },
+  heroButtonText: {
+    fontFamily: fonts.semibold,
+    fontSize: 16,
+    color: colors.accentDeep,
+    flexShrink: 1,
+  },
+  exams: {
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    padding: space(2),
+    gap: space(1.5),
+  },
+  examDivider: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    paddingTop: space(1.5),
+  },
   skills: { flexDirection: "row", gap: space(1) },
   skill: { flex: 1, gap: 5, minWidth: 0 },
   skillName: { fontFamily: fonts.medium, fontSize: 12, color: colors.inkSoft },
-  skillTrack: { height: 6, borderRadius: 3, backgroundColor: colors.paper, overflow: "hidden" },
+  skillTrack: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.paper,
+    overflow: "hidden",
+  },
   skillFill: { height: "100%", borderRadius: 3 },
   legend: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 5 },

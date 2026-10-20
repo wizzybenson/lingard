@@ -14,6 +14,7 @@ from sqlalchemy import select
 from lingard_api.deps import Db, Principal, State
 from lingard_api.jobs import GRAPH_JOBS, LIVE_JOBS
 from lingard_api.livekit_token import mint_learner_token
+from lingard_api.routes.economy import flat_decor
 from lingard_api.routes.key_points import PLACE_OFFER, KeyPoint, describe, key_points
 from lingard_api.routes.speech import require_providers
 from lingard_contracts.assessment import ErrorTag
@@ -234,12 +235,13 @@ async def get_scene(scene_id: uuid.UUID, principal: Principal, state: State, db:
     profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
     band = profile.settings.get("language_bands", {}).get(CITY_LANGUAGE[view.city])
     exam = await _is_exam(db, row)
+    decor = await flat_decor(state, principal.user_id) if location.kind == "home" else []  # the learner's upgrades
     return view.model_copy(
         update={
             "mission": None if exam else view.mission,  # a mock's speaking part is an exam, not a story mission
             "location_name": location.name,
             "location_kind": location.kind,
-            "layer_art": list(location.layer_art),
+            "layer_art": [*location.layer_art, *decor],
             "npc_name": npc.name if npc else "",
             "npc_role": npc.role if npc else "",
             "learner_band": int(band) if band is not None else None,

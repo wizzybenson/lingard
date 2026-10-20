@@ -495,7 +495,7 @@ class SqlStore:
                             ref_id=entry.ref_id,
                             idempotency_key=entry.idempotency_key,
                         )
-                        .on_conflict_do_nothing(index_elements=["idempotency_key"])
+                        .on_conflict_do_nothing(index_elements=["user_id", "idempotency_key"])
                         .returning(m.Ledger.id)
                     )
                 ).first()
@@ -509,6 +509,15 @@ class SqlStore:
                 else:
                     wallet.stars_total += entry.delta
         return added
+
+    async def ledger_refs(self, user_id: uuid.UUID, reason: str) -> list[str]:
+        async with self._sessions() as db:
+            rows = await db.execute(
+                select(m.Ledger.ref_id)
+                .where(m.Ledger.user_id == user_id, m.Ledger.reason == reason)
+                .order_by(m.Ledger.created_at)
+            )
+            return [r or "" for r in rows.scalars()]
 
     async def wallet(self, user_id: uuid.UUID) -> tuple[int, int]:
         async with self._sessions() as db:

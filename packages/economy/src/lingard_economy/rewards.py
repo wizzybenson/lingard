@@ -7,14 +7,15 @@ from typing import Literal
 
 Currency = Literal["coins", "stars"]
 SHOP = {
-    "flat_upgrade": 400,
-    "avatar_item": 120,
+    "streak_freeze": 50,
     "cafe_visit": 30,
-    "flight_between_cities": 250,
     "npc_gift": 60,
-    "extra_accent_voice": 300,
+    "flat_upgrade": 400,
 }
-"""Coin prices. Every item is cosmetic or narrative; none changes assessment, gates or the learner model."""
+"""Coin prices (decision 0023). Every item is narrative, cosmetic or protects a streak; none changes assessment,
+gates or the learner model, and none holds back practice."""
+HOLD = {"streak_freeze": 2, "flat_upgrade": 3}
+"""The most of an item a learner can hold: spare streak freezes, and the flat's three upgrades."""
 COINS = {
     "quest_complete": 40,
     "mission_accomplished": 30,

@@ -1,5 +1,10 @@
 /** Shapes of API responses that are not generated from packages/contracts. */
-import type { BandEstimate, CityEntry, Lesson, WorldView } from "@/contracts/generated";
+import type {
+  BandEstimate,
+  CityEntry,
+  Lesson,
+  WorldView,
+} from "@/contracts/generated";
 
 export type { BandEstimate, CityEntry, Lesson, WorldView };
 
@@ -63,10 +68,36 @@ export interface StepView {
 }
 
 export type ThreadPrompt =
-  | { kind: "item"; skill?: string; section?: string; minutes?: number; item: ServedItem }
-  | { kind: "set"; section: string; minutes: number; progress: { done: number; total: number }; set: ServedSet }
-  | { kind: "writing"; prompt: string; min_words: number; minutes?: number; task?: string }
-  | { kind: "speaking"; prompt: string; level?: number; part?: string; minutes?: number | number[]; section?: string; scene_id?: string }
+  | {
+      kind: "item";
+      skill?: string;
+      section?: string;
+      minutes?: number;
+      item: ServedItem;
+    }
+  | {
+      kind: "set";
+      section: string;
+      minutes: number;
+      progress: { done: number; total: number };
+      set: ServedSet;
+    }
+  | {
+      kind: "writing";
+      prompt: string;
+      min_words: number;
+      minutes?: number;
+      task?: string;
+    }
+  | {
+      kind: "speaking";
+      prompt: string;
+      level?: number;
+      part?: string;
+      minutes?: number | number[];
+      section?: string;
+      scene_id?: string;
+    }
   | { kind: "read_aloud"; text: string; asks_clone_consent: boolean };
 
 export interface ServedItem {
@@ -100,7 +131,12 @@ export interface ServedSet {
 export type SetAnswer = number | number[] | string | null;
 
 export interface Notebook {
-  corrections: { node_key: string; learner_said: string; correction: string; explanation: string }[];
+  corrections: {
+    node_key: string;
+    learner_said: string;
+    correction: string;
+    explanation: string;
+  }[];
   strengths: string[];
   encouragement: string;
   review_items: string[];
@@ -118,7 +154,24 @@ export interface Wallet {
   coins: number;
   stars_total: number;
   recent: { currency: string; delta: number; reason: string; at: string }[];
-  shop: Record<string, number>;
+  items: ShopItem[];
+}
+
+/** An item in the shop (decision 0023); ``held`` and ``limit`` for what a learner keeps (freezes, flat upgrades). */
+export interface ShopItem {
+  key: string;
+  price: number;
+  held: number;
+  limit: number | null;
+}
+
+/** A character met in the story, who can be given a gift. */
+export interface Friend {
+  npc_key: string;
+  name: string;
+  role: string;
+  warmth: number;
+  gifted_today: boolean;
 }
 
 export interface Quest {
@@ -163,7 +216,11 @@ export interface Profile {
   target_bands: Record<string, Record<string, number>>;
   crs_inputs: Record<string, unknown>;
   model_accent: Record<string, string>;
-  consents: { voice_clone: boolean; audio_retention_extended: boolean; friends_league: boolean };
+  consents: {
+    voice_clone: boolean;
+    audio_retention_extended: boolean;
+    friends_league: boolean;
+  };
   intensity_cap: "calm" | "tense" | "heated";
   l1: string;
   language_bands: Record<string, number>;
@@ -175,6 +232,8 @@ export type SkillStatus = "met" | "close" | "behind" | "unknown";
 export interface Today {
   /** Coins earned so far, shown beside the streak. */
   coins: number;
+  /** Spare streak freezes bought in the shop. */
+  freezes: number;
   streak: number;
   practised_today: boolean;
   reviews_due: number;
@@ -184,7 +243,13 @@ export interface Today {
     pack_name: string;
     exam_date: string | null;
     days_left: number | null;
-    skills: { skill: string; target: number; level_low: number | null; level_high: number | null; status: SkillStatus }[];
+    skills: {
+      skill: string;
+      target: number;
+      level_low: number | null;
+      level_high: number | null;
+      status: SkillStatus;
+    }[];
   }[];
   next_step: "set_goal" | "placement" | "key_points" | "lesson" | "story";
   /** The first rule at the learner's level not yet learned (when next_step is key_points). */
@@ -209,5 +274,11 @@ export interface ExamFormat {
   pack: string;
   name: string;
   total_minutes: number;
-  sections: { id: string; skill: "listening" | "reading" | "writing" | "speaking"; minutes: number; questions: number | null; tasks: number }[];
+  sections: {
+    id: string;
+    skill: "listening" | "reading" | "writing" | "speaking";
+    minutes: number;
+    questions: number | null;
+    tasks: number;
+  }[];
 }

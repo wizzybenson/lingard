@@ -86,6 +86,11 @@ async def test_writing_lessons_wallet_and_shop(api, monkeypatch) -> None:  # typ
     )
     bought = await api.client.post("/v1/shop/flat_upgrade", headers=api.bearer(token))
     assert bought.status_code == 200 and bought.json()["coins"] == 100
+    flat = next(i for i in bought.json()["items"] if i["key"] == "flat_upgrade")
+    assert flat == {"key": "flat_upgrade", "price": 400, "held": 1, "limit": 3}
+    world = (await api.client.get("/v1/world/ashford", headers=api.bearer(token))).json()
+    homes = [loc for d in world["districts"] for loc in d["locations"] if loc["kind"] == "home"]
+    assert homes and homes[0]["layer_art"][-1] == "decor/flat_1.svg", "the upgrade shows in the learner's home"
     assert (await api.client.get("/v1/league", headers=api.bearer(token))).json() == {"opted_in": False, "ranking": []}
 
 
@@ -169,3 +174,48 @@ async def test_glance_queue_and_offline_answer(api) -> None:  # type: ignore[no-
     body = result.json()
     assert result.status_code == 200 and isinstance(body["correct"], bool)
     assert body["correct"] == (body["answer"] == 0) and 0 <= body["answer"] < len(first["options"])
+
+
+async def test_shop_items_take_effect_and_rewards_are_per_learner(api) -> None:  # type: ignore[no-untyped-def]
+    import uuid as uuid_mod
+    from datetime import UTC, datetime
+
+    from lingard_db.models import Scene, Session, User
+
+    token, user_id = await learner(api, "Ines")
+    auth, user = api.bearer(token), uuid_mod.UUID(user_id)
+    store = api.state.graph_deps.store
+    _, other_id = await learner(api, "Yara")
+    day = LedgerEntry("coins", 10, "streak_day", "2026-10-20", "streak:2026-10-20")
+    assert await store.apply_ledger(uuid_mod.UUID(other_id), [day]) == 1
+    assert await store.apply_ledger(user, [day]) == 1, "every learner earns the day's streak coins"
+    await store.apply_ledger(user, [LedgerEntry("coins", 300, "quest_complete", "s1", "quest:s1")])
+
+    freezes = [await api.client.post("/v1/shop/streak_freeze", headers=auth) for _ in range(3)]
+    assert [r.status_code for r in freezes] == [200, 200, 409], "two spare freezes at most"
+    assert (await api.client.get("/v1/today", headers=auth)).json()["freezes"] == 2
+
+    cafe = await api.client.post("/v1/shop/cafe_visit", json={"city": "rivemont"}, headers=auth)
+    assert cafe.status_code == 200
+    assert (await store.world_state(user, "rivemont"))["inventory"] == ["cafe_visit"]
+
+    gift = {"city": "rivemont", "npc_key": "landlord_martin"}
+    assert (await api.client.post("/v1/shop/npc_gift", json=gift, headers=auth)).status_code == 409, "not met yet"
+    async with api.state.sessions() as db:
+        tenant = (await db.get(User, user)).tenant_id
+        played = Session(tenant_id=tenant, user_id=user, kind="live", city="rivemont")
+        played.started_at = datetime.now(UTC)
+        db.add(played)
+        await db.flush()
+        contract = {"cast": [{"npc_key": "landlord_martin"}]}
+        db.add(Scene(tenant_id=tenant, user_id=user, session_id=played.id, contract=contract, status="done"))
+        await db.commit()
+    friends = (await api.client.get("/v1/shop/friends", params={"city": "rivemont"}, headers=auth)).json()
+    assert [f["npc_key"] for f in friends] == ["landlord_martin"] and not friends[0]["gifted_today"]
+    given = await api.client.post("/v1/shop/npc_gift", json=gift, headers=auth)
+    assert given.status_code == 200 and given.json()["coins"] == 310 - 100 - 30 - 60
+    assert (await store.relationship(user, "landlord_martin"))[0] == 0.2
+    assert "gift_landlord_martin" in (await store.world_state(user, "rivemont"))["story_flags"]
+    again = await api.client.post("/v1/shop/npc_gift", json=gift, headers=auth)
+    assert again.status_code == 409 and again.json()["detail"] == "Already given today"
+    assert (await api.client.get("/v1/wallet", headers=auth)).json()["coins"] == 120

@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import func, select
 
 from lingard_api.deps import Db, Principal, State
+from lingard_api.routes.economy import flat_decor
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, LANGUAGE_SCALE, CityKey
 from lingard_contracts.world import CityEntry, WorldView
 from lingard_db.models import LearnerProfile, Session, WorldState
@@ -40,7 +41,19 @@ async def get_world(city: CityKey, principal: Principal, state: State, db: Db, h
     ).scalar_one_or_none()
     unlocks = list(world.district_unlocks) if world else []
     view = content.view(hour=hour if hour is not None else state.settings.world_hour, band=band, extra_unlocks=unlocks)
-    return view.model_copy(update={"days_lived": await days_lived(db, principal.user_id, city)})
+    decor = await flat_decor(state, principal.user_id)
+    districts = [
+        d.model_copy(
+            update={
+                "locations": [
+                    loc.model_copy(update={"layer_art": [*loc.layer_art, *decor]}) if loc.kind == "home" else loc
+                    for loc in d.locations
+                ]
+            }
+        )
+        for d in view.districts
+    ]
+    return view.model_copy(update={"districts": districts, "days_lived": await days_lived(db, principal.user_id, city)})
 
 
 async def days_lived(db: Db, user_id: object, city: str) -> int:

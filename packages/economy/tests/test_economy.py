@@ -76,7 +76,13 @@ def test_draw_streak_league_landing() -> None:
     assert draw_day(431, 420).invited and not draw_day(410, 420).invited
     today = date(2026, 10, 14)
     days = [today - timedelta(days=d) for d in (0, 1, 2, 4, 5)]
-    assert streak(days, today) == (5, 1)
+    assert streak(days, today) == (5, 1, [])
+    friday = date(2026, 10, 16)  # Thursday and Tuesday missed in the same week: the free freeze covers only one
+    week = [friday - timedelta(days=d) for d in (0, 2, 4, 5)]
+    tuesday = date(2026, 10, 13)
+    assert streak(week, friday) == (2, 1, [])
+    assert streak(week, friday, spare=1) == (4, 2, [tuesday]), "a bought freeze covers the second miss"
+    assert streak(week, friday, covered=frozenset({tuesday})) == (4, 2, []), "spent once, covered for good"
     assert league({"a": 12, "b": 30, "c": 50}, {"a", "b"}) == [("b", 30), ("a", 12)]
     good = {"ielts_gt": True, "tef_canada": True}
     assert landing_day_unlocked([good, good, good])

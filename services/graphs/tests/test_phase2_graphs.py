@@ -139,6 +139,25 @@ async def test_day_planner_rotates_through_every_unlocked_district(deps: GraphDe
     assert visited == {"rivemont.vieux_port", "rivemont.saint_roch"}
 
 
+async def test_a_cafe_visit_adds_a_mission_at_the_cafe(deps: GraphDeps, script: Script) -> None:
+    """Bought in the shop (decision 0023): the next day has one more mission, one of them at the café; used once."""
+    script.handlers["director of an ongoing life story"] = lambda m: {"beats": ["One.", "Two.", "Three.", "Four."]}
+    script.handlers["You design one scene"] = draft_for
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    planner = build_day_planner(deps)
+    city = load_city(deps.content_root, "rivemont")
+    for lived in range(_npc_settings(deps, "rivemont", 6)):  # with or without the café already on the day's route
+        store.lived[(USER, "rivemont")] = lived
+        plain = await planner.ainvoke(PlanState(user_id=USER, session_id=uuid.uuid4(), city="rivemont"))
+        world = await store.world_state(USER, "rivemont")
+        await store.save_world_state(USER, "rivemont", {**world, "inventory": ["cafe_visit"]})
+        treat = await planner.ainvoke(PlanState(user_id=USER, session_id=uuid.uuid4(), city="rivemont"))
+        assert len(treat["plan"].scenes) == len(plain["plan"].scenes) + 1
+        assert any(city.location(s.location_key).kind == "cafe" for s in treat["plan"].scenes)
+        assert (await store.world_state(USER, "rivemont"))["inventory"] == []
+
+
 async def scene_with_assessments(deps: GraphDeps) -> uuid.UUID:
     from .test_scene_and_turn_graphs import good_draft
 

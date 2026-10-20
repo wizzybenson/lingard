@@ -15,8 +15,8 @@ from lingard_api.routes.learning import learner_bands
 from lingard_api.routes.me import DEFAULT_TARGETS
 from lingard_contracts.common import LANGUAGE_PACK, Language, PackId
 from lingard_db.models import LearnerProfile, Lesson, Scene, Session, Wallet
-from lingard_economy.events import streak
 from lingard_graphs.pedagogy.review import due_at
+from lingard_graphs.streaks import learner_streak
 
 router = APIRouter(prefix="/v1", tags=["today"])
 
@@ -66,6 +66,8 @@ class Today(BaseModel):
     onboarding: Onboarding
     coins: int = 0
     """The learner's coins, shown beside the streak so every mission's reward is felt on the home screen."""
+    freezes: int = 0
+    """Spare streak freezes bought in the shop: a missed day won't break the streak."""
 
 
 def skill_status(target: int, low: int | None, high: int | None) -> Literal["met", "close", "behind", "unknown"]:
@@ -83,7 +85,7 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     now = datetime.now(UTC)
     profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
     days = await store.active_days(principal.user_id)
-    current, _ = streak(days, now.date())
+    current, freezes = await learner_streak(store, principal.user_id, now.date())
     cards = await store.fsrs(principal.user_id)
     reviews_due = sum(due_at(card) <= now for card in cards.values())
     lessons_waiting = (
@@ -174,4 +176,5 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         next_key_point=NextKeyPoint(node_key=pending.node_key, title=pending.title) if pending else None,
         onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
         coins=coins or 0,
+        freezes=freezes,
     )

@@ -284,11 +284,12 @@ class Ledger(Owned, Base):
     """Append-only: the repository exposes no update or delete for this table."""
 
     __tablename__ = "ledger"
+    __table_args__ = (UniqueConstraint("user_id", "idempotency_key", name="uq_ledger_user_id_idempotency_key"),)
     currency: Mapped[str] = mapped_column(String(16))
     delta: Mapped[int] = mapped_column(Integer)
     reason: Mapped[str] = mapped_column(String(64))
     ref_id: Mapped[str | None] = mapped_column(String(128))
-    idempotency_key: Mapped[str] = mapped_column(String(160), unique=True)
+    idempotency_key: Mapped[str] = mapped_column(String(160))
 
 
 class SimCrsSnapshot(Owned, Base):

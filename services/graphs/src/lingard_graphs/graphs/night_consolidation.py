@@ -16,7 +16,6 @@ from lingard_contracts.assessment import UtteranceAssessment
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, Skill
 from lingard_curriculum.models import CurriculumNode
 from lingard_economy.crs import CrsInputs, LanguageLevels, compute
-from lingard_economy.events import streak
 from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_graphs.agents.coach import Coach, Notebook
 from lingard_graphs.deps import GraphDeps
@@ -24,6 +23,7 @@ from lingard_graphs.graphs._build import linear
 from lingard_graphs.pedagogy.bands import BandPosterior, observe, prior
 from lingard_graphs.pedagogy.review import new_card
 from lingard_graphs.store import SceneRecord
+from lingard_graphs.streaks import learner_streak
 from lingard_world import load_city
 
 
@@ -169,7 +169,7 @@ def build_night_consolidation(
             for s in state.scenes
             if s.status in ("live", "done")
         ]
-        current, _ = streak(await deps.store.active_days(state.user_id), deps.clock().date())
+        current, _ = await learner_streak(deps.store, state.user_id, deps.clock().date())
         if current:
             day = deps.clock().date().isoformat()
             entries.append(LedgerEntry("coins", COINS["streak_day"], "streak_day", day, f"streak:{day}"))
