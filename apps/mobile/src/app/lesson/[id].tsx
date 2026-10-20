@@ -287,6 +287,12 @@ function GameView({
   );
 }
 
+/** The summary's label by what the lesson teaches: the node key's kind (fr.lex.…, en.func.…). */
+const SUMMARY: Record<string, string> = {
+  lex: "school.summaryWords",
+  func: "school.summaryPhrases",
+};
+
 export default function LessonScreen() {
   const { t } = useTranslation();
   const api = useApi();
@@ -374,11 +380,7 @@ export default function LessonScreen() {
       <Card style={{ gap: space(1.5) }}>
         <Overline>
           {t(
-            lesson.data.node_key.includes(".lexset.")
-              ? "school.summaryWords"
-              : lesson.data.node_key.includes(".function.")
-                ? "school.summaryPhrases"
-                : "school.rule",
+            SUMMARY[lesson.data.node_key.split(".")[1] ?? ""] ?? "school.rule",
           )}
         </Overline>
         <Text style={styles.rule}>{content.rule}</Text>

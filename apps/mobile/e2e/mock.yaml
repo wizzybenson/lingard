@@ -16,6 +16,6 @@ appId: app.lingard
 - takeScreenshot: mock-02-picked
 - tapOn: "Next.*"
 - extendedWaitUntil:
-    visible: "Questions 2.*"
+    visible: "Next · 0/.*"
     timeout: 10000
 - takeScreenshot: mock-03-second-set
