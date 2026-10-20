@@ -6,7 +6,7 @@ from langchain_core.messages import BaseMessage
 
 from lingard_contracts.events import NpcContext, TurnEvent
 from lingard_contracts.planning import SceneBrief
-from lingard_graphs.agents.assessor import locate
+from lingard_graphs.agents.assessor import heard_in, locate
 from lingard_graphs.agents.scene_compiler import CompileError, SceneCompiler
 from lingard_graphs.deps import GraphDeps, MemoryHints
 from lingard_graphs.graphs.turn_assessment import TurnState, build_turn_assessment
@@ -220,6 +220,36 @@ async def test_turn_assessment_filters_tags_checks_and_updates_evidence(deps: Gr
     calls_before = len(script.calls)
     again = await graph.ainvoke(TurnState(event=second))
     assert again["skip"] is True and len(script.calls) == calls_before, "redelivered event is a no-op"
+
+
+def test_a_span_counts_as_heard_only_when_the_other_recogniser_has_the_same_words() -> None:
+    assert heard_in("Bon, si je refuserais votre offre…", "si je refuserais")
+    assert heard_in("bon si je REFUSERAIS votre offre", "Si je refuserais"), "case and punctuation don't matter"
+    assert not heard_in("Bon, si je refusais votre offre", "si je refuserais")
+    assert not heard_in("si je votre refuserais", "si je refuserais"), "together and in order"
+
+
+async def test_a_mishearing_is_not_the_learners_mistake(deps: GraphDeps, script: Script) -> None:
+    """Measured live 2026-10-20: the learner said "nouvel arrivant", streaming STT heard "nouvelle arrivée", and the
+    notebook corrected it. A tag whose words the second hearing lacks is dropped: not shown, not evidence."""
+    scene = await setup_scene(deps, script)
+    script.handlers["silent, rigorous examiner"] = assessor_answer
+    script.handlers["Independent check"] = lambda m: {"is_error": True, "confidence": 0.95}
+    graph = build_turn_assessment(deps)
+    misheard = event(scene.scene_id, "Bon, si je refuserais votre offre, je vais au tribunal.").model_copy(
+        update={"transcript_alternatives": ["Bon, si je refusais votre offre, je vais au tribunal."]}
+    )
+    result = await graph.ainvoke(TurnState(event=misheard))
+    assert "fr.grammar.si_imparfait" not in [t.node_key for t in result["assessment"].error_tags]
+    store = deps.store
+    assert isinstance(store, MemoryStore)
+    assert "fr.grammar.si_imparfait" not in await store.tickets(USER)
+
+    heard_twice = event(scene.scene_id, "Bon, si je refuserais votre offre, je vais au tribunal.").model_copy(
+        update={"transcript_alternatives": ["bon si je refuserais votre offre je vais au tribunal"]}
+    )
+    result = await graph.ainvoke(TurnState(event=heard_twice))
+    assert result["assessment"].error_tags[0].showable, "both recognisers heard it: a real mistake"
 
 
 async def test_steering_hint_every_four_turns_without_corrections(deps: GraphDeps, script: Script) -> None:

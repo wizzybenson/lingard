@@ -29,6 +29,8 @@ class LanguageConfig(BaseModel):
     fillers: list[str]
     """Hesitations the NPC says when its first sentence is still held by the claim check."""
     question_marks: list[str]
+    continuation_words: list[str]
+    """Words an utterance can't end on ("et", "parce", "de"): after one the learner is still mid-sentence."""
     abbreviations: list[str]
     tutor_markers: list[str]
     character_break_markers: list[str]

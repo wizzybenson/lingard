@@ -26,8 +26,11 @@ class Wav2Vec2PhonemeRecognizer:
         except ImportError as exc:
             raise RuntimeError("install lingard-pronunciation[models] for the wav2vec2 recogniser") from exc
         self._torch = torch
-        self._processor = AutoProcessor.from_pretrained(model_name)
-        self._model = AutoModelForCTC.from_pretrained(model_name).eval()
+        try:
+            self._processor = AutoProcessor.from_pretrained(model_name)  # type: ignore[no-untyped-call,unused-ignore]
+            self._model = AutoModelForCTC.from_pretrained(model_name).eval()
+        except (ImportError, OSError) as exc:  # the phoneme tokenizer needs phonemizer + espeak-ng; or no model files
+            raise RuntimeError(f"wav2vec2 recogniser unavailable: {exc}") from exc
         vocab = self._processor.tokenizer.get_vocab()
         self.inventory = [token for token, _ in sorted(vocab.items(), key=lambda kv: kv[1])]
 

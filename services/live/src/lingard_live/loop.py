@@ -13,7 +13,7 @@ import contextlib
 import logging
 import time
 import uuid
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from dataclasses import dataclass, field
 
 import lingard_telemetry as telemetry
@@ -33,17 +33,20 @@ from lingard_contracts.live import (
 from lingard_live.actor import ActorState, DialogueTurn, NpcActor
 from lingard_live.events import HintSource, TurnPublisher, fire_and_forget
 from lingard_live.guard import ContractGuard, GuardContext, GuardResult, Verdict
-from lingard_live.languages import LanguageConfig, LanguageIdentifier
+from lingard_live.languages import LanguageConfig, LanguageIdentifier, words
 from lingard_live.sentences import SentenceSplitter, split_stream
 from lingard_live.stt import SttProvider, Transcript
 from lingard_live.stt_stream import StreamingStt, SttStream
 from lingard_live.transport import LiveSession
 from lingard_live.tts import TtsProvider, VoiceSpec
+from lingard_live.turn_end import completeness
 from lingard_live.turn_gate import EchoCheck, GatePolicy, TurnDecision, validate_turn
 
 logger = logging.getLogger(__name__)
 _NO_ECHO = EchoCheck(checked=False, matched=False)
 STREAM_FINISH_TIMEOUT_S = 1.5
+SECOND_EAR_TIMEOUT_S = 10.0
+"""The second hearing only delays the turn's assessment, never the reply; past this it is skipped."""
 """Longer than a streamed commit ever takes (≈0.3 s), shorter than giving up on batch would cost."""
 WRAP_UP_HINT = "The scene is nearly over: bring the conversation to a natural close in the next reply."
 
@@ -61,6 +64,16 @@ class TurnTiming:
     speculative: bool = False
     filler: bool = False
     """A hesitation played while the first sentence was still being checked."""
+
+
+def hesitations_for(sentence: str, fillers: list[str]) -> list[str]:
+    """The hesitations that don't echo the sentence's first word ("Right… Right, I'll tell you" was heard live)."""
+    opening = words(sentence)[:1]
+    return [f for f in fillers if words(f)[:1] != opening] or fillers
+
+
+def _ms(value: float | None) -> str:
+    return "-" if value is None else str(round(value))
 
 
 @dataclass
@@ -160,6 +173,7 @@ class LiveLoop:
         self.streaming_stt = streaming_stt
         self._stream: tuple[int, SttStream] | None = None
         """The streaming transcription of the utterance in progress, keyed by its speech start."""
+        session.set_semantic_eot(self._utterance_complete)  # says "not yet" whenever nothing is streaming
         self.outcomes: list[TurnOutcome] = []
         self.pauses: list[int] = []
         self.learner_turns = 0
@@ -218,6 +232,10 @@ class LiveLoop:
             await asyncio.gather(self._current, return_exceptions=True)
         await self._close_stream()
         await asyncio.gather(*self._pending, return_exceptions=True)
+
+    def _utterance_complete(self, _audio: bytes) -> float:
+        """Semantic end of turn from the running transcript of the utterance in progress."""
+        return completeness(self._stream[1].partial(), self.language) if self._stream is not None else 0.0
 
     async def _close_stream(self) -> None:
         if self._stream is not None:
@@ -378,7 +396,7 @@ class LiveLoop:
                 if first and prefetch is not None and self.filler_after_ms is not None:
                     done, _ = await asyncio.wait({confirm}, timeout=self.filler_after_ms / 1000)
                     if not done:
-                        filler = self.language.pick(self.language.fillers)
+                        filler = self.language.pick(hesitations_for(screened.text, self.language.fillers))
                         timing.filler = True
                         yield filler, self.tts.stream(filler, self.voice)
                 first = False
@@ -444,7 +462,7 @@ class LiveLoop:
             self.pauses.extend(event.pauses_ms)
             self.learner_turns += 1
             await self.session.set_turn_policy(personalised_turn_policy(self.identity.learner_band, self.pauses))
-            self._publish_learner(text, prepared.transcript.confidence, event)
+            self._publish_learner(prepared.transcript, event)
             await self.session.caption("learner", text)
             if prepared.status == "npc":
                 self.state.dialogue.append(DialogueTurn("learner", text))
@@ -463,6 +481,19 @@ class LiveLoop:
             timing.total_ms = (time.perf_counter() - committed_at) * 1000
             status = "ok" if prepared.status == "npc" else prepared.status
             self.outcomes.append(TurnOutcome(text, npc_text, status, timing, prepared.guard_results))
+            logger.info(
+                "turn %s: waited %d ms for the end of turn, then first audio after %s ms (speculative=%s filler=%s; "
+                "from preparation start: stt %d, first token %s, first sentence %s, guard %s)",
+                status,
+                event.eot_decided_ms - event.speech_end_ms,
+                _ms(timing.first_audio_ms),
+                timing.speculative,
+                timing.filler,
+                timing.stt_ms,
+                _ms(timing.first_token_ms),
+                _ms(timing.first_sentence_ms),
+                [round(ms) for ms in timing.guard_ms],
+            )
 
     async def opening(self) -> TurnOutcome:
         """The NPC speaks first when the scene starts."""
@@ -525,12 +556,12 @@ class LiveLoop:
         self._turn_index += 1
         return event
 
-    def _publish_learner(self, text: str, confidence: float | None, event: LearnerTurnEnded) -> None:
+    def _publish_learner(self, transcript: Transcript, event: LearnerTurnEnded) -> None:
         last_npc = next((t.text for t in reversed(self.state.dialogue) if t.speaker != "learner"), "")
         turn = self._event(
             "learner",
-            text,
-            stt_confidence=confidence,
+            transcript.text,
+            stt_confidence=transcript.confidence,
             timings_ms=TurnTimings(
                 speech_start=event.speech_start_ms, speech_end=event.speech_end_ms, eot_decided=event.eot_decided_ms
             ),
@@ -538,7 +569,22 @@ class LiveLoop:
             npc_context=NpcContext(npc_id=self.state.persona.key, last_npc_line=last_npc),
             interrupted_npc=event.interrupted_npc,
         )
-        fire_and_forget(self.publisher, turn, self._pending)
+        streamed = self.streaming_stt is not None and transcript.provider == self.streaming_stt.name
+        fire_and_forget(self.publisher, turn, self._pending, self._second_ear(event.audio) if streamed else None)
+
+    def _second_ear(self, audio: bytes) -> Callable[[TurnEvent], Awaitable[TurnEvent]]:
+        """The batch recogniser's hearing of a streamed turn, so corrections can be checked against both."""
+
+        async def hear(turn: TurnEvent) -> TurnEvent:
+            try:
+                async with asyncio.timeout(SECOND_EAR_TIMEOUT_S):
+                    other = await self.stt.transcribe(audio, CITY_LOCALE[self.state.contract.city])
+            except Exception as exc:  # no second hearing: corrections then rest on the checks alone
+                logger.warning("second hearing failed: %s", exc)
+                return turn
+            return turn.model_copy(update={"transcript_alternatives": [other.text]}) if other.text else turn
+
+        return hear
 
     def _publish_npc(self, text: str) -> None:
         fire_and_forget(self.publisher, self._event("npc", text), self._pending)

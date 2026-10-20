@@ -10,6 +10,7 @@ clarify:
 unsure:  # said when the Guard withholds an NPC's whole reply as unsupported (decision 0012)
   - "I'm not sure about that, I'd have to check."
   - "Good question. I don't know offhand, I'll find out."
+continuation_words: [and, or, but, so, because, that, which, who, when, if, of, to, for, with, without, in, "on", at, from, the, a, an, my, your, this, i, you, he, she, we, they, is, am, are, um, uh, er]  # an utterance ending on one is unfinished (semantic end of turn)
 question_marks: ["?"]  # a sentence ending in one is a question (claim-check pre-filter)
 fillers: ["Hmm…", "Well…", "Right…", "Let's see…", "So…"]  # said while the first sentence of a reply is still being checked (decision 0012)
 backchannels: ["Mm.", "Yeah?", "Right…", "Go on."]

@@ -92,15 +92,7 @@ def build_day_planner(
         band = profile.language_bands.get(language, 4)
         city = load_city(deps.content_root, state.city)
         world = await deps.store.world_state(state.user_id, state.city)
-        unlocked = set(city.unlocked_districts(band, world.get("district_unlocks", [])))
-        settings = [
-            (location.key, hotspot.npc_key)
-            for district in city.city.districts
-            if district.key in unlocked
-            for location in district.locations
-            for hotspot in location.hotspots
-            if hotspot.kind == "npc" and hotspot.npc_key
-        ]
+        settings = city.story_settings(band, world.get("district_unlocks", []))
         tickets = {k: t for k, t in (await deps.store.tickets(state.user_id)).items() if k.startswith(f"{language}.")}
         return {
             "profile": profile,

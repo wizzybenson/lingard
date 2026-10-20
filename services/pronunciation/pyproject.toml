@@ -20,4 +20,4 @@ build-backend = "hatchling.build"
 packages = ["src/lingard_pronunciation"]
 
 [project.optional-dependencies]
-models = ["torch>=2.4", "transformers>=4.46"]
+models = ["torch>=2.4", "transformers>=4.46", "phonemizer>=3.3"]

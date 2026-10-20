@@ -171,7 +171,10 @@ class Endpointer:
     def _turn_complete(self) -> bool:
         if self._silence_ms >= self.policy.eot_ms:
             return True
-        early = self.policy.semantic_eot and self.semantic_eot is not None and self._silence_ms >= 300
+        # Early only after the speculation point, so the reply is already under way.
+        early = (
+            self.policy.semantic_eot and self.semantic_eot is not None and self._silence_ms >= self.policy.semantic_ms
+        )
         return bool(
             early
             and self.semantic_eot is not None

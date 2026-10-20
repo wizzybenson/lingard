@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Protocol
 
 from lingard_contracts.live import AudioChunk, Closed, LiveEvent, LiveSessionConfig, TurnPolicy
+from lingard_live.vad import SemanticEot
 
 
 class LiveSession(Protocol):
@@ -18,6 +19,10 @@ class LiveSession(Protocol):
     async def cancel_speech(self, utterance_id: str) -> None: ...
 
     async def set_turn_policy(self, policy: TurnPolicy) -> None: ...
+
+    def set_semantic_eot(self, model: SemanticEot | None) -> None:
+        """Lets the endpointer end a turn early when ``model`` says the utterance so far is complete."""
+        ...
 
     async def caption(self, speaker: str, text: str) -> None:
         """Send a caption line to the learner's client (NPC sentences as they play, the learner's transcript)."""
@@ -47,6 +52,8 @@ class LoopbackSession:
         self._queue: asyncio.Queue[LiveEvent] = asyncio.Queue()
         self._cancelled: set[str] = set()
         self.captions: list[tuple[str, str]] = []
+        self.semantic_eot: SemanticEot | None = None
+        """Recorded for tests; a loopback session has no endpointer of its own."""
         self.closed = False
 
     def push(self, event: LiveEvent) -> None:
@@ -77,6 +84,9 @@ class LoopbackSession:
 
     async def set_turn_policy(self, policy: TurnPolicy) -> None:
         self.policy = policy
+
+    def set_semantic_eot(self, model: SemanticEot | None) -> None:
+        self.semantic_eot = model
 
     async def caption(self, speaker: str, text: str) -> None:
         self.captions.append((speaker, text))

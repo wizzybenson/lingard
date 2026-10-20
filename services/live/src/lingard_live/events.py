@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Awaitable, Callable
 from typing import Protocol
 
 from redis.asyncio import Redis
@@ -49,12 +50,18 @@ class RedisBus:
         return str(value) if value is not None else None
 
 
-def fire_and_forget(publisher: TurnPublisher, event: TurnEvent, pending: set[asyncio.Task[None]]) -> None:
-    """Publish without blocking the turn; failures are logged and the stream consumer catches up later."""
+def fire_and_forget(
+    publisher: TurnPublisher,
+    event: TurnEvent,
+    pending: set[asyncio.Task[None]],
+    before: Callable[[TurnEvent], Awaitable[TurnEvent]] | None = None,
+) -> None:
+    """Publish without blocking the turn; failures are logged and the stream consumer catches up later. ``before``
+    may complete the event first (a second hearing of the learner's audio), off the reply's path."""
 
     async def run() -> None:
         try:
-            await publisher.publish(event)
+            await publisher.publish(await before(event) if before is not None else event)
         except Exception:
             logger.exception("turn event publish failed (event %s)", event.event_id)
 

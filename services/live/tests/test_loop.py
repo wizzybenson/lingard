@@ -310,8 +310,8 @@ async def test_a_streamed_utterance_needs_only_a_commit_at_the_end(runtime: Scen
     from lingard_contracts.live import LearnerAudio, LearnerSpeechResumed, LearnerSpeechStarted, SpeculativeTurn
     from lingard_live.stt_stream import ScriptedStreamingStt
 
-    loop, session, _bus, _model, _tts = await build(
-        runtime, lambda m: "D'accord.", ["(batch should not be needed)"], stt_delay_ms=900
+    loop, session, bus, _model, _tts = await build(
+        runtime, lambda m: "D'accord.", ["Je voudrais récupérer mon dépôt (second hearing)."], stt_delay_ms=900
     )
     streaming = ScriptedStreamingStt(["Je voudrais", "récupérer mon dépôt."], commit_ms=30)
     loop.streaming_stt = streaming
@@ -330,7 +330,53 @@ async def test_a_streamed_utterance_needs_only_a_commit_at_the_end(runtime: Scen
     outcome = loop.outcomes[-1]
     assert outcome.learner_text == "Je voudrais récupérer mon dépôt."
     assert outcome.timing.stt_ms < 300, "a commit, not the 900 ms batch transcription"
+    learner = next(e for e in bus.events if e.speaker == "learner")
+    assert learner.transcript_alternatives == ["Je voudrais récupérer mon dépôt (second hearing)."], (
+        "the batch recogniser hears the streamed turn again, after the reply, for the correction check"
+    )
     assert streaming.fed == len(second) * 2 and streaming.opened == 1
+
+
+async def test_a_speculation_talked_over_mid_commit_loses_no_words(runtime: SceneRuntime) -> None:
+    """Measured live 2026-10-20: the learner resumed while the speculative commit was in flight, the speculation was
+    cancelled, and the final transcript came back as the first sentence only."""
+    from lingard_contracts.live import LearnerAudio, LearnerSpeechResumed, LearnerSpeechStarted, SpeculativeTurn
+    from lingard_live.stt_stream import ScriptedStreamingStt
+
+    loop, session, _bus, _model, _tts = await build(runtime, lambda m: "D'accord.", ["(batch should not be needed)"])
+    loop.streaming_stt = ScriptedStreamingStt(["Oui, je comprends.", "Est-ce que je peux payer ?"], commit_ms=150)
+    task = asyncio.create_task(loop.run())
+    second = b"\x00\x00" * 16000
+    session.push(LearnerSpeechStarted(at_ms=0))
+    session.push(LearnerAudio(pcm=second, speech_start_ms=0))
+    session.push(SpeculativeTurn(audio=second, speech_start_ms=0, speech_end_ms=900, at_ms=1300))
+    await asyncio.sleep(0.03)  # the first commit is still in flight
+    session.push(LearnerSpeechResumed(speech_start_ms=0, at_ms=1350))
+    session.push(LearnerAudio(pcm=second, speech_start_ms=0))
+    session.push(LearnerTurnEnded(audio=second * 2, speech_start_ms=0, speech_end_ms=1900, eot_decided_ms=2900))
+    await asyncio.sleep(0.6)
+    session.push(Closed())
+    await task
+    assert loop.outcomes[-1].learner_text == "Oui, je comprends. Est-ce que je peux payer ?"
+
+
+async def test_the_running_transcript_tells_the_endpointer_when_an_utterance_is_finished(runtime: SceneRuntime) -> None:
+    from lingard_contracts.live import LearnerSpeechStarted
+    from lingard_live.stt_stream import ScriptedStreamingStt
+
+    loop, session, _bus, _model, _tts = await build(runtime, lambda m: "D'accord.", [])
+    model = session.semantic_eot
+    assert model is not None and model(b"") == 0.0, "nothing streaming: never early"
+    loop.streaming_stt = ScriptedStreamingStt([], partial="Est-ce que je peux ouvrir un compte ?")
+    task = asyncio.create_task(loop.run())
+    session.push(LearnerSpeechStarted(at_ms=0))
+    await asyncio.sleep(0.05)
+    assert model(b"") > 0.85
+    assert loop.streaming_stt is not None
+    loop.streaming_stt.partial = "Je voudrais ouvrir un compte."
+    assert model(b"") == 0.0
+    session.push(Closed())
+    await task
 
 
 async def test_a_failed_stream_falls_back_to_batch(runtime: SceneRuntime) -> None:

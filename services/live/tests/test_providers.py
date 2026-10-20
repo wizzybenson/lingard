@@ -140,3 +140,35 @@ def test_streaming_stt_needs_the_elevenlabs_key_and_can_be_switched_off() -> Non
     off = _settings(elevenlabs_api_key="e")
     off.stt_streaming = False
     assert build_streaming_stt(off) is None
+
+
+async def test_realtime_stream_keeps_a_commit_whose_waiter_was_cancelled() -> None:
+    """A fake Scribe: each commit is answered with the next segment after 100 ms. The first ``finish`` (a speculation)
+    is cancelled before its answer arrives; the next ``finish`` must still return both segments, in order."""
+    import asyncio
+
+    import websockets
+
+    from lingard_live.stt_stream import MIN_COMMIT_BYTES, ElevenLabsStream
+
+    segments = iter(["Oui, je comprends.", "Est-ce que je peux payer ?"])
+
+    async def scribe(ws: websockets.ServerConnection) -> None:
+        await ws.send(json.dumps({"message_type": "session_started"}))
+        async for raw in ws:
+            if json.loads(raw)["commit"]:
+                await asyncio.sleep(0.1)
+                await ws.send(json.dumps({"message_type": "committed_transcript", "text": next(segments)}))
+
+    async with websockets.serve(scribe, "127.0.0.1", 0) as server:
+        port = next(iter(server.sockets)).getsockname()[1]
+        stream = ElevenLabsStream(f"ws://127.0.0.1:{port}", "key", "elevenlabs-realtime")
+        audio = b"\x00" * MIN_COMMIT_BYTES
+        await stream.feed(audio)
+        speculation = asyncio.create_task(stream.finish(2))
+        await asyncio.sleep(0.03)
+        speculation.cancel()
+        await stream.feed(audio)
+        final = await stream.finish(2)
+        await stream.close()
+    assert final.text == "Oui, je comprends. Est-ce que je peux payer ?"

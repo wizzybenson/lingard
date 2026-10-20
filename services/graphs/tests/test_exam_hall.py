@@ -83,19 +83,27 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
     sections_seen: list[str] = []
     live_scenes: list[uuid.UUID] = []
     late_answers = 0
+    credited = {"comprehension_ecrite": 0, "comprehension_orale": 0}
+    late_right = 0
     while result.get("__interrupt__"):
         request = result["__interrupt__"][0].value
         if not sections_seen or sections_seen[-1] != request["section"]:
             sections_seen.append(request["section"])
         if request["kind"] == "set":
             served = request["set"]
-            elapsed = 9999 if late_answers < 2 and request["section"] == "comprehension_orale" else 60
+            answerable = any(bank.get(q["item_id"]).band <= 7 for q in served["questions"])
+            late = late_answers < 2 and request["section"] == "comprehension_orale" and answerable
+            elapsed = 9999 if late else 60
             late_answers += elapsed == 9999
             given = []
             for question in served["questions"]:
                 item = bank.get(question["item_id"])
                 right = right_answer(item, question)
                 given.append(right if item.band <= 7 else wrong_answer(item, question))
+                if item.band <= 7 and elapsed == 9999:
+                    late_right += 1
+                elif item.band <= 7:
+                    credited[request["section"]] += 1
             resume: Any = {"answers": given, "elapsed_s": elapsed}
         elif request["kind"] == "writing":
             resume = {"text": "Texte assez long. " * 60, "elapsed_s": 1200}
@@ -139,7 +147,9 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
     assert 6 <= result["levels"]["reading"] <= 8, "items up to band 7 right, above wrong → about NCLC 7"
     assert result["levels"]["writing"] == 7 and result["levels"]["speaking"] == 8
     raw = (await deps.store.mocks(USER))[0]["raw_scores"]
-    assert raw["comprehension_orale"] < raw["comprehension_ecrite"], "late answers are scored as wrong"
+    assert late_right, "the late sets held answers that would have been right"
+    assert raw["comprehension_orale"] == credited["comprehension_orale"], "late answers are scored as wrong"
+    assert raw["comprehension_ecrite"] == credited["comprehension_ecrite"]
     store = deps.store
     assert isinstance(store, MemoryStore)
     assert (await store.posteriors(USER))[("tef_canada", "speaking")].observations == 1

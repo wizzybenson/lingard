@@ -11,6 +11,9 @@ import yaml
 from lingard_contracts.common import CityKey
 from lingard_contracts.world import City, DistrictView, Location, NpcPersona, NpcView, WorldView
 
+EXAM_ONLY_KINDS = frozenset({"test_centre"})
+"""Places that host mock exams (the examiner's room), never a story scene."""
+
 
 @dataclass(frozen=True)
 class CityContent:
@@ -35,6 +38,20 @@ class CityContent:
         return sorted(
             unlocked | set(extra or []), key=lambda k: next(d.order for d in self.city.districts if d.key == k)
         )
+
+    def story_settings(self, band: int, extra: list[str] | None = None) -> list[tuple[str, str]]:
+        """(location, NPC) pairs a story scene can use in the districts open at ``band``: every NPC hotspot except
+        those in exam-only places (decision 0019: the examiner only appears in mocks)."""
+        unlocked = set(self.unlocked_districts(band, extra))
+        return [
+            (location.key, hotspot.npc_key)
+            for district in self.city.districts
+            if district.key in unlocked
+            for location in district.locations
+            if location.kind not in EXAM_ONLY_KINDS
+            for hotspot in location.hotspots
+            if hotspot.kind == "npc" and hotspot.npc_key
+        ]
 
     def view(self, hour: int, band: int, extra_unlocks: list[str] | None = None) -> WorldView:
         unlocked = set(self.unlocked_districts(band, extra_unlocks))

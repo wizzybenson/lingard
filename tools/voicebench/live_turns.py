@@ -96,7 +96,7 @@ async def run(
     )
     await loop.opening()
     task = asyncio.create_task(loop.run())
-    endpointer = Endpointer(policy=policy)
+    endpointer = Endpointer(policy=policy, semantic_eot=session.semantic_eot)
     learner = VoiceSpec(voice_id=f"{language}_m_speaker2", language=language)
     for line in (lines or LINES[language])[:turns]:
         speech = b"".join([chunk.pcm async for chunk in tts.stream(line, learner)])

@@ -32,3 +32,13 @@ def test_ashford_mirrors_rivemont_structure() -> None:
     fr, en = load_city(CONTENT, "rivemont"), load_city(CONTENT, "ashford")
     assert [d.min_band for d in fr.city.districts] == [d.min_band for d in en.city.districts]
     assert len(fr.npcs) == len(en.npcs)
+
+
+@pytest.mark.parametrize("city", ["rivemont", "ashford"])
+def test_the_examiner_never_appears_in_a_story_scene(city: str) -> None:
+    content = load_city(CONTENT, city)
+    settings = content.story_settings(12)
+    assert settings, "every city has story settings"
+    assert all(content.location(location).kind != "test_centre" for location, _ in settings)
+    npcs = {npc for _, npc in settings}
+    assert not {"examinatrice_claire", "examiner_ruth"} & npcs

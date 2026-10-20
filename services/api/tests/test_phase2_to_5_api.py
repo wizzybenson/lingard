@@ -106,6 +106,10 @@ async def test_voice_clone_consent_cascade_export_and_account_deletion(api) -> N
         headers=api.bearer(token),
     )
     assert short.status_code == 422
+    fake.fail_create = True
+    failed = await api.client.post("/v1/voice/clone", files=files, data={"consent": "true"}, headers=api.bearer(token))
+    assert failed.status_code == 502 and "provider unavailable" in failed.json()["detail"]
+    fake.fail_create = False
     created = await api.client.post("/v1/voice/clone", files=files, data={"consent": "true"}, headers=api.bearer(token))
     assert created.status_code == 201 and len(fake.profiles) == 1
     await store.put(AUDIO_BUCKET, f"{user_prefix(user_id)}turns/2026-10-01/t1.pcm", b"turn-audio")

@@ -25,7 +25,7 @@ from lingard_contracts.live import (
     NetworkDegraded,
     TurnPolicy,
 )
-from lingard_live.vad import FRAME_MS, Endpointer
+from lingard_live.vad import FRAME_MS, Endpointer, SemanticEot
 
 logger = logging.getLogger(__name__)
 AGENT_IDENTITY = "lingard-npc"
@@ -113,6 +113,9 @@ class LiveKitSession:
 
     async def set_turn_policy(self, policy: TurnPolicy) -> None:
         self._endpointer.policy = policy
+
+    def set_semantic_eot(self, model: SemanticEot | None) -> None:
+        self._endpointer.semantic_eot = model
 
     async def caption(self, speaker: str, text: str) -> None:
         payload = json.dumps({"type": "caption", "speaker": speaker, "text": text}).encode()

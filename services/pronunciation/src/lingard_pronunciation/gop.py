@@ -66,8 +66,14 @@ def align(log_probs: NDArray[np.float64], targets: list[int]) -> list[tuple[int,
     return spans
 
 
-def score_phonemes(log_probs: NDArray[np.float64], expected: list[str], inventory: list[str]) -> list[PhonemeScore]:
-    """``inventory[0]`` must be the blank symbol; ``expected`` uses inventory symbols."""
+def score_phonemes(
+    log_probs: NDArray[np.float64],
+    expected: list[str],
+    inventory: list[str],
+    variants: dict[str, list[str]] | None = None,
+) -> list[PhonemeScore]:
+    """``inventory[0]`` must be the blank symbol; ``expected`` uses inventory symbols. ``variants`` are realisations
+    native speakers use for a phoneme (French /œ̃/ is /ɛ̃/ for most): the best of them counts as the phoneme."""
     index = {p: i for i, p in enumerate(inventory)}
     targets = [index[p] for p in expected]
     spans = align(log_probs, targets)
@@ -76,9 +82,10 @@ def score_phonemes(log_probs: NDArray[np.float64], expected: list[str], inventor
         window = log_probs[start : end + 1]
         non_blank = window[:, 1:]
         best = non_blank.max(axis=1)
-        gop = float(np.mean(window[:, target] - best))
+        accepted = [target] + [index[v] for v in (variants or {}).get(phoneme, []) if v in index]
+        gop = float(np.mean(window[:, accepted].max(axis=1) - best))
         winners = non_blank.argmax(axis=1) + 1
         top = int(np.bincount(winners).argmax())
-        substitute = inventory[top] if top != target else None
+        substitute = inventory[top] if top not in accepted else None
         results.append(PhonemeScore(phoneme, start, end, gop, 100 / (1 + math.exp(-(gop + 1) * 3)), substitute))
     return results

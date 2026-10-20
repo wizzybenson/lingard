@@ -31,6 +31,10 @@ class AudioChunk(Frozen):
 
 SPECULATION_SHARE = 0.4
 SPECULATION_MIN_MS = 300
+SEMANTIC_SHARE = 0.6
+"""A finished question may end the turn after this share of the window. Not sooner: the streaming transcript
+sometimes guesses a "?" mid-sentence, and learners add a sentence after a question (measured live 2026-10-20:
+a 420 ms pause after a question split a turn when the early end was at 380 ms)."""
 
 
 class TurnPolicy(Frozen):
@@ -44,6 +48,11 @@ class TurnPolicy(Frozen):
     def speculation_ms(self) -> int:
         """Silence after which the reply is prepared speculatively (discarded if the learner resumes)."""
         return max(SPECULATION_MIN_MS, int(self.eot_ms * SPECULATION_SHARE))
+
+    @property
+    def semantic_ms(self) -> int:
+        """Silence after which a finished utterance (semantic end of turn) may end the turn early."""
+        return max(self.speculation_ms, int(self.eot_ms * SEMANTIC_SHARE))
 
 
 def base_eot_for_band(band: int) -> int:

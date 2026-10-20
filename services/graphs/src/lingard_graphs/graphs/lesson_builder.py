@@ -131,14 +131,7 @@ def build_games(
 
 def homework_scene(city: CityContent, node_key: str, band: int, failed: set[str], ticket: bool) -> SceneBrief:
     """The same-day scene that puts a lesson to use: someone the learner can meet, not where the rule last failed."""
-    options = [
-        (loc.key, h.npc_key)
-        for d in city.city.districts
-        if d.key in city.unlocked_districts(band)
-        for loc in d.locations
-        for h in loc.hotspots
-        if h.kind == "npc" and h.npc_key
-    ]
+    options = city.story_settings(band)
     location, npc = next(((loc, n) for loc, n in options if loc not in failed), options[0])
     return SceneBrief(
         city=city.city.key,

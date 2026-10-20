@@ -36,6 +36,9 @@ class TurnEvent(Strict):
     language: Locale
     transcript: str
     stt_confidence: float | None = Field(default=None, ge=0, le=1)
+    transcript_alternatives: list[str] = Field(default_factory=list)
+    """The same audio as heard by another recogniser (a "second ear"). A tag is kept only when the words it
+    cites are in every hearing, so a mishearing never becomes the learner's mistake."""
     audio_ref: str | None = None
     timings_ms: TurnTimings | None = None
     pauses_ms: list[int] = Field(default_factory=list)

@@ -168,6 +168,7 @@ export type SpeechEnd = number;
 export type SpeechStart = number;
 export type TraceId = string;
 export type Transcript = string;
+export type TranscriptAlternatives = string[];
 export type TurnIndex = number;
 export type UserId1 = string;
 export type BandEstimate1 = number | null;
@@ -527,6 +528,7 @@ export interface TurnEvent {
   timings_ms?: TurnTimings | null;
   trace_id: TraceId;
   transcript: Transcript;
+  transcript_alternatives?: TranscriptAlternatives;
   turn_index: TurnIndex;
   user_id: UserId1;
 }

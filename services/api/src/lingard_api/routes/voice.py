@@ -16,7 +16,7 @@ from lingard_api.deps import Db, Principal, State
 from lingard_api.privacy import CascadeError, delete_account, delete_voice_clone, export_zip
 from lingard_db.models import LearnerProfile, VoiceProfile
 from lingard_pronunciation.audio import wav_to_pcm
-from lingard_pronunciation.clone import create_with_fallback
+from lingard_pronunciation.clone import CloneError, create_with_fallback
 from lingard_storage import AUDIO_BUCKET, user_prefix
 
 router = APIRouter(prefix="/v1", tags=["voice", "privacy"])
@@ -72,9 +72,12 @@ async def create_clone(
     if not order:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "No voice clone provider is configured")
     user_ref = uuid.uuid5(uuid.NAMESPACE_URL, str(principal.user_id)).hex[:12]
-    provider_name, profile_id = await create_with_fallback(
-        order[0], order[1] if len(order) > 1 else None, user_ref, pcm
-    )
+    try:
+        provider_name, profile_id = await create_with_fallback(
+            order[0], order[1] if len(order) > 1 else None, user_ref, pcm
+        )
+    except CloneError as exc:
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, f"Voice clone provider failed: {exc}") from exc
     sample_ref = await state.objects.put(AUDIO_BUCKET, f"{user_prefix(str(principal.user_id))}voice/sample.pcm", pcm)
     row = VoiceProfile(
         tenant_id=principal.tenant_id,

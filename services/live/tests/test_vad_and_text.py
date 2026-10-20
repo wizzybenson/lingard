@@ -46,7 +46,11 @@ def test_premature_cutoff_happens_with_too_short_policy() -> None:
 def test_semantic_model_can_end_turn_early() -> None:
     ep = Endpointer(policy=TurnPolicy(eot_ms=1500), semantic_eot=lambda audio: 0.95)
     events = ep.feed(speech(800) + silence(500))
+    events += ep.feed(silence(300))
+    assert not any(isinstance(e, LearnerTurnEnded) for e in events), "never before 60% of the window (900 ms)"
+    events = ep.feed(silence(150))
     assert isinstance(events[-1], LearnerTurnEnded)
+    assert events[-1].eot_decided_ms - events[-1].speech_end_ms < 1000
 
 
 def test_barge_in_after_250ms_of_learner_speech_during_npc_audio() -> None:
@@ -153,3 +157,27 @@ def test_learner_audio_streams_the_whole_utterance_before_each_decision() -> Non
     started = events[0]
     assert isinstance(started, LearnerSpeechStarted)
     assert all(e.speech_start_ms == started.at_ms for e in events if isinstance(e, LearnerAudio))
+
+
+def test_only_a_finished_question_ends_a_turn_early() -> None:
+    from pathlib import Path
+
+    from lingard_live.languages import load_language
+    from lingard_live.turn_end import completeness
+
+    fr = load_language(Path(__file__).resolve().parents[3] / "content", "fr")
+    assert completeness("J'ai mon passeport. Est-ce qu'il y a des frais ?", fr) > 0.85
+    assert completeness("« C'est assez récent ? »", fr) > 0.85
+    assert completeness("J'ai apporté mon passeport.", fr) == 0.0, "a statement: they often go on"
+    assert completeness("Je voudrais ouvrir un compte", fr) == 0.0, "no punctuation yet"
+    assert completeness("Est-ce que vous avez des ?", fr) == 0.0, "a continuation word"
+    assert completeness("", fr) == 0.0
+
+
+def test_a_hesitation_never_echoes_the_first_word_of_its_sentence() -> None:
+    from lingard_live.loop import hesitations_for
+
+    fillers = ["Right…", "Hmm…", "Let's see…"]
+    assert hesitations_for("Right, I'll tell you what I know.", fillers) == ["Hmm…", "Let's see…"]
+    assert hesitations_for("Yes, that's me.", fillers) == fillers
+    assert hesitations_for("Right.", ["Right…"]) == ["Right…"], "never left with nothing to say"

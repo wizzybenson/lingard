@@ -82,6 +82,14 @@ def test_alignment_and_gop_detect_substitution() -> None:
     assert spans[0][0] < spans[1][0] < spans[2][0]
 
 
+def test_a_native_variant_scores_as_the_phoneme() -> None:
+    heard_variant = posteriors([1, 3, 4], {4: 5})  # "y" realised as "u", as if that were a native variant
+    strict = score_phonemes(heard_variant, ["p", "a", "y"], INVENTORY)
+    lenient = score_phonemes(heard_variant, ["p", "a", "y"], INVENTORY, {"y": ["u"]})
+    assert strict[2].score < 30 and strict[2].likely_substitute == "u"
+    assert lenient[2].score > 80 and lenient[2].likely_substitute is None
+
+
 def test_two_dials_and_critical_targets() -> None:
     targets = [
         PronTarget("fr.pron.p_vs_b", ("p", "b"), 0.8, {"ar": 0.9, "generic": 0.2}),
@@ -181,3 +189,40 @@ async def test_golden_self_uses_a_supplied_native_render() -> None:
     assert not render.cached and converter.calls == 1
     with pytest.raises(ValueError, match="no native render"):
         await golden.render("Salut", accent="fr-FR", profile_id="el-1", user_id="u1")
+
+
+async def test_voicebox_clone_fills_a_profile_with_transcribed_pieces_and_cleans_up_on_failure() -> None:
+    import json
+
+    import httpx
+
+    from lingard_pronunciation.clone import VoiceboxClone
+
+    calls: list[tuple[str, str]] = []
+    fail_samples = False
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append((request.method, request.url.path))
+        if request.url.path == "/profiles" and request.method == "POST":
+            assert json.loads(request.content)["name"] == "lingard-abc"
+            return httpx.Response(200, json={"id": "p1"})
+        if request.url.path == "/transcribe":
+            return httpx.Response(200, json={"text": "Bonjour, je m'appelle Sam.", "duration": 25.0})
+        if request.url.path == "/profiles/p1/samples":
+            assert b'name="reference_text"' in request.content and b"Sam" in request.content
+            return httpx.Response(500 if fail_samples else 200, json={"id": "s"})
+        if request.method in ("DELETE", "GET") and request.url.path == "/profiles/p1":
+            return httpx.Response(200, json={"message": "ok"})
+        return httpx.Response(404)
+
+    clone = VoiceboxClone("http://voicebox", transport=httpx.MockTransport(handler))
+    sample = b"\x00\x00" * 16_000 * 51  # 51 s: pieces of 25 s and 26 s (the 1 s tail joins the one before)
+    assert await clone.create("abc", sample) == "p1"
+    assert [c for c in calls if c[1] == "/profiles/p1/samples"] == [("POST", "/profiles/p1/samples")] * 2
+    assert await clone.exists("p1")
+
+    calls.clear()
+    fail_samples = True
+    with pytest.raises(httpx.HTTPStatusError):
+        await clone.create("abc", sample)
+    assert ("DELETE", "/profiles/p1") in calls, "a half-made profile (biometric data) is never left behind"

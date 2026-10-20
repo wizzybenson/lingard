@@ -72,7 +72,12 @@ def create_app(engines: Engines) -> FastAPI:
         except KeyError as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
         learner = base64.b64decode(body.learner_pcm_b64)
-        scores = score_phonemes(engines.recognizer.log_posteriors(learner), expected, engines.recognizer.inventory)
+        scores = score_phonemes(
+            engines.recognizer.log_posteriors(learner),
+            expected,
+            engines.recognizer.inventory,
+            engines.g2p.variants(body.language),
+        )
         learner_f0 = yin_f0(to_float(learner))
         reference_f0 = yin_f0(to_float(base64.b64decode(body.reference_pcm_b64))) if body.reference_pcm_b64 else None
         intonation = contour_similarity(learner_f0, reference_f0) if reference_f0 is not None else None

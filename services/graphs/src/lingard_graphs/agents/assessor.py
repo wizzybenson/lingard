@@ -77,6 +77,16 @@ def locate(transcript: str, fragment: str) -> Span | None:
     return Span(start=index, end=end, text=transcript[index:end])
 
 
+def _words(text: str) -> list[str]:
+    return re.findall(r"\w+", _fold(text.replace("’", "'")))
+
+
+def heard_in(hearing: str, span: str) -> bool:
+    """Whether the words of ``span`` occur, in order and together, in another recogniser's ``hearing``."""
+    needle, hay = _words(span), _words(hearing)
+    return bool(needle) and any(hay[i : i + len(needle)] == needle for i in range(len(hay) - len(needle) + 1))
+
+
 def rule_check(node: CurriculumNode | None, span: str) -> bool | None:
     """Second check from curriculum ``common_errors``: True when a known error pattern matches, else undecided."""
     if node is None:
@@ -137,6 +147,8 @@ class UtteranceAssessor:
             span = locate(event.transcript, tag.span)
             if span is None or tag.node_key not in nodes:
                 continue  # SPEC §10: every tag must cite the exact span and map to a node
+            if not all(heard_in(hearing, span.text) for hearing in event.transcript_alternatives):
+                continue  # another recogniser heard something else here: maybe our mishearing, not their mistake
             tags.append(
                 ErrorTag(
                     node_key=tag.node_key,
