@@ -487,13 +487,20 @@ class LiveLoop:
         self._utterance = utterance_id
 
         async def audio() -> AsyncIterator[AudioChunk]:
+            hesitation: str | None = None  # "Mm…" joins the sentence it leads into instead of a bubble of its own
             while (item := await prepared.audio.get()) is not None:
                 if isinstance(item, str):
-                    await self.session.caption("npc", item)
+                    if item in self.language.fillers:
+                        hesitation = item
+                    else:
+                        await self.session.caption("npc", f"{hesitation} {item}" if hesitation else item)
+                        hesitation = None
                     continue
                 if prepared.timing.first_audio_ms is None:
                     prepared.timing.first_audio_ms = (time.perf_counter() - committed_at) * 1000
                 yield item
+            if hesitation:
+                await self.session.caption("npc", hesitation)
 
         try:
             await self.session.speak(audio(), utterance_id)

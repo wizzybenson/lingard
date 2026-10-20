@@ -281,7 +281,9 @@ async def test_a_slow_first_check_is_covered_by_a_hesitation(runtime: SceneRunti
     )
     await loop.handle_turn(turn())
     npc = [text for speaker, text in session.captions if speaker == "npc"]
-    assert npc[0] in runtime.language.fillers and npc[1] == "Le plombier passera demain matin."
+    hesitation, _, rest = npc[0].partition(" ")
+    assert hesitation in runtime.language.fillers and rest == "Le plombier passera demain matin."
+    assert len(npc) == 1, "the hesitation leads into the sentence's caption, never a bubble of its own"
     timing = loop.outcomes[-1].timing
     assert timing.filler and timing.first_audio_ms is not None and timing.first_audio_ms < 300
 
