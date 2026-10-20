@@ -105,3 +105,39 @@ def test_fsrs_scheduling_spaces_reviews() -> None:
     after_good = review(card, True, now=T0)
     after_again = review(card, False, now=T0)
     assert due_at(after_good) > due_at(after_again)
+
+
+def test_key_points_put_prerequisites_first_then_the_authored_order() -> None:
+    from lingard_curriculum.models import CurriculumNode
+    from lingard_graphs.pedagogy.key_points import ordered
+
+    def node(key: str, band: int) -> CurriculumNode:
+        return CurriculumNode(
+            key=f"fr.grammar.{key}", kind="grammar", language="fr", band=band, title=key, source_url="x", as_of="2026"
+        )
+
+    a, b, c, d = node("a", 4), node("b", 4), node("c", 5), node("d", 5)
+    order = {n.key: i for i, n in enumerate([b, a, d, c])}
+    assert [n.key[-1] for n in ordered([a, b, c, d], {}, order)] == ["b", "a", "d", "c"]
+    assert [n.key[-1] for n in ordered([a, b, c, d], {"fr.grammar.d": ["fr.grammar.c"]}, order)] == ["b", "a", "c", "d"]
+    cycle = {"fr.grammar.a": ["fr.grammar.b"], "fr.grammar.b": ["fr.grammar.a"]}
+    assert len(ordered([a, b], cycle, order)) == 2, "a bad cycle never loops or drops a node"
+
+
+def test_key_points_lessons_need_no_model_and_cover_every_grammar_node() -> None:
+    import random
+    from pathlib import Path
+
+    from lingard_curriculum.conjugation import FrenchConjugator
+    from lingard_curriculum.seed import load_seed
+    from lingard_graphs.graphs.lesson_builder import key_points_lesson
+    from lingard_world import load_city
+
+    root = Path(__file__).resolve().parents[3] / "content"
+    for language, city in (("fr", "rivemont"), ("en", "ashford")):
+        conjugator = FrenchConjugator.load(root / "curriculum/fr/conjugation.yaml") if language == "fr" else None
+        for n in load_seed(root, language).nodes:  # type: ignore[arg-type]
+            if n.kind != "grammar":
+                continue
+            lesson = key_points_lesson(n, load_city(root, city), n.band, conjugator, random.Random(n.key))
+            assert lesson.kind == "key_points" and lesson.models and lesson.examples and lesson.games, n.key

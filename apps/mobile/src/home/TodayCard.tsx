@@ -3,11 +3,14 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { SkillStatus, Today } from "@/api/types";
 import { levelProgress, levelRange } from "@/home/levels";
+import { openKeyPoint } from "@/school/keyPoints";
+import { useApi } from "@/state/auth";
 import { Card, ProgressBar } from "@/ui/kit";
 import { colors, fonts, gradients, radius, shadow, space, type } from "@/ui/theme";
 
@@ -79,8 +82,16 @@ export function TodayCard({
   busy?: boolean;
 }) {
   const { t } = useTranslation();
+  const api = useApi();
+  const [opening, setOpening] = useState(false);
   const go = () => {
     switch (today.next_step) {
+      case "key_points":
+        if (!today.next_key_point) return router.push("/(tabs)/school");
+        setOpening(true);
+        return void openKeyPoint(api, today.next_key_point.node_key)
+          .catch(() => router.push("/(tabs)/school"))
+          .finally(() => setOpening(false));
       case "set_goal":
         return router.push("/goal");
       case "placement":
@@ -91,9 +102,12 @@ export function TodayCard({
         return onStartStory();
     }
   };
+  const working = busy || opening;
   const action = busy
     ? t("city.planning")
-    : today.next_step === "story"
+    : today.next_step === "key_points" && today.next_key_point
+      ? t("today.next.key_points", { title: today.next_key_point.title })
+      : today.next_step === "story"
       ? day
         ? t("today.next.story", { day })
         : t("city.startDay")
@@ -149,12 +163,12 @@ export function TodayCard({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
-          accessibilityState={{ busy, disabled: busy }}
-          disabled={busy}
+          accessibilityState={{ busy: working, disabled: working }}
+          disabled={working}
           onPress={go}
           style={({ pressed }) => [styles.heroButton, { transform: [{ scale: pressed ? 0.98 : 1 }], opacity: pressed ? 0.92 : 1 }]}
         >
-          {busy ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
+          {working ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
           <Text style={styles.heroButtonText} numberOfLines={1}>
             {action}
           </Text>

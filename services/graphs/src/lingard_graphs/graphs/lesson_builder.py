@@ -19,7 +19,7 @@ from lingard_curriculum.models import CurriculumNode
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.graphs._build import linear
 from lingard_llm import StructuredOutputError
-from lingard_world import load_city
+from lingard_world import CityContent, load_city
 
 TENSE_HINTS = {
     "imparfait": ["imparfait"],
@@ -61,14 +61,18 @@ def conjugation_items(
     node: CurriculumNode, conjugator: FrenchConjugator, rng: random.Random, n: int = 8
 ) -> list[GameItem]:
     tenses = next((t for hint, t in TENSE_HINTS.items() if hint in node.key), [])
+    # A lesson on regular (or irregular) verbs drills only those verbs.
+    regularity = False if "irregular" in node.key else True if "regular" in node.key else None
     items = []
     for tense in tenses:
         for verb_key, verb in conjugator.verbs.items():
+            if regularity is not None and verb.regular != regularity:
+                continue
             forms = conjugator.conjugate(verb_key, tense)
             for person in rng.sample(range(6), 2):
                 items.append(
                     GameItem(
-                        prompt=f"{PERSONS[person]} — {verb.infinitive} ({tense.replace('_', ' ')})",
+                        prompt=f"{PERSONS[person]} — {verb.infinitive} ({conjugator.label(tense)})",
                         answer=forms[person],
                         node_key=node.key,
                     )
@@ -123,6 +127,48 @@ def build_games(
             Game(kind="register_switch", items=[GameItem(prompt=exponents[0], answer=exponents[-1], node_key=node.key)])
         )
     return games
+
+
+def homework_scene(city: CityContent, node_key: str, band: int, failed: set[str], ticket: bool) -> SceneBrief:
+    """The same-day scene that puts a lesson to use: someone the learner can meet, not where the rule last failed."""
+    options = [
+        (loc.key, h.npc_key)
+        for d in city.city.districts
+        if d.key in city.unlocked_districts(band)
+        for loc in d.locations
+        for h in loc.hotspots
+        if h.kind == "npc" and h.npc_key
+    ]
+    location, npc = next(((loc, n) for loc, n in options if loc not in failed), options[0])
+    return SceneBrief(
+        city=city.city.key,
+        location_key=location,
+        npc_keys=[npc or ""],
+        story_beat=f"After class, the learner runs into {city.npc(npc or '').name}.",
+        targets=[node_key],
+        ticket_targets=[node_key] if ticket else [],
+        learner_band=band,
+    )
+
+
+def key_points_lesson(
+    node: CurriculumNode, city: CityContent, band: int, conjugator: FrenchConjugator | None, rng: random.Random
+) -> Lesson:
+    """A lesson taught before the learner needs the rule, straight from the node's authored key points.
+    No model call: it opens at once and costs nothing, and every word was reviewed with the curriculum."""
+    content = node.payload.get("lesson") or {}
+    errors = content.get("common_errors", [])
+    return Lesson(
+        node_key=node.key,
+        kind="key_points",
+        title=node.title,
+        rule=content.get("rule") or node.title,
+        models=list(content.get("examples", [])),
+        examples=[LessonExample(learner_said=e["wrong"], better=e["right"]) for e in errors],
+        games=build_games(node, [], conjugator, rng),
+        homework=homework_scene(city, node.key, band, set(), False),
+        minutes=5,
+    )
 
 
 def build_lesson_builder(
@@ -182,34 +228,15 @@ def build_lesson_builder(
     async def build_homework_scene(state: LessonState) -> dict[str, Any]:
         assert state.node is not None and state.draft is not None
         profile = await deps.store.profile(state.user_id)
-        city = load_city(deps.content_root, state.city)
         band = profile.language_bands.get(state.node.language, 5)
-        failed = set()
         ticket = (await deps.store.tickets(state.user_id, active_only=False)).get(state.node_key)
-        if ticket:
-            failed = {e.context.split(":")[0] for e in ticket.examples}
-        options = [
-            (loc.key, h.npc_key)
-            for d in city.city.districts
-            if d.key in city.unlocked_districts(band)
-            for loc in d.locations
-            for h in loc.hotspots
-            if h.kind == "npc" and h.npc_key
-        ]
-        location, npc = next(((loc, n) for loc, n in options if loc not in failed), options[0])
-        homework = SceneBrief(
-            city=state.city,
-            location_key=location,
-            npc_keys=[npc or ""],
-            story_beat=f"After class, the learner runs into {city.npc(npc or '').name}.",
-            targets=[state.node_key],
-            ticket_targets=[state.node_key] if ticket else [],
-            learner_band=band,
-        )
+        failed = {e.context.split(":")[0] for e in ticket.examples} if ticket else set()
+        homework = homework_scene(load_city(deps.content_root, state.city), state.node_key, band, failed, bool(ticket))
         lesson = Lesson(
             node_key=state.node_key,
             title=state.draft.title,
             rule=state.draft.rule,
+            models=list((state.node.payload.get("lesson") or {}).get("examples", [])),
             examples=state.draft.examples,
             games=state.games,
             homework=homework,

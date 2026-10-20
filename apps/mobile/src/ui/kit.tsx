@@ -320,14 +320,16 @@ export function Section({ title, children, footer }: { title?: string; children:
   return (
     <View style={{ gap: space(1) }}>
       {title ? <Text style={[type.overline, { marginLeft: space(1) }]}>{title}</Text> : null}
-      <View style={[styles.section, shadow(1)]}>
-        {rows.map((row, i) => (
-          <View key={i}>
-            {i > 0 && <View style={styles.separator} />}
-            {row}
-          </View>
-        ))}
-      </View>
+      {rows.length > 0 && (
+        <View style={[styles.section, shadow(1)]}>
+          {rows.map((row, i) => (
+            <View key={i}>
+              {i > 0 && <View style={styles.separator} />}
+              {row}
+            </View>
+          ))}
+        </View>
+      )}
       {footer ? <Text style={[type.caption, { marginHorizontal: space(1) }]}>{footer}</Text> : null}
     </View>
   );

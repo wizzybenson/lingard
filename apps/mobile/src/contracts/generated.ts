@@ -76,7 +76,9 @@ export type NodeKey2 = string;
 export type Prompt = string;
 export type Kind = "conjugation_duel" | "sentence_race" | "spot_the_error" | "dictation" | "register_switch";
 export type TimeLimitS = number | null;
+export type Kind1 = "key_points" | "remedial";
 export type Minutes = number;
+export type Models = string[];
 export type NodeKey3 = string;
 export type Rule = string;
 export type Title = string;
@@ -187,7 +189,7 @@ export type DaysLived = number;
 export type Key2 = string;
 export type Description1 = string;
 export type Key3 = string;
-export type Kind1 = "npc" | "object" | "sign" | "door";
+export type Kind2 = "npc" | "object" | "sign" | "door";
 export type Label = string;
 export type NpcKey1 = string | null;
 export type Text1 = string | null;
@@ -195,7 +197,7 @@ export type X = number;
 export type Y = number;
 export type Hotspots = Hotspot[];
 export type Key4 = string;
-export type Kind2 =
+export type Kind3 =
   ("home" | "cafe" | "bank" | "clinic" | "library" | "town_hall" | "newspaper" | "shop" | "job_centre") | null;
 export type LayerArt = string[];
 export type Name2 = string;
@@ -344,7 +346,9 @@ export interface Lesson {
   examples: Examples;
   games: Games;
   homework: SceneBrief;
+  kind?: Kind1;
   minutes?: Minutes;
+  models?: Models;
   node_key: NodeKey3;
   rule: Rule;
   title: Title;
@@ -602,7 +606,7 @@ export interface Location {
   description: Description1;
   hotspots?: Hotspots;
   key: Key4;
-  kind?: Kind2;
+  kind?: Kind3;
   layer_art?: LayerArt;
   name: Name2;
   x?: X1;
@@ -614,7 +618,7 @@ export interface Location {
  */
 export interface Hotspot {
   key: Key3;
-  kind: Kind1;
+  kind: Kind2;
   label: Label;
   npc_key?: NpcKey1;
   text?: Text1;

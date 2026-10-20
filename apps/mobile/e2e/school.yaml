@@ -1,0 +1,25 @@
+# The School: key points for the learner's level, one opened and played. No paid calls (no dictation audio).
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "School, tab.*"
+- extendedWaitUntil:
+    visible: "Key points|Points clés"
+    timeout: 10000
+- takeScreenshot: school-01-path
+- scrollUntilVisible:
+    element: "Basics to refresh|Coming up next"
+    direction: DOWN
+- takeScreenshot: school-02-more
+- scrollUntilVisible:
+    element: "Start lesson"
+    direction: UP
+- tapOn: "Start lesson"
+- extendedWaitUntil:
+    visible: "The rule"
+    timeout: 10000
+- takeScreenshot: school-03-lesson
+- scrollUntilVisible:
+    element: "Spot the error"
+    direction: DOWN
+- takeScreenshot: school-04-games

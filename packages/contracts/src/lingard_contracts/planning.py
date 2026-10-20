@@ -69,9 +69,15 @@ class LessonExample(Strict):
 
 class Lesson(Strict):
     node_key: NodeKey
+    kind: Literal["key_points", "remedial"] = "remedial"
+    """key_points: taught before the learner needs the rule, from authored content (no mistakes yet).
+    remedial: built from the learner's own mistakes."""
     title: str
     rule: str
+    models: list[str] = Field(default_factory=list)
+    """Correct sentences that show the rule at work."""
     examples: list[LessonExample] = Field(min_length=1)
+    """Wrong → right pairs: the learner's own mistakes (remedial) or common ones (key points)."""
     games: list[Game] = Field(min_length=1)
     homework: SceneBrief
     minutes: int = Field(default=8, ge=5, le=10)

@@ -10,16 +10,17 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from lingard_api.deps import Db, Principal, State
+from lingard_api.routes.key_points import key_points
 from lingard_api.routes.learning import learner_bands
 from lingard_api.routes.me import DEFAULT_TARGETS
-from lingard_contracts.common import PackId
+from lingard_contracts.common import LANGUAGE_PACK, Language, PackId
 from lingard_db.models import LearnerProfile, Lesson, Session
 from lingard_economy.events import streak
 from lingard_graphs.pedagogy.review import due_at
 
 router = APIRouter(prefix="/v1", tags=["today"])
 
-NextStep = Literal["set_goal", "placement", "lesson", "story"]
+NextStep = Literal["set_goal", "placement", "key_points", "lesson", "story"]
 SKILL_ORDER = ["listening", "reading", "writing", "speaking"]
 
 
@@ -47,6 +48,13 @@ class Onboarding(BaseModel):
     first_story: bool
 
 
+class NextKeyPoint(BaseModel):
+    """The first rule at the learner's level not yet learned: the Today card opens it directly."""
+
+    node_key: str
+    title: str
+
+
 class Today(BaseModel):
     streak: int
     practised_today: bool
@@ -54,6 +62,7 @@ class Today(BaseModel):
     lessons_waiting: int
     goals: list[Goal]
     next_step: NextStep
+    next_key_point: NextKeyPoint | None = None
     onboarding: Onboarding
 
 
@@ -116,12 +125,19 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         )
     ).scalar_one()
     practised_today = now.date() in days
+    studying: list[Language] = [lang for lang in ("fr", "en") if LANGUAGE_PACK[lang] in exam_dates]
+    pending = None
+    for language in studying:
+        steps = await key_points(state, db, principal.user_id, language)
+        pending = pending or next((k for k in steps if k.core and k.status != "done"), None)
     step: NextStep
     # Progress decides what comes next, never the calendar: due reviews are offered beside the story, not before it.
     if not exam_dates:
         step = "set_goal"
     elif not bands:
         step = "placement"
+    elif pending is not None:
+        step = "key_points"  # the rules come before the scene that needs them
     elif lessons_waiting:
         step = "lesson"
     else:
@@ -133,5 +149,6 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         lessons_waiting=lessons_waiting,
         goals=goals,
         next_step=step,
+        next_key_point=NextKeyPoint(node_key=pending.node_key, title=pending.title) if pending else None,
         onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
     )

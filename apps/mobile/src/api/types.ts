@@ -97,6 +97,19 @@ export interface LessonRow {
   content: Lesson;
 }
 
+/** One step of the key-points path: a grammar rule taught before a scene needs it. */
+export interface KeyPoint {
+  node_key: string;
+  title: string;
+  band: number;
+  /** At the learner's level: taught before the next story day. */
+  core: boolean;
+  /** One level up: a look ahead. */
+  preview: boolean;
+  status: "new" | "open" | "done";
+  lesson_id: string | null;
+}
+
 export interface Profile {
   display_name: string;
   role: string;
@@ -126,7 +139,9 @@ export interface Today {
     days_left: number | null;
     skills: { skill: string; target: number; level_low: number | null; level_high: number | null; status: SkillStatus }[];
   }[];
-  next_step: "set_goal" | "placement" | "lesson" | "story";
+  next_step: "set_goal" | "placement" | "key_points" | "lesson" | "story";
+  /** The first rule at the learner's level not yet learned (when next_step is key_points). */
+  next_key_point: { node_key: string; title: string } | null;
   onboarding: { goal: boolean; placement: boolean; first_story: boolean };
 }
 

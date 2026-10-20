@@ -30,18 +30,36 @@ class FrenchVerb(BaseModel):
     subjonctif: list[str] = Field(min_length=6, max_length=6)
     imparfait_stem: str | None = None
 
+    @property
+    def regular(self) -> bool:
+        """Follows the -er or -ir (finir) pattern in the present: what the regular-present lesson drills."""
+        stem, ending = self.infinitive[:-2], self.infinitive[-2:]
+        patterns = {"er": ["e", "es", "e", "ons", "ez", "ent"], "ir": ["is", "is", "it", "issons", "issez", "issent"]}
+        return ending in patterns and self.present == [stem + e for e in patterns[ending]]
+
 
 class FrenchConjugator:
-    def __init__(self, verbs: dict[str, FrenchVerb], tenses: list[str], tense_bands: dict[str, int]) -> None:
+    def __init__(
+        self,
+        verbs: dict[str, FrenchVerb],
+        tenses: list[str],
+        tense_bands: dict[str, int],
+        tense_labels: dict[str, str] | None = None,
+    ) -> None:
         self.verbs = verbs
         self.tenses = tenses
         self.tense_bands = tense_bands
+        self.tense_labels = tense_labels or {}
+
+    def label(self, tense: str) -> str:
+        """The tense's name as a learner reads it (« passé composé »), from the content."""
+        return self.tense_labels.get(tense, tense.replace("_", " "))
 
     @classmethod
     def load(cls, path: str | Path) -> FrenchConjugator:
         data: dict[str, Any] = yaml.safe_load(Path(path).read_text())
         verbs = {key: FrenchVerb.model_validate(raw) for key, raw in data["verbs"].items()}
-        return cls(verbs, list(data["tenses"]), dict(data["tense_bands"]))
+        return cls(verbs, list(data["tenses"]), dict(data["tense_bands"]), dict(data.get("tense_labels", {})))
 
     def _verb(self, key: str) -> FrenchVerb:
         try:
