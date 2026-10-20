@@ -88,6 +88,8 @@ async def test_elevenlabs_maps_logical_voices_to_account_voices(monkeypatch: pyt
         {"voice_id": "v-f1", "labels": {"gender": "female"}},
         {"voice_id": "v-m1", "labels": {"gender": "male"}},
         {"voice_id": "v-m2", "labels": {"gender": "male"}},
+        {"voice_id": "a-learner", "category": "cloned", "labels": {"gender": "female"}},
+        {"voice_id": "a-design", "category": "generated", "labels": {"gender": "female"}},
     ]
     fetches = []
 
@@ -99,7 +101,7 @@ async def test_elevenlabs_maps_logical_voices_to_account_voices(monkeypatch: pyt
     tts = ElevenLabsTts("k", voices={"fr_f_41_chloe": "pinned"})
     martin = await tts.voice_for("fr_m_58_martin")
     assert martin in ("v-m1", "v-m2") and await tts.voice_for("fr_m_58_martin") == martin
-    assert await tts.voice_for("fr_f_46_nadia") == "v-f1"
+    assert await tts.voice_for("fr_f_46_nadia") == "v-f1", "never a learner's clone or a designed voice"
     assert await tts.voice_for("fr_f_41_chloe") == "pinned"
     assert fetches == ["/v1/voices"], "the voice list is fetched once"
 

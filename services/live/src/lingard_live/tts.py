@@ -43,6 +43,9 @@ class ElevenLabsTts:
     name = "elevenlabs"
     URL = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream"
     VOICES_URL = "https://api.elevenlabs.io/v1/voices"
+    PRIVATE_VOICE_CATEGORIES = frozenset({"cloned", "generated"})
+    """Never an NPC's voice: learners' clones live in the same account (biometric, owner only, SPEC §23), and
+    designed voices were made for something else. NPCs speak with stock and library voices."""
 
     def __init__(
         self,
@@ -67,6 +70,8 @@ class ElevenLabsTts:
                 response.raise_for_status()
             pools: dict[str, list[str]] = {"f": [], "m": [], "all": []}
             for item in sorted(response.json().get("voices", []), key=lambda v: v["voice_id"]):
+                if item.get("category") in self.PRIVATE_VOICE_CATEGORIES:
+                    continue
                 gender = str((item.get("labels") or {}).get("gender", "")).lower()
                 pools["all"].append(item["voice_id"])
                 if gender in ("female", "male"):
