@@ -13,6 +13,12 @@ section_a:
     prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un portefeuille rendu avec 500 dollars à l'intérieur. Jeudi dernier, une étudiante de Rivemont a trouvé un portefeuille sur un banc du parc… »"
   - variant: fait_divers
     prompt: "Poursuivez cet article de journal (80 mots minimum) : « Tempête de neige : les écoles fermées, les habitants solidaires. Dimanche soir, plus de quarante centimètres de neige sont tombés sur Rivemont… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un chat sauvé du toit de l'église par les pompiers. Mercredi après-midi, les passants du Vieux-Port ont entendu des miaulements venant du clocher… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Une boulangerie offre son pain invendu aux familles du quartier. Depuis lundi, chaque soir à 19 heures, une longue file se forme devant la boulangerie de la rue Saint-Jean… »"
+  - variant: fait_divers
+    prompt: "Poursuivez cet article de journal (80 mots minimum) : « Un autobus coincé sous un pont : aucun blessé. Ce matin, vers 8 h, un autobus scolaire s'est retrouvé bloqué sous le viaduc de la Haute-Ville… »"
 section_b:
   - variant: courrier_des_lecteurs
     prompt: "« Les grandes villes devraient interdire les voitures dans leur centre. » Vous écrivez au courrier des lecteurs du journal local pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
@@ -26,3 +32,9 @@ section_b:
     prompt: "« Le transport en commun devrait être gratuit pour tous les habitants. » Vous écrivez au courrier des lecteurs du journal de Rivemont pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
   - variant: forum
     prompt: "« Le bénévolat devrait être obligatoire pour tous les élèves du secondaire. » Vous donnez votre point de vue sur un forum consacré à l'éducation. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: courrier_des_lecteurs
+    prompt: "« Les magasins devraient fermer le dimanche pour permettre aux employés de se reposer. » Vous écrivez au courrier des lecteurs du journal local pour donner votre opinion. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: forum
+    prompt: "« Il faudrait interdire les voitures à essence d'ici dix ans. » Vous réagissez sur un forum consacré à l'environnement. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."
+  - variant: courrier_des_lecteurs
+    prompt: "« Les nouveaux arrivants devraient obligatoirement suivre un cours d'histoire du pays. » Vous écrivez au courrier des lecteurs pour réagir à cette affirmation. Vous développez au moins deux arguments et vous donnez des exemples (200 mots minimum)."

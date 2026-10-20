@@ -110,7 +110,7 @@ def require_providers(state: AppState, *, llm: bool = False, tts: bool = False) 
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Not configured: " + " and ".join(missing))
 
 
-SPEAKER = re.compile(r"^([MF]\d?):\s*(.+)$")
+SPEAKER = re.compile(r"^([MF]\d?)\s*:\s*(.+)$")  # "F1:" or, in French typography, "F1 :"
 TURN_GAP = b"\x00\x00" * int(16_000 * 0.35)
 """A breath between speakers, 16 kHz mono PCM."""
 

@@ -88,7 +88,10 @@ def main() -> None:
     router = LLMRouter(LLMConfig.load(ROOT / "config" / "llm.yaml"))
     verdicts = asyncio.run(review(nodes, language, router, PromptRegistry(ROOT / "prompts")))
     out = ROOT / "evals" / "results" / f"lesson_review.{language}.json"
-    out.write_text(json.dumps({k: v.model_dump() for k, v in verdicts.items()}, ensure_ascii=False, indent=2) + "\n")
+    # A run on some keys updates their verdicts and keeps the rest of the last full review.
+    kept = json.loads(out.read_text()) if out.is_file() else {}
+    kept.update({k: v.model_dump() for k, v in verdicts.items()})
+    out.write_text(json.dumps(kept, ensure_ascii=False, indent=2) + "\n")
     flagged = {k: v for k, v in verdicts.items() if v.verdict == "fix"}
     for key, verdict in flagged.items():
         for p in verdict.problems:

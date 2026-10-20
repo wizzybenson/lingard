@@ -50,6 +50,81 @@ section_a:
       - "Un dépôt d'un mois de loyer est demandé à la signature."
       - "L'appartement est au deuxième étage, sans ascenseur."
       - "On peut visiter le samedi après-midi."
+  - prompt: "Vous avez vu cette annonce : « Garderie Les Petits Pas — places disponibles pour enfants de 18 mois à 5 ans, quartier Saint-Roch. » Vous téléphonez pour obtenir des renseignements (horaires, tarifs, repas, activités, inscription…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the director of the daycare. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "La garderie est ouverte du lundi au vendredi, de 7 h à 18 h."
+      - "Le tarif est de 12 $ par jour pour les résidents de Rivemont."
+      - "Les repas du midi et deux collations sont inclus."
+      - "Il reste trois places dans le groupe des 3-4 ans."
+      - "Les enfants sortent au parc tous les jours, sauf en cas de grand froid."
+      - "Les éducatrices sont toutes diplômées en petite enfance."
+      - "Il faut s'inscrire sur la liste d'attente provinciale avant la visite."
+      - "Une période d'intégration de deux semaines est prévue pour les nouveaux enfants."
+      - "Les parents doivent fournir des vêtements de rechange et des bottes."
+      - "La garderie est fermée deux semaines pendant les vacances de la construction en juillet."
+  - prompt: "Vous lisez cette annonce : « Clinique dentaire du Vieux-Port — nouveaux patients acceptés. » Vous appelez pour vous renseigner (rendez-vous, prix, assurance, urgences, langues parlées…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the receptionist of the dental clinic. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Le premier rendez-vous est un examen complet avec radiographies."
+      - "L'examen coûte 120 $ sans assurance."
+      - "La clinique facture directement la plupart des assurances privées."
+      - "Les enfants de moins de 10 ans sont couverts par le régime public pour certains soins."
+      - "Le prochain rendez-vous disponible est dans trois semaines."
+      - "La clinique garde deux plages par jour pour les urgences."
+      - "Les dentistes parlent français, anglais et espagnol."
+      - "La clinique est ouverte le jeudi soir jusqu'à 20 h."
+      - "Il faut annuler au moins 24 heures à l'avance, sinon des frais de 50 $ s'appliquent."
+      - "On peut prendre rendez-vous en ligne ou par téléphone."
+  - prompt: "Vous voyez cette affiche : « Location de vélos en libre-service — saison 2027, abonnements ouverts. » Vous appelez le service à la clientèle pour en savoir plus (prix, fonctionnement, stations, saison, assurance…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play a customer service agent of the bike-share service. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "La saison commence le 15 avril et se termine le 15 novembre."
+      - "L'abonnement saisonnier coûte 105 $."
+      - "Les trajets de moins de 45 minutes sont inclus dans l'abonnement."
+      - "Au-delà de 45 minutes, chaque tranche de 15 minutes coûte 1,50 $."
+      - "Il y a 80 stations dans la ville, dont 25 dans le Vieux-Port."
+      - "On déverrouille un vélo avec l'application ou une carte d'abonné."
+      - "Des vélos électriques sont disponibles avec un supplément de 0,15 $ la minute."
+      - "Il faut avoir au moins 14 ans pour utiliser le service."
+      - "Le casque n'est pas fourni, mais il est fortement recommandé."
+      - "En cas de vol, l'abonné doit le signaler dans les 24 heures."
+  - prompt: "Vous avez lu cette annonce : « Salon de l'emploi de Rivemont — plus de 60 employeurs, entrée gratuite. » Vous appelez l'organisation pour obtenir des informations (date, lieu, employeurs, préparation, ateliers…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play an organiser of the job fair. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Le salon a lieu le samedi 12 mars, de 10 h à 16 h."
+      - "Il se tient au centre des congrès, près de la gare."
+      - "Plus de 60 employeurs seront présents, surtout en santé, en construction et en commerce."
+      - "L'entrée est gratuite, sans inscription."
+      - "Il est conseillé d'apporter une vingtaine de CV imprimés."
+      - "Des ateliers de 30 minutes sur l'entrevue d'embauche sont offerts toutes les heures."
+      - "Un service de révision de CV est offert gratuitement sur place."
+      - "Certains employeurs feront des entrevues sur place."
+      - "Un espace est réservé aux personnes nouvellement arrivées, avec des conseillers en emploi."
+      - "Le stationnement est payant, mais le métro arrive directement au centre."
+  - prompt: "Vous voyez cette annonce : « Cours de natation pour adultes — piscine municipale de la Haute-Ville. » Vous téléphonez pour vous renseigner (niveaux, horaires, prix, matériel, inscription…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the receptionist of the municipal pool. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Les cours ont lieu le lundi et le mercredi, de 19 h à 20 h."
+      - "La session dure dix semaines."
+      - "Il y a trois niveaux : débutant, intermédiaire et perfectionnement."
+      - "Le cours coûte 140 $ pour les résidents et 175 $ pour les non-résidents."
+      - "Le bonnet de bain est obligatoire."
+      - "Les groupes ont au maximum huit personnes."
+      - "Un test de niveau gratuit a lieu la semaine avant le début des cours."
+      - "Les inscriptions se font en ligne à partir du 1er septembre."
+      - "Les vestiaires ont des casiers ; il faut apporter son propre cadenas."
+      - "Un cours manqué ne peut pas être remboursé, mais il peut être repris dans un autre groupe."
 section_b:
   - prompt: "Vous avez lu cette annonce : « Devenez bénévole au festival d'été de Rivemont : trois jours de musique, accès gratuit aux concerts pour les bénévoles. » Vous présentez cette offre à un ami et vous essayez de le convaincre de s'inscrire avec vous. Il n'est pas convaincu : répondez à ses objections."
     targets: [fr.func.persuade]
@@ -81,3 +156,53 @@ section_b:
       - "L'abonnement donne accès à l'autobus et au métro sans limite."
       - "Aux heures de pointe, un autobus passe toutes les dix minutes sur les grandes lignes."
       - "Certains employeurs remboursent une partie de l'abonnement."
+  - prompt: "Vous avez lu cette annonce : « Cours du soir en informatique au cégep — formation de six mois, reconnue par les employeurs. » Vous présentez cette formation à un ami qui cherche un meilleur emploi et vous essayez de le convaincre de s'inscrire. Il hésite : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (you are too tired after work, you are too old to study, it costs money, you are not good with computers), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "La formation dure six mois, à raison de trois soirs par semaine."
+      - "Elle coûte 450 $, mais elle est remboursée à moitié pour les personnes au chômage."
+      - "Les cours ont lieu de 18 h 30 à 21 h 30."
+      - "Un stage de trois semaines en entreprise est inclus à la fin."
+      - "Plus de 70 % des diplômés trouvent un emploi dans le domaine en moins d'un an."
+  - prompt: "Vous avez vu cette affiche : « Grand ménage du printemps dans le quartier — venez nettoyer le parc des Érables avec vos voisins. » Vous présentez cette activité à un ami et vous essayez de le convaincre de venir avec vous. Il n'est pas convaincu : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (it is the city's job, you have plans that day, you do not know the neighbours, it will be dirty and cold), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "L'activité a lieu le samedi 23 avril, de 9 h à midi."
+      - "Les gants, les sacs et les pinces sont fournis."
+      - "Un dîner gratuit est offert aux participants à midi."
+      - "L'activité est organisée par le comité de quartier avec la ville."
+      - "L'an dernier, plus de 120 voisins ont participé."
+  - prompt: "Vous avez lu cet article : « Le covoiturage pour aller au travail : une application met en relation les voisins qui font le même trajet. » Vous présentez cette idée à un ami et vous essayez de le convaincre d'essayer. Il n'est pas d'accord : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (you like to drive alone, the schedules will not match, you do not trust strangers, it is complicated to organise), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "L'application est gratuite pour les passagers et les conducteurs."
+      - "Le passager partage les frais d'essence, environ 5 $ par trajet."
+      - "Les profils des conducteurs sont vérifiés et notés par les utilisateurs."
+      - "On peut choisir de voyager seulement avec des collègues de la même entreprise."
+      - "Un trajet en covoiturage coûte en moyenne trois fois moins cher qu'un trajet seul en voiture."
+  - prompt: "Vous avez lu cette annonce : « Bénévoles recherchés pour l'aide aux devoirs — deux heures par semaine à la bibliothèque. » Vous présentez cette offre à un ami et vous essayez de le convaincre de devenir bénévole avec vous. Il hésite : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (you are not a teacher, your French is not perfect, you have no time, you are shy with children), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "Les séances ont lieu le mardi et le jeudi, de 16 h à 18 h."
+      - "Il faut s'engager pour au moins un trimestre."
+      - "Une formation de trois heures est offerte aux nouveaux bénévoles."
+      - "Les élèves ont entre 8 et 12 ans."
+      - "Les bénévoles reçoivent une attestation utile pour leur CV."
+  - prompt: "Vous avez vu cette publicité : « Panier de légumes bio d'une ferme locale, livré chaque semaine dans votre quartier. » Vous présentez cette offre à un ami et vous essayez de le convaincre de s'abonner avec vous. Il n'est pas convaincu : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (it is too expensive, you cannot choose the vegetables, you are often away, the supermarket is closer), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "Le panier coûte 28 $ par semaine pour deux personnes."
+      - "La livraison a lieu le mercredi soir au centre communautaire."
+      - "On peut suspendre l'abonnement pendant les vacances."
+      - "La ferme se trouve à 40 kilomètres de Rivemont."
+      - "Les abonnés peuvent visiter la ferme une fois par saison."

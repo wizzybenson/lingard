@@ -58,4 +58,17 @@ def test_every_writing_variant_the_exam_sets_has_prompts(pack_id: PackId) -> Non
         tagged = [p.variant for p in prompts[task.id]]
         assert set(tagged) <= set(task.variants), f"{task.id}: undeclared variant"
         for variant in task.variants:
-            assert tagged.count(variant) >= 2, f"{task.id}: at least two prompts for {variant}"
+            assert tagged.count(variant) >= 3, f"{task.id}: at least three prompts for {variant}"
+
+
+@pytest.mark.parametrize("pack_id", ["ielts_gt", "tef_canada"])
+def test_every_speaking_part_has_enough_tasks_and_the_bank_spans_beginner_to_advanced(pack_id: PackId) -> None:
+    import yaml
+
+    speaking = yaml.safe_load((ROOT / "packs" / pack_id / "speaking_prompts.yaml").read_text())
+    for part in PACKS.pack(pack_id).section_for(Skill.SPEAKING).part_list():
+        assert len(speaking[part.id]) >= 5, f"{part.id}: at least five tasks"
+    for section in ("reading", "listening"):
+        bands = [i.band for i in BANK._items.values() if i.pack == pack_id and i.skill.value == section]
+        assert sum(b <= 5 for b in bands) >= 25, f"{section}: enough for beginners"
+        assert sum(b >= 9 for b in bands) >= 15, f"{section}: enough for the highest levels"

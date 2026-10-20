@@ -40,6 +40,20 @@ interview:
     facts:
       - "This is Part 1 of the IELTS speaking test."
       - "Part 1 lasts about four to five minutes."
+  - prompt: "Part 1. The examiner will ask you about reading and about technology. Answer naturally and give some detail."
+    targets: [en.func.express_preference]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 1. Ask these questions one at a time, in order, with only a brief neutral acknowledgement between them, and never give your own opinion: Do you enjoy reading? What kind of things do you read? Did you read a lot as a child? How often do you use a computer? Which app do you use most? Do you think people spend too much time on their phones?"
+    facts:
+      - "This is Part 1 of the IELTS speaking test."
+      - "Part 1 lasts about four to five minutes."
+  - prompt: "Part 1. The examiner will ask you about your hometown and about holidays. Answer naturally and give some detail."
+    targets: [en.func.describe_person_place]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 1. Ask these questions one at a time, in order, with only a brief neutral acknowledgement between them, and never give your own opinion: Where is your hometown? What is it known for? Has it changed much in recent years? How do you usually spend your holidays? Do you prefer holidays by the sea or in the city? Where would you like to go next?"
+    facts:
+      - "This is Part 1 of the IELTS speaking test."
+      - "Part 1 lasts about four to five minutes."
 long_turn:
   - topic: helping
     prompt: "Part 2. Describe a time when you helped someone. You should say: who you helped, what the situation was, how you helped them, and explain how you felt about helping this person. You have one minute to prepare, then talk for one to two minutes."
@@ -89,6 +103,22 @@ long_turn:
     facts:
       - "This is Part 2 of the IELTS speaking test."
       - "The candidate has one minute to prepare and should speak for one to two minutes."
+  - topic: journeys
+    prompt: "Part 2. Describe a journey you remember well. You should say: where you went, how you travelled, who you were with, and explain why you remember this journey. You have one minute to prepare, then talk for one to two minutes."
+    targets: [en.func.narrate_past]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Do you enjoy travelling like this?"
+    facts:
+      - "This is Part 2 of the IELTS speaking test."
+      - "The candidate has one minute to prepare and should speak for one to two minutes."
+  - topic: decisions
+    prompt: "Part 2. Describe an important decision you made. You should say: what the decision was, when you made it, how you made it, and explain why it was important to you. You have one minute to prepare, then talk for one to two minutes."
+    targets: [en.func.narrate_past]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 2. Say that the candidate has one minute to prepare and should start when ready, then let them speak for up to two minutes without interrupting. When they stop, ask one short rounding-off question: Are you happy with the decision now?"
+    facts:
+      - "This is Part 2 of the IELTS speaking test."
+      - "The candidate has one minute to prepare and should speak for one to two minutes."
 discussion:
   - topic: helping
     prompt: "Part 3. The examiner will discuss helping others with you. Give reasons and examples for your views."
@@ -135,6 +165,22 @@ discussion:
     targets: [en.func.express_opinion]
     tactics:
       - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why are traditional celebrations important to communities? Are celebrations becoming too commercial? How do people who move abroad keep their traditions alive?"
+    facts:
+      - "This is Part 3 of the IELTS speaking test."
+      - "Part 3 lasts about four to five minutes."
+  - topic: journeys
+    prompt: "Part 3. The examiner will discuss travel and transport with you. Give reasons and examples for your views."
+    targets: [en.func.express_opinion]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why do people travel more today than in the past? Should governments spend more on public transport than on roads? How might travel change in the future?"
+    facts:
+      - "This is Part 3 of the IELTS speaking test."
+      - "Part 3 lasts about four to five minutes."
+  - topic: decisions
+    prompt: "Part 3. The examiner will discuss decisions and advice with you. Give reasons and examples for your views."
+    targets: [en.func.express_opinion]
+    tactics:
+      - "You are the IELTS speaking examiner running Part 3. Ask these questions one at a time and follow up once on each answer (why? can you give an example? is that always true?), never giving your own opinion: Why do some people find it hard to make decisions? Should young people follow their parents' advice about careers? Do people today have too many choices?"
     facts:
       - "This is Part 3 of the IELTS speaking test."
       - "Part 3 lasts about four to five minutes."

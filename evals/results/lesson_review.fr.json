@@ -360,5 +360,24 @@
   "fr.lex.science_public_health": {
     "verdict": "ok",
     "problems": []
+  },
+  "fr.grammar.passe_simple": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.accord_participe_pronominaux": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "rule",
+        "text": "Les verbes toujours pronominaux (s'enfuir, se souvenir) s'accordent avec le sujet.",
+        "issue": "Cette généralisation omet notamment s’arroger, dont le participe s’accorde avec le COD placé avant, et non avec le sujet.",
+        "suggestion": "Le participe des verbes essentiellement pronominaux, comme s’enfuir et se souvenir, s’accorde généralement avec le sujet. Exception : avec s’arroger, il s’accorde avec le COD seulement si celui-ci précède : elles se sont arrogé des droits ; les droits qu’elles se sont arrogés."
+      }
+    ]
+  },
+  "fr.grammar.articulateurs_soutenus": {
+    "verdict": "ok",
+    "problems": []
   }
 }

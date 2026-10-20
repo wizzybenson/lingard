@@ -1,0 +1,98 @@
+# IELTS General Training, advanced practice sets (CLB 9–10): a long reading text and a lecture at the top of the
+# test's range, for learners aiming at the highest bands. Original texts and questions written for Lingard.
+defaults: {pack: ielts_gt, language: en}
+sets:
+  - id: en-adv-r1
+    skill: reading
+    section: reading
+    part: section3
+    band: 9
+    task_type: multiple_choice
+    shuffle: false
+    instructions: "Questions 28–34. Choose the correct letter, A, B, C or D."
+    stimulus: &reuse |
+      SECOND LIVES: THE QUIET RISE OF ADAPTIVE REUSE
+
+      For most of the twentieth century, the fate of an unwanted building was simple: it was demolished and something new was put in its place. Old factories, warehouses and railway stations were seen as obstacles to progress, and their removal was rarely questioned. Today, a growing number of architects, developers and city councils are taking a different view. Rather than starting again, they are adapting existing structures to new uses, a practice known as adaptive reuse.
+
+      The arguments in its favour are partly cultural. Buildings give neighbourhoods their character, and residents often feel a strong attachment to structures they have known all their lives, even when those structures have long stopped serving their original purpose. A disused textile mill converted into flats or a power station turned into a gallery preserves a link with the past that a new building cannot provide.
+
+      Increasingly, however, the most persuasive arguments are environmental. Much of the carbon associated with a building is emitted before anyone moves in, through the manufacture of concrete, steel and glass and the work of construction itself. This "embodied carbon" is already spent in an existing building; demolishing it and building again means spending it a second time. Some studies suggest that a new, highly energy-efficient building may take decades to make up for the emissions caused by its construction, by which time it may itself be approaching the end of its useful life.
+
+      Adaptive reuse is not without its difficulties. Old buildings were designed for purposes very different from their new ones, and converting them can be technically demanding. Floors built to carry heavy machinery may be ideal for offices, but windows placed for industrial lighting may leave parts of a new apartment in permanent shade. Bringing old structures up to modern standards of fire safety, accessibility and insulation can be expensive, and unexpected problems, such as contaminated soil or weakened foundations, are often discovered only once work has begun. Developers frequently complain that these uncertainties make reuse projects harder to finance than new construction, whose costs are easier to predict.
+
+      Regulation has not always helped. In many countries, building codes were written with new construction in mind, and applying them to a nineteenth-century warehouse can be awkward or even impossible. Some cities have responded by introducing more flexible rules for existing buildings, allowing alternative solutions as long as safety is not compromised. Others have gone further, requiring developers to assess whether an existing building could be reused before permission to demolish it is granted.
+
+      Critics warn against treating reuse as a solution in every case. Some buildings are genuinely unsuitable for conversion, and preserving them at great expense may divert resources from projects that would do more good. There is also a risk that converted buildings, with their exposed brick and high ceilings, become fashionable and expensive, contributing to the very rise in housing costs that cities are struggling to control.
+
+      Even so, the direction of change is clear. As governments set targets to reduce emissions from construction, the question asked about an old building is shifting from "Why should we keep it?" to "Why should we knock it down?" For a profession long associated with creating the new, learning to work with what already exists may prove to be one of its most important challenges.
+    questions:
+      - question: "According to the first paragraph, in the past old industrial buildings were usually"
+        options: ["protected as part of a city's history.", "replaced without much debate.", "converted into housing.", "sold to private developers."]
+        answer: 1
+        band: 8
+      - question: "What does the writer say about the cultural case for adaptive reuse?"
+        options: ["It matters more than the environmental case.", "It depends on how old a building is.", "It rests on people's emotional connection to familiar buildings.", "It is mainly supported by architects."]
+        answer: 2
+        band: 9
+      - question: "The term \"embodied carbon\" refers to emissions that"
+        options: ["a building produces while it is being heated.", "result from producing materials and constructing the building.", "are saved when a building is well insulated.", "are caused by demolishing a building."]
+        answer: 1
+        band: 9
+      - question: "Why might a new energy-efficient building not be the greener choice?"
+        options: ["Its efficiency is often exaggerated.", "It may need repairs more frequently.", "Its construction emissions can take decades to offset.", "It usually uses more land than an old building."]
+        answer: 2
+        band: 10
+      - question: "According to developers, reuse projects are harder to finance because"
+        options: ["banks prefer modern architecture.", "their final costs are less predictable.", "they take longer to receive permission.", "old buildings are expensive to buy."]
+        answer: 1
+        band: 9
+      - question: "Some cities now require developers to"
+        options: ["convert every industrial building they own.", "follow the same rules as for new construction.", "consider reuse before they are allowed to demolish.", "pay a tax on embodied carbon."]
+        answer: 2
+        band: 9
+      - question: "What is the writer's overall view of adaptive reuse?"
+        options: ["It should replace new construction entirely.", "It is a passing fashion in architecture.", "It is increasingly important, though not always appropriate.", "Its environmental benefits have been disproved."]
+        answer: 2
+        band: 10
+  - id: en-adv-r2
+    skill: reading
+    section: reading
+    part: section3
+    band: 9
+    task_type: summary_completion
+    shuffle: false
+    instructions: "Questions 35–40. Complete the summary below. Choose NO MORE THAN TWO WORDS from the text for each answer."
+    stimulus: *reuse
+    questions:
+      - {question: "Converting old buildings can be difficult because they were designed for very different ______.", response: text, accepted: [purposes], word_limit: 2, band: 9}
+      - {question: "Strong floors suit offices, but industrial windows may leave parts of a flat in permanent ______.", response: text, accepted: [shade], word_limit: 2, band: 9}
+      - {question: "Problems such as contaminated soil or weakened ______ often appear only after work starts.", response: text, accepted: [foundations], word_limit: 2, band: 10}
+      - {question: "Building codes were mostly written with ______ in mind.", response: text, accepted: [new construction], word_limit: 2, band: 10}
+      - {question: "Some cities allow alternative solutions as long as ______ is not compromised.", response: text, accepted: [safety], word_limit: 2, band: 9}
+      - {question: "Critics fear fashionable conversions may push up ______.", response: text, accepted: [housing costs], word_limit: 2, band: 10}
+  - id: en-adv-l1
+    skill: listening
+    section: listening
+    part: part4
+    band: 9
+    task_type: note_completion
+    instructions: "Questions 31–40. Complete the notes below. Write ONE WORD ONLY for each answer."
+    stimulus: |
+      F1: Good morning. Today's lecture is about something every language does constantly, and which most speakers hardly notice: borrowing words from other languages. Linguists sometimes call these loanwords, and English is famous for having borrowed on an enormous scale.
+      Why do languages borrow at all? The most obvious reason is need. When speakers meet a new object or idea, it's often easier to adopt the existing name than to invent one. That's why so many words for foods have travelled with the foods themselves: chocolate, coffee and tea all arrived in English together with the products. A second reason is prestige. If one language is associated with power, learning or fashion, speakers of other languages may borrow its words even when they already have perfectly good ones of their own. For several centuries after 1066, French was the language of the English ruling class, and you can still see the result today. The animals in the field have English names, cow and pig, while the meat on the table has French ones, beef and pork.
+      Borrowed words rarely stay exactly as they were. They're usually adapted to the sounds of the new language, and their meanings often shift. Sometimes a word becomes narrower: a general word in the original language comes to describe one particular thing. Sometimes the reverse happens and the meaning broadens.
+      Not every borrowing is welcomed. Some countries have official bodies which recommend native alternatives to foreign terms, particularly in technology. These efforts have had mixed success. Ordinary speakers tend to use whatever word they hear most often, and in fields that change fast, the foreign term is frequently established before an alternative can be proposed.
+      Is borrowing a threat to a language? Most linguists would say no. A language that borrows heavily can remain perfectly healthy, provided people continue to use it in every area of life. The real danger comes when speakers stop passing a language on to their children, which is a question of social pressure, not of vocabulary.
+      Next week we'll look at the opposite process: how languages create new words from their own resources.
+    questions:
+      - {question: "Borrowed words are also called ______", response: text, accepted: [loanwords, loan-words], word_limit: 1, band: 8}
+      - {question: "First reason for borrowing: ______ for a name for something new", response: text, accepted: [need], word_limit: 1, band: 8}
+      - {question: "Words for ______ often arrived together with the products", response: text, accepted: [foods, food], word_limit: 1, band: 9}
+      - {question: "Second reason: ______ of the other language", response: text, accepted: [prestige], word_limit: 1, band: 9}
+      - {question: "After 1066, French was spoken by the ruling ______", response: text, accepted: [class], word_limit: 1, band: 9}
+      - {question: "Meat has French names, such as pork and ______", response: text, accepted: [beef], word_limit: 1, band: 9}
+      - {question: "Borrowed words are adapted to the ______ of the new language", response: text, accepted: [sounds], word_limit: 1, band: 9}
+      - {question: "Some countries' official bodies propose alternatives, especially in ______", response: text, accepted: [technology], word_limit: 1, band: 10}
+      - {question: "Speakers tend to use the word they hear most ______", response: text, accepted: [often, frequently], word_limit: 1, band: 10}
+      - {question: "The real danger: people no longer pass a language on to their ______", response: text, accepted: [children], word_limit: 1, band: 10}

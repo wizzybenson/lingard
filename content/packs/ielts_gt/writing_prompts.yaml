@@ -13,6 +13,12 @@ task1_letter:
     prompt: "You need to take a week off work next month for a family reason. Write a letter to your manager. In your letter: explain why you need the time off; say which dates you would like; suggest how your work could be covered. Write at least 150 words. Begin your letter: Dear Ms Clarke,"
   - variant: personal
     prompt: "A friend has invited you to their wedding, but you cannot go. Write a letter to your friend. In your letter: thank them for the invitation; explain why you cannot come; suggest how you could celebrate together later. Write at least 150 words. Begin your letter: Dear …,"
+  - variant: formal
+    prompt: "You recently attended an evening course at a local college, but several classes were cancelled without notice. Write a letter to the course director. In your letter: give details of the course; explain what happened; say what you would like the college to do. Write at least 150 words. Begin your letter: Dear Sir or Madam,"
+  - variant: semi_formal
+    prompt: "Your neighbour often plays loud music late at night. Write a letter to your neighbour. In your letter: introduce yourself; explain how the noise is affecting you; suggest a solution. Write at least 150 words. Begin your letter: Dear Mr Harris,"
+  - variant: personal
+    prompt: "A friend is thinking of moving to the town where you live. Write a letter to your friend. In your letter: describe the area; say what is good and bad about living there; offer some practical help. Write at least 150 words. Begin your letter: Dear …,"
 task2_essay:
   - variant: opinion
     prompt: "Some people think that cities should limit the number of cars allowed in the centre. To what extent do you agree or disagree? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
@@ -34,3 +40,13 @@ task2_essay:
     prompt: "Many people today spend so much time on their phones that it affects their sleep and their relationships. What problems does this cause, and what can individuals and governments do about it? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
   - variant: two_part
     prompt: "In some countries, more people now live alone than ever before. What are the reasons for this? What effects does it have on society? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
+  - variant: opinion
+    prompt: "Some people think that all young people should be required to stay in full-time education until they are eighteen. To what extent do you agree or disagree? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
+  - variant: discussion
+    prompt: "Some people believe that it is better to rent a home, while others think that buying a home is a better choice. Discuss both views and give your own opinion. Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
+  - variant: advantages_disadvantages
+    prompt: "In many countries, more and more shops and services are open twenty-four hours a day. Do the advantages of this development outweigh the disadvantages? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
+  - variant: problem_solution
+    prompt: "In many cities, traffic congestion is getting worse every year. What are the main causes of this problem, and what solutions can you suggest? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."
+  - variant: two_part
+    prompt: "Many people today prefer to communicate by message rather than by phone or face to face. Why is this the case? Is this a positive or a negative development? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words."

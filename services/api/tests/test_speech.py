@@ -30,6 +30,7 @@ def test_listening_scripts_split_into_speakers() -> None:
         ("F1", "Of course."),
     ]
     assert script_turns("Attention please, platform two.") == [(None, "Attention please, platform two.")]
+    assert script_turns("F1 : Bonjour.\nM1 : Désolé, c'est complet.") == [("F1", "Bonjour."), ("M1", "Désolé, c'est complet.")]
     assert speaker_voice("en", "F2", "en_f_narrator") == "en_f_speaker2"
     assert speaker_voice("fr", "M", "fr_f_narrator") == "fr_m_speaker1"
     assert speaker_voice("fr", None, "fr_f_narrator") == "fr_f_narrator"

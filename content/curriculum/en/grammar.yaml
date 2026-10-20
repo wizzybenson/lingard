@@ -476,6 +476,17 @@ nodes:
           - {wrong: "The increase rents worries tenants.", right: "The increase in rents worries tenants."}
           - {wrong: "The introduce of the scheme was a success.", right: "The introduction of the scheme was a success."}
     prereq: [en.grammar.word_formation]
+  - key: en.grammar.discourse_markers
+    band: 9
+    title: "Discourse markers in formal writing"
+    payload:
+      lesson:
+        rule: "Link ideas precisely: moreover and furthermore add a point; nevertheless and however contrast; on the other hand compares two sides; consequently and therefore show a result; whereas contrasts two facts in one sentence."
+        examples: ["Remote work saves time; moreover, it reduces traffic.", "Cities are noisy. On the other hand, they offer more jobs.", "Rents rose sharply; consequently, many families moved out."]
+        common_errors:
+          - {wrong: "Cities are noisy. On the contrary, they offer more jobs.", right: "Cities are noisy. On the other hand, they offer more jobs."}
+          - {wrong: "Although the plan is expensive, but it works.", right: "Although the plan is expensive, it works."}
+    prereq: [en.grammar.linking_words]
   - key: en.grammar.inversion
     band: 10
     title: Inversion after negative adverbials
@@ -485,3 +496,25 @@ nodes:
         examples: ["Not only was the flat damp, but the heating didn't work.", "Rarely have I seen such poor service."]
         common_errors:
           - {wrong: "Never I have seen this.", right: "Never have I seen this."}
+  - key: en.grammar.complex_noun_phrases
+    band: 10
+    title: "Complex noun phrases"
+    payload:
+      lesson:
+        rule: "Pack information into the noun phrase with reduced relative clauses (people living in…, measures designed to…) and prepositional phrases, as academic and formal writing does."
+        examples: ["People living in rural areas often lack public transport.", "Measures designed to cut pollution have had limited success.", "The rise in the cost of housing affects young families most."]
+        common_errors:
+          - {wrong: "People who living in rural areas lack transport.", right: "People living in rural areas lack transport."}
+          - {wrong: "The measures were designed to cut pollution have failed.", right: "The measures designed to cut pollution have failed."}
+    prereq: [en.grammar.participle_clauses]
+  - key: en.grammar.formal_subjunctive
+    band: 10
+    title: "Suggest, recommend, insist: formal structures"
+    payload:
+      lesson:
+        rule: "When suggest, recommend, insist, demand or it is essential that ask for an action, formal English uses that + base form (that she rest) or that + should (but: he insisted that he was innocent); suggest never takes an object + to-infinitive (recommend can, though a that-clause is more formal), and insist takes on + -ing."
+        examples: ["The doctor recommended that she rest for a week.", "It is essential that every applicant provide proof of address.", "He insisted on paying for the meal."]
+        common_errors:
+          - {wrong: "The doctor suggested me to rest.", right: "The doctor suggested that I rest."}
+          - {wrong: "He insisted to pay for the meal.", right: "He insisted on paying for the meal."}
+    prereq: [en.grammar.reported_speech]

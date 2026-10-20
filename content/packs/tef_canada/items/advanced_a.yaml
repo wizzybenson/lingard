@@ -1,0 +1,142 @@
+# TEF Canada, sujets avancés (NCLC 9–10) : un éditorial et un entretien radio au sommet de l'échelle, pour les
+# candidats qui visent les niveaux les plus élevés. Contenu original écrit pour Lingard. Niveaux : NCLC.
+defaults: {pack: tef_canada, language: fr}
+sets:
+  - id: fr-adv-ce1
+    skill: reading
+    section: comprehension_ecrite
+    part: ce_articles
+    task_type: article_detail
+    band: 9
+    stimulus: &quart |
+      LA VILLE DU QUART D'HEURE : PROMESSE OU ILLUSION ?
+
+      L'idée a séduit nombre de maires : chaque habitant devrait pouvoir trouver, à moins de quinze minutes à pied ou à vélo de chez lui, l'essentiel de ce dont il a besoin au quotidien — commerces, écoles, soins, espaces verts, et si possible son lieu de travail. Rivemont s'en réclame à son tour, et le conseil municipal a adopté le mois dernier un plan qui prévoit de rapprocher les services des quartiers résidentiels d'ici 2035.
+
+      Sur le papier, les avantages sont difficiles à contester. Moins de déplacements en voiture, c'est moins de bruit, moins de pollution et des rues rendues aux piétons. Les commerces de proximité, que les grandes surfaces de périphérie avaient affaiblis, retrouveraient une clientèle. Quant aux habitants, ils gagneraient ce que la vie urbaine leur vole le plus : du temps.
+
+      Encore faut-il que la promesse tienne compte de la réalité. Car si une boulangerie ou une pharmacie peut s'installer presque partout, il n'en va pas de même d'un hôpital, d'une université ou d'une usine. Le travail, surtout, résiste à la proximité : la plupart des emplois restent concentrés dans quelques pôles, et rien ne garantit qu'un habitant trouve dans son quartier un poste correspondant à ses compétences. Faute de l'admettre, le projet risque de ne profiter qu'à ceux qui peuvent déjà travailler à distance.
+
+      Il y a plus préoccupant. Là où les services se multiplient, les prix de l'immobilier suivent. Un quartier devenu « complet » attire de nouveaux habitants plus aisés, et les ménages modestes, qui auraient le plus à gagner d'une vie de proximité, sont repoussés vers des secteurs moins bien desservis. Le risque est alors de créer deux villes : l'une où tout est à quinze minutes, l'autre où il faut une voiture pour tout.
+
+      Rien de cela ne condamne l'idée. Mais une ville du quart d'heure digne de ce nom ne se résume pas à l'implantation de commerces : elle suppose une politique du logement qui empêche l'éviction des plus fragiles et des transports en commun efficaces pour relier les quartiers entre eux. C'est à cette aune, et non au nombre de pistes cyclables inaugurées, qu'il faudra juger le plan adopté par le conseil.
+    questions:
+      - question: "Selon l'article, le plan adopté par le conseil municipal vise à…"
+        options: ["construire de nouvelles autoroutes d'ici 2035.", "rapprocher les services des quartiers résidentiels.", "fermer les grandes surfaces de périphérie.", "interdire la voiture dans le centre-ville."]
+        answer: 1
+        band: 8
+      - question: "D'après le deuxième paragraphe, les commerces de proximité…"
+        options: ["n'ont jamais été menacés.", "avaient souffert de la concurrence des grandes surfaces.", "sont trop chers pour les habitants.", "s'opposent au projet."]
+        answer: 1
+        band: 9
+      - question: "Pourquoi le travail « résiste à la proximité » ?"
+        options: ["Parce que les emplois restent concentrés dans quelques pôles.", "Parce que les habitants refusent le télétravail.", "Parce que les entreprises quittent la ville.", "Parce que les salaires sont plus bas dans les quartiers."]
+        answer: 0
+        band: 9
+      - question: "Quel effet de l'arrivée des services sur l'immobilier l'auteur craint-il ?"
+        options: ["Une baisse des loyers", "Une hausse des prix qui repousse les ménages modestes", "La disparition des commerces", "Un manque de logements neufs"]
+        answer: 1
+        band: 9
+      - question: "Selon l'auteur, une vraie ville du quart d'heure suppose notamment…"
+        options: ["davantage de stationnements.", "une politique du logement et des transports en commun efficaces.", "la suppression des pistes cyclables.", "la construction d'un nouvel hôpital dans chaque quartier."]
+        answer: 1
+        band: 9
+  - id: fr-adv-ce2
+    skill: reading
+    section: comprehension_ecrite
+    part: ce_articles
+    task_type: article_inference
+    band: 10
+    stimulus: *quart
+    questions:
+      - question: "L'expression « Encore faut-il que la promesse tienne compte de la réalité » introduit…"
+        options: ["une approbation sans réserve.", "une réserve sur la faisabilité du projet.", "un exemple de réussite.", "une conclusion définitive."]
+        answer: 1
+        band: 9
+      - question: "En parlant de « deux villes », l'auteur veut dire que le projet pourrait…"
+        options: ["diviser la ville entre quartiers bien servis et quartiers dépendants de la voiture.", "entraîner la fusion de deux municipalités.", "doubler le nombre d'habitants.", "créer une seconde ville en périphérie."]
+        answer: 0
+        band: 10
+      - question: "Quelle est la position de l'auteur sur la ville du quart d'heure ?"
+        options: ["Il la rejette comme une utopie.", "Il l'approuve sans condition.", "Il la juge intéressante, à condition d'y associer logement et transports.", "Il n'exprime aucun avis."]
+        answer: 2
+        band: 10
+      - question: "Dans la dernière phrase, l'auteur suggère que le nombre de pistes cyclables inaugurées…"
+        options: ["est le meilleur indicateur de réussite.", "ne suffira pas à juger le plan.", "doit être augmenté rapidement.", "est déjà trop élevé."]
+        answer: 1
+        band: 10
+  - id: fr-adv-co1
+    skill: listening
+    section: comprehension_orale
+    part: co_reportage
+    task_type: interview_detail
+    band: 9
+    plays: 2
+    instructions: "Écoutez l'entretien et répondez aux questions. Vous entendrez l'entretien deux fois."
+    stimulus: &entretien |
+      M1: Bonjour et bienvenue. Notre invitée aujourd'hui est sociologue et vient de publier une enquête sur les effets du télétravail sur la vie de quartier. Bonjour.
+      F1: Bonjour.
+      M1: On a beaucoup dit que le télétravail allait vider les centres-villes. Votre enquête confirme-t-elle cette crainte ?
+      F1: En partie seulement. Les quartiers d'affaires ont effectivement perdu une bonne part de leur fréquentation en semaine : les restaurants et les cafés qui vivaient des employés de bureau en ont beaucoup souffert. Mais ce que nous observons surtout, c'est un déplacement plutôt qu'une disparition. L'activité ne s'est pas évaporée, elle s'est redistribuée vers les quartiers résidentiels.
+      M1: Concrètement, qu'est-ce que cela change pour ces quartiers ?
+      F1: Les gens y passent davantage de temps en journée, donc ils y consomment davantage. Dans les secteurs que nous avons étudiés, les commerces de proximité ont vu leur chiffre d'affaires du midi augmenter d'environ vingt pour cent. Des espaces de travail partagés se sont ouverts, souvent dans d'anciens locaux commerciaux vides. Et, ce qui nous a frappés, les habitants disent mieux connaître leurs voisins qu'avant.
+      M1: Tout le monde y gagne, alors ?
+      F1: Non, et c'est là que je voudrais être prudente. Le télétravail concerne surtout des emplois qualifiés, souvent mieux rémunérés. Les personnes qui travaillent dans le commerce, la santé ou la construction, elles, continuent de se déplacer. On voit donc apparaître un décalage : certains quartiers profitent de cette nouvelle vie de jour, d'autres non.
+      M1: Que recommandez-vous aux municipalités ?
+      F1: D'abord, de ne pas réagir trop vite. Transformer des tours de bureaux en logements, par exemple, peut être une bonne idée, mais c'est coûteux et techniquement complexe ; il faut s'assurer que la baisse de fréquentation est durable avant d'engager de tels travaux. Ensuite, de penser les quartiers résidentiels comme de véritables lieux de vie, avec des services, des espaces publics agréables, et pas seulement comme des endroits où l'on dort.
+      M1: Merci beaucoup.
+    questions:
+      - question: "Sur quoi porte l'enquête de la sociologue ?"
+        options: ["Sur les loyers des bureaux", "Sur les effets du télétravail sur la vie de quartier", "Sur la circulation automobile", "Sur les salaires des employés de bureau"]
+        answer: 1
+        band: 8
+      - question: "Selon elle, le télétravail a surtout provoqué…"
+        options: ["la disparition de l'activité économique.", "un déplacement de l'activité vers les quartiers résidentiels.", "la fermeture des commerces de proximité.", "une hausse de la fréquentation des quartiers d'affaires."]
+        answer: 1
+        band: 9
+      - question: "De combien a augmenté le chiffre d'affaires du midi des commerces de proximité étudiés ?"
+        options: ["D'environ 10 %", "D'environ 20 %", "D'environ 30 %", "Il a diminué."]
+        answer: 1
+        band: 8
+      - question: "Où se sont souvent ouverts les espaces de travail partagés ?"
+        options: ["Dans des tours de bureaux", "Dans d'anciens locaux commerciaux vides", "Dans les bibliothèques", "Dans les écoles"]
+        answer: 1
+        band: 9
+      - question: "Qui, selon la sociologue, continue de se déplacer pour travailler ?"
+        options: ["Les cadres", "Les personnes travaillant dans le commerce, la santé ou la construction", "Les étudiants", "Les fonctionnaires"]
+        answer: 1
+        band: 9
+      - question: "Que dit-elle à propos de la transformation des tours de bureaux en logements ?"
+        options: ["C'est une mauvaise idée.", "Il faut la faire immédiatement.", "C'est coûteux et complexe, il faut d'abord s'assurer que la baisse est durable.", "Elle est interdite par la loi."]
+        answer: 2
+        band: 9
+  - id: fr-adv-co2
+    skill: listening
+    section: comprehension_orale
+    part: co_reportage
+    task_type: report_inference
+    band: 10
+    plays: 2
+    instructions: "Écoutez l'entretien et répondez aux questions. Vous entendrez l'entretien deux fois."
+    stimulus: *entretien
+    questions:
+      - question: "Quand elle dit « en partie seulement », la sociologue…"
+        options: ["approuve entièrement la crainte évoquée.", "nuance une idée répandue.", "refuse de répondre.", "change de sujet."]
+        answer: 1
+        band: 9
+      - question: "Le fait que les habitants « connaissent mieux leurs voisins » est présenté comme…"
+        options: ["un effet inattendu et positif.", "un problème à résoudre.", "une conséquence négative.", "une hypothèse non vérifiée."]
+        answer: 0
+        band: 10
+      - question: "Pourquoi se dit-elle « prudente » ?"
+        options: ["Parce que les bénéfices du télétravail ne sont pas partagés par tous.", "Parce que son enquête est incomplète.", "Parce qu'elle s'oppose au télétravail.", "Parce que les municipalités refusent de l'écouter."]
+        answer: 0
+        band: 10
+      - question: "Le « décalage » dont elle parle oppose…"
+        options: ["les villes et les campagnes.", "les quartiers qui profitent de la nouvelle vie de jour et les autres.", "les jeunes et les personnes âgées.", "les commerçants et leurs clients."]
+        answer: 1
+        band: 10
+      - question: "Dans sa recommandation finale, elle souhaite que les quartiers résidentiels deviennent…"
+        options: ["des zones de bureaux.", "de véritables lieux de vie, pas seulement des lieux où l'on dort.", "des quartiers sans voitures.", "des espaces réservés aux télétravailleurs."]
+        answer: 1
+        band: 9

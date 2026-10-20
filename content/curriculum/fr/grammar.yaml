@@ -497,6 +497,28 @@ nodes:
           - {wrong: "C'est la raison pour que j'ai démissionné.", right: "C'est la raison pour laquelle j'ai démissionné."}
           - {wrong: "Le projet à lequel je participe.", right: "Le projet auquel je participe."}
     prereq: [fr.grammar.relatif_dont]
+  - key: fr.grammar.passe_simple
+    band: 9
+    title: "Reconnaître le passé simple à l'écrit"
+    payload:
+      lesson:
+        rule: "Le passé simple est le temps du récit écrit (romans, biographies, certains articles) : il parla, ils finirent, elle fut, ils eurent, il vint. On ne l'emploie presque jamais à l'oral ; il faut surtout le reconnaître pour comprendre un texte."
+        examples: ["Il entra, regarda autour de lui et sourit.", "En 1608, Champlain fonda la ville de Québec.", "Ils vécurent longtemps près du fleuve."]
+        common_errors:
+          - {wrong: "Ils finissèrent le travail à midi.", right: "Ils finirent le travail à midi."}
+          - {wrong: "Elle fu élue mairesse en 1990.", right: "Elle fut élue mairesse en 1990."}
+    prereq: [fr.grammar.concordance_des_temps]
+  - key: fr.grammar.accord_participe_pronominaux
+    band: 9
+    title: "Accord du participe des verbes pronominaux"
+    payload:
+      lesson:
+        rule: "Avec un verbe pronominal réfléchi ou réciproque, le participe s'accorde avec le COD placé avant, souvent se : elles se sont lavées. Si se est indirect (se parler, se téléphoner, se dire) et qu'aucun COD ne précède, ou si le COD vient après, il ne s'accorde pas : elles se sont parlé, elle s'est lavé les mains. Les verbes toujours pronominaux (s'enfuir, se souvenir) s'accordent généralement avec le sujet."
+        examples: ["Elles se sont inscrites hier.", "Ils se sont parlé au téléphone.", "Elle s'est lavé les mains."]
+        common_errors:
+          - {wrong: "Elles se sont parlées pendant une heure.", right: "Elles se sont parlé pendant une heure."}
+          - {wrong: "Elle s'est lavée les mains.", right: "Elle s'est lavé les mains."}
+    prereq: [fr.grammar.accord_participe_avoir, fr.grammar.passe_compose_etre]
   - key: fr.grammar.nominalisation
     band: 9
     title: Nominalisation (style écrit)
@@ -526,3 +548,14 @@ nodes:
           - {wrong: "Quand bien même il est d'accord, le budget ne suffirait pas.", right: "Quand bien même il serait d'accord, le budget ne suffirait pas."}
           - {wrong: "À moins que vous trouvez mieux.", right: "À moins que vous ne trouviez mieux."}
     prereq: [fr.grammar.subjonctif_conjonctions]
+  - key: fr.grammar.articulateurs_soutenus
+    band: 10
+    title: "Articulateurs du discours argumenté"
+    payload:
+      lesson:
+        rule: "Pour enchaîner des arguments à l'écrit et à l'oral soutenu : en effet (confirme ou explique), or (introduit un fait qui change la donne), néanmoins et toutefois (opposent), en revanche (contraste), dès lors et par conséquent (conséquence)."
+        examples: ["Le projet est coûteux ; néanmoins, il créera des emplois.", "Le loyer devait baisser. Or, il a augmenté de 10 %.", "Les transports sont saturés ; dès lors, il faut investir."]
+        common_errors:
+          - {wrong: "Le projet est utile. En effet, il coûte très cher.", right: "Le projet est utile. Néanmoins, il coûte très cher."}
+          - {wrong: "Les transports sont saturés ; dès lors qu'il faut investir.", right: "Les transports sont saturés ; dès lors, il faut investir."}
+    prereq: [fr.grammar.connecteurs_logiques]

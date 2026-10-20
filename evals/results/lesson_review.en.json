@@ -213,5 +213,24 @@
   "en.lex.society_issues": {
     "verdict": "ok",
     "problems": []
+  },
+  "en.grammar.discourse_markers": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.complex_noun_phrases": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.formal_subjunctive": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "rule",
+        "text": "After suggest, recommend, insist, demand and it is essential that, formal English uses that + base form (that she rest) or that + should",
+        "issue": "This needs a meaning restriction: suggest and insist also introduce statements of fact, where these structures do not apply (e.g. ‘He insisted that he was innocent’).",
+        "suggestion": "When suggesting or recommending an action, insisting on or demanding an action, or saying that an action is essential, formal English can use that + base form (that she rest) or that + should. When suggest means ‘indicate’ or insist means ‘maintain that something is true’, use the tense appropriate to the meaning."
+      }
+    ]
   }
 }
