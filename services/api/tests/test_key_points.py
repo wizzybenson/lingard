@@ -59,3 +59,23 @@ async def test_an_english_key_point_opens_too(api) -> None:  # type: ignore[no-u
     lesson = (await api.client.get(f"/v1/lessons/{opened.json()['id']}", headers=auth)).json()["content"]
     assert lesson["kind"] == "key_points" and lesson["games"]
     assert "The controls look complicated." in lesson["models"]
+
+
+async def test_a_word_lesson_lists_its_words_and_speaks_each_line(api) -> None:  # type: ignore[no-untyped-def]
+    from lingard_live.tts import ScriptedTts
+
+    await seed_graph(api.state.curriculum, load_seed(api.settings.content_root, "en"))
+    token, _ = await learner(api)
+    auth = api.bearer(token)
+    opened = await api.client.post("/v1/key-points/en.lex.banking", headers=auth)
+    lesson_id = opened.json()["id"]
+    content = (await api.client.get(f"/v1/lessons/{lesson_id}", headers=auth)).json()["content"]
+    assert "current account" in content["words"]
+    api.state.tts = tts = ScriptedTts()
+    say = f"/v1/lessons/{lesson_id}/say"
+    word = await api.client.get(say, params={"part": "word", "index": content["words"].index("sort code")}, headers=auth)
+    assert word.status_code == 200 and word.content[:4] == b"RIFF" and tts.spoken[-1] == "sort code"
+    model = await api.client.get(say, params={"part": "model", "index": 0}, headers=auth)
+    assert model.status_code == 200 and tts.spoken[-1] == content["models"][0]
+    assert (await api.client.get(say, params={"part": "word", "index": 99}, headers=auth)).status_code == 404
+    assert (await api.client.get(say, params={"part": "rule", "index": 0}, headers=auth)).status_code == 422

@@ -11,6 +11,7 @@ import type { LessonRow } from "@/api/types";
 import type { Game, GameItem } from "@/contracts/generated";
 import { choices, isCorrect, score, type GameResult } from "@/games/engine";
 import { PlayButton } from "@/live/PlayButton";
+import { SpeakButton } from "@/live/SpeakButton";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, Chip, Choice, ErrorText, Field, goBack, Loading, Overline, Screen } from "@/ui/kit";
@@ -237,18 +238,33 @@ export default function LessonScreen() {
       {(content.models?.length ?? 0) > 0 && (
         <Card style={{ gap: space(1.25) }}>
           <Overline>{t("school.models")}</Overline>
-          {content.models!.map((m) => (
+          {content.models!.map((m, i) => (
             <View key={m} style={styles.line}>
               <Ionicons name="chatbubble-ellipses" size={18} color={colors.accent} style={{ marginTop: 3 }} />
               <Text style={[type.body, { flex: 1 }]}>{m}</Text>
+              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=model&index=${i}`} label={`${t("studio.listen")}: ${m}`} />
             </View>
           ))}
         </Card>
       )}
 
+      {(content.words?.length ?? 0) > 0 && (
+        <Card style={{ gap: space(1.25) }}>
+          <Overline>{t("school.wordsToHear")}</Overline>
+          <View style={styles.words}>
+            {content.words!.map((w, i) => (
+              <View key={w} style={styles.word}>
+                <Text style={[type.callout, { color: colors.ink }]}>{w}</Text>
+                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=word&index=${i}`} label={`${t("studio.listen")}: ${w}`} size={16} />
+              </View>
+            ))}
+          </View>
+        </Card>
+      )}
+
       <Card style={{ gap: space(1.5) }}>
         <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
-        {content.examples.map((e) => (
+        {content.examples.map((e, i) => (
           <View key={e.learner_said} style={styles.pair}>
             <View style={styles.line}>
               <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
@@ -257,6 +273,7 @@ export default function LessonScreen() {
             <View style={styles.line}>
               <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
               <Text style={[type.body, { flex: 1, fontFamily: fonts.medium }]}>{e.better}</Text>
+              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
             </View>
             {e.note ? <Body muted>{e.note}</Body> : null}
           </View>
@@ -283,6 +300,8 @@ export default function LessonScreen() {
 const styles = StyleSheet.create({
   rule: { fontFamily: fonts.display, fontSize: 20, lineHeight: 28, color: colors.ink },
   line: { flexDirection: "row", alignItems: "flex-start", gap: space(1) },
+  words: { flexDirection: "row", flexWrap: "wrap", gap: space(1) },
+  word: { flexDirection: "row", alignItems: "center", gap: 4, paddingLeft: space(1.5), paddingRight: space(0.75), minHeight: 40, borderRadius: radius.pill, backgroundColor: colors.paper },
   pair: { gap: space(0.75), paddingBottom: space(1), borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
   wrong: { flex: 1, color: colors.muted, textDecorationLine: "line-through" },
   gameHead: { flexDirection: "row", alignItems: "center", gap: space(1) },

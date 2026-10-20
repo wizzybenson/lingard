@@ -78,6 +78,8 @@ class Lesson(Strict):
     rule: str
     models: list[str] = Field(default_factory=list)
     """Correct sentences that show the rule at work."""
+    words: list[str] = Field(default_factory=list)
+    """The words (a vocabulary set) or phrases (a function) the lesson teaches, each one listenable."""
     examples: list[LessonExample] = Field(min_length=1)
     """Wrong → right pairs: the learner's own mistakes (remedial) or common ones (key points)."""
     games: list[Game] = Field(min_length=1)

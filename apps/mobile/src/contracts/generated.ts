@@ -83,6 +83,7 @@ export type Models = string[];
 export type NodeKey3 = string;
 export type Rule = string;
 export type Title = string;
+export type Words = string[];
 export type Accent = string;
 export type Age = number;
 export type Backstory = string;
@@ -367,6 +368,7 @@ export interface Lesson {
   node_key: NodeKey3;
   rule: Rule;
   title: Title;
+  words?: Words;
 }
 /**
  * This interface was referenced by `LingardContracts`'s JSON-Schema

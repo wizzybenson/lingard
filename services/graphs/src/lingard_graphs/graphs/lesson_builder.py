@@ -190,6 +190,11 @@ def homework_scene(city: CityContent, node_key: str, band: int, failed: set[str]
     )
 
 
+def lesson_words(node: CurriculumNode) -> list[str]:
+    """What a word or phrase lesson teaches, to read and hear: a set's words, a function's phrases."""
+    return [str(w) for w in node.payload.get("items") or node.payload.get("exponents") or []]
+
+
 def key_points_lesson(
     node: CurriculumNode, city: CityContent, band: int, conjugator: FrenchConjugator | None, rng: random.Random
 ) -> Lesson:
@@ -203,6 +208,7 @@ def key_points_lesson(
         title=node.title,
         rule=content.get("rule") or node.title,
         models=list(content.get("examples", [])),
+        words=lesson_words(node),
         examples=[LessonExample(learner_said=e["wrong"], better=e["right"]) for e in errors],
         games=build_games(node, [], conjugator, rng),
         homework=homework_scene(city, node.key, band, set(), False),

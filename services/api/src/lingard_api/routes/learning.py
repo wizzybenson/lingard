@@ -23,6 +23,7 @@ from lingard_db.models import BandPosterior, Lesson, SimCrsSnapshot, WritingSubm
 from lingard_economy.crs import DISCLAIMER
 from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_exam_packs.prompts import writing_prompts
+from lingard_graphs.graphs.lesson_builder import lesson_words
 from lingard_graphs.pedagogy.bands import BandPosterior as Posterior
 from lingard_graphs.pedagogy.bands import summarise
 from lingard_graphs.pedagogy.review import new_card, review
@@ -321,9 +322,51 @@ async def lesson_audio(
     return wav_response(pcm)
 
 
-@router.get("/lessons/{lesson_id}")
-async def get_lesson(lesson_id: uuid.UUID, principal: Principal, db: Db) -> dict[str, Any]:
+Sayable = Literal["model", "better", "word"]
+"""A lesson line that can be heard: a model sentence, a correction, a word or phrase."""
+
+
+@router.get("/lessons/{lesson_id}/say")
+async def lesson_say(
+    lesson_id: uuid.UUID,
+    part: Literal["model", "better", "word"],
+    index: int,
+    principal: Principal,
+    state: State,
+    db: Db,
+) -> Response:
+    """Hear a line of the lesson said by a native narrator: a model sentence, a correction, or a word or phrase.
+    Only the lesson's own lines can be spoken (cached after the first time)."""
     row = await db.get(Lesson, lesson_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such lesson")
-    return {"id": row.id, "node_key": row.node_key, "status": row.status, "content": row.content}
+    content = await _with_words(state, row)
+    lines = {
+        "model": content.get("models", []),
+        "better": [e["better"] for e in content.get("examples", [])],
+        "word": content.get("words", []),
+    }[part]
+    if not 0 <= index < len(lines):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such line")
+    try:
+        pcm = await narrate(state, str(lines[index]), node_language(row.node_key))
+    except RuntimeError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
+    return wav_response(pcm)
+
+
+async def _with_words(state: AppState, row: Lesson) -> dict[str, Any]:
+    """Key-point lessons made before words were part of a lesson get them from their node."""
+    content = dict(row.content)
+    if content.get("kind") == "key_points" and not content.get("words"):
+        node = await state.curriculum.get(row.node_key)
+        content["words"] = lesson_words(node) if node else []
+    return content
+
+
+@router.get("/lessons/{lesson_id}")
+async def get_lesson(lesson_id: uuid.UUID, principal: Principal, state: State, db: Db) -> dict[str, Any]:
+    row = await db.get(Lesson, lesson_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such lesson")
+    return {"id": row.id, "node_key": row.node_key, "status": row.status, "content": await _with_words(state, row)}
