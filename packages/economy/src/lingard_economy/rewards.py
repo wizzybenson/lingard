@@ -15,7 +15,16 @@ SHOP = {
     "extra_accent_voice": 300,
 }
 """Coin prices. Every item is cosmetic or narrative; none changes assessment, gates or the learner model."""
-COINS = {"quest_complete": 40, "lesson_complete": 25, "streak_day": 10, "draw_invitation": 150, "mock_complete": 80}
+COINS = {
+    "quest_complete": 40,
+    "mission_accomplished": 30,
+    "mission_partial": 10,
+    "lesson_complete": 25,
+    "streak_day": 10,
+    "draw_invitation": 150,
+    "mock_complete": 80,
+}
+"""Coins per reason. A mission pays ``quest_complete`` for being played and a bonus for how it went."""
 
 
 @dataclass(frozen=True)

@@ -13,22 +13,31 @@ import { levelProgress, levelWords } from "@/home/levels";
 import { Body, Caption, Card, Chip, ErrorText, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
 import { colors, fonts, space, type } from "@/ui/theme";
 
+interface DrawView {
+  draw: { held_at: string; cutoff: number; source_note: string } | null;
+  sim_crs?: number | null;
+  invited?: boolean;
+}
+
 export default function PassportScreen() {
   const { t } = useTranslation();
   const api = useApi();
   const passport = useResource(() => api.get<Passport>("/v1/passport"));
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"));
   const profile = useResource(() => api.get<Profile>("/v1/me"));
+  const draw = useResource(() => api.get<DrawView>("/v1/draws/latest"));
   const cities = useCities();
   const packOf = (pack: string) => cities.data?.find((c) => c.pack === pack);
   const { reload: reloadPassport } = passport;
   const { reload: reloadWallet } = wallet;
   const { reload: reloadProfile } = profile;
+  const { reload: reloadDraw } = draw;
   const reloadAll = useCallback(() => {
     reloadPassport();
     reloadWallet();
     reloadProfile();
-  }, [reloadPassport, reloadWallet, reloadProfile]);
+    reloadDraw();
+  }, [reloadPassport, reloadWallet, reloadProfile, reloadDraw]);
   useFocusEffect(reloadAll);
   return (
     <Screen title={t("passport.title")} onRefresh={reloadAll}>
@@ -50,6 +59,17 @@ export default function PassportScreen() {
               </View>
             )}
           </View>
+          {draw.data?.draw && (
+            <View style={{ gap: space(0.75) }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: space(1) }}>
+                <Ionicons name={draw.data.invited ? "mail-open" : "mail"} size={16} color={draw.data.invited ? colors.success : colors.accent} />
+                <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
+                  {draw.data.invited ? t("passport.drawInvited") : t("passport.drawGoal", { cutoff: draw.data.draw.cutoff })}
+                </Text>
+              </View>
+              <ProgressBar value={Math.min(1, (draw.data.sim_crs ?? 0) / draw.data.draw.cutoff)} tone={draw.data.invited ? "success" : "accent"} />
+            </View>
+          )}
           <Caption>{t("passport.disclaimer")}</Caption>
         </Card>
       )}

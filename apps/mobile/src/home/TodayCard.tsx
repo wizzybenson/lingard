@@ -115,9 +115,22 @@ export function TodayCard({
       <LinearGradient colors={gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadow(3)]}>
         <View style={styles.rowBetween}>
           <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
-          <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
-            <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
-            <Text style={styles.streakText}>{today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}</Text>
+          <View style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}>
+            <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
+              <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
+              <Text style={styles.streakText} numberOfLines={1}>
+                {today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("wallet.coinsCount", { count: today.coins })}
+              onPress={() => router.push("/(tabs)/passport")}
+              style={styles.streak}
+            >
+              <Ionicons name="cash" size={16} color="#FFD38A" />
+              <Text style={styles.streakText}>{today.coins}</Text>
+            </Pressable>
           </View>
         </View>
         <Pressable

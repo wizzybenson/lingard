@@ -194,8 +194,14 @@ export default function City() {
       )}
       {locked.length > 0 && (
         <Section title={t("city.lockedTitle")}>
-          {locked.map((d) => (
-            <ListRow key={d.key} icon="lock-closed" title={d.name} subtitle={t("city.locked", { band: d.min_band })} disabled />
+          {locked.map((d, i) => (
+            <ListRow
+              key={d.key}
+              icon="lock-closed"
+              title={t("city.chapter", { number: (world.data?.districts.length ?? 0) - locked.length + i + 1, name: d.name })}
+              subtitle={t("city.locked", { band: d.min_band })}
+              disabled
+            />
           ))}
         </Section>
       )}

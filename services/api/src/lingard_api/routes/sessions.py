@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
@@ -19,6 +20,8 @@ from lingard_contracts.assessment import ErrorTag
 from lingard_contracts.common import CITY_LANGUAGE, CityKey
 from lingard_contracts.scene import SceneContract
 from lingard_db.models import Assessment, LearnerProfile, Scene, Session, Turn, User
+from lingard_economy.rewards import COINS, LedgerEntry
+from lingard_graphs.agents.debrief import debrief
 from lingard_graphs.pedagogy.key_points import KINDS
 from lingard_llm.config import any_llm_configured
 from lingard_world import load_city
@@ -61,6 +64,34 @@ class SceneView(BaseModel):
     npc_role: str = ""
     learner_band: int | None = None
     """The learner's band in the scene's language; captions fade as it rises (SPEC §11)."""
+    mission: MissionBrief | None = None
+
+
+class MissionBrief(BaseModel):
+    """The scene as a mission: what to do, what can be won, and what it pays. Never the hidden targets (SPEC §9)."""
+
+    objectives: list[str]
+    win: str | None = None
+    """The best ending, in the scene's own words: what the learner can win."""
+    reward: int = COINS["quest_complete"]
+    bonus: int = COINS["mission_accomplished"]
+
+
+class ObjectiveView(BaseModel):
+    text: str
+    met: bool
+
+
+class DebriefView(BaseModel):
+    result: Literal["accomplished", "partial", "not_done"]
+    objectives: list[ObjectiveView]
+    ending: str | None = None
+    coins: int
+    """Coins this mission paid: for playing it, and the bonus for how it went."""
+
+
+DEBRIEF_WAIT_TRIES, DEBRIEF_WAIT_S = 8, 1.0
+"""Turns reach the store through the turn stream a moment after they are spoken; a fresh scene gets a few seconds."""
 
 
 class LiveTicket(BaseModel):
@@ -80,6 +111,10 @@ def scene_view(row: Scene) -> SceneView:
         learner_goal=contract.learner_goal,
         status=row.status,
         intensity=contract.intensity,
+        mission=MissionBrief(
+            objectives=[c.description for c in contract.success_conditions],
+            win=contract.exits[0].consequence if contract.exits else None,
+        ),
     )
 
 
@@ -287,3 +322,45 @@ async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) 
             if kind in k.places and k.status != "done" and not k.preview
         ]
     return offered[:PLACE_OFFER]
+
+
+@router.post("/scenes/{scene_id}/debrief", response_model=DebriefView)
+async def scene_debrief(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> DebriefView:
+    """How the mission went, judged once from what the learner said, and paid at once: coins for playing it (the
+    night pass uses the same ledger key, so it is never paid twice) and a bonus for meeting the objectives."""
+    row = await db.get(Scene, scene_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
+    if saved := (row.outcome or {}).get("debrief"):
+        return DebriefView.model_validate(saved)
+    require_providers(state, llm=True)
+    contract = SceneContract.model_validate(row.contract)
+    deps = state.graph_deps
+    turns = await deps.store.turns(scene_id)
+    for _ in range(DEBRIEF_WAIT_TRIES):
+        if any(t.speaker == "learner" for t in turns):
+            break
+        await asyncio.sleep(DEBRIEF_WAIT_S)
+        turns = await deps.store.turns(scene_id)
+    city = load_city(state.settings.content_root, contract.city)
+    npc = city.npc(contract.cast[0].npc_key).name if contract.cast else ""
+    judged = await debrief(contract, turns, npc, deps.router, deps.prompts)
+    entries = []
+    if any(t.speaker == "learner" for t in turns):
+        entries.append(
+            LedgerEntry("coins", COINS["quest_complete"], "quest_complete", str(scene_id), f"quest:{scene_id}")
+        )
+    if judged.result != "not_done":
+        reason = "mission_accomplished" if judged.result == "accomplished" else "mission_partial"
+        entries.append(LedgerEntry("coins", COINS[reason], reason, str(scene_id), f"{reason}:{scene_id}"))
+    await deps.store.apply_ledger(principal.user_id, entries)
+    view = DebriefView(
+        result=judged.result,
+        objectives=[ObjectiveView(text=t, met=m) for t, m in judged.objectives],
+        ending=judged.ending,
+        coins=sum(e.delta for e in entries),
+    )
+    row.outcome = {**(row.outcome or {}), "debrief": view.model_dump()}
+    row.status = "done"
+    await db.commit()
+    return view

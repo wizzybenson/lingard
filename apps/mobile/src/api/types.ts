@@ -30,6 +30,22 @@ export interface SceneView {
   npc_name: string;
   npc_role: string;
   learner_band: number | null;
+  mission: MissionBrief | null;
+}
+
+/** A scene as a mission: objectives, what can be won, and the coins it pays (never the hidden targets). */
+export interface MissionBrief {
+  objectives: string[];
+  win: string | null;
+  reward: number;
+  bonus: number;
+}
+
+export interface Debrief {
+  result: "accomplished" | "partial" | "not_done";
+  objectives: { text: string; met: boolean }[];
+  ending: string | null;
+  coins: number;
 }
 
 export interface LiveTicket {
@@ -157,6 +173,8 @@ export interface Profile {
 export type SkillStatus = "met" | "close" | "behind" | "unknown";
 
 export interface Today {
+  /** Coins earned so far, shown beside the streak. */
+  coins: number;
   streak: number;
   practised_today: boolean;
   reviews_due: number;

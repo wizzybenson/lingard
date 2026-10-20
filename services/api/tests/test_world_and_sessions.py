@@ -81,9 +81,12 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     assert body["learner_goal"] == "Récupérer votre dépôt de garantie"
     assert "targets" not in body and "elicitation" not in body and "si_imparfait" not in scene.text
     assert body["location_kind"] == "home"
+    assert body["mission"]["objectives"] == ["counter-offer"] and body["mission"]["win"] == "partial refund"
+    assert body["mission"]["reward"] > 0 and body["mission"]["bonus"] > 0
 
     # The journey offers lessons where they help: the words of a place before going in, and the confirmed
     # mistakes of a scene on the way out (an unconfirmed tag is never offered).
+    from lingard_contracts.events import TurnEvent
     from lingard_curriculum.seed import load_seed, seed_graph
     from lingard_db.models import Assessment, Turn
 
@@ -98,14 +101,25 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
         for index, (key, confidence, agrees) in enumerate(
             [("fr.grammar.si_imparfait", 0.93, True), ("fr.grammar.negation", 0.6, None)]
         ):
+            event = TurnEvent(
+                trace_id=uuid.uuid4(),
+                user_id=user.id,
+                session_id=uuid.UUID(session_id),
+                scene_id=contract.scene_id,
+                turn_index=index,
+                speaker="learner",
+                language="fr-FR",
+                transcript="Si je refuserais…",
+            )
             turn = Turn(
                 tenant_id=user.tenant_id,
                 user_id=user.id,
                 scene_id=contract.scene_id,
-                event_id=uuid.uuid4(),
+                event_id=event.event_id,
                 index=index,
                 speaker="learner",
-                transcript="Si je refuserais…",
+                transcript=event.transcript,
+                timings={"event": event.model_dump(mode="json")},
             )
             db.add(turn)
             await db.flush()
@@ -160,6 +174,25 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     assert kinds == ["night_consolidation"], "the next day is already planning, so ending reuses it"
     world = await api.client.get("/v1/world/rivemont", headers=api.bearer(token))
     assert world.json()["days_lived"] == 1, "progress through the story, not calendar days"
+
+    # The mission debrief: judged once from the learner's words, paid at once, the same answer every time after.
+    import json as _json
+
+    from lingard_llm import LLMConfig, LLMRouter
+    from lingard_llm.testing import ScriptedChatModel
+
+    verdict = {"objectives": [{"index": 0, "met": True, "quote": "Si je refuserais"}], "ending": "deal"}
+    judge = ScriptedChatModel(responder=lambda _: _json.dumps(verdict))
+    tiers = {"mid": {"retries": 0, "models": [{"provider": "scripted", "model": "judge"}]}}
+    api.state.graph_deps.router = LLMRouter(LLMConfig.model_validate({"tiers": tiers}), factory=lambda _spec: judge)
+    before = (await api.client.get("/v1/wallet", headers=api.bearer(token))).json()["coins"]
+    done = (await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))).json()
+    assert done["result"] == "accomplished" and done["objectives"] == [{"text": "counter-offer", "met": True}]
+    assert done["ending"] == "partial refund" and done["coins"] == 70
+    after = (await api.client.get("/v1/wallet", headers=api.bearer(token))).json()["coins"]
+    assert after - before == 70
+    again = (await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))).json()
+    assert again == done and (await api.client.get("/v1/wallet", headers=api.bearer(token))).json()["coins"] == after
 
     other = await api.client.post("/v1/admin/users", json={"display_name": "Lina"}, headers=api.bearer(token))
     lina = (await api.sign_in("Lina", other.json()["one_time_pin"])).json()

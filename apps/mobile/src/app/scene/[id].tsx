@@ -6,13 +6,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import Animated, { cancelAnimation, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
-import type { KeyPoint, LiveTicket, SceneView, SessionView } from "@/api/types";
+import type { Debrief, KeyPoint, LiveTicket, SceneView, SessionView } from "@/api/types";
+import { MissionBriefCard, MissionDebriefCard } from "@/missions/Mission";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { captionOpacity } from "@/live/captions";
 import { useLiveScene, type LiveError } from "@/live/useLiveScene";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Avatar, Body, Button, Card, ErrorText, goBack, Loading, Screen, Title, type IconName } from "@/ui/kit";
+import { Avatar, Button, Card, ErrorText, goBack, Loading, Screen, Title, type IconName } from "@/ui/kit";
 import { colors, fonts, MAX_WIDTH, radius, shadow, space, type } from "@/ui/theme";
 
 const NEXT_SCENE_POLL_MS = 2000;
@@ -74,6 +75,11 @@ export default function Scene() {
   // in, and the confirmed mistakes of this conversation once it is over (or while the next scene is prepared).
   const prep = useResource(() => api.get<KeyPoint[]>(`/v1/scenes/${id}/prep`), [api, id]);
   const over = live.status === "ended" || preparingNext;
+  // The mission is judged once it is over; its debrief is the screen between this scene and the next.
+  const debrief = useResource(
+    () => (live.status === "ended" ? api.post<Debrief>(`/v1/scenes/${id}/debrief`) : Promise.resolve(null)),
+    [api, id, live.status === "ended"],
+  );
   const brushUp = useResource(() => (over ? api.get<KeyPoint[]>(`/v1/scenes/${id}/brush-up`) : Promise.resolve(null)), [api, id, over]);
   const { reload: reloadPrep } = prep;
   const { reload: reloadBrushUp } = brushUp;
@@ -142,6 +148,9 @@ export default function Scene() {
 
   // Going in stays one tap away, whatever is offered above it.
   const enter = scene.data && live.status === "idle" && <Button label={t("scene.connect")} icon="mic" onPress={() => void start()} />;
+  const onward = live.status === "ended" && (
+    <Button label={t("mission.continue")} icon="arrow-forward" busy={moving} disabled={!debrief.data && !debrief.error} onPress={() => void next()} />
+  );
   // While live, talking and leaving stay pinned under the conversation instead of scrolling away as it grows.
   const controls = live.status === "live" && (
     <>
@@ -170,14 +179,14 @@ export default function Scene() {
           </View>
         )}
         <View style={{ flex: 1 }}>
-          <Button label={t("scene.end")} kind="tinted" icon="exit-outline" busy={moving} onPress={() => void next()} />
+          <Button label={t("scene.end")} kind="tinted" icon="exit-outline" onPress={() => void live.leave()} />
         </View>
       </View>
     </>
   );
 
   return (
-    <Screen back onBack={back} footer={controls || enter || undefined} followContent={live.status === "live"}>
+    <Screen back onBack={back} footer={controls || enter || onward || undefined} followContent={live.status === "live"}>
       <ErrorText message={scene.error} onRetry={scene.reload} />
       {scene.data && live.status === "live" && (
         <Card style={styles.compact}>
@@ -213,13 +222,7 @@ export default function Scene() {
                 </View>
               </View>
             ) : null}
-            <View style={styles.goal}>
-              <Ionicons name="flag" size={18} color={colors.accentDeep} />
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text style={[type.overline, { color: colors.accentDeep }]}>{t("scene.goal")}</Text>
-                <Text style={[type.body, { fontFamily: fonts.medium }]}>{scene.data.learner_goal}</Text>
-              </View>
-            </View>
+            <MissionBriefCard goal={scene.data.learner_goal} brief={scene.data.mission} />
           </View>
         </Card>
       )}
@@ -287,12 +290,7 @@ export default function Scene() {
           )}
         </>
       )}
-      {live.status === "ended" && (
-        <Card>
-          <Body>{t("scene.ended")}</Body>
-          <Button label={t("app.continue")} icon="arrow-forward" busy={moving} onPress={() => void next()} />
-        </Card>
-      )}
+      {live.status === "ended" && <MissionDebriefCard debrief={debrief.data} error={debrief.error} />}
       {over && <KeyPointStrip id={`scene.${id}`} eyebrow={t("journey.afterScene")} points={brushUp.data} />}
       {preparingNext && (
         <View style={styles.tip} accessibilityLiveRegion="polite">
@@ -308,7 +306,6 @@ export default function Scene() {
 const styles = StyleSheet.create({
   person: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
   compact: { flexDirection: "row", alignItems: "center", gap: space(1.5), paddingVertical: space(1.5) },
-  goal: { flexDirection: "row", gap: space(1.25), backgroundColor: colors.accentSoft, borderRadius: radius.md, padding: space(1.75) },
   tip: { flexDirection: "row", alignItems: "center", gap: space(1), paddingHorizontal: space(0.5) },
   liveBar: { gap: space(1.25) },
   statusPill: {

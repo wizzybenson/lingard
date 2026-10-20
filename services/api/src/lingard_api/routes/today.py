@@ -14,7 +14,7 @@ from lingard_api.routes.key_points import key_points
 from lingard_api.routes.learning import learner_bands
 from lingard_api.routes.me import DEFAULT_TARGETS
 from lingard_contracts.common import LANGUAGE_PACK, Language, PackId
-from lingard_db.models import LearnerProfile, Lesson, Session
+from lingard_db.models import LearnerProfile, Lesson, Session, Wallet
 from lingard_economy.events import streak
 from lingard_graphs.pedagogy.review import due_at
 
@@ -64,6 +64,8 @@ class Today(BaseModel):
     next_step: NextStep
     next_key_point: NextKeyPoint | None = None
     onboarding: Onboarding
+    coins: int = 0
+    """The learner's coins, shown beside the streak so every mission's reward is felt on the home screen."""
 
 
 def skill_status(target: int, low: int | None, high: int | None) -> Literal["met", "close", "behind", "unknown"]:
@@ -143,6 +145,7 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         step = "lesson"
     else:
         step = "story"
+    coins = (await db.execute(select(Wallet.coins).where(Wallet.user_id == principal.user_id))).scalar_one_or_none()
     return Today(
         streak=current,
         practised_today=practised_today,
@@ -152,4 +155,5 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         next_step=step,
         next_key_point=NextKeyPoint(node_key=pending.node_key, title=pending.title) if pending else None,
         onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
+        coins=coins or 0,
     )
