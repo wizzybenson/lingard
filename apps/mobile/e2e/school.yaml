@@ -4,7 +4,7 @@ appId: app.lingard
 - runFlow: sign-in.yaml
 - tapOn: "School, tab.*"
 - extendedWaitUntil:
-    visible: "Key points|Points clés"
+    visible: "Rules · .*|Règles · .*"
     timeout: 10000
 - takeScreenshot: school-01-path
 - scrollUntilVisible:
@@ -23,3 +23,17 @@ appId: app.lingard
     element: "Spot the error"
     direction: DOWN
 - takeScreenshot: school-04-games
+- tapOn: "Back"
+- scrollUntilVisible:
+    element: "Words · .*"
+    direction: DOWN
+- tapOn:
+    below: "Words · .*"
+    text: ".+"
+- extendedWaitUntil:
+    visible: "Fill the gap"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Fill the gap"
+    direction: DOWN
+- takeScreenshot: school-05-words-fill-the-gap

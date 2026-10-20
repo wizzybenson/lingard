@@ -41,11 +41,11 @@ nodes:
     title: "Adverbs of frequency"
     payload:
       lesson:
-        rule: "Always, usually, often, sometimes, rarely and never go before the main verb but after be and after an auxiliary."
+        rule: "These adverbs usually go before the main verb, after the verb be, or after the first auxiliary. Some, especially sometimes and often, can also go at the beginning or end of a sentence."
         examples: ["I usually take the bus to work.", "She is never late.", "I have always lived in a city."]
         common_errors:
           - {wrong: "I go always to work by bus.", right: "I always go to work by bus."}
-          - {wrong: "He never is on time.", right: "He is never on time."}
+          - {wrong: "He never on time.", right: "He is never on time."}
     prereq: [en.grammar.present_simple_continuous]
   - key: en.grammar.articles
     band: 4
@@ -55,7 +55,7 @@ nodes:
         rule: "A/an for one of many or first mention; the for something specific or already known; no article for general plurals and uncountables."
         examples: ["I saw a flat on Mill Road. The flat has two bedrooms.", "Rent is expensive here."]
         common_errors:
-          - {wrong: "I need the advice.", right: "I need some advice."}
+          - {wrong: "I need an advice.", right: "I need some advice."}
           - {wrong: "She is teacher.", right: "She is a teacher."}
   - key: en.grammar.pronouns_possessives
     band: 4
@@ -105,7 +105,7 @@ nodes:
         examples: ["Where do you work?", "How long have you lived here?"]
         common_errors:
           - {wrong: "Where you work?", right: "Where do you work?"}
-          - {wrong: "Who did call you?", right: "Who called you?"}
+          - {wrong: "Where you live?", right: "Where do you live?"}
   - key: en.grammar.can_could_be_able_to
     band: 4
     title: "Can, could and be able to"
@@ -263,7 +263,7 @@ nodes:
         examples: ["Will it rain later? I hope not.", "Is the office open? I think so.", "I prefer the blue one."]
         common_errors:
           - {wrong: "I think yes.", right: "I think so."}
-          - {wrong: "I prefer the blue.", right: "I prefer the blue one."}
+          - {wrong: "I prefer blue one.", right: "I prefer the blue one."}
   - key: en.grammar.second_conditional
     band: 7
     title: "Second conditional: if + past, would"
@@ -282,7 +282,7 @@ nodes:
         rule: "Had + past participle for an action before another past action."
         examples: ["When I got to the station, the train had left.", "She told me she had lost her keys."]
         common_errors:
-          - {wrong: "When I arrived, he already left.", right: "When I arrived, he had already left."}
+          - {wrong: "When I arrived, he had already leave.", right: "When I arrived, he had already left."}
     prereq: [en.grammar.present_perfect]
   - key: en.grammar.passive_voice
     band: 7
@@ -330,7 +330,7 @@ nodes:
         rule: "Must be when you are sure something is true; might, may or could be when it is possible; can't be when you are sure it is not true."
         examples: ["That must be the landlord.", "The office might be closed today.", "It can't be far from here."]
         common_errors:
-          - {wrong: "He mustn't be at home, his car has gone.", right: "He can't be at home, his car has gone."}
+          - {wrong: "He can't to be at home, his car has gone.", right: "He can't be at home, his car has gone."}
           - {wrong: "It must to be expensive.", right: "It must be expensive."}
     prereq: [en.grammar.modals_obligation]
   - key: en.grammar.unless_in_case
@@ -349,7 +349,7 @@ nodes:
     title: "Word formation: prefixes and suffixes"
     payload:
       lesson:
-        rule: "Suffixes change the word class: -tion, -ment, -ity make nouns; -ful, -ive, -able make adjectives; -ly makes adverbs. Prefixes change the meaning: un-, in-, dis-, re-, over-."
+        rule: "Suffixes can change the word class: -tion, -ment and -ity form nouns; -ful, -ive and -able form adjectives; -ly often forms adverbs from adjectives (e.g. slow → slowly), but some -ly words are adjectives (e.g. friendly). Prefixes change the meaning: un-, in-, dis-, re-, over-."
         examples: ["The decision was unfair.", "Public transport here is very reliable.", "We need to reduce unemployment."]
         common_errors:
           - {wrong: "It was a very success event.", right: "It was a very successful event."}
@@ -398,7 +398,7 @@ nodes:
     title: "Should have, must have, might have, could have"
     payload:
       lesson:
-        rule: "Modal + have + past participle. Should have for regret or criticism; must, might and can't have for deductions about the past; could have for something possible that did not happen."
+        rule: "Modal + have + past participle. Should have for regret or criticism; must, might and can't have for deductions about the past; Could have describes an unrealised past possibility or something that may have happened: 'She could have missed the train.'"
         examples: ["I should have read the contract.", "She must have forgotten the appointment.", "You could have told me!"]
         common_errors:
           - {wrong: "I should have went earlier.", right: "I should have gone earlier."}
@@ -434,7 +434,7 @@ nodes:
         rule: "Past condition with present result (If I had taken the job, I would be in London now) or present condition with past result."
         examples: ["If I'd saved more, I wouldn't be worried now.", "If I spoke better French, I would have got the job."]
         common_errors:
-          - {wrong: "If I took that job, I would be rich now.", right: "If I had taken that job, I would be rich now."}
+          - {wrong: "If I would have saved more, I wouldn't be worried now.", right: "If I had saved more, I wouldn't be worried now."}
     prereq: [en.grammar.third_conditional]
   - key: en.grammar.participle_clauses
     band: 9
@@ -462,7 +462,7 @@ nodes:
         rule: "In formal writing, soften and distance claims: it could be argued that, it is widely believed that, X is said to, tend to, may, arguably."
         examples: ["It is widely believed that public transport reduces pollution.", "Remote work tends to suit experienced staff.", "Prices are expected to rise next year."]
         common_errors:
-          - {wrong: "It is believed that is true.", right: "It is believed that this is true."}
+          - {wrong: "It is believe that this is true.", right: "It is believed that this is true."}
           - {wrong: "Prices are expected rising.", right: "Prices are expected to rise."}
     prereq: [en.grammar.passive_voice]
   - key: en.grammar.nominalisation
@@ -473,7 +473,7 @@ nodes:
         rule: "Turn verbs and adjectives into nouns to sound formal and to pack information: decide → decision, increase → an increase in, important → the importance of."
         examples: ["The increase in rents worries many tenants.", "The introduction of the scheme was a success.", "The importance of training is often underestimated."]
         common_errors:
-          - {wrong: "The increase of rents worries tenants.", right: "The increase in rents worries tenants."}
+          - {wrong: "The increase rents worries tenants.", right: "The increase in rents worries tenants."}
           - {wrong: "The introduce of the scheme was a success.", right: "The introduction of the scheme was a success."}
     prereq: [en.grammar.word_formation]
   - key: en.grammar.inversion

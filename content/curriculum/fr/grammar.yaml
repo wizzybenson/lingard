@@ -34,17 +34,17 @@ nodes:
         examples: ["C'est mon voisin.", "Il est infirmier.", "Il y a une pharmacie près de la gare."]
         common_errors:
           - {wrong: "Il est un médecin.", right: "C'est un médecin."}
-          - {wrong: "Il a une pharmacie près d'ici.", right: "Il y a une pharmacie près d'ici."}
+          - {wrong: "Il y en a une pharmacie près d'ici.", right: "Il y a une pharmacie près d'ici."}
   - key: fr.grammar.articles_gender
     band: 4
     title: Articles et genre
     payload:
       lesson:
-        rule: "Défini : le, la, l', les. Indéfini : un, une, des. Partitif : du, de la, de l'. Après une négation : de / d'."
+        rule: "Défini : le, la, l', les. Indéfini : un, une, des. Partitif : du, de la, de l'. Après une négation, un, une, des et les articles partitifs deviennent généralement de / d' devant un complément direct : « Je n'ai pas de voiture. » Les articles définis restent inchangés : « Je n'aime pas le lait. » Après être, on garde l'article : « Ce n'est pas une voiture. »"
         examples: ["Je voudrais du pain.", "Il n'y a pas de lait.", "C'est une bonne idée."]
         common_errors:
           - {wrong: "Je n'ai pas du temps.", right: "Je n'ai pas de temps."}
-          - {wrong: "Le problème est la clé.", right: "Le problème, c'est la clé."}
+          - {wrong: "La problème est la clé.", right: "Le problème est la clé."}
   - key: fr.grammar.adjectifs_accord
     band: 4
     title: "Accord et place des adjectifs"
@@ -53,7 +53,7 @@ nodes:
         rule: "L'adjectif s'accorde en genre et en nombre avec le nom : petit, petite, petits, petites. Il se place en général après le nom ; quelques adjectifs courts et fréquents se placent avant : beau, bon, grand, petit, jeune, vieux, nouveau."
         examples: ["Une voiture rouge.", "Un petit appartement calme.", "Les fenêtres sont ouvertes."]
         common_errors:
-          - {wrong: "Un appartement petit.", right: "Un petit appartement."}
+          - {wrong: "Une voiture rouge petite.", right: "Une petite voiture rouge."}
           - {wrong: "Les portes sont fermé.", right: "Les portes sont fermées."}
     prereq: [fr.grammar.articles_gender]
   - key: fr.grammar.possessifs_demonstratifs
@@ -75,7 +75,7 @@ nodes:
         examples: ["J'habite au Canada, à Rivemont.", "Je vais chez le médecin demain.", "La banque est en face de la gare."]
         common_errors:
           - {wrong: "Je vais à Canada.", right: "Je vais au Canada."}
-          - {wrong: "Je vais au médecin.", right: "Je vais chez le médecin."}
+          - {wrong: "Je vais en Montréal.", right: "Je vais à Montréal."}
   - key: fr.grammar.negation
     band: 4
     title: "Négation : ne… pas, ne… jamais, ne… plus, ne… rien"
@@ -153,7 +153,7 @@ nodes:
     title: Passé composé avec être
     payload:
       lesson:
-        rule: "Verbes de mouvement (aller, venir, arriver, partir, entrer, sortir, monter, descendre, naître, mourir, rester, tomber, retourner) et verbes pronominaux prennent être ; le participe s'accorde avec le sujet."
+        rule: "Les verbes aller, venir, arriver, partir, naître, mourir, rester et tomber prennent être. Entrer, sortir, monter, descendre et retourner prennent être lorsqu'ils sont employés sans complément direct, mais avoir avec un complément direct : « Elle est sortie », mais « Elle a sorti les poubelles ». Les verbes pronominaux prennent également être. Avec être, le participe s'accorde avec le sujet (elle est partie) ; pour les pronominaux, l'accord dépend de la construction (elles se sont inscrites, mais elles se sont parlé)."
         examples: ["Elle est arrivée à Rivemont lundi.", "Nous nous sommes inscrits au cours."]
         common_errors:
           - {wrong: "Elle a arrivé hier.", right: "Elle est arrivée hier."}
@@ -164,10 +164,10 @@ nodes:
     title: Imparfait (description et habitude)
     payload:
       lesson:
-        rule: "Radical du « nous » au présent + -ais, -ais, -ait, -ions, -iez, -aient. Pour le décor, l'habitude, l'état ; le passé composé pour l'événement."
+        rule: "Radical du « nous » au présent sans -ons + -ais, -ais, -ait, -ions, -iez, -aient. Exception : être → ét- (j'étais, nous étions). Pour le décor, l'habitude, l'état ; le passé composé pour l'événement."
         examples: ["Quand j'étais petit, je jouais au foot.", "Il pleuvait quand je suis sorti."]
         common_errors:
-          - {wrong: "Hier, je regardais la télé quand le téléphone sonnait.", right: "Hier, je regardais la télé quand le téléphone a sonné."}
+          - {wrong: "Quand j'étais jeune, je jouait au soccer.", right: "Quand j'étais jeune, je jouais au soccer."}
     prereq: [fr.grammar.passe_compose_avoir]
   - key: fr.grammar.passe_compose_ou_imparfait
     band: 5
@@ -178,18 +178,18 @@ nodes:
         examples: ["Je dormais quand le téléphone a sonné.", "Quand j'étais enfant, j'allais à l'école à pied.", "Hier, j'ai visité trois appartements."]
         common_errors:
           - {wrong: "Quand j'ai été petit, j'habitais à Rabat.", right: "Quand j'étais petit, j'habitais à Rabat."}
-          - {wrong: "Je lisais quand il arrivait.", right: "Je lisais quand il est arrivé."}
+          - {wrong: "Hier soir, je regardais un film, puis je me couchais à 23 h.", right: "Hier soir, j'ai regardé un film, puis je me suis couché à 23 h."}
     prereq: [fr.grammar.passe_compose_avoir, fr.grammar.imparfait]
   - key: fr.grammar.expressions_de_temps
     band: 5
     title: "Depuis, il y a, pendant, dans"
     payload:
       lesson:
-        rule: "Depuis + présent : une situation qui continue. Il y a + passé : le moment où une chose s'est passée. Pendant : une durée terminée. Dans : un moment à venir."
+        rule: "Depuis + présent : une situation qui continue. Il y a + passé : le moment où une chose s'est passée. Pendant : la durée d'une activité ou d'une situation. Exemple : « Je vais rester ici pendant deux mois. » Dans : un moment à venir."
         examples: ["J'habite ici depuis deux ans.", "Je suis arrivé il y a trois mois.", "Je pars en vacances dans une semaine."]
         common_errors:
-          - {wrong: "J'habite ici pour deux ans.", right: "J'habite ici depuis deux ans."}
-          - {wrong: "Je suis arrivé depuis trois mois.", right: "Je suis arrivé il y a trois mois."}
+          - {wrong: "J'habite ici il y a deux ans.", right: "J'habite ici depuis deux ans."}
+          - {wrong: "Je pars en vacances en une semaine.", right: "Je pars en vacances dans une semaine."}
     prereq: [fr.grammar.passe_compose_etre]
   - key: fr.grammar.comparatif_superlatif
     band: 5
@@ -199,7 +199,7 @@ nodes:
         rule: "Plus / moins / aussi + adjectif + que. Le plus / le moins + adjectif. Bon → meilleur, bien → mieux."
         examples: ["Cet appartement est plus calme que l'autre.", "C'est le quartier le plus cher de la ville."]
         common_errors:
-          - {wrong: "C'est plus bon.", right: "C'est meilleur."}
+          - {wrong: "Ce gâteau est plus bon que l'autre.", right: "Ce gâteau est meilleur que l'autre."}
           - {wrong: "Il parle plus bien que moi.", right: "Il parle mieux que moi."}
   - key: fr.grammar.imperatif
     band: 5
@@ -209,13 +209,13 @@ nodes:
         rule: "Trois personnes sans sujet : prends, prenons, prenez. Les verbes en -er perdent le -s au « tu » : parle !"
         examples: ["Prenez la deuxième rue à droite.", "Ne t'inquiète pas."]
         common_errors:
-          - {wrong: "Tu parles plus lentement, s'il te plaît !", right: "Parle plus lentement, s'il te plaît !"}
+          - {wrong: "Parles plus lentement, s'il te plaît !", right: "Parle plus lentement, s'il te plaît !"}
   - key: fr.grammar.pronoms_cod_coi
     band: 6
     title: Pronoms compléments directs et indirects
     payload:
       lesson:
-        rule: "COD : me, te, le, la, nous, vous, les. COI (à quelqu'un) : me, te, lui, nous, vous, leur. Placés avant le verbe conjugué."
+        rule: "COD : me, te, le, la, nous, vous, les. COI (à quelqu'un) : me, te, lui, nous, vous, leur. Ces pronoms se placent généralement avant le verbe conjugué (Je le connais) ou avant l'auxiliaire aux temps composés (Je lui ai écrit). Lorsqu'ils complètent un infinitif, ils se placent devant celui-ci (Je vais lui téléphoner). À l'impératif affirmatif, ils se placent après le verbe (Téléphone-lui)."
         examples: ["Je le connais depuis deux ans.", "Je lui ai envoyé un courriel."]
         common_errors:
           - {wrong: "Je connais le.", right: "Je le connais."}
@@ -235,10 +235,10 @@ nodes:
     title: "Adverbes en -ment et place des adverbes"
     payload:
       lesson:
-        rule: "Adjectif au féminin + -ment (lente → lentement) ; -ant → -amment, -ent → -emment (courant → couramment, évident → évidemment). Au passé composé, les adverbes courts se placent entre l'auxiliaire et le participe : j'ai bien compris."
+        rule: "Adjectif au féminin + -ment (lente → lentement) ; -ant → -amment, -ent → -emment (courant → couramment, évident → évidemment). Au passé composé, certains adverbes courants, comme « bien », « mal », « déjà » et « souvent », se placent généralement entre l'auxiliaire et le participe : j'ai bien compris. D'autres se placent après le participe : je suis rentré tard."
         examples: ["Parlez lentement, s'il vous plaît.", "J'ai déjà rempli le formulaire.", "Elle parle couramment l'arabe et le français."]
         common_errors:
-          - {wrong: "Il parle rapide.", right: "Il parle rapidement."}
+          - {wrong: "Il parle rapidemment.", right: "Il parle rapidement."}
           - {wrong: "J'ai compris bien.", right: "J'ai bien compris."}
     prereq: [fr.grammar.passe_compose_avoir]
   - key: fr.grammar.indefinis_ne_que
@@ -257,10 +257,10 @@ nodes:
     title: Futur simple
     payload:
       lesson:
-        rule: "Infinitif (ou radical irrégulier : ser-, aur-, ir-, fer-, pourr-, voudr-, viendr-) + -ai, -as, -a, -ons, -ez, -ont."
+        rule: "Infinitif (sans le -e final pour les verbes en -re) ou radical irrégulier (ser-, aur-, ir-, fer-, pourr-, voudr-, viendr-) + -ai, -as, -a, -ons, -ez, -ont."
         examples: ["Je vous rappellerai demain.", "Quand tu arriveras, appelle-moi."]
         common_errors:
-          - {wrong: "Quand j'arrive demain, je t'appellerai.", right: "Quand j'arriverai demain, je t'appellerai."}
+          - {wrong: "Quand j'arrivera demain, je t'appellerai.", right: "Quand j'arriverai demain, je t'appellerai."}
           - {wrong: "Je seras là.", right: "Je serai là."}
   - key: fr.grammar.conditionnel_present
     band: 6
@@ -277,7 +277,7 @@ nodes:
     title: "Pronoms relatifs : qui, que, où"
     payload:
       lesson:
-        rule: "Qui = sujet du verbe qui suit ; que = complément d'objet ; où = lieu ou temps."
+        rule: "Qui = sujet du verbe qui suit ; que = complément d'objet direct (COD) du verbe de la proposition relative ; où = lieu ou temps."
         examples: ["La voisine qui habite en face est infirmière.", "Le studio que j'ai visité est petit.", "Le jour où je suis arrivé…"]
         common_errors:
           - {wrong: "L'homme que parle est mon patron.", right: "L'homme qui parle est mon patron."}
@@ -286,7 +286,7 @@ nodes:
     title: "Hypothèse probable : si + présent → futur"
     payload:
       lesson:
-        rule: "Si + présent, futur (ou impératif). Jamais de futur après si."
+        rule: "Si + présent, futur (ou impératif). Quand si introduit une condition, on n'emploie pas le futur dans la proposition introduite par si."
         examples: ["S'il fait beau, nous irons au parc.", "Si tu as besoin d'aide, appelle-moi."]
         common_errors:
           - {wrong: "Si tu viendras, on mangera ensemble.", right: "Si tu viens, on mangera ensemble."}
@@ -296,7 +296,7 @@ nodes:
     title: "Hypothèse irréelle au présent : si + imparfait → conditionnel présent"
     payload:
       lesson:
-        rule: "Si + imparfait, conditionnel présent. Jamais de conditionnel après si."
+        rule: "Si + imparfait, conditionnel présent. Pas de conditionnel après si lorsqu'il introduit la condition : « Si j'avais le temps, je viendrais. »"
         examples: ["Si j'avais plus de temps, je suivrais un cours du soir.", "Si vous refusiez, j'irais au tribunal."]
         common_errors:
           - {wrong: "Si j'aurais le temps, je viendrais.", right: "Si j'avais le temps, je viendrais."}
@@ -317,7 +317,7 @@ nodes:
     title: "Ordre des doubles pronoms"
     payload:
       lesson:
-        rule: "Me, te, se, nous, vous se placent avant le, la, les ; le, la, les avant lui, leur ; puis y, puis en : il me le donne, je le lui envoie, il y en a."
+        rule: "Quand les pronoms se placent avant le verbe, l'ordre est : me, te, se, nous, vous ; le, la, les ; lui, leur ; y ; en : il me le donne, je le lui envoie, il y en a. Attention, cet ordre change à l'impératif affirmatif : donne-le-moi, donnez-le-nous."
         examples: ["Je vous l'envoie aujourd'hui.", "Le formulaire ? Je le lui ai déjà donné.", "Des places ? Il y en a encore."]
         common_errors:
           - {wrong: "Je lui le donne.", right: "Je le lui donne."}
@@ -349,7 +349,7 @@ nodes:
     title: Subjonctif présent après la nécessité, la volonté, l'émotion
     payload:
       lesson:
-        rule: "Il faut que, je veux que, je suis content que, avant que, pour que + subjonctif. Radical du « ils » au présent + -e, -es, -e, -ions, -iez, -ent ; irréguliers : sois, aie, aille, fasse, puisse, sache."
+        rule: "Il faut que, je veux que, je suis content que, avant que, pour que + subjonctif. En général, radical de « ils » au présent + -e, -es, -e, -ent pour je, tu, il/elle/on, ils/elles. Pour nous et vous, on utilise généralement le radical de « nous » au présent + -ions, -iez : que nous venions, que vous preniez. Certains verbes sont irréguliers : être, avoir, aller, faire, pouvoir, savoir…"
         examples: ["Il faut que vous signiez ici.", "Je voudrais que tu viennes avec moi."]
         common_errors:
           - {wrong: "Il faut que tu vas à la mairie.", right: "Il faut que tu ailles à la mairie."}
@@ -359,7 +359,7 @@ nodes:
     title: Gérondif
     payload:
       lesson:
-        rule: "En + participe présent (radical du « nous » + -ant) pour la simultanéité ou la manière ; même sujet que le verbe principal."
+        rule: "En + participe présent (En + participe présent (forme de « nous » au présent sans -ons + -ant ; exceptions : étant, ayant, sachant) pour la simultanéité ou la manière ; même sujet que le verbe principal.) pour la simultanéité ou la manière ; même sujet que le verbe principal."
         examples: ["J'écoute la radio en conduisant.", "C'est en pratiquant qu'on progresse."]
         common_errors:
           - {wrong: "En sortant du bureau, la pluie a commencé.", right: "Quand je suis sorti du bureau, la pluie a commencé."}
@@ -387,10 +387,10 @@ nodes:
     title: "Futur antérieur"
     payload:
       lesson:
-        rule: "Avoir ou être au futur simple + participe passé : une action future terminée avant une autre. Après quand, dès que, lorsque, le français emploie le futur, jamais le présent."
+        rule: "Avoir ou être au futur simple + participe passé : une action future terminée avant une autre. Pour situer explicitement une action dans l'avenir après quand, dès que ou lorsque, on emploie généralement le futur simple, ou le futur antérieur si l'action doit être achevée avant une autre. Le présent reste possible, notamment pour une habitude : « Quand je finis tôt, je rentre à pied. »"
         examples: ["Dès que j'aurai reçu ma carte, je vous l'enverrai.", "Quand vous serez arrivés, appelez-moi.", "J'aurai fini le dossier avant vendredi."]
         common_errors:
-          - {wrong: "Quand j'ai fini, je t'appellerai.", right: "Quand j'aurai fini, je t'appellerai."}
+          - {wrong: "Quand j'aurais fini, je t'appellerai.", right: "Quand j'aurai fini, je t'appellerai."}
           - {wrong: "Quand je serai fini, je t'appellerai.", right: "Quand j'aurai fini, je t'appellerai."}
     prereq: [fr.grammar.futur_simple, fr.grammar.passe_compose_etre]
   - key: fr.grammar.accord_participe_avoir
@@ -441,17 +441,17 @@ nodes:
     title: Discours rapporté au passé
     payload:
       lesson:
-        rule: "Après un verbe introducteur au passé : présent → imparfait, passé composé → plus-que-parfait, futur → conditionnel présent."
+        rule: "Après un verbe introducteur au passé, si l'on se place au moment des paroles rapportées : présent → imparfait, passé composé → plus-que-parfait, futur → conditionnel présent. Ces changements ne sont pas toujours obligatoires : on peut conserver le présent pour un fait toujours valable ou le futur pour un événement encore à venir."
         examples: ["Il a dit qu'il viendrait.", "Elle m'a demandé si j'avais rempli le formulaire."]
         common_errors:
-          - {wrong: "Il m'a dit qu'il viendra.", right: "Il m'a dit qu'il viendrait."}
+          - {wrong: "Elle m'a demandé que je venais.", right: "Elle m'a demandé si je venais."}
     prereq: [fr.grammar.plus_que_parfait, fr.grammar.conditionnel_present]
   - key: fr.grammar.voix_passive
     band: 8
     title: Voix passive
     payload:
       lesson:
-        rule: "Être au temps voulu + participe passé accordé avec le sujet ; l'agent est introduit par par."
+        rule: "Être au temps voulu + participe passé accordé avec le sujet ; Le complément d'agent est généralement introduit par « par », parfois par « de » : « Elle est appréciée de tous »."
         examples: ["La décision a été prise par le conseil.", "Les candidats seront convoqués lundi."]
         common_errors:
           - {wrong: "La loi a été voté hier.", right: "La loi a été votée hier."}
@@ -505,7 +505,7 @@ nodes:
         rule: "Transformer un verbe en nom pour condenser l'information : augmenter → l'augmentation, décider → la décision."
         examples: ["L'augmentation des loyers inquiète les locataires.", "Après la signature du contrat…"]
         common_errors:
-          - {wrong: "Le fait d'augmenter les loyers il inquiète.", right: "L'augmentation des loyers inquiète."}
+          - {wrong: "L'augmenter des loyers inquiète les locataires.", right: "L'augmentation des loyers inquiète les locataires."}
   - key: fr.grammar.mise_en_relief
     band: 10
     title: "Mise en relief : c'est… qui / ce que… c'est"

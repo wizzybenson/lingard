@@ -1,0 +1,364 @@
+{
+  "fr.func.greet_introduce": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.ask_clarification": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.make_appointment": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.describe_person_place": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.narrate_past": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.complain_politely": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Le chauffage est nul, réparez-le ! → Le chauffage ne fonctionne pas ; pourriez-vous le faire réparer ?",
+        "issue": "La phrase de départ est grammaticalement correcte, mais familière et brusque : il faut présenter ce changement comme une reformulation plus polie, non comme la correction d'une faute.",
+        "suggestion": "Formulation brusque → formulation plus polie : « Le chauffage est nul, réparez-le ! » → « Le chauffage ne fonctionne pas ; pourriez-vous le faire réparer ? »"
+      }
+    ]
+  },
+  "fr.func.give_advice": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.agree_disagree": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Je suis pas d'accord. → Je ne suis pas d'accord.",
+        "issue": "L'omission de « ne » est courante et acceptable à l'oral familier au Québec comme en France ; ce n'est pas une faute dans ce registre.",
+        "suggestion": "Oral familier : Je suis pas d'accord. → Registre standard ou écrit : Je ne suis pas d'accord."
+      }
+    ]
+  },
+  "fr.func.negotiate": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.argue_point_of_view": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.persuade": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.concede_and_counter": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.summarise": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.ask_give_directions": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.invite_accept_decline": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.telephone": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.make_suggestions": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.ask_permission": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.express_certainty": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.formal_register": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.report_information": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.func.structure_talk": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.cest_il_est_il_y_a": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.articles_gender": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.adjectifs_accord": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.prepositions_lieu": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Je vais au médecin. → Je vais chez le médecin.",
+        "issue": "« Aller au médecin » est un usage familier courant ; le présenter comme une faute absolue est trompeur.",
+        "suggestion": "Je vais chez la clinique. → Je vais à la clinique."
+      }
+    ]
+  },
+  "fr.grammar.passe_compose_etre": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.imparfait": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.passe_compose_ou_imparfait": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Hier, je visitais trois appartements et j'ai choisi le plus grand. → Hier, j'ai visité trois appartements et j'ai choisi le plus grand.",
+        "issue": "L'imparfait est possible pour présenter les visites comme une situation en cours : la phrase n'est donc pas nécessairement fautive.",
+        "suggestion": "Présenter comme un choix de perspective : « Pour raconter les visites comme des faits achevés, on dit : Hier, j'ai visité trois appartements et j'ai choisi le plus grand. »"
+      }
+    ]
+  },
+  "fr.grammar.expressions_de_temps": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "J'habite ici depuis il y a deux ans. → J'habite ici depuis deux ans.",
+        "issue": "« Depuis il y a deux ans » est possible, notamment à l’oral : la formulation est lourde, mais ne constitue pas une faute à corriger comme telle.",
+        "suggestion": "J'habite ici il y a deux ans. → J'habite ici depuis deux ans."
+      }
+    ]
+  },
+  "fr.grammar.comparatif_superlatif": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.imperatif": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.pronoms_cod_coi": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.adverbes": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.futur_simple": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.relatifs_qui_que_ou": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.si_present_futur": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.si_imparfait": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.doubles_pronoms": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.subjonctif_present": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.gerondif": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.futur_anterieur": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Quand j'ai fini, je t'appellerai. → Quand j'aurai fini, je t'appellerai.",
+        "issue": "Le passé composé peut exprimer un futur accompli à l’oral ; la phrase de départ ne constitue donc pas une faute à condamner systématiquement.",
+        "suggestion": "Quand j'aurais fini, je t'appellerai. → Quand j'aurai fini, je t'appellerai."
+      }
+    ]
+  },
+  "fr.grammar.discours_rapporte": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.voix_passive": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.grammar.nominalisation": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.greetings_courtesy": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "rule",
+        "text": "On vouvoie un inconnu ou un employé",
+        "issue": "La formulation est trop absolue : le tutoiement est aussi courant dans certaines interactions avec des inconnus ou des employés, notamment au Québec.",
+        "suggestion": "Dans une situation formelle, ou en cas de doute, on vouvoie un inconnu ou un employé."
+      },
+      {
+        "part": "mistake",
+        "text": "Bonjour madame, je voudrais ouvrir un compte, s'il te plaît.",
+        "issue": "Le tutoiement n'est pas une faute en soi ; il faut préciser que l'exercice porte sur une interaction formelle où le vouvoiement est attendu.",
+        "suggestion": "Consigne : « Dans une situation formelle à la banque, utilisez le vouvoiement. » Bonjour madame, je voudrais ouvrir un compte, s'il te plaît. → Bonjour madame, je voudrais ouvrir un compte, s'il vous plaît."
+      },
+      {
+        "part": "mistake",
+        "text": "Excuse-moi, madame, où est la gare ?",
+        "issue": "Cette phrase peut être acceptable dans un contexte de tutoiement ; « madame » n'impose pas à lui seul le vouvoiement.",
+        "suggestion": "Consigne : « Demandez votre chemin en utilisant le vouvoiement. » Excuse-moi, madame, où est la gare ? → Excusez-moi, madame, où est la gare ?"
+      }
+    ]
+  },
+  "fr.lex.transport": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.food_shopping": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "rule",
+        "text": "Le pain s'achète à la boulangerie, le reste à l'épicerie ; on paie à la caisse et on garde le reçu.",
+        "issue": "Cette répartition est trompeuse : l’épicerie vend aussi du pain et la boulangerie propose d’autres produits.",
+        "suggestion": "On peut acheter du pain à la boulangerie et faire ses courses à l’épicerie ; on paie à la caisse et on garde le reçu."
+      }
+    ]
+  },
+  "fr.lex.housing.renting": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.health_appointments": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.emotions": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.housing.deposit_repairs": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.work_job_search": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.administration": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.education": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.environment": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.abstract_argument": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.numbers_dates_times": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.directions_city": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.family_relationships": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.home_household": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.services_bills": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.sport_fitness": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.travel_holidays": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.workplace_rights": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "J'ai pris une vacance de deux semaines. → J'ai pris deux semaines de congé.",
+        "issue": "Le singulier « une vacance » s'emploie au Québec dans le registre familier : le présenter comme une faute sans nuance serait trompeur.",
+        "suggestion": "Présenter comme variante de registre : « J'ai pris une vacance de deux semaines » (familier, Québec) → « J'ai pris deux semaines de vacances » (neutre)."
+      }
+    ]
+  },
+  "fr.lex.money_economy": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.law_safety": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.media_communication": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "rule",
+        "text": "un reportage enquête sur un sujet",
+        "issue": "Un reportage n’est pas nécessairement une enquête ; c’est le journaliste qui enquête.",
+        "suggestion": "un reportage porte sur un sujet"
+      }
+    ]
+  },
+  "fr.lex.society_issues": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "fr.lex.science_public_health": {
+    "verdict": "ok",
+    "problems": []
+  }
+}

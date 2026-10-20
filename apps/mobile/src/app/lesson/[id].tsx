@@ -72,7 +72,7 @@ function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswe
       ) : game.kind === "sentence_race" ? null : (
         <Text style={type.headline}>{item.prompt}</Text>
       )}
-      {game.kind === "spot_the_error" ? (
+      {game.kind === "spot_the_error" || game.kind === "fill_the_gap" ? (
         <View style={{ gap: space(1) }}>
           {choices(item).map((c, i) => (
             <Choice
@@ -89,7 +89,7 @@ function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswe
       ) : (
         <Field label={t("school.answer")} value={answer} editable={!checked} onChangeText={onAnswer} autoCapitalize="none" autoCorrect={false} />
       )}
-      {checked && game.kind !== "spot_the_error" && (
+      {checked && game.kind !== "spot_the_error" && game.kind !== "fill_the_gap" && (
         <View style={styles.verdict}>
           <Ionicons name={right ? "checkmark-circle" : "close-circle"} size={18} color={right ? colors.success : colors.danger} />
           <Text style={[type.callout, { flex: 1, color: right ? colors.success : colors.ink }]}>{right ? t("phone.correct") : item.answer}</Text>

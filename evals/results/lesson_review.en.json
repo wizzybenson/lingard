@@ -1,0 +1,217 @@
+{
+  "en.func.greet_introduce": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.make_request": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Label this pair “Direct → more polite” rather than “wrong → right”.",
+        "issue": "The pair below corrects an ungrammatical verb form, not merely a direct request; this label would imply that “Would you mind to send” is acceptable.",
+        "suggestion": "Keep “wrong → right” for “Would you mind to send me the form? → Would you mind sending me the form?”"
+      }
+    ]
+  },
+  "en.func.ask_clarification": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.make_appointment": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.describe_person_place": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.narrate_past": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.agree_disagree": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "You are wrong. → I'm not sure I agree.",
+        "issue": "“You are wrong” is grammatically correct but direct; labelling it wrong falsely presents a politeness choice as an error.",
+        "suggestion": "Direct → softer: You are wrong. → I'm not sure I agree."
+      }
+    ]
+  },
+  "en.func.negotiate": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.express_regret": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.persuade": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.concede_and_counter": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.summarise": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "To resume, the project is useful. → To sum up, the project is useful.",
+        "issue": "“To resume” is acceptable when returning to an interrupted discussion, so the sentence is not inherently wrong.",
+        "suggestion": "To introduce a summary, say “To sum up, the project is useful.” Use “To resume” when returning to an interrupted discussion."
+      }
+    ]
+  },
+  "en.func.thank_respond": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.telephone": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "Hello, I want Ms Clarke. → Hello, could I speak to Ms Clarke, please?",
+        "issue": "The original is grammatically acceptable but blunt; marking it wrong teaches a politeness preference as an error.",
+        "suggestion": "More polite: Hello, could I speak to Ms Clarke, please?"
+      }
+    ]
+  },
+  "en.func.ask_permission": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.sympathise_congratulate": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.func.structure_talk": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.adverbs_of_frequency": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.articles": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.questions": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.substitution_ellipsis": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.past_perfect": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.modals_of_deduction": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.word_formation": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.past_modals": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.mixed_conditionals": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.hedging": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.grammar.nominalisation": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.greetings_courtesy": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.food_shopping": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.housing.renting": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.leisure": {
+    "verdict": "fix",
+    "problems": [
+      {
+        "part": "mistake",
+        "text": "I do the cinema on Saturday. → I go to the cinema on Saturday.",
+        "issue": "“Do the cinema” can be acceptable informal British English for including a cinema visit in one's plans, so it is not a reliable example of an error.",
+        "suggestion": "I go at the cinema on Saturday. → I go to the cinema on Saturday."
+      }
+    ]
+  },
+  "en.lex.banking": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.housing.deposit_repairs": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.technology": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.environment": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.abstract_argument": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.family_relationships": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.home_household": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.services_bills": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.sport_fitness": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.workplace_rights": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.money_economy": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.law_safety": {
+    "verdict": "ok",
+    "problems": []
+  },
+  "en.lex.society_issues": {
+    "verdict": "ok",
+    "problems": []
+  }
+}

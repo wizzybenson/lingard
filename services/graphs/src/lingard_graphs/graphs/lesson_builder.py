@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+import re
 import uuid
 from typing import Any
 
@@ -100,6 +101,47 @@ def sentence_race_items(node: CurriculumNode, examples: list[str], rng: random.R
     return items
 
 
+GAP = "___"
+
+
+def _forms(item: str) -> list[str]:
+    """An item as it may appear in a sentence: whole, or without a short leading article (le conjoint → conjoint,
+    l'abonnement → abonnement, the bins → bins). Generic, so it needs no per-language word list."""
+    forms = [item]
+    head, _, rest = item.partition(" ")
+    if rest and len(head) <= 3:
+        forms.append(rest)
+    if 0 < item.find("'") <= 2 and " " not in item[: item.find("'")]:
+        forms.append(item[item.find("'") + 1 :])
+    return forms
+
+
+def fill_the_gap_items(node: CurriculumNode, examples: list[str], rng: random.Random, n: int = 6) -> list[GameItem]:
+    """Each model sentence with one of the set's words blanked out; the other words are the wrong choices."""
+    words = [str(i) for i in node.payload.get("items", [])]
+    items: list[GameItem] = []
+    for sentence in examples:
+        for word in sorted(words, key=len, reverse=True):
+            match = next(
+                (m for form in _forms(word) if (m := re.search(rf"(?<!\w){re.escape(form)}(?!\w)", sentence, re.I))),
+                None,
+            )
+            if match is None:
+                continue
+            others = [_forms(w)[-1] for w in words if w != word]
+            rng.shuffle(others)
+            items.append(
+                GameItem(
+                    prompt=sentence[: match.start()] + GAP + sentence[match.end() :],
+                    answer=match.group(0),
+                    distractors=others[:3],
+                    node_key=node.key,
+                )
+            )
+            break
+    return items[:n]
+
+
 def build_games(
     node: CurriculumNode, mistakes: list[tuple[str, str]], conjugator: FrenchConjugator | None, rng: random.Random
 ) -> list[Game]:
@@ -111,6 +153,10 @@ def build_games(
         duel = conjugation_items(node, conjugator, rng)
         if duel:
             games.append(Game(kind="conjugation_duel", items=duel, time_limit_s=60))
+    if node.kind == "lexset":
+        gaps = fill_the_gap_items(node, list(lesson.get("examples", [])), rng)
+        if gaps:
+            games.append(Game(kind="fill_the_gap", items=gaps))
     spot = spot_the_error_items(node, mistakes)
     if spot:
         games.append(Game(kind="spot_the_error", items=spot))

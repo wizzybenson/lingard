@@ -4,36 +4,355 @@ defaults:
   source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
   as_of: "2012"
 nodes:
-  - {key: fr.lex.greetings_courtesy, band: 4, title: "Formules de politesse", payload: {items: [bonjour, bonsoir, "s'il vous plaît", merci, "de rien", "excusez-moi", "au revoir", "bonne journée"]}}
-  - {key: fr.lex.transport, band: 4, title: "Transports", payload: {items: [billet, quai, correspondance, "arrêt de bus", horaire, retard, aller-retour, métro, gare]}}
-  - {key: fr.lex.food_shopping, band: 4, title: "Courses et alimentation", payload: {items: [boulangerie, épicerie, caisse, "un kilo de", "une douzaine de", frais, "en promotion", reçu]}}
-  - {key: fr.lex.weather_seasons, band: 4, title: "Météo et saisons", payload: {items: [neige, verglas, "il fait froid", "il pleut", orage, canicule, hiver, printemps]}}
-  - {key: fr.lex.housing.renting, band: 4, title: "Logement : louer", payload: {items: [appartement, loyer, bail, propriétaire, locataire, "charges comprises", "meublé", studio, colocation]}}
-  - {key: fr.lex.leisure, band: 4, title: "Loisirs", payload: {items: [cinéma, randonnée, patinoire, bibliothèque, "match de hockey", festival, abonnement]}}
-  - {key: fr.lex.health_appointments, band: 5, title: "Santé et rendez-vous médicaux", payload: {items: [ordonnance, pharmacie, "carte d'assurance maladie", symptôme, fièvre, urgence, "clinique sans rendez-vous"]}}
-  - {key: fr.lex.banking, band: 5, title: "Banque", payload: {items: ["ouvrir un compte", virement, guichet, "carte de débit", "relevé de compte", frais, épargne]}}
-  - {key: fr.lex.emotions, band: 5, title: "Émotions", payload: {items: [inquiet, soulagé, déçu, fier, agacé, "avoir hâte", "en avoir marre"]}}
-  - {key: fr.lex.housing.deposit_repairs, band: 6, title: "Logement : dépôt et réparations", payload: {items: ["dépôt de garantie", "état des lieux", fissure, fuite, plombier, "remise en état", "retenir sur le dépôt", usure]}}
-  - {key: fr.lex.work_job_search, band: 6, title: "Travail et recherche d'emploi", payload: {items: [candidature, "lettre de motivation", entretien, "poste à pourvoir", salaire, "période d'essai", "temps partiel", recruteur]}}
-  - {key: fr.lex.administration, band: 6, title: "Démarches administratives", payload: {items: [formulaire, "pièce d'identité", "numéro d'assurance sociale", guichet, délai, "justificatif de domicile", demande]}}
-  - {key: fr.lex.education, band: 7, title: "Éducation et formation", payload: {items: [inscription, "frais de scolarité", diplôme, "formation continue", stage, équivalence, bourse]}}
-  - {key: fr.lex.technology, band: 7, title: "Technologie", payload: {items: ["données personnelles", "mot de passe", application, télétravail, "réseaux sociaux", cybersécurité]}}
-  - {key: fr.lex.news_current_affairs, band: 8, title: "Actualité et société", payload: {items: [enquête, "conseil municipal", manifestation, sondage, "projet de loi", porte-parole, "selon les autorités"]}}
-  - {key: fr.lex.environment, band: 8, title: "Environnement", payload: {items: ["changement climatique", recyclage, "transport en commun", "empreinte carbone", "espaces verts", gaspillage]}}
-  - {key: fr.lex.abstract_argument, band: 9, title: "Lexique de l'argumentation", payload: {items: [enjeu, "mettre en évidence", "remettre en question", nuancer, "à long terme", "en contrepartie", primordial]}}
-
-  - {key: fr.lex.numbers_dates_times, band: 4, title: "Nombres, dates et heures", payload: {items: ["soixante-dix", "quatre-vingts", "quatre-vingt-dix", "le premier mars", "midi", "minuit", "et quart", "moins le quart", "et demie", "14 h 30"]}}
-  - {key: fr.lex.directions_city, band: 4, title: "S'orienter en ville", payload: {items: ["à gauche", "à droite", "tout droit", "le carrefour", "le feu", "le coin de la rue", "traverser", "en face de", "à côté de"]}}
-  - {key: fr.lex.family_relationships, band: 4, title: "Famille et relations", payload: {items: ["le conjoint", "la conjointe", "les enfants", "le frère", "la sœur", "les parents", "le beau-frère", "célibataire", "marié"]}}
-  - {key: fr.lex.home_household, band: 4, title: "La maison", payload: {items: ["la cuisine", "la salle de bains", "le chauffage", "la machine à laver", "le frigo", "les meubles", "le balcon", "la poubelle"]}}
-  - {key: fr.lex.services_bills, band: 5, title: "Factures et services", payload: {items: ["la facture", "l'abonnement", "payer en ligne", "le prélèvement automatique", "les frais", "le remboursement", "le forfait", "le service à la clientèle"]}}
-  - {key: fr.lex.sport_fitness, band: 5, title: "Sport et forme", payload: {items: ["le gymnase", "l'entraînement", "l'équipe", "la natation", "courir", "le match", "l'inscription"]}}
-  - {key: fr.lex.travel_holidays, band: 5, title: "Voyages et vacances", payload: {items: ["la réservation", "l'aéroport", "l'hébergement", "le séjour", "les bagages", "le vol", "annuler", "l'enregistrement"]}}
-  - {key: fr.lex.immigration_citizenship, band: 6, title: "Immigration et citoyenneté", payload: {items: ["la résidence permanente", "le permis de travail", "le visa", "la citoyenneté", "la demande", "les pièces justificatives", "le numéro d'assurance sociale", "Entrée express"]}}
-  - {key: fr.lex.workplace_rights, band: 7, title: "Droits au travail", payload: {items: ["le contrat de travail", "le salaire minimum", "les heures supplémentaires", "le congé", "la période d'essai", "le syndicat", "le licenciement", "la sécurité au travail"]}}
-  - {key: fr.lex.money_economy, band: 7, title: "Argent et économie", payload: {items: ["le budget", "l'épargne", "le prêt", "le taux d'intérêt", "l'inflation", "les impôts", "le pouvoir d'achat", "la dette"]}}
-  - {key: fr.lex.culture_arts, band: 7, title: "Culture et arts", payload: {items: ["l'exposition", "le spectacle", "le musée", "la pièce de théâtre", "le patrimoine", "la critique", "le concert"]}}
-  - {key: fr.lex.law_safety, band: 8, title: "Loi et sécurité", payload: {items: ["porter plainte", "le témoin", "l'amende", "la loi", "le tribunal", "le cambriolage", "l'assurance", "les droits"]}}
-  - {key: fr.lex.media_communication, band: 8, title: "Médias et communication", payload: {items: ["les réseaux sociaux", "l'émission", "la source", "la désinformation", "le reportage", "l'éditorial", "l'abonné"]}}
-  - {key: fr.lex.society_issues, band: 9, title: "Enjeux de société", payload: {items: ["l'égalité", "la diversité", "l'intégration", "le logement abordable", "la pauvreté", "le vieillissement de la population", "la discrimination", "la mobilité sociale"]}}
-  - {key: fr.lex.science_public_health, band: 9, title: "Sciences et santé publique", payload: {items: ["la recherche", "la santé publique", "la prévention", "l'étude", "les données", "l'innovation", "l'éthique", "l'essai clinique"]}}
+  - key: fr.lex.greetings_courtesy
+    band: 4
+    title: "Formules de politesse"
+    payload:
+      items: ["bonjour", "bonsoir", "s'il vous plaît", "merci", "de rien", "excusez-moi", "au revoir", "bonne journée"]
+      lesson:
+        rule: "Bonjour toute la journée, bonsoir à partir de la fin d'après-midi. Dans une situation formelle, ou en cas de doute, on vouvoie un inconnu ou un employé ; « de rien » répond à « merci »."
+        examples: ["Bonjour, je voudrais un renseignement, s'il vous plaît.", "Merci beaucoup ! — De rien.", "Excusez-moi, vous avez l'heure ?"]
+        common_errors:
+          - {wrong: "Au revoir, bon journée !", right: "Au revoir, bonne journée !"}
+          - {wrong: "Merci pour votre aide, et bonne soiré !", right: "Merci pour votre aide, et bonne soirée !"}
+  - key: fr.lex.transport
+    band: 4
+    title: "Transports"
+    payload:
+      items: ["billet", "quai", "correspondance", "arrêt de bus", "horaire", "retard", "aller-retour", "métro", "gare"]
+      lesson:
+        rule: "On achète un billet (un aller simple ou un aller-retour) ; le train part d'un quai ; On change de ligne à une station de correspondance.."
+        examples: ["Un aller-retour pour Québec, s'il vous plaît.", "Le train part du quai 3.", "Le bus a vingt minutes de retard."]
+        common_errors:
+          - {wrong: "Je prends le métro à l'arrêt de bus.", right: "Je prends le métro à la station de métro."}
+          - {wrong: "Le train part de la quai 3.", right: "Le train part du quai 3."}
+  - key: fr.lex.food_shopping
+    band: 4
+    title: "Courses et alimentation"
+    payload:
+      items: ["boulangerie", "épicerie", "caisse", "un kilo de", "une douzaine de", "frais", "en promotion", "reçu"]
+      lesson:
+        rule: "On achète le pain à la boulangerie et on fait ses courses à l'épicerie ; on paie à la caisse et on garde le reçu."
+        examples: ["Je passe à la boulangerie avant le travail.", "Les pommes sont en promotion cette semaine.", "Gardez votre reçu pour un échange."]
+        common_errors:
+          - {wrong: "Une douzaine des œufs.", right: "Une douzaine d'œufs."}
+          - {wrong: "Une baguette et deux croissant, s'il vous plaît.", right: "Une baguette et deux croissants, s'il vous plaît."}
+  - key: fr.lex.weather_seasons
+    band: 4
+    title: "Météo et saisons"
+    payload:
+      items: ["neige", "verglas", "il fait froid", "il pleut", "orage", "canicule", "hiver", "printemps"]
+      lesson:
+        rule: "Pour la météo, on dit « il fait » + adjectif (il fait froid) et « il pleut, il neige » ; les saisons : en hiver, en été, en automne, mais au printemps."
+        examples: ["Il fait froid ce matin, mettez un manteau.", "Attention au verglas sur le trottoir.", "Au printemps, il pleut souvent."]
+        common_errors:
+          - {wrong: "Il est froid aujourd'hui.", right: "Il fait froid aujourd'hui."}
+          - {wrong: "En printemps, il pleut.", right: "Au printemps, il pleut."}
+  - key: fr.lex.housing.renting
+    band: 4
+    title: "Logement : louer"
+    payload:
+      items: ["appartement", "loyer", "bail", "propriétaire", "locataire", "charges comprises", "meublé", "studio", "colocation"]
+      lesson:
+        rule: "Le locataire paie un loyer au propriétaire et signe un bail ; « Charges comprises » veut dire que certaines charges sont incluses dans le montant annoncé ; il faut vérifier lesquelles dans le bail."
+        examples: ["Le loyer est de 950 $ par mois, charges comprises.", "Le propriétaire veut un bail d'un an.", "Je cherche un studio meublé près du port."]
+        common_errors:
+          - {wrong: "Le propriétaire paie le loyer.", right: "Le locataire paie le loyer."}
+          - {wrong: "Un appartement meublée.", right: "Un appartement meublé."}
+  - key: fr.lex.leisure
+    band: 4
+    title: "Loisirs"
+    payload:
+      items: ["cinéma", "randonnée", "patinoire", "bibliothèque", "match de hockey", "festival", "abonnement"]
+      lesson:
+        rule: "On fait du sport (faire de la randonnée), on va au cinéma, à la patinoire, à un festival ; on prend un abonnement pour y aller souvent."
+        examples: ["Ce week-end, on fait une randonnée.", "J'ai un abonnement à la bibliothèque.", "On va au match de hockey samedi ?"]
+        common_errors:
+          - {wrong: "Je fais randonnée le dimanche.", right: "Je fais de la randonnée le dimanche."}
+          - {wrong: "Je vais à le cinéma.", right: "Je vais au cinéma."}
+  - key: fr.lex.health_appointments
+    band: 5
+    title: "Santé et rendez-vous médicaux"
+    payload:
+      items: ["ordonnance", "pharmacie", "carte d'assurance maladie", "symptôme", "fièvre", "urgence", "clinique sans rendez-vous"]
+      lesson:
+        rule: "Le médecin fait une ordonnance, la pharmacie donne les médicaments ; sans rendez-vous, on va à une clinique sans rendez-vous, et aux urgences si c'est grave."
+        examples: ["J'ai de la fièvre depuis hier.", "Voici votre ordonnance pour la pharmacie.", "N'oubliez pas votre carte d'assurance maladie."]
+        common_errors:
+          - {wrong: "J'ai une fièvre de trois jours.", right: "J'ai de la fièvre depuis trois jours."}
+          - {wrong: "Je vais à une clinique sans rendez-vous pour une rhume.", right: "Je vais à une clinique sans rendez-vous pour un rhume."}
+  - key: fr.lex.banking
+    band: 5
+    title: "Banque"
+    payload:
+      items: ["ouvrir un compte", "virement", "guichet", "carte de débit", "relevé de compte", "frais", "épargne"]
+      lesson:
+        rule: "On ouvre un compte au guichet ; on paie avec une carte de débit ; un virement envoie de l'argent d'un compte à un autre."
+        examples: ["Je voudrais ouvrir un compte.", "Le virement arrive en deux jours.", "Votre relevé de compte est en ligne."]
+        common_errors:
+          - {wrong: "Je voudrais ouvrir une compte.", right: "Je voudrais ouvrir un compte."}
+          - {wrong: "Je fais une transfert d'argent.", right: "Je fais un virement."}
+  - key: fr.lex.emotions
+    band: 5
+    title: "Émotions"
+    payload:
+      items: ["inquiet", "soulagé", "déçu", "fier", "agacé", "avoir hâte", "en avoir marre"]
+      lesson:
+        rule: "On est inquiet, soulagé, déçu, fier ; « avoir hâte de » = attendre avec plaisir ; « en avoir marre » est familier."
+        examples: ["Je suis soulagé, le dossier est accepté.", "J'ai hâte de commencer ce travail.", "Il est fier de son fils.", "Je suis un peu inquiet pour l'entretien."]
+        common_errors:
+          - {wrong: "Je suis hâte de partir.", right: "J'ai hâte de partir."}
+          - {wrong: "Elle est fier de son fils.", right: "Elle est fière de son fils."}
+  - key: fr.lex.housing.deposit_repairs
+    band: 6
+    title: "Logement : dépôt et réparations"
+    payload:
+      items: ["dépôt de garantie", "état des lieux", "fissure", "fuite", "plombier", "remise en état", "retenir sur le dépôt", "usure"]
+      lesson:
+        rule: "En France, on fait un état des lieux à l'entrée et à la sortie ; le propriétaire peut retenir sur le dépôt de garantie le coût des réparations liées aux dégâts, mais pas à l'usure normale. Au Québec, le propriétaire ne peut pas exiger de dépôt de garantie."
+        examples: ["Il y a une fuite sous l'évier.", "On a noté la fissure dans l'état des lieux.", "Le propriétaire ne peut pas retenir de somme sur le dépôt de garantie pour l'usure normale."]
+        common_errors:
+          - {wrong: "J'ai payé une dépôt de garantie.", right: "J'ai payé un dépôt de garantie."}
+          - {wrong: "J'appelle un plombeur.", right: "J'appelle un plombier."}
+  - key: fr.lex.work_job_search
+    band: 6
+    title: "Travail et recherche d'emploi"
+    payload:
+      items: ["candidature", "lettre de motivation", "entretien", "poste à pourvoir", "salaire", "période d'essai", "temps partiel", "recruteur"]
+      lesson:
+        rule: "On envoie une candidature avec un CV et une lettre de motivation ; le recruteur propose un entretien pour le poste à pourvoir."
+        examples: ["J'ai envoyé ma candidature lundi.", "L'entretien est jeudi à dix heures.", "C'est un poste à temps partiel."]
+        common_errors:
+          - {wrong: "J'ai envoyé ma candidature pour la poste.", right: "J'ai envoyé ma candidature pour le poste."}
+          - {wrong: "Je cherche un travail en temps partiel.", right: "Je cherche un travail à temps partiel."}
+  - key: fr.lex.administration
+    band: 6
+    title: "Démarches administratives"
+    payload:
+      items: ["formulaire", "pièce d'identité", "numéro d'assurance sociale", "guichet", "délai", "justificatif de domicile", "demande"]
+      lesson:
+        rule: "Pour une demande, on remplit un formulaire et on joint une pièce d'identité et un justificatif de domicile ; le délai dit combien de temps il faut attendre."
+        examples: ["Remplissez ce formulaire, s'il vous plaît.", "Il faut un justificatif de domicile récent.", "Le délai est de six semaines."]
+        common_errors:
+          - {wrong: "Je remplis la forme.", right: "Je remplis le formulaire."}
+          - {wrong: "Il faut une pièce d'identité valid.", right: "Il faut une pièce d'identité valide."}
+  - key: fr.lex.education
+    band: 7
+    title: "Éducation et formation"
+    payload:
+      items: ["inscription", "frais de scolarité", "diplôme", "formation continue", "stage", "équivalence", "bourse"]
+      lesson:
+        rule: "On fait une inscription, on paie des frais de scolarité, on obtient un diplôme ; Un stage est une période de formation pratique en milieu professionnel, pendant les études ou dans un autre parcours de formation."
+        examples: ["L'inscription se fait en ligne.", "J'ai demandé une équivalence pour mon diplôme.", "Elle fait un stage dans une banque."]
+        common_errors:
+          - {wrong: "Je fais un training en entreprise.", right: "Je suis une formation en entreprise."}
+          - {wrong: "J'ai fait un stage pendant de trois mois.", right: "J'ai fait un stage pendant trois mois."}
+  - key: fr.lex.technology
+    band: 7
+    title: "Technologie"
+    payload:
+      items: ["données personnelles", "mot de passe", "application", "télétravail", "réseaux sociaux", "cybersécurité"]
+      lesson:
+        rule: "On protège ses données personnelles avec un mot de passe solide ; le télétravail, c'est travailler de la maison."
+        examples: ["Changez votre mot de passe tous les trois mois.", "Je fais du télétravail deux jours par semaine.", "Cette application demande trop de données personnelles."]
+        common_errors:
+          - {wrong: "J'ai oublié mon passe de mot.", right: "J'ai oublié mon mot de passe."}
+          - {wrong: "Je travaille de maison.", right: "Je fais du télétravail."}
+  - key: fr.lex.news_current_affairs
+    band: 8
+    title: "Actualité et société"
+    payload:
+      items: ["enquête", "conseil municipal", "manifestation", "sondage", "projet de loi", "porte-parole", "selon les autorités"]
+      lesson:
+        rule: "Les médias parlent d'une enquête, d'un sondage, d'un projet de loi ; « selon les autorités » cite une source."
+        examples: ["Selon les autorités, l'enquête continue.", "Le conseil municipal vote ce soir.", "Un sondage montre que les habitants sont inquiets."]
+        common_errors:
+          - {wrong: "Selon aux autorités, tout va bien.", right: "Selon les autorités, tout va bien."}
+          - {wrong: "Une démonstration contre le projet.", right: "Une manifestation contre le projet."}
+  - key: fr.lex.environment
+    band: 8
+    title: "Environnement"
+    payload:
+      items: ["changement climatique", "recyclage", "transport en commun", "empreinte carbone", "espaces verts", "gaspillage"]
+      lesson:
+        rule: "On réduit son empreinte carbone, on lutte contre le gaspillage, on prend le transport en commun et on protège les espaces verts."
+        examples: ["Le recyclage est obligatoire dans l'immeuble.", "Je prends le transport en commun pour aller au travail.", "Le gaspillage alimentaire coûte cher."]
+        common_errors:
+          - {wrong: "Je fais le recycle.", right: "Je fais du recyclage."}
+          - {wrong: "Le transport public commun.", right: "Le transport en commun."}
+  - key: fr.lex.abstract_argument
+    band: 9
+    title: "Lexique de l'argumentation"
+    payload:
+      items: ["enjeu", "mettre en évidence", "remettre en question", "nuancer", "à long terme", "en contrepartie", "primordial"]
+      lesson:
+        rule: "Pour argumenter : un enjeu, mettre en évidence, remettre en question, nuancer ; « primordial » = très important."
+        examples: ["L'enjeu principal est le coût du logement.", "Cette étude met en évidence un problème.", "À long terme, la mesure sera utile."]
+        common_errors:
+          - {wrong: "Il faut remettre en question cette idée en question.", right: "Il faut remettre cette idée en question."}
+          - {wrong: "C'est un enjeu primordiale.", right: "C'est un enjeu primordial."}
+  - key: fr.lex.numbers_dates_times
+    band: 4
+    title: "Nombres, dates et heures"
+    payload:
+      items: ["soixante-dix", "quatre-vingts", "quatre-vingt-dix", "le premier mars", "midi", "minuit", "et quart", "moins le quart", "et demie", "14 h 30"]
+      lesson:
+        rule: "70 = soixante-dix, 80 = quatre-vingts, 90 = quatre-vingt-dix ; on dit le premier mars, mais le deux mars ; à l'oral, 14 h 30 se dit « quatorze heures trente »."
+        examples: ["Le rendez-vous est le premier mars à midi.", "Ça coûte quatre-vingt-dix dollars.", "Le train part à 14 h 30."]
+        common_errors:
+          - {wrong: "Le un mars.", right: "Le premier mars."}
+          - {wrong: "Il est deux heure quinze.", right: "Il est deux heures quinze."}
+  - key: fr.lex.directions_city
+    band: 4
+    title: "S'orienter en ville"
+    payload:
+      items: ["à gauche", "à droite", "tout droit", "le carrefour", "le feu", "le coin de la rue", "traverser", "en face de", "à côté de"]
+      lesson:
+        rule: "Pour indiquer le chemin : allez tout droit, tournez à gauche ou à droite au carrefour, traversez au feu."
+        examples: ["Allez tout droit jusqu'au feu.", "Tournez à gauche au carrefour.", "La pharmacie est en face de la banque."]
+        common_errors:
+          - {wrong: "Tournez au gauche.", right: "Tournez à gauche."}
+          - {wrong: "C'est à côté la gare.", right: "C'est à côté de la gare."}
+  - key: fr.lex.family_relationships
+    band: 4
+    title: "Famille et relations"
+    payload:
+      items: ["le conjoint", "la conjointe", "les enfants", "le frère", "la sœur", "les parents", "le beau-frère", "célibataire", "marié"]
+      lesson:
+        rule: "Au Canada, on dit souvent « mon conjoint, ma conjointe » pour la personne avec qui on vit ; le beau-frère est le frère du conjoint."
+        examples: ["Mon conjoint arrive le mois prochain.", "J'ai deux enfants et une sœur ici.", "Mes parents habitent encore au Maroc."]
+        common_errors:
+          - {wrong: "Mon frère de ma femme habite ici.", right: "Mon beau-frère habite ici."}
+          - {wrong: "Mes parents habite au Maroc.", right: "Mes parents habitent au Maroc."}
+  - key: fr.lex.home_household
+    band: 4
+    title: "La maison"
+    payload:
+      items: ["la cuisine", "la salle de bains", "le chauffage", "la machine à laver", "le frigo", "les meubles", "le balcon", "la poubelle"]
+      lesson:
+        rule: "Les pièces : la cuisine, la salle de bains ; au Canada, on dit souvent le frigo pour le réfrigérateur ; on sort la poubelle le jour de la collecte."
+        examples: ["Le chauffage ne marche pas dans la cuisine.", "La machine à laver est dans le sous-sol.", "On sort la poubelle le mardi."]
+        common_errors:
+          - {wrong: "Le salle de bains est au fond.", right: "La salle de bains est au fond."}
+          - {wrong: "J'ai mis le lait dans la frigo.", right: "J'ai mis le lait dans le frigo."}
+  - key: fr.lex.services_bills
+    band: 5
+    title: "Factures et services"
+    payload:
+      items: ["la facture", "l'abonnement", "payer en ligne", "le prélèvement automatique", "les frais", "le remboursement", "le forfait", "le service à la clientèle"]
+      lesson:
+        rule: "On reçoit une facture, on paie en ligne ou par prélèvement automatique ; Un forfait est un prix fixe pour un ensemble de services ; un forfait de téléphone est souvent facturé par mois.."
+        examples: ["J'ai reçu la facture d'électricité.", "Je paie par prélèvement automatique.", "Mon forfait de téléphone coûte 40 $ par mois."]
+        common_errors:
+          - {wrong: "Je paie la bille du téléphone.", right: "Je paie la facture du téléphone."}
+          - {wrong: "Le service des clients.", right: "Le service à la clientèle."}
+  - key: fr.lex.sport_fitness
+    band: 5
+    title: "Sport et forme"
+    payload:
+      items: ["le gymnase", "l'entraînement", "l'équipe", "la natation", "courir", "le match", "l'inscription"]
+      lesson:
+        rule: "On fait du sport : faire de la natation, aller au gymnase ; on s'inscrit dans une équipe."
+        examples: ["Je vais au gymnase trois fois par semaine.", "L'entraînement commence à 18 h.", "Elle fait de la natation le samedi."]
+        common_errors:
+          - {wrong: "Je joue la natation.", right: "Je fais de la natation."}
+          - {wrong: "Je fais de le sport.", right: "Je fais du sport."}
+  - key: fr.lex.travel_holidays
+    band: 5
+    title: "Voyages et vacances"
+    payload:
+      items: ["la réservation", "l'aéroport", "l'hébergement", "le séjour", "les bagages", "le vol", "annuler", "l'enregistrement"]
+      lesson:
+        rule: "On fait une réservation, on enregistre ses bagages à l'aéroport ; le séjour est le temps passé sur place."
+        examples: ["J'ai fait une réservation pour trois nuits.", "L'enregistrement ferme une heure avant le vol.", "Le vol a été annulé."]
+        common_errors:
+          - {wrong: "J'ai fait une réservation pour trois nuit.", right: "J'ai fait une réservation pour trois nuits."}
+          - {wrong: "Le vol a été annulée.", right: "Le vol a été annulé."}
+  - key: fr.lex.immigration_citizenship
+    band: 6
+    title: "Immigration et citoyenneté"
+    payload:
+      items: ["la résidence permanente", "le permis de travail", "le visa", "la citoyenneté", "la demande", "les pièces justificatives", "le numéro d'assurance sociale", "Entrée express"]
+      lesson:
+        rule: "Les démarches : une demande de résidence permanente ou de permis de travail, avec des pièces justificatives ; Entrée express est le système fédéral de sélection."
+        examples: ["J'ai déposé ma demande de résidence permanente.", "Mon permis de travail expire en mai.", "Il manque une pièce justificative."]
+        common_errors:
+          - {wrong: "J'applique pour la citoyenneté.", right: "Je fais une demande de citoyenneté."}
+          - {wrong: "Mon permit de travail.", right: "Mon permis de travail."}
+  - key: fr.lex.workplace_rights
+    band: 7
+    title: "Droits au travail"
+    payload:
+      items: ["le contrat de travail", "le salaire minimum", "les heures supplémentaires", "le congé", "la période d'essai", "le syndicat", "le licenciement", "la sécurité au travail"]
+      lesson:
+        rule: "Le contrat de travail fixe le salaire et les heures ; les heures supplémentaires sont payées davantage ; un syndicat défend les employés."
+        examples: ["Mes heures supplémentaires ne sont pas payées.", "J'ai droit à deux semaines de congé.", "Le salaire minimum a augmenté."]
+        common_errors:
+          - {wrong: "J'ai droit à deux semaines de congés payé.", right: "J'ai droit à deux semaines de congés payés."}
+          - {wrong: "Le syndicat défendent les employés.", right: "Le syndicat défend les employés."}
+  - key: fr.lex.money_economy
+    band: 7
+    title: "Argent et économie"
+    payload:
+      items: ["le budget", "l'épargne", "le prêt", "le taux d'intérêt", "l'inflation", "les impôts", "le pouvoir d'achat", "la dette"]
+      lesson:
+        rule: "On fait un budget, on met de l'argent en épargne, on rembourse un prêt ; l'inflation fait baisser le pouvoir d'achat."
+        examples: ["Le taux d'intérêt du prêt est de 6 %.", "L'inflation réduit notre pouvoir d'achat.", "Je fais un budget chaque mois."]
+        common_errors:
+          - {wrong: "Le taux d'intérêt de la prêt est élevé.", right: "Le taux d'intérêt du prêt est élevé."}
+          - {wrong: "J'ai fait un emprunt de la banque.", right: "J'ai fait un emprunt à la banque."}
+  - key: fr.lex.culture_arts
+    band: 7
+    title: "Culture et arts"
+    payload:
+      items: ["l'exposition", "le spectacle", "le musée", "la pièce de théâtre", "le patrimoine", "la critique", "le concert"]
+      lesson:
+        rule: "On visite une exposition au musée, on va voir un spectacle ou une pièce de théâtre ; le patrimoine, c'est l'héritage culturel d'un lieu."
+        examples: ["L'exposition est gratuite le dimanche.", "On a vu une pièce de théâtre au centre culturel.", "Le Vieux-Port fait partie du patrimoine."]
+        common_errors:
+          - {wrong: "Je suis allé voir un play.", right: "Je suis allé voir une pièce de théâtre."}
+          - {wrong: "Le spectacle était très intéressé.", right: "Le spectacle était très intéressant."}
+  - key: fr.lex.law_safety
+    band: 8
+    title: "Loi et sécurité"
+    payload:
+      items: ["porter plainte", "le témoin", "l'amende", "la loi", "le tribunal", "le cambriolage", "l'assurance", "les droits"]
+      lesson:
+        rule: "En cas de vol ou de cambriolage, on porte plainte à la police ; un témoin raconte ce qu'il a vu ; une amende est une somme à payer."
+        examples: ["J'ai porté plainte pour le cambriolage.", "Un témoin a appelé la police.", "J'ai reçu une amende de stationnement."]
+        common_errors:
+          - {wrong: "J'ai porté plainte la police.", right: "J'ai porté plainte à la police."}
+          - {wrong: "Il y avait un témoigne de l'accident.", right: "Il y avait un témoin de l'accident."}
+  - key: fr.lex.media_communication
+    band: 8
+    title: "Médias et communication"
+    payload:
+      items: ["les réseaux sociaux", "l'émission", "la source", "la désinformation", "le reportage", "l'éditorial", "l'abonné"]
+      lesson:
+        rule: "Une émission passe à la radio ou à la télé ; un reportage traite un sujet en profondeur ; on vérifie la source pour éviter la désinformation."
+        examples: ["J'ai vu un reportage sur le logement.", "Vérifiez toujours la source de l'information.", "La désinformation circule vite sur les réseaux sociaux."]
+        common_errors:
+          - {wrong: "J'ai regardé une reportage sur le logement.", right: "J'ai regardé un reportage sur le logement."}
+          - {wrong: "Il faut vérifier l'information avant la partager.", right: "Il faut vérifier l'information avant de la partager."}
+  - key: fr.lex.society_issues
+    band: 9
+    title: "Enjeux de société"
+    payload:
+      items: ["l'égalité", "la diversité", "l'intégration", "le logement abordable", "la pauvreté", "le vieillissement de la population", "la discrimination", "la mobilité sociale"]
+      lesson:
+        rule: "Pour parler de société : l'égalité, la diversité, l'intégration, le logement abordable ; Le vieillissement de la population, c'est l'augmentation de la proportion de personnes âgées dans la population."
+        examples: ["Le logement abordable manque dans les grandes villes.", "L'intégration passe par la langue et l'emploi.", "La discrimination à l'embauche est interdite."]
+        common_errors:
+          - {wrong: "La discrimination à l'embauche est interdit.", right: "La discrimination à l'embauche est interdite."}
+          - {wrong: "L'intégration passe par la langue et la emploi.", right: "L'intégration passe par la langue et l'emploi."}
+  - key: fr.lex.science_public_health
+    band: 9
+    title: "Sciences et santé publique"
+    payload:
+      items: ["la recherche", "la santé publique", "la prévention", "l'étude", "les données", "l'innovation", "l'éthique", "l'essai clinique"]
+      lesson:
+        rule: "La recherche produit des études et des données ; la santé publique mise sur la prévention ; l'éthique fixe les limites de la recherche."
+        examples: ["Selon une étude récente, la prévention coûte moins cher.", "La santé publique recommande la vaccination.", "Les données sont anonymes pour des raisons d'éthique."]
+        common_errors:
+          - {wrong: "Selon une étude récent, la prévention coûte moins cher.", right: "Selon une étude récente, la prévention coûte moins cher."}
+          - {wrong: "Les données est claires.", right: "Les données sont claires."}

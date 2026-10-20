@@ -74,7 +74,8 @@ export type Answer = string;
 export type Distractors = string[];
 export type NodeKey2 = string;
 export type Prompt = string;
-export type Kind = "conjugation_duel" | "sentence_race" | "spot_the_error" | "dictation" | "register_switch";
+export type Kind =
+  "conjugation_duel" | "sentence_race" | "spot_the_error" | "dictation" | "register_switch" | "fill_the_gap";
 export type TimeLimitS = number | null;
 export type Kind1 = "key_points" | "remedial";
 export type Minutes = number;

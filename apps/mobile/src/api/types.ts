@@ -123,6 +123,8 @@ export interface LessonRow {
 /** One step of the key-points path: a grammar rule taught before a scene needs it. */
 export interface KeyPoint {
   node_key: string;
+  /** A rule, a set of words, or a way of saying something. */
+  kind: "grammar" | "lexset" | "function";
   title: string;
   band: number;
   /** At the learner's level: taught before the next story day. */

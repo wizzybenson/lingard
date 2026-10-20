@@ -5,37 +5,385 @@ defaults:
   source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/pub/competence-linguistique.pdf
   as_of: "2012"
 nodes:
-  - {key: fr.func.greet_introduce, band: 4, title: "Saluer, se présenter", payload: {exponents: ["Bonjour, je m'appelle…", "Enchanté(e).", "Je viens d'arriver à Rivemont."]}}
-  - {key: fr.func.ask_information, band: 4, title: "Demander un renseignement", payload: {exponents: ["Excusez-moi, où se trouve… ?", "À quelle heure ouvre… ?", "Est-ce que vous savez si… ?"]}}
-  - {key: fr.func.make_request, band: 4, title: "Faire une demande polie", payload: {exponents: ["Je voudrais…", "Est-ce que je pourrais… ?", "Vous serait-il possible de… ?"]}, requires: [fr.grammar.conditionnel_present]}
-  - {key: fr.func.ask_clarification, band: 4, title: "Demander de répéter, faire préciser", payload: {exponents: ["Pardon, vous pouvez répéter ?", "Qu'est-ce que vous voulez dire par… ?", "Plus lentement, s'il vous plaît."]}}
-  - {key: fr.func.make_appointment, band: 4, title: "Prendre ou déplacer un rendez-vous", payload: {exponents: ["Je voudrais prendre rendez-vous pour…", "Est-ce que mardi vous conviendrait ?", "Je dois annuler mon rendez-vous."]}}
-  - {key: fr.func.express_preference, band: 4, title: "Exprimer une préférence", payload: {exponents: ["Je préfère…", "J'aime mieux…", "Ça m'est égal."]}}
-  - {key: fr.func.describe_person_place, band: 5, title: "Décrire une personne, un lieu", payload: {exponents: ["C'est un quartier animé où…", "Il a l'air…", "Il y a… à côté de…"]}, requires: [fr.grammar.relatifs_qui_que_ou]}
-  - {key: fr.func.narrate_past, band: 5, title: "Raconter un événement passé", payload: {exponents: ["D'abord…, ensuite…, finalement…", "Au moment où…", "Ce jour-là…"]}, requires: [fr.grammar.passe_compose_avoir, fr.grammar.passe_compose_etre, fr.grammar.imparfait]}
-  - {key: fr.func.apologise, band: 5, title: "S'excuser et répondre à des excuses", payload: {exponents: ["Je suis désolé(e) pour…", "Toutes mes excuses.", "Ce n'est pas grave."]}}
-  - {key: fr.func.complain_politely, band: 6, title: "Se plaindre poliment", payload: {exponents: ["Je me permets de vous signaler que…", "Je ne suis pas satisfait(e) de…", "Il me semble que ce n'est pas normal."]}, requires: [fr.grammar.conditionnel_present]}
-  - {key: fr.func.give_advice, band: 6, title: "Donner un conseil", payload: {exponents: ["À ta place, je…", "Tu devrais…", "Il vaudrait mieux…"]}, requires: [fr.grammar.conditionnel_present]}
-  - {key: fr.func.express_opinion, band: 6, title: "Donner son opinion", payload: {exponents: ["À mon avis,…", "Je trouve que…", "Selon moi,…"]}}
-  - {key: fr.func.agree_disagree, band: 6, title: "Exprimer l'accord et le désaccord", payload: {exponents: ["Je suis tout à fait d'accord.", "Je ne partage pas votre avis.", "Pas tout à fait…"]}}
-  - {key: fr.func.compare_options, band: 6, title: "Comparer des options", payload: {exponents: ["L'avantage de…, c'est que…", "Par rapport à…", "D'un côté…, de l'autre…"]}, requires: [fr.grammar.comparatif_superlatif]}
-  - {key: fr.func.negotiate, band: 7, title: "Négocier", payload: {exponents: ["Je vous propose…", "Et si on coupait la poire en deux ?", "Je pourrais accepter à condition que…"]}, requires: [fr.grammar.si_imparfait, fr.grammar.conditionnel_present]}
-  - {key: fr.func.hypothesise, band: 7, title: "Formuler une hypothèse", payload: {exponents: ["Si c'était le cas, …", "Imaginons que…", "Au cas où…"]}, requires: [fr.grammar.si_imparfait]}
-  - {key: fr.func.express_regret, band: 7, title: "Exprimer un regret", payload: {exponents: ["Je regrette de…", "J'aurais dû…", "Si seulement j'avais…"]}, requires: [fr.grammar.conditionnel_passe]}
-  - {key: fr.func.argue_point_of_view, band: 8, title: "Défendre un point de vue argumenté", payload: {exponents: ["Premièrement…, de plus…, enfin…", "Il est indéniable que…", "Prenons l'exemple de…"]}, requires: [fr.grammar.connecteurs_logiques, fr.grammar.subjonctif_vs_indicatif]}
-  - {key: fr.func.persuade, band: 8, title: "Convaincre un interlocuteur", payload: {exponents: ["Vous ne le regretterez pas.", "Pensez à tout ce que vous gagneriez…", "Je comprends vos hésitations, mais…"]}, requires: [fr.grammar.connecteurs_logiques]}
-  - {key: fr.func.concede_and_counter, band: 9, title: "Concéder puis réfuter", payload: {exponents: ["Certes…, mais…", "Il est vrai que… ; néanmoins…", "Même si…, il n'en reste pas moins que…"]}, requires: [fr.grammar.connecteurs_logiques]}
-  - {key: fr.func.summarise, band: 9, title: "Résumer, reformuler", payload: {exponents: ["En résumé,…", "Autrement dit,…", "Si je comprends bien,…"]}, requires: [fr.grammar.nominalisation]}
-
-  - {key: fr.func.ask_give_directions, band: 4, title: "Demander et indiquer le chemin", payload: {exponents: ["Pardon, pour aller à… ?", "Prenez la deuxième rue à gauche.", "C'est à cinq minutes à pied."]}, requires: [fr.grammar.imperatif]}
-  - {key: fr.func.invite_accept_decline, band: 4, title: "Inviter, accepter, refuser", payload: {exponents: ["Ça vous dirait de… ?", "Avec plaisir !", "C'est gentil, mais je ne suis pas libre."]}}
-  - {key: fr.func.thank_respond, band: 4, title: "Remercier et répondre", payload: {exponents: ["Merci beaucoup pour votre aide.", "Je vous en prie.", "C'est très gentil de votre part."]}}
-  - {key: fr.func.telephone, band: 5, title: "Téléphoner", payload: {exponents: ["Bonjour, pourrais-je parler à… ?", "C'est de la part de qui ?", "Je peux laisser un message ?"]}}
-  - {key: fr.func.make_suggestions, band: 5, title: "Faire une suggestion", payload: {exponents: ["Et si on… ?", "Vous pourriez peut-être…", "Je vous propose de…"]}, requires: [fr.grammar.conditionnel_present]}
-  - {key: fr.func.ask_permission, band: 5, title: "Demander la permission", payload: {exponents: ["Est-ce que je peux… ?", "Ça vous dérange si… ?", "Vous permettez que j'ouvre la fenêtre ?"]}}
-  - {key: fr.func.sympathise_congratulate, band: 5, title: "Féliciter, compatir", payload: {exponents: ["Félicitations !", "Je suis désolé(e) pour vous.", "Bon courage pour la suite !"]}}
-  - {key: fr.func.express_certainty, band: 6, title: "Exprimer la certitude et la probabilité", payload: {exponents: ["Je suis sûr(e) que…", "Il est probable que…", "Ça m'étonnerait que…"]}, requires: [fr.grammar.subjonctif_vs_indicatif]}
-  - {key: fr.func.give_instructions, band: 6, title: "Expliquer une démarche", payload: {exponents: ["D'abord, il faut…", "Ensuite, vous…", "Une fois que c'est fait,…"]}, requires: [fr.grammar.imperatif]}
-  - {key: fr.func.formal_register, band: 7, title: "Écrire dans le bon registre", payload: {exponents: ["Madame, Monsieur,", "Je me permets de vous écrire au sujet de…", "Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées."]}}
-  - {key: fr.func.report_information, band: 7, title: "Rapporter une information", payload: {exponents: ["D'après…", "Selon l'article,…", "On m'a dit que…"]}, requires: [fr.grammar.discours_rapporte]}
-  - {key: fr.func.structure_talk, band: 8, title: "Structurer une prise de parole", payload: {exponents: ["Tout d'abord,…", "Passons maintenant à…", "Pour conclure,…"]}, requires: [fr.grammar.connecteurs_logiques]}
+  - key: fr.func.greet_introduce
+    band: 4
+    title: "Saluer, se présenter"
+    payload:
+      exponents: ["Bonjour, je m'appelle…", "Enchanté(e).", "Je viens d'arriver à Rivemont."]
+      lesson:
+        rule: "Bonjour + nom, puis une phrase sur soi ; on vouvoie les inconnus et les professionnels."
+        examples: ["Bonjour, je m'appelle Sam, je viens d'arriver à Rivemont.", "Enchanté, je suis votre nouveau voisin.", "Je viens du Maroc et je travaille au port."]
+        common_errors:
+          - {wrong: "Bonjour, je suis appelle Sam.", right: "Bonjour, je m'appelle Sam."}
+          - {wrong: "Je suis de Maroc.", right: "Je viens du Maroc."}
+  - key: fr.func.ask_information
+    band: 4
+    title: "Demander un renseignement"
+    payload:
+      exponents: ["Excusez-moi, où se trouve… ?", "À quelle heure ouvre… ?", "Est-ce que vous savez si… ?"]
+      lesson:
+        rule: "Une question polie commence souvent par « Excusez-moi » et utilise est-ce que ou « savez-vous si »."
+        examples: ["Excusez-moi, où se trouve la mairie ?", "À quelle heure ouvre le bureau ?", "Est-ce que vous savez si la piscine est ouverte ?"]
+        common_errors:
+          - {wrong: "Où est la mairie, s'il vous plaît, est-ce que ?", right: "Excusez-moi, où est la mairie ?"}
+          - {wrong: "Vous savez si est ouvert ?", right: "Vous savez si c'est ouvert ?"}
+  - key: fr.func.make_request
+    band: 4
+    title: "Faire une demande polie"
+    payload:
+      exponents: ["Je voudrais…", "Est-ce que je pourrais… ?", "Vous serait-il possible de… ?"]
+      lesson:
+        rule: "Pour demander poliment : je voudrais, est-ce que je pourrais, vous serait-il possible de ; « je veux » est trop direct."
+        examples: ["Je voudrais un rendez-vous, s'il vous plaît.", "Est-ce que je pourrais payer par carte ?", "Vous serait-il possible de m'envoyer le formulaire ?"]
+        common_errors:
+          - {wrong: "Je veux un rendez-vous.", right: "Je voudrais un rendez-vous."}
+          - {wrong: "Donnez-moi le formulaire.", right: "Pourriez-vous me donner le formulaire ?"}
+    requires: ["fr.grammar.conditionnel_present"]
+  - key: fr.func.ask_clarification
+    band: 4
+    title: "Demander de répéter, faire préciser"
+    payload:
+      exponents: ["Pardon, vous pouvez répéter ?", "Qu'est-ce que vous voulez dire par… ?", "Plus lentement, s'il vous plaît."]
+      lesson:
+        rule: "Quand on ne comprend pas, on le dit tout de suite : pardon ? vous pouvez répéter ? qu'est-ce que vous voulez dire par… ?"
+        examples: ["Pardon, vous pouvez répéter plus lentement ?", "Qu'est-ce que vous voulez dire par « charges » ?", "Excusez-moi, je n'ai pas compris le dernier mot."]
+        common_errors:
+          - {wrong: "Vous pouvez répéter plus lent ?", right: "Vous pouvez répéter plus lentement ?"}
+          - {wrong: "Je ne comprends pas qu'est-ce que vous dites.", right: "Je ne comprends pas ce que vous dites."}
+  - key: fr.func.make_appointment
+    band: 4
+    title: "Prendre ou déplacer un rendez-vous"
+    payload:
+      exponents: ["Je voudrais prendre rendez-vous pour…", "Est-ce que mardi vous conviendrait ?", "Je dois annuler mon rendez-vous."]
+      lesson:
+        rule: "Pour un rendez-vous : je voudrais prendre rendez-vous, est-ce que mardi vous convient ? ; pour changer : je dois déplacer mon rendez-vous."
+        examples: ["Je voudrais prendre rendez-vous avec le docteur Martin.", "Est-ce que jeudi à 14 h vous convient ?", "Je dois déplacer mon rendez-vous de lundi."]
+        common_errors:
+          - {wrong: "Je veux faire un appointment.", right: "Je voudrais prendre rendez-vous."}
+          - {wrong: "Je dois déplacer mon rendez-vous en mardi.", right: "Je dois déplacer mon rendez-vous à mardi."}
+  - key: fr.func.express_preference
+    band: 4
+    title: "Exprimer une préférence"
+    payload:
+      exponents: ["Je préfère…", "J'aime mieux…", "Ça m'est égal."]
+      lesson:
+        rule: "Je préfère… à… ; j'aime mieux ; ce qui me plaît, c'est…"
+        examples: ["Je préfère le train à l'avion.", "J'aime mieux habiter près du travail.", "Ce qui me plaît, c'est le calme du quartier."]
+        common_errors:
+          - {wrong: "Je préfère le train que l'avion.", right: "Je préfère le train à l'avion."}
+          - {wrong: "J'aime plus mieux le thé.", right: "J'aime mieux le thé."}
+  - key: fr.func.describe_person_place
+    band: 5
+    title: "Décrire une personne, un lieu"
+    payload:
+      exponents: ["C'est un quartier animé où…", "Il a l'air…", "Il y a… à côté de…"]
+      lesson:
+        rule: "Pour décrire : c'est un quartier + adjectif, il y a…, elle est + adjectif ; on donne deux ou trois détails précis."
+        examples: ["C'est un quartier calme, avec beaucoup d'arbres.", "Il y a une boulangerie au coin de la rue.", "Ma voisine est très gentille et toujours souriante."]
+        common_errors:
+          - {wrong: "C'est un quartier très calme et il y a beaucoup des arbres.", right: "C'est un quartier très calme et il y a beaucoup d'arbres."}
+          - {wrong: "Elle est très gentil.", right: "Elle est très gentille."}
+    requires: ["fr.grammar.relatifs_qui_que_ou"]
+  - key: fr.func.narrate_past
+    band: 5
+    title: "Raconter un événement passé"
+    payload:
+      exponents: ["D'abord…, ensuite…, finalement…", "Au moment où…", "Ce jour-là…"]
+      lesson:
+        rule: "Pour raconter : d'abord, ensuite, puis, finalement ; passé composé pour les actions, imparfait pour le décor."
+        examples: ["D'abord, je suis allé à la banque, puis j'ai visité l'appartement.", "Il pleuvait quand je suis arrivé.", "Finalement, j'ai signé le bail."]
+        common_errors:
+          - {wrong: "Hier, j'ai allé à la banque.", right: "Hier, je suis allé à la banque."}
+          - {wrong: "Quand j'ai arrivé, il pleuvait.", right: "Quand je suis arrivé, il pleuvait."}
+    requires: ["fr.grammar.passe_compose_avoir", "fr.grammar.passe_compose_etre", "fr.grammar.imparfait"]
+  - key: fr.func.apologise
+    band: 5
+    title: "S'excuser et répondre à des excuses"
+    payload:
+      exponents: ["Je suis désolé(e) pour…", "Toutes mes excuses.", "Ce n'est pas grave."]
+      lesson:
+        rule: "Je suis désolé(e) de/que… ; excusez-moi pour… ; on répond « ce n'est pas grave »."
+        examples: ["Je suis désolé d'être en retard.", "Excusez-moi pour le bruit hier soir.", "Ce n'est pas grave, ça arrive."]
+        common_errors:
+          - {wrong: "Je suis désolé pour être en retard.", right: "Je suis désolé d'être en retard."}
+          - {wrong: "Excusez-moi de le bruit.", right: "Excusez-moi pour le bruit."}
+  - key: fr.func.complain_politely
+    band: 6
+    title: "Se plaindre poliment"
+    payload:
+      exponents: ["Je me permets de vous signaler que…", "Je ne suis pas satisfait(e) de…", "Il me semble que ce n'est pas normal."]
+      lesson:
+        rule: "Se plaindre poliment : décrire le problème, ses effets, puis demander une solution avec le conditionnel."
+        examples: ["Je me permets de vous signaler un problème de chauffage.", "Depuis une semaine, l'appartement est très froid.", "Pourriez-vous envoyer un technicien rapidement ?"]
+        common_errors:
+          - {wrong: "Pourriez-vous de réparer le chauffage ?", right: "Pourriez-vous réparer le chauffage ?"}
+          - {wrong: "Je veux que vous réparez.", right: "Je voudrais que vous le répariez."}
+    requires: ["fr.grammar.conditionnel_present"]
+  - key: fr.func.give_advice
+    band: 6
+    title: "Donner un conseil"
+    payload:
+      exponents: ["À ta place, je…", "Tu devrais…", "Il vaudrait mieux…"]
+      lesson:
+        rule: "Tu devrais / vous devriez + infinitif ; à votre place, je… ; il vaudrait mieux…"
+        examples: ["Vous devriez garder une copie du bail.", "À votre place, je demanderais un reçu.", "Il vaudrait mieux arriver un peu en avance."]
+        common_errors:
+          - {wrong: "Vous devriez de garder une copie.", right: "Vous devriez garder une copie."}
+          - {wrong: "À ta place, je demanderai un reçu.", right: "À ta place, je demanderais un reçu."}
+    requires: ["fr.grammar.conditionnel_present"]
+  - key: fr.func.express_opinion
+    band: 6
+    title: "Donner son opinion"
+    payload:
+      exponents: ["À mon avis,…", "Je trouve que…", "Selon moi,…"]
+      lesson:
+        rule: "Je pense que, je trouve que, à mon avis + indicatif ; on justifie avec parce que ou car."
+        examples: ["À mon avis, le loyer est trop élevé.", "Je trouve que le quartier est sûr parce qu'il est bien éclairé.", "Selon moi, c'est une bonne décision."]
+        common_errors:
+          - {wrong: "Dans mon opinion, c'est cher.", right: "À mon avis, c'est cher."}
+          - {wrong: "Je pense que c'est cher car de la situation.", right: "Je pense que c'est cher à cause de la situation."}
+  - key: fr.func.agree_disagree
+    band: 6
+    title: "Exprimer l'accord et le désaccord"
+    payload:
+      exponents: ["Je suis tout à fait d'accord.", "Je ne partage pas votre avis.", "Pas tout à fait…"]
+      lesson:
+        rule: "Je suis d'accord (avec vous) ; je ne suis pas tout à fait d'accord ; vous avez raison, mais…"
+        examples: ["Je suis tout à fait d'accord avec vous.", "Vous avez raison, mais il y a un problème.", "Je ne suis pas sûr que ce soit la meilleure solution."]
+        common_errors:
+          - {wrong: "Je suis d'accord à vous.", right: "Je suis d'accord avec vous."}
+          - {wrong: "Je ne suis pas sûr que c'est la meilleure solution.", right: "Je ne suis pas sûr que ce soit la meilleure solution."}
+  - key: fr.func.compare_options
+    band: 6
+    title: "Comparer des options"
+    payload:
+      exponents: ["L'avantage de…, c'est que…", "Par rapport à…", "D'un côté…, de l'autre…"]
+      lesson:
+        rule: "Pour comparer : plus/moins… que, aussi… que, par contre, alors que ; on termine par un choix justifié."
+        examples: ["Le premier appartement est plus grand, mais le second est moins cher.", "Le bus est aussi rapide que le métro.", "Par contre, le métro est plus fiable en hiver."]
+        common_errors:
+          - {wrong: "Il est plus cher que l'autre est.", right: "Il est plus cher que l'autre."}
+          - {wrong: "Le bus est plus bon.", right: "Le bus est meilleur."}
+    requires: ["fr.grammar.comparatif_superlatif"]
+  - key: fr.func.negotiate
+    band: 7
+    title: "Négocier"
+    payload:
+      exponents: ["Je vous propose…", "Et si on coupait la poire en deux ?", "Je pourrais accepter à condition que…"]
+      lesson:
+        rule: "Négocier : proposer, faire une contre-proposition, chercher un compromis avec le conditionnel."
+        examples: ["Est-ce que vous accepteriez 900 $ par mois ?", "Je pourrais signer pour deux ans si le loyer baisse.", "Et si on partageait les frais ?"]
+        common_errors:
+          - {wrong: "Est-ce que vous accepteriez de 900 $ ?", right: "Est-ce que vous accepteriez 900 $ ?"}
+          - {wrong: "Si vous baisseriez le loyer, je signerais.", right: "Si vous baissiez le loyer, je signerais."}
+    requires: ["fr.grammar.si_imparfait", "fr.grammar.conditionnel_present"]
+  - key: fr.func.hypothesise
+    band: 7
+    title: "Formuler une hypothèse"
+    payload:
+      exponents: ["Si c'était le cas, …", "Imaginons que…", "Au cas où…"]
+      lesson:
+        rule: "Si + présent → futur pour le probable ; si + imparfait → conditionnel pour l'imaginaire."
+        examples: ["Si j'obtiens le poste, je déménagerai.", "Si j'avais plus de temps, je ferais du bénévolat.", "Si le bus était en retard, je prendrais un taxi."]
+        common_errors:
+          - {wrong: "Si j'aurais le temps, je viendrais.", right: "Si j'avais le temps, je viendrais."}
+          - {wrong: "Si je gagne, j'achèterais une maison.", right: "Si je gagnais, j'achèterais une maison."}
+    requires: ["fr.grammar.si_imparfait"]
+  - key: fr.func.express_regret
+    band: 7
+    title: "Exprimer un regret"
+    payload:
+      exponents: ["Je regrette de…", "J'aurais dû…", "Si seulement j'avais…"]
+      lesson:
+        rule: "J'aurais dû + infinitif ; je regrette de + infinitif passé ; si j'avais su…"
+        examples: ["J'aurais dû lire le contrat.", "Je regrette de ne pas être venu.", "Si j'avais su, je serais parti plus tôt."]
+        common_errors:
+          - {wrong: "J'aurais dû lu le contrat.", right: "J'aurais dû lire le contrat."}
+          - {wrong: "Je regrette de ne pas venir hier.", right: "Je regrette de ne pas être venu hier."}
+    requires: ["fr.grammar.conditionnel_passe"]
+  - key: fr.func.argue_point_of_view
+    band: 8
+    title: "Défendre un point de vue argumenté"
+    payload:
+      exponents: ["Premièrement…, de plus…, enfin…", "Il est indéniable que…", "Prenons l'exemple de…"]
+      lesson:
+        rule: "Annoncer sa position, donner deux arguments avec exemples, puis conclure : d'abord, ensuite, enfin, c'est pourquoi."
+        examples: ["Je suis convaincu que le télétravail est utile.", "D'abord, il réduit les trajets ; ensuite, il améliore la concentration.", "C'est pourquoi je le recommande."]
+        common_errors:
+          - {wrong: "Le télétravail est utile car de plusieurs raisons.", right: "Le télétravail est utile pour plusieurs raisons."}
+          - {wrong: "Au premier lieu, il réduit les trajets.", right: "En premier lieu, il réduit les trajets."}
+    requires: ["fr.grammar.connecteurs_logiques", "fr.grammar.subjonctif_vs_indicatif"]
+  - key: fr.func.persuade
+    band: 8
+    title: "Convaincre un interlocuteur"
+    payload:
+      exponents: ["Vous ne le regretterez pas.", "Pensez à tout ce que vous gagneriez…", "Je comprends vos hésitations, mais…"]
+      lesson:
+        rule: "Convaincre : montrer l'avantage pour l'autre, répondre à l'objection, inviter à agir."
+        examples: ["Imagine tout ce que tu pourrais apprendre.", "Je comprends que tu n'aies pas le temps, mais c'est seulement le samedi.", "Viens avec moi au moins une fois !"]
+        common_errors:
+          - {wrong: "Tu devrais de venir avec moi.", right: "Tu devrais venir avec moi."}
+          - {wrong: "Je suis sûr que tu vas adorer cette festival.", right: "Je suis sûr que tu vas adorer ce festival."}
+    requires: ["fr.grammar.connecteurs_logiques"]
+  - key: fr.func.concede_and_counter
+    band: 9
+    title: "Concéder puis réfuter"
+    payload:
+      exponents: ["Certes…, mais…", "Il est vrai que… ; néanmoins…", "Même si…, il n'en reste pas moins que…"]
+      lesson:
+        rule: "Concéder puis réfuter : certes…, mais ; il est vrai que…, cependant ; même si…"
+        examples: ["Certes, le projet coûte cher, mais il créera des emplois.", "Il est vrai que la circulation augmentera ; cependant, les commerces en profiteront.", "Même si je comprends vos craintes, je reste favorable."]
+        common_errors:
+          - {wrong: "Bien que le projet coûte cher, mais il créera des emplois.", right: "Bien que le projet coûte cher, il créera des emplois."}
+          - {wrong: "Même si je comprenne vos craintes…", right: "Même si je comprends vos craintes…"}
+    requires: ["fr.grammar.connecteurs_logiques"]
+  - key: fr.func.summarise
+    band: 9
+    title: "Résumer, reformuler"
+    payload:
+      exponents: ["En résumé,…", "Autrement dit,…", "Si je comprends bien,…"]
+      lesson:
+        rule: "Pour résumer : « en résumé », « en bref » ; on reprend l'idée principale sans les détails. Pour reformuler : « autrement dit » ; on exprime la même idée avec d'autres mots."
+        examples: ["En résumé, le projet est utile mais coûteux.", "Autrement dit, il faut attendre six semaines.", "Si je comprends bien, vous refusez le dépôt ?"]
+        common_errors:
+          - {wrong: "En résumer, le projet est utile.", right: "En résumé, le projet est utile."}
+          - {wrong: "Dans un mot, c'est non.", right: "En un mot, c'est non."}
+    requires: ["fr.grammar.nominalisation"]
+  - key: fr.func.ask_give_directions
+    band: 4
+    title: "Demander et indiquer le chemin"
+    payload:
+      exponents: ["Pardon, pour aller à… ?", "Prenez la deuxième rue à gauche.", "C'est à cinq minutes à pied."]
+      lesson:
+        rule: "Demander : pour aller à… ? ; indiquer avec l'impératif et des repères."
+        examples: ["Pardon, pour aller à la gare, s'il vous plaît ?", "Prenez la deuxième rue à gauche.", "C'est à cinq minutes à pied, en face de la banque."]
+        common_errors:
+          - {wrong: "Pour aller la gare, s'il vous plaît ?", right: "Pour aller à la gare, s'il vous plaît ?"}
+          - {wrong: "Prenez la deuxième rue en gauche.", right: "Prenez la deuxième rue à gauche."}
+    requires: ["fr.grammar.imperatif"]
+  - key: fr.func.invite_accept_decline
+    band: 4
+    title: "Inviter, accepter, refuser"
+    payload:
+      exponents: ["Ça vous dirait de… ?", "Avec plaisir !", "C'est gentil, mais je ne suis pas libre."]
+      lesson:
+        rule: "Inviter : ça vous dirait de… ? ; accepter : avec plaisir ; refuser poliment en remerciant et en donnant une raison."
+        examples: ["Ça vous dirait de venir dîner samedi ?", "Avec plaisir, merci !", "C'est gentil, mais je ne suis pas libre ce soir-là."]
+        common_errors:
+          - {wrong: "Oui, je voudrai bien venir.", right: "Oui, je voudrais bien venir."}
+          - {wrong: "Avec plaisir, à quel heure ?", right: "Avec plaisir, à quelle heure ?"}
+  - key: fr.func.thank_respond
+    band: 4
+    title: "Remercier et répondre"
+    payload:
+      exponents: ["Merci beaucoup pour votre aide.", "Je vous en prie.", "C'est très gentil de votre part."]
+      lesson:
+        rule: "Remercier pour + nom ou d'avoir + participe ; répondre : je vous en prie, de rien, avec plaisir."
+        examples: ["Merci beaucoup pour votre aide.", "Merci de m'avoir appelé.", "Je vous en prie, c'était un plaisir."]
+        common_errors:
+          - {wrong: "Merci pour m'aider.", right: "Merci de m'avoir aidé."}
+          - {wrong: "Merci pour tout que vous avez fait.", right: "Merci pour tout ce que vous avez fait."}
+  - key: fr.func.telephone
+    band: 5
+    title: "Téléphoner"
+    payload:
+      exponents: ["Bonjour, pourrais-je parler à… ?", "C'est de la part de qui ?", "Je peux laisser un message ?"]
+      lesson:
+        rule: "Au téléphone : se présenter, demander la personne, laisser un message avec son numéro."
+        examples: ["Bonjour, pourrais-je parler à Mme Dubois ?", "C'est de la part de qui ?", "Je peux laisser un message ? Mon numéro est le 418 555 0144."]
+        common_errors:
+          - {wrong: "Bonjour, pourrais-je parler Mme Dubois ?", right: "Bonjour, pourrais-je parler à Mme Dubois ?"}
+          - {wrong: "Elle va rappeler à moi.", right: "Elle va me rappeler."}
+  - key: fr.func.make_suggestions
+    band: 5
+    title: "Faire une suggestion"
+    payload:
+      exponents: ["Et si on… ?", "Vous pourriez peut-être…", "Je vous propose de…"]
+      lesson:
+        rule: "Suggérer : et si on + imparfait ? ; on pourrait… ; je vous propose de…"
+        examples: ["Et si on se retrouvait au café ?", "On pourrait partager un taxi.", "Je vous propose de signer lundi."]
+        common_errors:
+          - {wrong: "Et si on se retrouverait au café ?", right: "Et si on se retrouvait au café ?"}
+          - {wrong: "Je vous propose que vous signez lundi.", right: "Je vous propose de signer lundi."}
+    requires: ["fr.grammar.conditionnel_present"]
+  - key: fr.func.ask_permission
+    band: 5
+    title: "Demander la permission"
+    payload:
+      exponents: ["Est-ce que je peux… ?", "Ça vous dérange si… ?", "Vous permettez que j'ouvre la fenêtre ?"]
+      lesson:
+        rule: "Demander la permission : est-ce que je peux… ? ; ça vous dérange si… ? ; vous permettez que + subjonctif ?"
+        examples: ["Est-ce que je peux m'asseoir ici ?", "Ça vous dérange si j'ouvre la fenêtre ?", "Vous permettez que je prenne une photo ?"]
+        common_errors:
+          - {wrong: "Est-ce que je peux d'ouvrir la fenêtre ?", right: "Est-ce que je peux ouvrir la fenêtre ?"}
+          - {wrong: "Vous permettez que je prends une photo ?", right: "Vous permettez que je prenne une photo ?"}
+  - key: fr.func.sympathise_congratulate
+    band: 5
+    title: "Féliciter, compatir"
+    payload:
+      exponents: ["Félicitations !", "Je suis désolé(e) pour vous.", "Bon courage pour la suite !"]
+      lesson:
+        rule: "Féliciter : félicitations, bravo ; compatir : je suis désolé(e) pour…, bon courage."
+        examples: ["Félicitations pour votre nouveau poste !", "Je suis vraiment désolé pour votre perte.", "Bon courage pour l'examen !"]
+        common_errors:
+          - {wrong: "Je félicite toi !", right: "Je te félicite !"}
+          - {wrong: "Bonne chance avec courage.", right: "Bon courage !"}
+  - key: fr.func.express_certainty
+    band: 6
+    title: "Exprimer la certitude et la probabilité"
+    payload:
+      exponents: ["Je suis sûr(e) que…", "Il est probable que…", "Ça m'étonnerait que…"]
+      lesson:
+        rule: "Certitude : je suis sûr(e) que + indicatif ; doute : je doute que, ça m'étonnerait que + subjonctif ; probabilité : il est probable que + indicatif."
+        examples: ["Je suis sûr qu'il viendra.", "Il est probable que le bureau sera fermé demain.", "Ça m'étonnerait qu'il pleuve."]
+        common_errors:
+          - {wrong: "Je doute qu'il viendra.", right: "Je doute qu'il vienne."}
+          - {wrong: "Je suis sûr qu'il vienne.", right: "Je suis sûr qu'il viendra."}
+    requires: ["fr.grammar.subjonctif_vs_indicatif"]
+  - key: fr.func.give_instructions
+    band: 6
+    title: "Expliquer une démarche"
+    payload:
+      exponents: ["D'abord, il faut…", "Ensuite, vous…", "Une fois que c'est fait,…"]
+      lesson:
+        rule: "Expliquer une démarche étape par étape : d'abord, ensuite, une fois que…, enfin ; impératif ou il faut + infinitif."
+        examples: ["D'abord, il faut remplir le formulaire en ligne.", "Ensuite, imprimez la confirmation.", "Une fois que c'est fait, prenez rendez-vous."]
+        common_errors:
+          - {wrong: "Il faut que tu remplis le formulaire.", right: "Il faut que tu remplisses le formulaire."}
+          - {wrong: "Après, vous imprimer la page.", right: "Ensuite, imprimez la page."}
+    requires: ["fr.grammar.imperatif"]
+  - key: fr.func.formal_register
+    band: 7
+    title: "Écrire dans le bon registre"
+    payload:
+      exponents: ["Madame, Monsieur,", "Je me permets de vous écrire au sujet de…", "Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées."]
+      lesson:
+        rule: "Dans une lettre formelle, utilisez une formule d'appel adaptée, le vouvoiement et une formule de politesse finale complète. Dans un courriel formel, une conclusion plus courte, comme « Cordialement », convient aussi. Évitez les abréviations familières et le langage texto."
+        examples: ["Madame, Monsieur,", "Je me permets de vous écrire au sujet de mon dépôt de garantie.", "Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées."]
+        common_errors:
+          - {wrong: "Salut monsieur, je t'écris pour…", right: "Monsieur, je vous écris au sujet de…"}
+          - {wrong: "Merci et bye.", right: "Je vous prie d'agréer, Monsieur, mes salutations distinguées."}
+  - key: fr.func.report_information
+    band: 7
+    title: "Rapporter une information"
+    payload:
+      exponents: ["D'après…", "Selon l'article,…", "On m'a dit que…"]
+      lesson:
+        rule: "Rapporter une source : d'après, selon + nom ; on m'a dit que ; il paraît que (pour rapporter une information non confirmée)."
+        examples: ["D'après le propriétaire, les travaux finiront lundi.", "Selon l'article, le loyer moyen a augmenté.", "On m'a dit que le bureau fermait à midi."]
+        common_errors:
+          - {wrong: "Selon à l'article…", right: "Selon l'article…"}
+          - {wrong: "D'après à l'article…", right: "D'après l'article…"}
+    requires: ["fr.grammar.discours_rapporte"]
+  - key: fr.func.structure_talk
+    band: 8
+    title: "Structurer une prise de parole"
+    payload:
+      exponents: ["Tout d'abord,…", "Passons maintenant à…", "Pour conclure,…"]
+      lesson:
+        rule: "Structurer : annoncer le plan, passer d'une partie à l'autre, conclure."
+        examples: ["Tout d'abord, je vais présenter le projet.", "Passons maintenant aux avantages.", "Pour conclure, je vous invite à vous inscrire."]
+        common_errors:
+          - {wrong: "Passons maintenant à les avantages.", right: "Passons maintenant aux avantages."}
+          - {wrong: "Pour finir de conclure,…", right: "Pour conclure,…"}
+    requires: ["fr.grammar.connecteurs_logiques"]

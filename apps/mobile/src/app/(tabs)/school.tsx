@@ -1,5 +1,5 @@
-/** The School: key points first (the rules a learner needs before speaking), then lessons built from their own
- * mistakes (SPEC §16). Key-point lessons open at once: the server builds them from authored content. */
+/** The School: key points first (the rules, words and phrases a learner needs before speaking), then lessons built
+ * from their own mistakes (SPEC §16). Key-point lessons open at once: the server builds them from authored content. */
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -10,10 +10,17 @@ import { openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title } from "@/ui/kit";
+import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title, type IconName } from "@/ui/kit";
 import { space, type } from "@/ui/theme";
 
 type Language = "fr" | "en";
+
+const KINDS: KeyPoint["kind"][] = ["grammar", "lexset", "function"];
+const KIND_ICONS: Record<KeyPoint["kind"], [IconName, IconName]> = {
+  grammar: ["book-outline", "book"],
+  lexset: ["albums-outline", "albums"],
+  function: ["chatbubbles-outline", "chatbubbles"],
+};
 
 export default function School() {
   const { t } = useTranslation();
@@ -54,7 +61,8 @@ export default function School() {
   const core = steps.filter((k) => k.core);
   const basics = steps.filter((k) => !k.core && !k.preview);
   const ahead = steps.filter((k) => k.preview);
-  const next = core.find((k) => k.status !== "done") ?? null;
+  // The rules of the level come first (Today asks for them before the story); then its words and phrases.
+  const next = KINDS.map((kind) => core.find((k) => k.kind === kind && k.status !== "done")).find(Boolean) ?? null;
   const learned = core.filter((k) => k.status === "done").length;
   const remedial = (lessons.data ?? [])
     .filter((l) => l.content.kind !== "key_points" && (!language || l.node_key.startsWith(`${language}.`)))
@@ -67,7 +75,7 @@ export default function School() {
       subtitle={point.status === "done" ? t("school.done") : t("units.minutes", { count: 5 })}
       leading={
         <IconBubble
-          name={point.status === "done" ? "checkmark" : point.status === "open" ? "book" : "book-outline"}
+          name={point.status === "done" ? "checkmark" : KIND_ICONS[point.kind][point.status === "open" ? 1 : 0]}
           tone={point.status === "done" ? "success" : point.node_key === next?.node_key ? "accent" : "plain"}
         />
       }
@@ -94,7 +102,7 @@ export default function School() {
           <Overline>{t("today.nextUp")}</Overline>
           <Title>{next.title}</Title>
           <View style={{ flexDirection: "row", gap: space(0.75) }}>
-            <Chip label={t("school.lessonKind.key_points")} icon="key" />
+            <Chip label={t(`school.kinds.${next.kind}`)} icon={KIND_ICONS[next.kind][1]} />
             <Chip label={t("units.minutes", { count: 5 })} icon="time-outline" />
           </View>
           <Button label={t("school.start")} icon="play" busy={opening === next.node_key} onPress={() => void open(next)} />
@@ -108,7 +116,16 @@ export default function School() {
             <Text style={type.caption}>{t("school.learned", { done: learned, total: core.length })}</Text>
           </View>
           <ProgressBar value={learned / core.length} tone="success" />
-          <Section>{core.map(row)}</Section>
+          {KINDS.map((kind) => {
+            const group = core.filter((k) => k.kind === kind);
+            if (group.length === 0) return null;
+            const done = group.filter((k) => k.status === "done").length;
+            return (
+              <Section key={kind} title={`${t(`school.kinds.${kind}`)} · ${done}/${group.length}`}>
+                {group.map(row)}
+              </Section>
+            );
+          })}
         </View>
       )}
 

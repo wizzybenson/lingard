@@ -4,36 +4,355 @@ defaults:
   source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
   as_of: "2012"
 nodes:
-  - {key: en.lex.greetings_courtesy, band: 4, title: "Courtesy phrases", payload: {items: [cheers, "thanks a lot", "no worries", "excuse me", "sorry", "see you", "have a good one"]}}
-  - {key: en.lex.transport, band: 4, title: "Transport", payload: {items: [platform, return ticket, "off-peak", delay, "bus stop", timetable, railcard, "change at"]}}
-  - {key: en.lex.food_shopping, band: 4, title: "Food and shopping", payload: {items: [checkout, receipt, "special offer", "best before", aisle, refund, "a loaf of"]}}
-  - {key: en.lex.weather_seasons, band: 4, title: "Weather", payload: {items: [drizzle, chilly, overcast, "pouring down", frost, mild, forecast]}}
-  - {key: en.lex.housing.renting, band: 4, title: "Housing: renting", payload: {items: [flat, rent, tenancy agreement, landlord, tenant, "bills included", furnished, "letting agent"]}}
-  - {key: en.lex.leisure, band: 4, title: "Leisure", payload: {items: [pub quiz, gym membership, "five-a-side", library, cinema, gig]}}
-  - {key: en.lex.health_appointments, band: 5, title: "Health and the GP", payload: {items: [GP, surgery, prescription, pharmacy, "register with", symptoms, "A&E", "walk-in centre"]}}
-  - {key: en.lex.banking, band: 5, title: "Banking", payload: {items: ["current account", "direct debit", "sort code", overdraft, statement, "transfer money"]}}
-  - {key: en.lex.emotions, band: 5, title: "Feelings", payload: {items: [relieved, gutted, annoyed, proud, anxious, "fed up", "looking forward to"]}}
-  - {key: en.lex.housing.deposit_repairs, band: 6, title: "Housing: deposit and repairs", payload: {items: ["deposit protection scheme", inventory, damp, leak, plumber, "wear and tear", deduction, "check-out inspection"]}}
-  - {key: en.lex.work_job_search, band: 6, title: "Work and job search", payload: {items: [CV, "cover letter", interview, vacancy, salary, "probation period", "part-time", shortlist]}}
-  - {key: en.lex.administration, band: 6, title: "Paperwork and services", payload: {items: [form, "proof of address", "National Insurance number", council, appointment, "processing time", application]}}
-  - {key: en.lex.education, band: 7, title: "Education and training", payload: {items: [enrolment, "tuition fees", qualification, apprenticeship, "evening class", scholarship]}}
-  - {key: en.lex.technology, band: 7, title: "Technology", payload: {items: ["personal data", password, app, "remote working", "social media", "online scam"]}}
-  - {key: en.lex.news_current_affairs, band: 8, title: "News and society", payload: {items: [inquiry, "local council", protest, survey, legislation, spokesperson, "according to officials"]}}
-  - {key: en.lex.environment, band: 8, title: "Environment", payload: {items: ["climate change", recycling, "public transport", "carbon footprint", "green spaces", waste]}}
-  - {key: en.lex.abstract_argument, band: 9, title: "Language of argument", payload: {items: [issue, "highlight", "call into question", "in the long run", "by contrast", crucial, "outweigh"]}}
-
-  - {key: en.lex.numbers_dates_times, band: 4, title: "Numbers, dates and times", payload: {items: ["thirteen / thirty", "fifteen / fifty", "the first of March", "midday", "midnight", "quarter past", "quarter to", "half past", "14:30", "double six"]}}
-  - {key: en.lex.directions_city, band: 4, title: "Finding your way", payload: {items: ["turn left", "turn right", "go straight on", "the roundabout", "the traffic lights", "on the corner", "cross the road", "opposite", "next to"]}}
-  - {key: en.lex.family_relationships, band: 4, title: "Family and relationships", payload: {items: ["partner", "husband", "wife", "children", "brother", "sister", "parents", "in-laws", "single", "married"]}}
-  - {key: en.lex.home_household, band: 4, title: "The home", payload: {items: ["kitchen", "bathroom", "central heating", "washing machine", "fridge", "furniture", "balcony", "bins"]}}
-  - {key: en.lex.services_bills, band: 5, title: "Bills and services", payload: {items: ["bill", "subscription", "pay online", "direct debit", "charges", "refund", "contract", "customer service"]}}
-  - {key: en.lex.sport_fitness, band: 5, title: "Sport and fitness", payload: {items: ["gym", "training", "team", "swimming", "running", "match", "membership"]}}
-  - {key: en.lex.travel_holidays, band: 5, title: "Travel and holidays", payload: {items: ["booking", "airport", "accommodation", "stay", "luggage", "flight", "cancel", "check-in"]}}
-  - {key: en.lex.immigration_citizenship, band: 6, title: "Immigration and citizenship", payload: {items: ["permanent residence", "work permit", "visa", "citizenship", "application", "supporting documents", "biometrics", "National Insurance number"]}}
-  - {key: en.lex.workplace_rights, band: 7, title: "Rights at work", payload: {items: ["employment contract", "minimum wage", "overtime", "annual leave", "probation period", "trade union", "dismissal", "health and safety"]}}
-  - {key: en.lex.money_economy, band: 7, title: "Money and the economy", payload: {items: ["budget", "savings", "loan", "interest rate", "inflation", "tax", "cost of living", "debt"]}}
-  - {key: en.lex.culture_arts, band: 7, title: "Culture and the arts", payload: {items: ["exhibition", "performance", "museum", "play", "heritage", "review", "concert"]}}
-  - {key: en.lex.law_safety, band: 8, title: "Law and safety", payload: {items: ["report a crime", "witness", "fine", "the law", "court", "burglary", "insurance", "rights"]}}
-  - {key: en.lex.media_communication, band: 8, title: "Media and communication", payload: {items: ["social media", "programme", "source", "misinformation", "documentary", "editorial", "subscriber"]}}
-  - {key: en.lex.society_issues, band: 9, title: "Social issues", payload: {items: ["equality", "diversity", "integration", "affordable housing", "poverty", "an ageing population", "discrimination", "social mobility"]}}
-  - {key: en.lex.science_public_health, band: 9, title: "Science and public health", payload: {items: ["research", "public health", "prevention", "study", "data", "innovation", "ethics", "clinical trial"]}}
+  - key: en.lex.greetings_courtesy
+    band: 4
+    title: "Courtesy phrases"
+    payload:
+      items: ["cheers", "thanks a lot", "no worries", "excuse me", "sorry", "see you", "have a good one"]
+      lesson:
+        rule: "British English uses many short polite expressions: please, thanks, sorry and excuse me. Cheers and no worries are friendly and informal; use thank you very much in formal situations."
+        examples: ["Excuse me, is this seat free?", "Thanks a lot for your help. No worries!", "See you tomorrow, have a good one."]
+        common_errors:
+          - {wrong: "Excuse me, is free this seat?", right: "Excuse me, is this seat free?"}
+          - {wrong: "Thanks a lot for you help.", right: "Thanks a lot for your help."}
+  - key: en.lex.transport
+    band: 4
+    title: "Transport"
+    payload:
+      items: ["platform", "return ticket", "off-peak", "delay", "bus stop", "timetable", "railcard", "change at"]
+      lesson:
+        rule: "You buy a single or a return ticket; trains leave from a platform; off-peak tickets are cheaper outside rush hour; change at means take another train there."
+        examples: ["A return ticket to London, please.", "The train leaves from platform 4.", "Change at Reading for the Oxford train."]
+        common_errors:
+          - {wrong: "A go-and-back ticket, please.", right: "A return ticket, please."}
+          - {wrong: "The bus is in delay.", right: "The bus is delayed."}
+  - key: en.lex.food_shopping
+    band: 4
+    title: "Food and shopping"
+    payload:
+      items: ["checkout", "receipt", "special offer", "best before", "aisle", "refund", "a loaf of"]
+      lesson:
+        rule: "You queue at the checkout and keep the receipt; best before shows when food is at its best; a loaf of bread, a bottle of milk."
+        examples: ["Is there a special offer on coffee this week?", "Keep your receipt if you want a refund.", "Can I have a loaf of brown bread?"]
+        common_errors:
+          - {wrong: "Can I have a bread?", right: "Can I have a loaf of bread?"}
+          - {wrong: "I'd like a refund, here's my recipe.", right: "I'd like a refund, here's my receipt."}
+  - key: en.lex.weather_seasons
+    band: 4
+    title: "Weather"
+    payload:
+      items: ["drizzle", "chilly", "overcast", "pouring down", "frost", "mild", "forecast"]
+      lesson:
+        rule: "British weather talk: it's chilly, overcast, drizzling or pouring down; mild means not too cold; check the forecast."
+        examples: ["It's a bit chilly this morning.", "The forecast says it'll be overcast all day.", "It's pouring down, take an umbrella."]
+        common_errors:
+          - {wrong: "It is raining strongly.", right: "It's pouring down."}
+          - {wrong: "The weather is very mild hot.", right: "The weather is mild."}
+  - key: en.lex.housing.renting
+    band: 4
+    title: "Housing: renting"
+    payload:
+      items: ["flat", "rent", "tenancy agreement", "landlord", "tenant", "bills included", "furnished", "letting agent"]
+      lesson:
+        rule: "The tenant pays rent to the landlord, often through a letting agent, and signs a tenancy agreement; “Bills included” means the rent covers some or all household bills; check which bills are included."
+        examples: ["The rent is £850 a month, bills included.", "The letting agent sent me the tenancy agreement.", "Is the flat furnished?"]
+        common_errors:
+          - {wrong: "The landlord pays the rent to me.", right: "I pay the rent to the landlord."}
+          - {wrong: "I rent the flat to the landlord.", right: "I rent the flat from the landlord."}
+  - key: en.lex.leisure
+    band: 4
+    title: "Leisure"
+    payload:
+      items: ["pub quiz", "gym membership", "five-a-side", "library", "cinema", "gig"]
+      lesson:
+        rule: "Free time in Britain: a pub quiz, five-a-side football, a gig (a concert), a gym membership."
+        examples: ["We're going to a pub quiz on Thursday.", "I play five-a-side every Sunday.", "There's a great gig at the town hall."]
+        common_errors:
+          - {wrong: "I go at the cinema on Saturday.", right: "I go to the cinema on Saturday."}
+          - {wrong: "I go to gym every morning.", right: "I go to the gym every morning."}
+  - key: en.lex.health_appointments
+    band: 5
+    title: "Health and the GP"
+    payload:
+      items: ["GP", "surgery", "prescription", "pharmacy", "register with", "symptoms", "A&E", "walk-in centre"]
+      lesson:
+        rule: "You register with a GP at the local surgery; the GP writes a prescription for the pharmacy; A&E is for emergencies, a walk-in centre for minor problems."
+        examples: ["I need to register with a GP.", "Take this prescription to the pharmacy.", "For a sprained ankle, go to the walk-in centre."]
+        common_errors:
+          - {wrong: "I have an appointment with the general doctor.", right: "I have an appointment with my GP."}
+          - {wrong: "I went to emergencies for a cold.", right: "I went to the walk-in centre for a cold."}
+  - key: en.lex.banking
+    band: 5
+    title: "Banking"
+    payload:
+      items: ["current account", "direct debit", "sort code", "overdraft", "statement", "transfer money"]
+      lesson:
+        rule: "A current account is for everyday money; a direct debit pays bills automatically; your sort code and account number identify your account; an overdraft lets you spend more than you have."
+        examples: ["I'd like to open a current account.", "My rent goes out by direct debit.", "Can you send me your sort code?"]
+        common_errors:
+          - {wrong: "I want to open an account current.", right: "I want to open a current account."}
+          - {wrong: "I transferred money my brother.", right: "I transferred money to my brother."}
+  - key: en.lex.emotions
+    band: 5
+    title: "Feelings"
+    payload:
+      items: ["relieved", "gutted", "annoyed", "proud", "anxious", "fed up", "looking forward to"]
+      lesson:
+        rule: "Describe feelings: relieved, proud, anxious; gutted (very disappointed) and fed up (annoyed and tired of something) are informal; looking forward to + -ing."
+        examples: ["I was so relieved when I got the job.", "I'm looking forward to meeting you.", "She's fed up with the noise."]
+        common_errors:
+          - {wrong: "I'm looking forward to meet you.", right: "I'm looking forward to meeting you."}
+          - {wrong: "I am very exciting about the job.", right: "I am very excited about the job."}
+  - key: en.lex.housing.deposit_repairs
+    band: 6
+    title: "Housing: deposit and repairs"
+    payload:
+      items: ["deposit protection scheme", "inventory", "damp", "leak", "plumber", "wear and tear", "deduction", "check-out inspection"]
+      lesson:
+        rule: "For most private tenancies in England, the landlord must protect your tenancy deposit using a government-approved scheme.; the inventory lists the flat's condition; normal wear and tear cannot be deducted."
+        examples: ["There's damp in the bathroom.", "The leak was noted in the inventory.", "Wear and tear can't be taken from the deposit."]
+        common_errors:
+          - {wrong: "The landlord kept my caution.", right: "The landlord kept my deposit."}
+          - {wrong: "I called a plumber man.", right: "I called a plumber."}
+  - key: en.lex.work_job_search
+    band: 6
+    title: "Work and job search"
+    payload:
+      items: ["CV", "cover letter", "interview", "vacancy", "salary", "probation period", "part-time", "shortlist"]
+      lesson:
+        rule: "You apply for a vacancy with a CV and a cover letter; if you are shortlisted, you are invited to an interview."
+        examples: ["I've applied for the vacancy at the library.", "I've been shortlisted for an interview!", "It's a part-time job, twenty hours a week."]
+        common_errors:
+          - {wrong: "I sent my curriculum.", right: "I sent my CV."}
+          - {wrong: "I have an interview of work tomorrow.", right: "I have a job interview tomorrow."}
+  - key: en.lex.administration
+    band: 6
+    title: "Paperwork and services"
+    payload:
+      items: ["form", "proof of address", "National Insurance number", "council", "appointment", "processing time", "application"]
+      lesson:
+        rule: "Applications need a form, proof of address and sometimes your National Insurance number; the processing time tells you how long to wait."
+        examples: ["Please fill in this form.", "A recent bank statement is proof of address.", "The processing time is six weeks."]
+        common_errors:
+          - {wrong: "Please complete this formulary.", right: "Please complete this form."}
+          - {wrong: "I need a prove of address.", right: "I need proof of address."}
+  - key: en.lex.education
+    band: 7
+    title: "Education and training"
+    payload:
+      items: ["enrolment", "tuition fees", "qualification", "apprenticeship", "evening class", "scholarship"]
+      lesson:
+        rule: "Enrolment is signing up for a course; tuition fees are what you pay; an apprenticeship combines paid work and training."
+        examples: ["Enrolment for evening classes opens in August.", "She got a scholarship for her tuition fees.", "He's doing an apprenticeship as an electrician."]
+        common_errors:
+          - {wrong: "I graduated a degree in 2019.", right: "I graduated in 2019."}
+          - {wrong: "I do a formation in IT.", right: "I'm doing a training course in IT."}
+  - key: en.lex.technology
+    band: 7
+    title: "Technology"
+    payload:
+      items: ["personal data", "password", "app", "remote working", "social media", "online scam"]
+      lesson:
+        rule: "Protect your personal data with a strong password; Remote working means working away from your usual workplace, often from home.; an online scam tries to steal your money or data."
+        examples: ["Never share your password.", "I work remotely twice a week.", "That email looks like an online scam."]
+        common_errors:
+          - {wrong: "I forgot my pass word.", right: "I forgot my password."}
+          - {wrong: "I work in remote.", right: "I work remotely."}
+  - key: en.lex.news_current_affairs
+    band: 8
+    title: "News and society"
+    payload:
+      items: ["inquiry", "local council", "protest", "survey", "legislation", "spokesperson", "according to officials"]
+      lesson:
+        rule: "News language: an inquiry, a survey, legislation, a spokesperson; according to officials introduces a source."
+        examples: ["According to officials, the inquiry will continue.", "The local council voted on the plan.", "A survey shows most residents support it."]
+        common_errors:
+          - {wrong: "According to the officials say…", right: "According to officials,…"}
+          - {wrong: "There was a manifestation in the centre.", right: "There was a protest in the centre."}
+  - key: en.lex.environment
+    band: 8
+    title: "Environment"
+    payload:
+      items: ["climate change", "recycling", "public transport", "carbon footprint", "green spaces", "waste"]
+      lesson:
+        rule: "Talk about reducing waste, recycling, your carbon footprint, public transport and green spaces."
+        examples: ["Recycling is collected every Tuesday.", "I use public transport to reduce my carbon footprint.", "We need more green spaces in the city."]
+        common_errors:
+          - {wrong: "I recycling every day.", right: "I recycle every day."}
+          - {wrong: "The common transport is cheap.", right: "Public transport is cheap."}
+  - key: en.lex.abstract_argument
+    band: 9
+    title: "Language of argument"
+    payload:
+      items: ["issue", "highlight", "call into question", "in the long run", "by contrast", "crucial", "outweigh"]
+      lesson:
+        rule: "Language for argument: an issue, highlight, call into question, in the long run, crucial, outweigh."
+        examples: ["This study highlights a serious issue.", "In the long run, the plan will save money.", "The benefits outweigh the costs."]
+        common_errors:
+          - {wrong: "The benefits are outweigh the costs.", right: "The benefits outweigh the costs."}
+          - {wrong: "The benefits outweighs the costs.", right: "The benefits outweigh the costs."}
+  - key: en.lex.numbers_dates_times
+    band: 4
+    title: "Numbers, dates and times"
+    payload:
+      items: ["thirteen / thirty", "fifteen / fifty", "the first of March", "midday", "midnight", "quarter past", "quarter to", "half past", "14:30", "double six"]
+      lesson:
+        rule: "Listen for the stress: thirTEEN but THIRty; we say the first of March or March the first; a.m./p.m. or the 24-hour clock; phone numbers use double six."
+        examples: ["The appointment is on the first of March at quarter past ten.", "It costs fifteen pounds, not fifty.", "Call me on 07700 900 066, double six at the end."]
+        common_errors:
+          - {wrong: "The one of March.", right: "The first of March."}
+          - {wrong: "It's ten and fifteen.", right: "It's quarter past ten."}
+  - key: en.lex.directions_city
+    band: 4
+    title: "Finding your way"
+    payload:
+      items: ["turn left", "turn right", "go straight on", "the roundabout", "the traffic lights", "on the corner", "cross the road", "opposite", "next to"]
+      lesson:
+        rule: "Give directions with imperatives: go straight on, turn left at the roundabout, cross the road at the traffic lights."
+        examples: ["Go straight on until the traffic lights.", "Turn left at the roundabout.", "The chemist's is opposite the bank."]
+        common_errors:
+          - {wrong: "Turn to the left side.", right: "Turn left."}
+          - {wrong: "It's next the station.", right: "It's next to the station."}
+  - key: en.lex.family_relationships
+    band: 4
+    title: "Family and relationships"
+    payload:
+      items: ["partner", "husband", "wife", "children", "brother", "sister", "parents", "in-laws", "single", "married"]
+      lesson:
+        rule: "Partner covers husband, wife or someone you live with; in-laws are your partner's family."
+        examples: ["My partner is joining me next month.", "We have two children.", "My in-laws live in Leeds."]
+        common_errors:
+          - {wrong: "My wife's parents lives in Leeds.", right: "My wife's parents live in Leeds."}
+          - {wrong: "I am married with my husband since 2015.", right: "I have been married to my husband since 2015."}
+  - key: en.lex.home_household
+    band: 4
+    title: "The home"
+    payload:
+      items: ["kitchen", "bathroom", "central heating", "washing machine", "fridge", "furniture", "balcony", "bins"]
+      lesson:
+        rule: "Rooms and appliances: the kitchen, bathroom, central heating, washing machine, fridge; you put the bins out on collection day."
+        examples: ["The central heating isn't working.", "The washing machine is in the kitchen.", "We put the bins out on Wednesday night."]
+        common_errors:
+          - {wrong: "The washing machine are in the kitchen.", right: "The washing machine is in the kitchen."}
+          - {wrong: "The heating central is broken.", right: "The central heating is broken."}
+  - key: en.lex.services_bills
+    band: 5
+    title: "Bills and services"
+    payload:
+      items: ["bill", "subscription", "pay online", "direct debit", "charges", "refund", "contract", "customer service"]
+      lesson:
+        rule: "You get a bill, pay online or by direct debit; Payments for a contract or subscription are often made monthly, but the payment schedule can vary.; customer service deals with complaints."
+        examples: ["I got the electricity bill today.", "I pay by direct debit.", "I called customer service about the extra charges."]
+        common_errors:
+          - {wrong: "I have to pay the facture.", right: "I have to pay the bill."}
+          - {wrong: "I pay with direct debit automatic.", right: "I pay by direct debit."}
+  - key: en.lex.sport_fitness
+    band: 5
+    title: "Sport and fitness"
+    payload:
+      items: ["gym", "training", "team", "swimming", "running", "match", "membership"]
+      lesson:
+        rule: "You go to the gym, go swimming, go running; play football or tennis; you have a membership."
+        examples: ["I go to the gym three times a week.", "Training starts at six.", "She goes swimming every Saturday."]
+        common_errors:
+          - {wrong: "I go to swimming on Saturday.", right: "I go swimming on Saturday."}
+          - {wrong: "I make sport every day.", right: "I do sport every day."}
+  - key: en.lex.travel_holidays
+    band: 5
+    title: "Travel and holidays"
+    payload:
+      items: ["booking", "airport", "accommodation", "stay", "luggage", "flight", "cancel", "check-in"]
+      lesson:
+        rule: "You make a booking, check in at the airport, and collect your luggage; your stay is the time you spend there."
+        examples: ["I made a booking for three nights.", "Check-in closes an hour before the flight.", "Our flight was cancelled."]
+        common_errors:
+          - {wrong: "I have many luggages.", right: "I have a lot of luggage."}
+          - {wrong: "I lost the flight.", right: "I missed the flight."}
+  - key: en.lex.immigration_citizenship
+    band: 6
+    title: "Immigration and citizenship"
+    payload:
+      items: ["permanent residence", "work permit", "visa", "citizenship", "application", "supporting documents", "biometrics", "National Insurance number"]
+      lesson:
+        rule: "Applications for a visa, a work permit or permanent residence need supporting documents and sometimes biometrics (fingerprints and a photo)."
+        examples: ["I submitted my visa application last week.", "My work permit expires in May.", "One supporting document is missing."]
+        common_errors:
+          - {wrong: "I applied the visa.", right: "I applied for the visa."}
+          - {wrong: "I have a work permission.", right: "I have a work permit."}
+  - key: en.lex.workplace_rights
+    band: 7
+    title: "Rights at work"
+    payload:
+      items: ["employment contract", "minimum wage", "overtime", "annual leave", "probation period", "trade union", "dismissal", "health and safety"]
+      lesson:
+        rule: "Your employment contract sets pay and hours; overtime is extra hours; annual leave is paid holiday; a trade union defends workers."
+        examples: ["My overtime hasn't been paid.", "I get twenty-eight days' annual leave.", "The minimum wage went up in April."]
+        common_errors:
+          - {wrong: "I do extra hours not paid.", right: "My overtime isn't paid."}
+          - {wrong: "My overtimes aren't paid.", right: "My overtime isn't paid."}
+  - key: en.lex.money_economy
+    band: 7
+    title: "Money and the economy"
+    payload:
+      items: ["budget", "savings", "loan", "interest rate", "inflation", "tax", "cost of living", "debt"]
+      lesson:
+        rule: "Make a budget, put money into savings, repay a loan; inflation raises the cost of living."
+        examples: ["The interest rate on the loan is six per cent.", "Inflation has pushed up the cost of living.", "I make a budget every month."]
+        common_errors:
+          - {wrong: "I have many debt.", right: "I have a lot of debt."}
+          - {wrong: "The cost of the life is high.", right: "The cost of living is high."}
+  - key: en.lex.culture_arts
+    band: 7
+    title: "Culture and the arts"
+    payload:
+      items: ["exhibition", "performance", "museum", "play", "heritage", "review", "concert"]
+      lesson:
+        rule: "Visit an exhibition at a museum, see a play or a performance; heritage is a place's history and culture; a review gives an opinion on it."
+        examples: ["The exhibition is free on Sundays.", "We saw a play at the theatre.", "The castle is part of the town's heritage."]
+        common_errors:
+          - {wrong: "I assisted a concert.", right: "I went to a concert."}
+          - {wrong: "The play was very interested.", right: "The play was very interesting."}
+  - key: en.lex.law_safety
+    band: 8
+    title: "Law and safety"
+    payload:
+      items: ["report a crime", "witness", "fine", "the law", "court", "burglary", "insurance", "rights"]
+      lesson:
+        rule: "After a burglary, you report a crime to the police; a witness saw what happened; a fine is money you must pay."
+        examples: ["I reported the burglary to the police.", "A witness called the police.", "I got a parking fine."]
+        common_errors:
+          - {wrong: "I made a complaint of crime to the police.", right: "I reported a crime to the police."}
+          - {wrong: "I received a £100 fine for park illegally.", right: "I received a £100 fine for parking illegally."}
+  - key: en.lex.media_communication
+    band: 8
+    title: "Media and communication"
+    payload:
+      items: ["social media", "programme", "source", "misinformation", "documentary", "editorial", "subscriber"]
+      lesson:
+        rule: "A programme is on TV or radio; a documentary looks at real events; check the source to avoid misinformation."
+        examples: ["I watched a documentary about housing.", "Always check the source.", "Misinformation spreads fast on social media."]
+        common_errors:
+          - {wrong: "I saw a broadcast emission.", right: "I watched a programme."}
+          - {wrong: "The informations are wrong.", right: "The information is wrong."}
+  - key: en.lex.society_issues
+    band: 9
+    title: "Social issues"
+    payload:
+      items: ["equality", "diversity", "integration", "affordable housing", "poverty", "an ageing population", "discrimination", "social mobility"]
+      lesson:
+        rule: "Discuss equality, diversity, integration, poverty, affordable housing; an ageing population has more older people."
+        examples: ["There isn't enough affordable housing in big cities.", "Integration depends on language and work.", "Discrimination in hiring is illegal."]
+        common_errors:
+          - {wrong: "The poverty is increasing in the city.", right: "Poverty is increasing in the city."}
+          - {wrong: "Affordable housing are an issue for young people.", right: "Affordable housing is an issue for young people."}
+  - key: en.lex.science_public_health
+    band: 9
+    title: "Science and public health"
+    payload:
+      items: ["research", "public health", "prevention", "study", "data", "innovation", "ethics", "clinical trial"]
+      lesson:
+        rule: "Research produces studies and data; public health focuses on prevention; ethics sets the limits of research."
+        examples: ["According to a recent study, prevention costs less.", "The data is anonymous for ethical reasons.", "Public health experts recommend vaccination."]
+        common_errors:
+          - {wrong: "A research shows that…", right: "Research shows that…"}
+          - {wrong: "The datas are clear.", right: "The data is clear."}

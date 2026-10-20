@@ -1,8 +1,9 @@
-"""The key-points path (SPEC §16): the grammar a learner is taught before a scene asks for it.
+"""The key-points path (SPEC §16): what a learner is taught before a scene asks for it.
 
 Nobody speaks well without the rules, so every grammar node up to the learner's level is a short lesson, in an order
-where prerequisites come first. Nodes at the learner's own level are *core*: Today sends the learner to them before
-the next story day. Lower ones are a refresher the learner may take; the next level's are a preview.
+where prerequisites come first; the words (vocabulary sets) and the ways of saying things (functions) of each level
+are lessons too. Nodes at the learner's own level are *core*: Today sends the learner to the core grammar before the
+next story day, and offers the core words and phrases beside it. Lower ones are a refresher; the next level's a preview.
 """
 
 from __future__ import annotations
@@ -13,10 +14,12 @@ from pathlib import Path
 
 from lingard_contracts.common import Language
 from lingard_curriculum.graph import CurriculumGraph
-from lingard_curriculum.models import CurriculumNode
+from lingard_curriculum.models import CurriculumNode, NodeKind
 from lingard_curriculum.seed import load_seed
 
 FIRST_BAND = 4
+KINDS: tuple[NodeKind, ...] = ("grammar", "lexset", "function")
+"""What the path teaches; grammar comes first within a level, then the words, then the phrases."""
 """The lowest band the curriculum teaches; a learner without a placement starts here."""
 
 
@@ -50,7 +53,8 @@ def ordered(nodes: list[CurriculumNode], prereqs: dict[str, list[str]], order: d
         placed.add(node.key)
         out.append(node)
 
-    for node in sorted(nodes, key=lambda n: (n.band, order.get(n.key, len(order)))):
+    kinds = {kind: i for i, kind in enumerate(KINDS)}
+    for node in sorted(nodes, key=lambda n: (n.band, kinds.get(n.kind, len(kinds)), order.get(n.key, len(order)))):
         place(node, frozenset())
     return out
 
@@ -59,7 +63,7 @@ async def key_points_path(
     curriculum: CurriculumGraph, content_root: Path, language: Language, band: int | None
 ) -> list[KeyPointStep]:
     level = max(FIRST_BAND, band or FIRST_BAND)
-    nodes = await curriculum.nodes(language, kinds=["grammar"], max_band=level + 1)
+    nodes = await curriculum.nodes(language, kinds=list(KINDS), max_band=level + 1)
     prereqs = {n.key: [e.to_key for e in await curriculum.edges(n.key, "prereq")] for n in nodes}
     steps = ordered(nodes, prereqs, authored_order(content_root, language))
     return [KeyPointStep(node=n, core=n.band == level, preview=n.band > level) for n in steps]

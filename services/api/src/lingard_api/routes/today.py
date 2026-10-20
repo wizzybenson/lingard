@@ -129,7 +129,8 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     pending = None
     for language in studying:
         steps = await key_points(state, db, principal.user_id, language)
-        pending = pending or next((k for k in steps if k.core and k.status != "done"), None)
+        # The rules gate the story; the level's words and phrases are offered beside it in School.
+        pending = pending or next((k for k in steps if k.core and k.kind == "grammar" and k.status != "done"), None)
     step: NextStep
     # Progress decides what comes next, never the calendar: due reviews are offered beside the story, not before it.
     if not exam_dates:

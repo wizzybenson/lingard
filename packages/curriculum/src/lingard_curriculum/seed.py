@@ -148,9 +148,13 @@ def validate_bundle(bundle: SeedBundle) -> None:
 
 
 async def seed_graph(graph: CurriculumGraph, bundle: SeedBundle) -> int:
+    """Content from the repository is reviewed content: new nodes, and nodes whose content changed in the repository,
+    are marked reviewed by the seed. A node someone un-reviewed (with no content change since) stays unreviewed."""
     for node in bundle.nodes:
+        before = await graph.get(node.key)
         stored = await graph.upsert_node(node)
-        if node.reviewed and not stored.reviewed and stored.version == 1:
+        changed = before is None or stored.version != before.version
+        if node.reviewed and not stored.reviewed and changed:
             await graph.mark_reviewed(node.key, node.reviewed_by or SEED_REVIEWER)
     for edge in bundle.edges:
         await graph.upsert_edge(edge)

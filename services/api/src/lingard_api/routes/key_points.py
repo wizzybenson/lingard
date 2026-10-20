@@ -23,7 +23,7 @@ from lingard_contracts.common import LANGUAGE_CITY, Language, node_language
 from lingard_curriculum.conjugation import FrenchConjugator
 from lingard_db.models import Lesson
 from lingard_graphs.graphs.lesson_builder import key_points_lesson
-from lingard_graphs.pedagogy.key_points import FIRST_BAND, key_points_path
+from lingard_graphs.pedagogy.key_points import FIRST_BAND, KINDS, key_points_path
 from lingard_world import load_city
 
 router = APIRouter(prefix="/v1/key-points", tags=["key-points"])
@@ -31,6 +31,8 @@ router = APIRouter(prefix="/v1/key-points", tags=["key-points"])
 
 class KeyPoint(BaseModel):
     node_key: str
+    kind: Literal["grammar", "lexset", "function"]
+    """A rule, a set of words, or a way of saying something."""
     title: str
     band: int
     core: bool
@@ -71,6 +73,7 @@ async def key_points(state: AppState, db: AsyncSession, user_id: uuid.UUID, lang
         out.append(
             KeyPoint(
                 node_key=step.node.key,
+                kind=step.node.kind,
                 title=step.node.title,
                 band=step.node.band,
                 core=step.core,
@@ -101,7 +104,7 @@ async def open_key_points(node_key: str, principal: Principal, state: State, db:
     if existing is not None:
         return {"id": existing.id}
     node = await state.curriculum.get(node_key)
-    if node is None or not node.reviewed or node.kind != "grammar":
+    if node is None or not node.reviewed or node.kind not in KINDS:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such key point")
     language = node_language(node_key)
     profile = await state.graph_deps.store.profile(principal.user_id)

@@ -16,9 +16,12 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
     assert all(k["status"] == "new" and k["lesson_id"] is None for k in path)
     assert any(k["core"] for k in path) and any(k["preview"] for k in path)
     assert not any(k["preview"] for k in path if k["core"])
+    assert {k["kind"] for k in path} == {"grammar", "lexset", "function"}, "rules, words and phrases"
+    first_band = [k["kind"] for k in path if k["band"] == path[0]["band"]]
+    assert first_band == sorted(first_band, key=["grammar", "lexset", "function"].index), "rules first in a level"
 
     today = (await api.client.get("/v1/today", headers=auth)).json()
-    first_core = next(k for k in path if k["core"])
+    first_core = next(k for k in path if k["core"] and k["kind"] == "grammar")
     assert today["next_step"] == "key_points"
     assert today["next_key_point"] == {"node_key": first_core["node_key"], "title": first_core["title"]}
 
@@ -38,7 +41,12 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
     assert nxt is None or nxt["node_key"] != first_core["node_key"]
 
     assert (await api.client.post("/v1/key-points/fr.grammar.nope", headers=auth)).status_code == 404
-    assert (await api.client.post("/v1/key-points/fr.lexset.food", headers=auth)).status_code == 404
+    words = next(k for k in path if k["kind"] == "lexset")
+    opened_words = await api.client.post(f"/v1/key-points/{words['node_key']}", headers=auth)
+    assert opened_words.status_code == 201
+    games = (await api.client.get(f"/v1/lessons/{opened_words.json()['id']}", headers=auth)).json()["content"]["games"]
+    assert any(g["kind"] == "fill_the_gap" for g in games)
+    assert (await api.client.post("/v1/key-points/fr.task.tef_ce", headers=auth)).status_code == 404
 
 
 async def test_an_english_key_point_opens_too(api) -> None:  # type: ignore[no-untyped-def]

@@ -10,7 +10,7 @@ from lingard_curriculum.conjugation import FrenchConjugator
 from lingard_curriculum.graph import CurriculumGraph, InMemoryCurriculumGraph
 from lingard_curriculum.models import CurriculumNode
 from lingard_curriculum.packs import PackLibrary, ielts_overall
-from lingard_curriculum.seed import lesson_gaps, load_seed, seed_graph
+from lingard_curriculum.seed import SeedBundle, lesson_gaps, load_seed, seed_graph
 from lingard_curriculum.sql import SqlCurriculumGraph, curriculum_tables
 
 CONTENT = Path(__file__).resolve().parents[3] / "content"
@@ -257,3 +257,24 @@ async def test_graph_contract_seed_query_and_rereview_on_edit(graph: CurriculumG
     assert again is not None and again.reviewed and again.reviewed_by == "founder"
     unchanged = await graph.upsert_node(again)
     assert unchanged.version == 2 and unchanged.reviewed
+
+    # Seeding: a lesson changed in the repository stays reviewed (repository content is reviewed content), while a
+    # node someone un-reviewed stays out until it is reviewed again.
+    changed = next(n for n in bundle.nodes if n.key == "fr.grammar.imparfait")
+    payload = {**changed.payload, "lesson": {**changed.payload["lesson"], "rule": "Règle réécrite dans le dépôt."}}
+    await seed_graph(graph, SeedBundle(nodes=[changed.model_copy(update={"payload": payload})]))
+    rewritten = await graph.get("fr.grammar.imparfait")
+    assert rewritten is not None and rewritten.version == 2 and rewritten.reviewed
+    await graph.unmark_reviewed("fr.grammar.futur_simple")
+    await seed_graph(graph, bundle)
+    held = await graph.get("fr.grammar.futur_simple")
+    assert held is not None and not held.reviewed
+
+
+@pytest.mark.parametrize("language", ["fr", "en"])
+def test_every_word_set_and_phrase_set_has_a_lesson(language: Language) -> None:
+    for node in load_seed(CONTENT, language).nodes:
+        if node.kind in ("lexset", "function"):
+            lesson = node.payload["lesson"]
+            assert lesson["rule"] and len(lesson["examples"]) >= 2 and lesson["common_errors"], node.key
+            assert all(e["wrong"] != e["right"] for e in lesson["common_errors"]), node.key

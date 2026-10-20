@@ -45,7 +45,9 @@ class DayPlan(Strict):
         return sum(1 for t in all_targets if t in ticket) / len(all_targets)
 
 
-GameKind = Literal["conjugation_duel", "sentence_race", "spot_the_error", "dictation", "register_switch"]
+GameKind = Literal[
+    "conjugation_duel", "sentence_race", "spot_the_error", "dictation", "register_switch", "fill_the_gap"
+]
 
 
 class GameItem(Strict):

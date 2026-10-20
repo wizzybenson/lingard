@@ -124,7 +124,7 @@ def test_key_points_put_prerequisites_first_then_the_authored_order() -> None:
     assert len(ordered([a, b], cycle, order)) == 2, "a bad cycle never loops or drops a node"
 
 
-def test_key_points_lessons_need_no_model_and_cover_every_grammar_node() -> None:
+def test_key_points_lessons_need_no_model_and_cover_every_rule_word_set_and_phrase_set() -> None:
     import random
     from pathlib import Path
 
@@ -137,7 +137,12 @@ def test_key_points_lessons_need_no_model_and_cover_every_grammar_node() -> None
     for language, city in (("fr", "rivemont"), ("en", "ashford")):
         conjugator = FrenchConjugator.load(root / "curriculum/fr/conjugation.yaml") if language == "fr" else None
         for n in load_seed(root, language).nodes:  # type: ignore[arg-type]
-            if n.kind != "grammar":
+            if n.kind not in ("grammar", "lexset", "function"):
                 continue
             lesson = key_points_lesson(n, load_city(root, city), n.band, conjugator, random.Random(n.key))
             assert lesson.kind == "key_points" and lesson.models and lesson.examples and lesson.games, n.key
+            if n.kind == "lexset":
+                gaps = next((g for g in lesson.games if g.kind == "fill_the_gap"), None)
+                assert gaps is not None and len(gaps.items) >= 2, f"{n.key}: model sentences use the set's words"
+                for item in gaps.items:
+                    assert "___" in item.prompt and item.answer not in item.distractors, n.key
