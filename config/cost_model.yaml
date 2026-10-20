@@ -31,6 +31,7 @@ output_floor_tokens:
   utterance_assessor: 180
   correction_check: 40
   scene_compiler: 700
+  scene_consistency: 60             # usually an empty list; a problem is a sentence
   story_beats: 150
   narrative_keeper: 250
   coach_notebook: 350

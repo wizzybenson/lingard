@@ -47,6 +47,11 @@ class SceneDraft(BaseModel):
     mood: str = "neutral"
 
 
+class Consistency(BaseModel):
+    problems: list[str] = Field(default_factory=list)
+    """Each contradiction or unsupported detail, naming the two pieces that disagree; empty when the scene holds."""
+
+
 class CompileError(RuntimeError):
     def __init__(self, issues: list[ContractIssue]) -> None:
         super().__init__("; ".join(f"{i.code}: {i.message}" for i in issues))
@@ -85,6 +90,7 @@ class SceneCompiler:
         """``facts_range``: (min, max) approved facts per scene, from the ``scenes`` pedagogy config."""
         self._router = router
         self._prompt = prompts.get("scene_compiler")
+        self._consistency = prompts.get("scene_consistency")
         self._curriculum = curriculum
         self._content = content_root
         self._attempts = max_attempts
@@ -130,6 +136,13 @@ class SceneCompiler:
             language_name=LANGUAGE_NAME[language],
             learner_address=learner_address(self._content, language),
         )
+        city_facts = {
+            "location_name": location.name,
+            "npc_name": npc.name,
+            "npc_role": npc.role,
+            "world_facts": "; ".join(npc.world_facts) or "none",
+            "visible": "; ".join(f"{h.label}: {h.text}" for h in location.hotspots if h.text) or "nothing written",
+        }
         messages = self._router.messages("compile", system, "Design the scene now.")
         issues: list[ContractIssue] = []
         for _ in range(self._attempts):
@@ -161,9 +174,29 @@ class SceneCompiler:
                 facts_range=self._facts_range,
             )
             if not issues:
+                issues = await self._check_consistency(contract, city_facts, trace_id)
+            if not issues:
                 return contract
             feedback = "Fix these problems and return the whole JSON again:\n" + "\n".join(
                 f"- {i.code}: {i.message}" for i in issues
             )
             messages = [*messages, HumanMessage(content=feedback)]
         raise CompileError(issues)
+
+    async def _check_consistency(
+        self, contract: SceneContract, city_facts: dict[str, str], trace_id: str | None
+    ) -> list[ContractIssue]:
+        """A second reading of what the learner will see (goal, objectives, prize) against the facts: the writer's
+        slips (a router placed in the living room by the goal and on the desk by an objective) go back to it."""
+        system, per_call = self._consistency.render_split(
+            **city_facts,
+            goal=contract.learner_goal,
+            objectives="\n".join(f"- {c.description}" for c in contract.success_conditions),
+            prize=contract.exits[0].consequence,
+            endings="\n".join(f"- {e.trigger} → {e.consequence}" for e in contract.exits[1:]) or "none",
+            facts="\n".join(f"- {f}" for f in contract.approved_facts),
+        )
+        checked = await self._router.structured(
+            "mid", self._consistency, Consistency, self._router.messages("mid", system, per_call), trace_id=trace_id
+        )
+        return [ContractIssue(code="inconsistent", message=p) for p in checked.problems if p.strip()]

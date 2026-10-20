@@ -13,7 +13,7 @@ from lingard_graphs.graphs.turn_assessment import TurnState, build_turn_assessme
 from lingard_graphs.store import MemoryStore, SceneRecord
 from lingard_llm.testing import message_text
 
-from .conftest import USER, Script
+from .conftest import CONSISTENCY, USER, Script
 
 TARGETS = ["fr.func.negotiate", "fr.grammar.si_imparfait", "fr.lex.housing.deposit_repairs"]
 
@@ -96,6 +96,30 @@ async def test_compiler_feeds_issues_back_then_succeeds(deps: GraphDeps, script:
     script.handlers["You design one scene"] = flaky
     await compiler(deps).compile(brief())
     assert len(attempts) == 2
+
+
+async def test_a_second_reading_sends_contradictions_back_to_the_writer(deps: GraphDeps, script: Script) -> None:
+    """The goal puts the router in the living room and an objective puts it on the desk: the writer is told."""
+    feedback: list[str] = []
+    checked: list[str] = []
+
+    def writer(messages: list[BaseMessage]) -> dict[str, Any]:
+        feedback.append(message_text(messages[-2]))
+        return good_draft(messages)
+
+    def reader(messages: list[BaseMessage]) -> dict[str, Any]:
+        checked.append(" ".join(message_text(m) for m in messages))
+        return {"problems": ["The goal puts the router in the living room; objective 2 puts it on the desk."]}
+
+    script.handlers["You design one scene"] = writer
+    script.handlers[CONSISTENCY] = lambda m: reader(m) if not checked else {"problems": []}
+    await compiler(deps).compile(brief())
+    assert len(feedback) == 2 and "inconsistent: The goal puts the router" in feedback[1]
+    assert "Approved facts:" in checked[0] and "Prize (best ending):" in checked[0]
+
+    script.handlers[CONSISTENCY] = reader  # never fixed: the scene is dropped rather than played inconsistent
+    with pytest.raises(CompileError, match="inconsistent"):
+        await compiler(deps).compile(brief())
 
 
 async def test_compiler_states_the_register_and_coherence_standard(deps: GraphDeps, script: Script) -> None:

@@ -19,6 +19,7 @@ from lingard_llm.testing import ScriptedChatModel, message_text
 
 ROOT = Path(__file__).resolve().parents[3]
 USER = uuid.UUID("00000000-0000-0000-0000-000000000001")
+CONSISTENCY = "You check one scene"
 
 
 class Script:
@@ -39,7 +40,9 @@ class Script:
 
 @pytest.fixture
 def script() -> Script:
-    return Script()
+    script = Script()
+    script.handlers[CONSISTENCY] = lambda _: {"problems": []}  # scenes hold together unless a test says otherwise
+    return script
 
 
 @pytest.fixture

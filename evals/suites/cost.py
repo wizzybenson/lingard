@@ -30,7 +30,7 @@ from lingard_llm.usage import cost_usd
 DAYS = 3
 DEFAULT_STACK = ("anthropic", "deepgram", "elevenlabs")
 PER_TURN = ("utterance_assessor", "correction_check")
-PER_SCENE = ("scene_compiler",)
+PER_SCENE = ("scene_compiler", "scene_consistency", "mission_debrief")
 
 
 async def _measured() -> tuple[dict[str, dict[str, Any]], dict[str, int]]:

@@ -2,16 +2,17 @@
   "suite": "cost",
   "mode": "offline",
   "metrics": {
-    "default_llm_mid": 0.1665,
-    "default_llm_frontier": 0.0541,
+    "default_llm_mid": 0.1709,
+    "default_llm_compile": 0.0533,
+    "default_llm_frontier": 0.0047,
     "default_llm_fast": 0.0033,
     "default_llm_guard": 0.0069,
     "default_stt": 0.026,
     "default_tts": 0.336,
-    "default_total": 0.5928,
-    "llm_only_anthropic": 0.2308,
-    "llm_only_google": 0.1563,
-    "cheapest_total": 0.1563
+    "default_total": 0.6012,
+    "llm_only_anthropic": 0.2392,
+    "llm_only_google": 0.1626,
+    "cheapest_total": 0.1626
   },
   "gates": [
     {
@@ -23,251 +24,275 @@
   "notes": [
     "default stack anthropic+deepgram+elevenlabs; cheapest google+voicebox+voicebox",
     "activity assumptions as_of 2026-10-14 (assumption)",
-    "per-call tokens: coach_notebook 487→12, correction_check 183→10, narrative_keeper 741→11, scene_compiler 1459→198, story_beats 233→12, utterance_assessor 2599→108",
+    "per-call tokens: coach_notebook 580→12, correction_check 184→10, narrative_keeper 740→11, scene_compiler 1833→198, scene_consistency 502→5, story_beats 408→12, utterance_assessor 2909→101",
     "actor prompt ≈ 895 tokens before history; claim check ≈ 591 before dialogue"
   ],
   "samples": [
     {
       "stack": "google+voicebox+voicebox",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0,
       "tts": 0.0,
-      "total": 0.1563
+      "total": 0.1626
     },
     {
       "stack": "google+elevenlabs+voicebox",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0185,
       "tts": 0.0,
-      "total": 0.1748
+      "total": 0.1811
     },
     {
       "stack": "google+deepgram+voicebox",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.026,
       "tts": 0.0,
-      "total": 0.1823
+      "total": 0.1886
     },
     {
       "stack": "google+openai+voicebox",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.03,
       "tts": 0.0,
-      "total": 0.1863
+      "total": 0.1926
     },
     {
       "stack": "anthropic+voicebox+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0,
       "tts": 0.0,
-      "total": 0.2308
+      "total": 0.2392
     },
     {
       "stack": "anthropic+elevenlabs+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0185,
       "tts": 0.0,
-      "total": 0.2493
+      "total": 0.2577
     },
     {
       "stack": "anthropic+deepgram+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.026,
       "tts": 0.0,
-      "total": 0.2568
+      "total": 0.2652
     },
     {
       "stack": "anthropic+openai+voicebox",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.03,
       "tts": 0.0,
-      "total": 0.2608
+      "total": 0.2692
     },
     {
       "stack": "google+voicebox+openai",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0,
       "tts": 0.1428,
-      "total": 0.2991
+      "total": 0.3054
     },
     {
       "stack": "google+elevenlabs+openai",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0185,
       "tts": 0.1428,
-      "total": 0.3176
+      "total": 0.3239
     },
     {
       "stack": "google+deepgram+openai",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.026,
       "tts": 0.1428,
-      "total": 0.3251
+      "total": 0.3314
     },
     {
       "stack": "google+openai+openai",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.03,
       "tts": 0.1428,
-      "total": 0.3291
+      "total": 0.3354
     },
     {
       "stack": "anthropic+voicebox+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0,
       "tts": 0.1428,
-      "total": 0.3736
+      "total": 0.382
     },
     {
       "stack": "anthropic+elevenlabs+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0185,
       "tts": 0.1428,
-      "total": 0.3921
+      "total": 0.4005
     },
     {
       "stack": "anthropic+deepgram+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.026,
       "tts": 0.1428,
-      "total": 0.3996
+      "total": 0.408
     },
     {
       "stack": "anthropic+openai+openai",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.03,
       "tts": 0.1428,
-      "total": 0.4036
+      "total": 0.412
     },
     {
       "stack": "google+voicebox+elevenlabs",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0,
       "tts": 0.336,
-      "total": 0.4923
+      "total": 0.4986
     },
     {
       "stack": "google+elevenlabs+elevenlabs",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.0185,
       "tts": 0.336,
-      "total": 0.5108
+      "total": 0.5171
     },
     {
       "stack": "google+deepgram+elevenlabs",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.026,
       "tts": 0.336,
-      "total": 0.5183
+      "total": 0.5246
     },
     {
       "stack": "google+openai+elevenlabs",
-      "llm_mid": 0.068,
-      "llm_frontier": 0.0618,
+      "llm_mid": 0.0703,
+      "llm_compile": 0.0603,
+      "llm_frontier": 0.0054,
       "llm_fast": 0.0089,
       "llm_guard": 0.0176,
       "stt": 0.03,
       "tts": 0.336,
-      "total": 0.5223
+      "total": 0.5286
     },
     {
       "stack": "anthropic+voicebox+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0,
       "tts": 0.336,
-      "total": 0.5668
+      "total": 0.5752
     },
     {
       "stack": "anthropic+elevenlabs+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.0185,
       "tts": 0.336,
-      "total": 0.5853
+      "total": 0.5937
     },
     {
       "stack": "anthropic+deepgram+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.026,
       "tts": 0.336,
-      "total": 0.5928
+      "total": 0.6012
     },
     {
       "stack": "anthropic+openai+elevenlabs",
-      "llm_mid": 0.1665,
-      "llm_frontier": 0.0541,
+      "llm_mid": 0.1709,
+      "llm_compile": 0.0533,
+      "llm_frontier": 0.0047,
       "llm_fast": 0.0033,
       "llm_guard": 0.0069,
       "stt": 0.03,
       "tts": 0.336,
-      "total": 0.5968
+      "total": 0.6052
     }
   ],
-  "ran_at": "2026-10-15T16:22:02+00:00",
+  "ran_at": "2026-10-20T19:09:17+00:00",
   "status": "PASS"
 }

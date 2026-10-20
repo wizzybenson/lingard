@@ -66,6 +66,8 @@ def oracle(messages: list[BaseMessage]) -> str:
     if "director of an ongoing life story" in system:
         count = int(re.search(r"Today there are (\d+) scenes", system).group(1))  # type: ignore[union-attr]
         return json.dumps({"beats": [f"Beat {i}." for i in range(count)]})
+    if "You check one scene" in system:
+        return json.dumps({"problems": []})
     if "You design one scene" in system:
         targets = [line.split()[1] for line in system.splitlines() if re.match(r"- (fr|en)\.", line)]
         return json.dumps(
