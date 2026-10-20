@@ -14,11 +14,33 @@ import { PlayButton } from "@/live/PlayButton";
 import { SpeakButton } from "@/live/SpeakButton";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, Choice, ErrorText, Field, goBack, Loading, Overline, Screen } from "@/ui/kit";
+import {
+  Body,
+  Button,
+  Card,
+  Chip,
+  Choice,
+  ErrorText,
+  Field,
+  goBack,
+  Loading,
+  Overline,
+  Screen,
+} from "@/ui/kit";
 import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 /** Sentence race: tap the words in order; tap a placed word to send it back. */
-function WordTiles({ prompt, value, onChange, locked }: { prompt: string; value: string; onChange: (v: string) => void; locked: boolean }) {
+function WordTiles({
+  prompt,
+  value,
+  onChange,
+  locked,
+}: {
+  prompt: string;
+  value: string;
+  onChange: (v: string) => void;
+  locked: boolean;
+}) {
   const words = prompt.split(" / ");
   const [placed, setPlaced] = useState<number[]>([]);
   const update = (next: number[]) => {
@@ -29,7 +51,12 @@ function WordTiles({ prompt, value, onChange, locked }: { prompt: string; value:
     <View style={{ gap: space(1) }}>
       <View style={[styles.tray, styles.answerTray]} accessibilityLabel={value}>
         {placed.map((i, at) => (
-          <Pressable key={`p${i}`} disabled={locked} onPress={() => update(placed.filter((_, j) => j !== at))} style={[styles.tile, styles.tilePlaced]}>
+          <Pressable
+            key={`p${i}`}
+            disabled={locked}
+            onPress={() => update(placed.filter((_, j) => j !== at))}
+            style={[styles.tile, styles.tilePlaced]}
+          >
             <Text style={styles.tileText}>{words[i]}</Text>
           </Pressable>
         ))}
@@ -38,10 +65,19 @@ function WordTiles({ prompt, value, onChange, locked }: { prompt: string; value:
         {words.map((word, i) =>
           placed.includes(i) ? (
             <View key={`w${i}`} style={[styles.tile, styles.tileGhost]}>
-              <Text style={[styles.tileText, { color: "transparent" }]}>{word}</Text>
+              <Text style={[styles.tileText, { color: "transparent" }]}>
+                {word}
+              </Text>
             </View>
           ) : (
-            <Pressable key={`w${i}`} accessibilityRole="button" accessibilityLabel={word} disabled={locked} onPress={() => update([...placed, i])} style={styles.tile}>
+            <Pressable
+              key={`w${i}`}
+              accessibilityRole="button"
+              accessibilityLabel={word}
+              disabled={locked}
+              onPress={() => update([...placed, i])}
+              style={styles.tile}
+            >
               <Text style={styles.tileText}>{word}</Text>
             </Pressable>
           ),
@@ -51,7 +87,17 @@ function WordTiles({ prompt, value, onChange, locked }: { prompt: string; value:
   );
 }
 
-function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswer, checked }: {
+function ItemView({
+  api,
+  lessonId,
+  gameIndex,
+  index,
+  game,
+  item,
+  answer,
+  onAnswer,
+  checked,
+}: {
   api: ApiClient;
   lessonId: string;
   gameIndex: number;
@@ -67,7 +113,10 @@ function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswe
   return (
     <View style={styles.item}>
       {game.kind === "dictation" ? (
-        <PlayButton api={api} path={`/v1/lessons/${lessonId}/audio?game=${gameIndex}&item=${index}`} />
+        <PlayButton
+          api={api}
+          path={`/v1/lessons/${lessonId}/audio?game=${gameIndex}&item=${index}`}
+        />
       ) : game.kind === "spot_the_error" ? (
         <Text style={type.callout}>{t("school.tapToAnswer")}</Text>
       ) : game.kind === "sentence_race" ? null : (
@@ -80,27 +129,74 @@ function ItemView({ api, lessonId, gameIndex, index, game, item, answer, onAnswe
               key={c}
               label={c}
               index={i}
-              state={checked ? (isCorrect(item, c) ? "right" : answer === c ? "wrong" : "dim") : answer === c ? "picked" : "idle"}
+              state={
+                checked
+                  ? isCorrect(item, c)
+                    ? "right"
+                    : answer === c
+                      ? "wrong"
+                      : "dim"
+                  : answer === c
+                    ? "picked"
+                    : "idle"
+              }
               onPress={checked ? undefined : () => onAnswer(c)}
             />
           ))}
         </View>
       ) : game.kind === "sentence_race" ? (
-        <WordTiles prompt={item.prompt} value={answer} onChange={onAnswer} locked={checked} />
+        <WordTiles
+          prompt={item.prompt}
+          value={answer}
+          onChange={onAnswer}
+          locked={checked}
+        />
       ) : (
-        <Field label={t("school.answer")} value={answer} editable={!checked} onChangeText={onAnswer} autoCapitalize="none" autoCorrect={false} />
+        <Field
+          label={t("school.answer")}
+          value={answer}
+          editable={!checked}
+          onChangeText={onAnswer}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
       )}
-      {checked && game.kind !== "spot_the_error" && game.kind !== "fill_the_gap" && (
-        <View style={styles.verdict}>
-          <Ionicons name={right ? "checkmark-circle" : "close-circle"} size={18} color={right ? colors.success : colors.danger} />
-          <Text style={[type.callout, { flex: 1, color: right ? colors.success : colors.ink }]}>{right ? t("phone.correct") : item.answer}</Text>
-        </View>
-      )}
+      {checked &&
+        game.kind !== "spot_the_error" &&
+        game.kind !== "fill_the_gap" && (
+          <View style={styles.verdict}>
+            <Ionicons
+              name={right ? "checkmark-circle" : "close-circle"}
+              size={18}
+              color={right ? colors.success : colors.danger}
+            />
+            <Text
+              style={[
+                type.callout,
+                { flex: 1, color: right ? colors.success : colors.ink },
+              ]}
+            >
+              {right ? t("phone.correct") : item.answer}
+            </Text>
+          </View>
+        )}
     </View>
   );
 }
 
-function GameView({ api, lessonId, index, game, onScored }: { api: ApiClient; lessonId: string; index: number; game: Game; onScored: (result: GameResult) => void }) {
+function GameView({
+  api,
+  lessonId,
+  index,
+  game,
+  onScored,
+}: {
+  api: ApiClient;
+  lessonId: string;
+  index: number;
+  game: Game;
+  onScored: (result: GameResult) => void;
+}) {
   const { t } = useTranslation();
   const [answers, setAnswers] = useState<string[]>(game.items.map(() => ""));
   // The timer checks the game from its own callback, so it reads the answers from here rather than a stale render.
@@ -119,7 +215,11 @@ function GameView({ api, lessonId, index, game, onScored }: { api: ApiClient; le
     const scored = score(game, latest.current);
     setResult(scored);
     onScored(scored);
-    void Haptics.notificationAsync(scored.correct === scored.total ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Warning);
+    void Haptics.notificationAsync(
+      scored.correct === scored.total
+        ? Haptics.NotificationFeedbackType.Success
+        : Haptics.NotificationFeedbackType.Warning,
+    );
   };
 
   // Timed games (conjugation duel, sentence race) start the clock on the first answer and check themselves at zero.
@@ -143,8 +243,22 @@ function GameView({ api, lessonId, index, game, onScored }: { api: ApiClient; le
     <Card style={{ gap: space(2) }}>
       <View style={styles.gameHead}>
         <Text style={[type.title, { flex: 1 }]}>{t(`games.${game.kind}`)}</Text>
-        {limit !== null && !result && <Chip label={`${left ?? limit} s`} tone={left !== null && left <= 10 ? "danger" : "plain"} icon="timer-outline" />}
-        {result && <Chip label={t("games.score", { score: result.correct, total: result.total })} tone={result.correct === result.total ? "success" : "warning"} />}
+        {limit !== null && !result && (
+          <Chip
+            label={`${left ?? limit} s`}
+            tone={left !== null && left <= 10 ? "danger" : "plain"}
+            icon="timer-outline"
+          />
+        )}
+        {result && (
+          <Chip
+            label={t("games.score", {
+              score: result.correct,
+              total: result.total,
+            })}
+            tone={result.correct === result.total ? "success" : "warning"}
+          />
+        )}
       </View>
       {game.items.map((item, i) => (
         <ItemView
@@ -160,7 +274,15 @@ function GameView({ api, lessonId, index, game, onScored }: { api: ApiClient; le
           checked={!!result}
         />
       ))}
-      {!result && <Button label={t("school.checkAll")} kind="tinted" icon="checkmark-done" disabled={!started} onPress={check} />}
+      {!result && (
+        <Button
+          label={t("school.checkAll")}
+          kind="tinted"
+          icon="checkmark-done"
+          disabled={!started}
+          onPress={check}
+        />
+      )}
     </Card>
   );
 }
@@ -169,7 +291,10 @@ export default function LessonScreen() {
   const { t } = useTranslation();
   const api = useApi();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const lesson = useResource(() => api.get<LessonRow>(`/v1/lessons/${id}`), [id]);
+  const lesson = useResource(
+    () => api.get<LessonRow>(`/v1/lessons/${id}`),
+    [id],
+  );
   const [results, setResults] = useState<Record<number, GameResult>>({});
   const [finished, setFinished] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -189,7 +314,10 @@ export default function LessonScreen() {
   const finish = async () => {
     setBusy(true);
     try {
-      await api.post(`/v1/lessons/${id}/complete`, { correct, total: Math.max(total, 1) });
+      await api.post(`/v1/lessons/${id}/complete`, {
+        correct,
+        total: Math.max(total, 1),
+      });
       setFinished(t("school.finished", { score: correct, total }));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -200,10 +328,16 @@ export default function LessonScreen() {
   const done = lesson.data.status === "done";
   // Lessons open from the journey (a scene, the map, the School): finishing returns the learner to where they were.
   const footer = finished ? (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: space(1.5) }}>
+    <View
+      style={{ flexDirection: "row", alignItems: "center", gap: space(1.5) }}
+    >
       <Chip label={finished} tone="success" icon="trophy" />
       <View style={{ flex: 1 }}>
-        <Button label={t("app.continue")} icon="arrow-forward" onPress={goBack} />
+        <Button
+          label={t("app.continue")}
+          icon="arrow-forward"
+          onPress={goBack}
+        />
       </View>
     </View>
   ) : done ? (
@@ -222,8 +356,15 @@ export default function LessonScreen() {
     <Screen back footer={footer}>
       <View style={{ gap: space(1) }}>
         <View style={{ flexDirection: "row", gap: space(0.75) }}>
-          <Chip label={t(`school.lessonKind.${content.kind ?? "remedial"}`)} tone={keyPoints ? "accent" : "sunset"} icon={keyPoints ? "key" : "construct"} />
-          <Chip label={t("units.minutes", { count: content.minutes })} icon="time-outline" />
+          <Chip
+            label={t(`school.lessonKind.${content.kind ?? "remedial"}`)}
+            tone={keyPoints ? "accent" : "sunset"}
+            icon={keyPoints ? "key" : "construct"}
+          />
+          <Chip
+            label={t("units.minutes", { count: content.minutes })}
+            icon="time-outline"
+          />
         </View>
         <Text accessibilityRole="header" style={type.largeTitle}>
           {content.title}
@@ -231,7 +372,15 @@ export default function LessonScreen() {
       </View>
 
       <Card style={{ gap: space(1.5) }}>
-        <Overline>{t("school.rule")}</Overline>
+        <Overline>
+          {t(
+            lesson.data.node_key.includes(".lexset.")
+              ? "school.summaryWords"
+              : lesson.data.node_key.includes(".function.")
+                ? "school.summaryPhrases"
+                : "school.rule",
+          )}
+        </Overline>
         <Text style={styles.rule}>{content.rule}</Text>
       </Card>
 
@@ -240,9 +389,18 @@ export default function LessonScreen() {
           <Overline>{t("school.models")}</Overline>
           {content.models!.map((m, i) => (
             <View key={m} style={styles.line}>
-              <Ionicons name="chatbubble-ellipses" size={18} color={colors.accent} style={{ marginTop: 3 }} />
+              <Ionicons
+                name="chatbubble-ellipses"
+                size={18}
+                color={colors.accent}
+                style={{ marginTop: 3 }}
+              />
               <Text style={[type.body, { flex: 1 }]}>{m}</Text>
-              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=model&index=${i}`} label={`${t("studio.listen")}: ${m}`} />
+              <SpeakButton
+                api={api}
+                path={`/v1/lessons/${id}/say?part=model&index=${i}`}
+                label={`${t("studio.listen")}: ${m}`}
+              />
             </View>
           ))}
         </Card>
@@ -255,7 +413,12 @@ export default function LessonScreen() {
             {content.words!.map((w, i) => (
               <View key={w} style={styles.word}>
                 <Text style={[type.callout, { color: colors.ink }]}>{w}</Text>
-                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=word&index=${i}`} label={`${t("studio.listen")}: ${w}`} size={16} />
+                <SpeakButton
+                  api={api}
+                  path={`/v1/lessons/${id}/say?part=word&index=${i}`}
+                  label={`${t("studio.listen")}: ${w}`}
+                  size={16}
+                />
               </View>
             ))}
           </View>
@@ -263,17 +426,35 @@ export default function LessonScreen() {
       )}
 
       <Card style={{ gap: space(1.5) }}>
-        <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
+        <Overline>
+          {keyPoints ? t("school.watchOut") : t("school.yourExamples")}
+        </Overline>
         {content.examples.map((e, i) => (
           <View key={e.learner_said} style={styles.pair}>
             <View style={styles.line}>
-              <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
+              <Ionicons
+                name="close-circle"
+                size={18}
+                color={colors.danger}
+                style={{ marginTop: 3 }}
+              />
               <Text style={[type.body, styles.wrong]}>{e.learner_said}</Text>
             </View>
             <View style={styles.line}>
-              <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
-              <Text style={[type.body, { flex: 1, fontFamily: fonts.medium }]}>{e.better}</Text>
-              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
+              <Ionicons
+                name="checkmark-circle"
+                size={18}
+                color={colors.success}
+                style={{ marginTop: 3 }}
+              />
+              <Text style={[type.body, { flex: 1, fontFamily: fonts.medium }]}>
+                {e.better}
+              </Text>
+              <SpeakButton
+                api={api}
+                path={`/v1/lessons/${id}/say?part=better&index=${i}`}
+                label={`${t("studio.listen")}: ${e.better}`}
+              />
             </View>
             {e.note ? <Body muted>{e.note}</Body> : null}
           </View>
@@ -281,13 +462,22 @@ export default function LessonScreen() {
       </Card>
 
       {content.games.map((game, i) => (
-        <GameView key={`${game.kind}-${i}`} api={api} lessonId={id} index={i} game={game} onScored={(r) => setResults((all) => ({ ...all, [i]: r }))} />
+        <GameView
+          key={`${game.kind}-${i}`}
+          api={api}
+          lessonId={id}
+          index={i}
+          game={game}
+          onScored={(r) => setResults((all) => ({ ...all, [i]: r }))}
+        />
       ))}
 
       <Card tone="sunset" style={{ gap: space(1) }}>
         <View style={styles.line}>
           <Ionicons name="walk" size={20} color="#9A3E1E" />
-          <Text style={[type.headline, { flex: 1 }]}>{t("school.homeworkTitle")}</Text>
+          <Text style={[type.headline, { flex: 1 }]}>
+            {t("school.homeworkTitle")}
+          </Text>
         </View>
         <Body>{t("school.homework")}</Body>
         <Body muted>{content.homework.story_beat}</Body>
@@ -298,19 +488,66 @@ export default function LessonScreen() {
 }
 
 const styles = StyleSheet.create({
-  rule: { fontFamily: fonts.display, fontSize: 20, lineHeight: 28, color: colors.ink },
+  rule: {
+    fontFamily: fonts.display,
+    fontSize: 20,
+    lineHeight: 28,
+    color: colors.ink,
+  },
   line: { flexDirection: "row", alignItems: "flex-start", gap: space(1) },
   words: { flexDirection: "row", flexWrap: "wrap", gap: space(1) },
-  word: { flexDirection: "row", alignItems: "center", gap: 4, paddingLeft: space(1.5), paddingRight: space(0.75), minHeight: 40, borderRadius: radius.pill, backgroundColor: colors.paper },
-  pair: { gap: space(0.75), paddingBottom: space(1), borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  word: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingLeft: space(1.5),
+    paddingRight: space(0.75),
+    minHeight: 40,
+    borderRadius: radius.pill,
+    backgroundColor: colors.paper,
+  },
+  pair: {
+    gap: space(0.75),
+    paddingBottom: space(1),
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+  },
   wrong: { flex: 1, color: colors.muted, textDecorationLine: "line-through" },
   gameHead: { flexDirection: "row", alignItems: "center", gap: space(1) },
-  item: { gap: space(1.25), paddingTop: space(1.5), borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border },
+  item: {
+    gap: space(1.25),
+    paddingTop: space(1.5),
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+  },
   verdict: { flexDirection: "row", alignItems: "center", gap: space(0.75) },
   tray: { flexDirection: "row", flexWrap: "wrap", gap: space(1) },
-  answerTray: { minHeight: 56, padding: space(1), borderRadius: radius.md, borderWidth: 1.5, borderStyle: "dashed", borderColor: colors.border, backgroundColor: colors.paper },
-  tile: { paddingHorizontal: space(1.5), paddingVertical: space(1), borderRadius: radius.sm, backgroundColor: colors.card, borderWidth: 1.5, borderColor: colors.border, minHeight: 40, justifyContent: "center" },
-  tilePlaced: { backgroundColor: colors.accentSoft, borderColor: colors.accent },
-  tileGhost: { backgroundColor: colors.paperDeep, borderColor: colors.paperDeep },
+  answerTray: {
+    minHeight: 56,
+    padding: space(1),
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: colors.border,
+    backgroundColor: colors.paper,
+  },
+  tile: {
+    paddingHorizontal: space(1.5),
+    paddingVertical: space(1),
+    borderRadius: radius.sm,
+    backgroundColor: colors.card,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    minHeight: 40,
+    justifyContent: "center",
+  },
+  tilePlaced: {
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accent,
+  },
+  tileGhost: {
+    backgroundColor: colors.paperDeep,
+    borderColor: colors.paperDeep,
+  },
   tileText: { fontFamily: fonts.medium, fontSize: 16, color: colors.ink },
 });

@@ -1,6 +1,16 @@
 # English irregular verbs (principal parts) for conjugation games and the past-tense error checks.
 source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/english/pdf/pub/language-benchmarks.pdf
 as_of: "2012"
+engine: english
+# The conjugation duel of a grammar point: the principal parts it drills (irregular verbs), by the longest of these
+# found in its key.
+drills:
+  past_simple: [past]
+  present_perfect: [participle]
+  present_perfect_or_past_simple: [past, participle]
+  past_perfect: [participle]
+  past_modals: [participle]
+form_labels: {past: past simple, participle: past participle}
 tense_bands: {past_simple: 4, present_perfect: 5, past_perfect: 7}
 verbs:
   be: {base: be, past: was/were, participle: been}

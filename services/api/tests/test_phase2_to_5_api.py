@@ -164,6 +164,11 @@ async def test_glance_queue_and_offline_answer(api) -> None:  # type: ignore[no-
     token, _ = await learner(api)
     quests = (await api.client.get("/v1/glance", params={"language": "fr"}, headers=api.bearer(token))).json()
     assert len(quests) == 8 and all(q["kind"] == "read" for q in quests)
+    await api.client.patch(
+        "/v1/me", json={"exam_dates": {"ielts_gt": "2027-03-01", "tef_canada": "2027-03-01"}}, headers=api.bearer(token)
+    )
+    mixed = (await api.client.get("/v1/glance", headers=api.bearer(token))).json()
+    assert [q["language"] for q in mixed[:4]] == ["fr", "en", "fr", "en"], "both exams' languages, taken in turn"
     first = quests[0]
     result = await api.client.post(
         "/v1/glance/answer",

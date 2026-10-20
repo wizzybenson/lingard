@@ -128,19 +128,21 @@ def test_key_points_lessons_need_no_model_and_cover_every_rule_word_set_and_phra
     import random
     from pathlib import Path
 
-    from lingard_curriculum.conjugation import FrenchConjugator
+    from lingard_curriculum.conjugation import load_conjugator
     from lingard_curriculum.seed import load_seed
     from lingard_graphs.graphs.lesson_builder import key_points_lesson
     from lingard_world import load_city
 
     root = Path(__file__).resolve().parents[3] / "content"
     for language, city in (("fr", "rivemont"), ("en", "ashford")):
-        conjugator = FrenchConjugator.load(root / "curriculum/fr/conjugation.yaml") if language == "fr" else None
+        conjugator = load_conjugator(root / "curriculum" / language / "conjugation.yaml")
         for n in load_seed(root, language).nodes:  # type: ignore[arg-type]
             if n.kind not in ("grammar", "lexset", "function"):
                 continue
             lesson = key_points_lesson(n, load_city(root, city), n.band, conjugator, random.Random(n.key))
             assert lesson.kind == "key_points" and lesson.models and lesson.examples and lesson.games, n.key
+            if n.key in ("fr.grammar.passe_compose_avoir", "en.grammar.past_simple", "en.grammar.present_perfect"):
+                assert any(g.kind == "conjugation_duel" for g in lesson.games), f"{n.key}: both languages drill verbs"
             if n.kind == "lexset":
                 gaps = next((g for g in lesson.games if g.kind == "fill_the_gap"), None)
                 assert gaps is not None and len(gaps.items) >= 2, f"{n.key}: model sentences use the set's words"

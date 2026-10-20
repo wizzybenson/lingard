@@ -31,7 +31,7 @@ appId: app.lingard
     below: "Words · .*"
     text: ".+"
 - extendedWaitUntil:
-    visible: "Fill the gap"
+    visible: "In short"
     timeout: 10000
 - scrollUntilVisible:
     element: "Fill the gap"

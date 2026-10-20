@@ -8,6 +8,7 @@ import hashlib
 import random
 import uuid
 from datetime import UTC, datetime
+from itertools import zip_longest
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
@@ -16,7 +17,7 @@ from sqlalchemy import select
 
 from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.speech import item_bank
-from lingard_contracts.common import LANGUAGE_PACK, Language, Skill
+from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, Language, Skill
 from lingard_db.models import FsrsItem, LearnerProfile
 from lingard_exam_packs.serving import serve, served_answer
 from lingard_graphs.pedagogy.review import new_card, review
@@ -105,9 +106,18 @@ async def _queue(state: State, db: Db, user_id: str, language: Language) -> list
 
 @router.get("", response_model=list[Quest])
 async def queue(principal: Principal, state: State, db: Db, language: Language | None = None) -> list[Quest]:
+    """One language's messages, or, by default, every language the learner is preparing an exam in, taken in turn."""
+    if language is not None:
+        return [q for q, _ in await _queue(state, db, str(principal.user_id), language)]
     profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
-    lang: Language = language or ("fr" if profile.settings.get("language_bands", {}).get("fr") else "en")
-    return [q for q, _ in await _queue(state, db, str(principal.user_id), lang)]
+    exams = set(profile.settings.get("exam_dates", {}))
+    bands = profile.settings.get("language_bands", {})
+    languages = list(CITY_LANGUAGE.values())
+    studying = [lang for lang in languages if LANGUAGE_PACK[lang] in exams]
+    studying = studying or [lang for lang in languages if bands.get(lang)] or languages[:1]
+    user = str(principal.user_id)
+    queues = [[q for q, _ in await _queue(state, db, user, lang)] for lang in studying]
+    return [q for turn in zip_longest(*queues) for q in turn if q is not None]
 
 
 @router.post("/answer")

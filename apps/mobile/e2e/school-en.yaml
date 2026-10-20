@@ -1,0 +1,32 @@
+# The School in English: IELTS key points, a grammar lesson with its irregular-verb duel, and a word set. No paid calls.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "School, tab.*"
+- tapOn: "IELTS General Training"
+- extendedWaitUntil:
+    visible: "Rules · .*"
+    timeout: 10000
+- takeScreenshot: school-en-01-path
+- scrollUntilVisible:
+    element: "Start lesson"
+    direction: DOWN
+- tapOn: "Start lesson"
+- extendedWaitUntil:
+    visible: "The rule"
+    timeout: 10000
+- takeScreenshot: school-en-02-lesson
+- tapOn: "Back"
+- scrollUntilVisible:
+    element: "Words · .*"
+    direction: DOWN
+- tapOn:
+    below: "Words · .*"
+    text: ".+"
+- extendedWaitUntil:
+    visible: "In short"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Fill the gap"
+    direction: DOWN
+- takeScreenshot: school-en-03-words

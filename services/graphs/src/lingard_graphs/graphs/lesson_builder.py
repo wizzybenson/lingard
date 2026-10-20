@@ -13,27 +13,14 @@ from langgraph.graph import StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from pydantic import BaseModel, ConfigDict
 
-from lingard_contracts.common import LANGUAGE_NAME, CityKey
+from lingard_contracts.common import LANGUAGE_NAME, LANGUAGE_PACK, CityKey
 from lingard_contracts.planning import Game, GameItem, Lesson, LessonExample, SceneBrief
-from lingard_curriculum.conjugation import FrenchConjugator
+from lingard_curriculum.conjugation import Conjugator, load_conjugator
 from lingard_curriculum.models import CurriculumNode
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.graphs._build import linear
 from lingard_llm import StructuredOutputError
 from lingard_world import CityContent, load_city
-
-TENSE_HINTS = {
-    "imparfait": ["imparfait"],
-    "passe_compose": ["passe_compose"],
-    "futur": ["futur_simple"],
-    "conditionnel_present": ["conditionnel_present"],
-    "si_imparfait": ["imparfait", "conditionnel_present"],
-    "plus_que_parfait": ["plus_que_parfait"],
-    "conditionnel_passe": ["conditionnel_passe"],
-    "subjonctif": ["subjonctif_present"],
-    "present": ["present"],
-}
-PERSONS = ("je", "tu", "il/elle", "nous", "vous", "ils/elles")
 
 
 class TeacherDraft(BaseModel):
@@ -58,26 +45,8 @@ class LessonState(BaseModel):
     lesson_id: uuid.UUID | None = None
 
 
-def conjugation_items(
-    node: CurriculumNode, conjugator: FrenchConjugator, rng: random.Random, n: int = 8
-) -> list[GameItem]:
-    tenses = next((t for hint, t in TENSE_HINTS.items() if hint in node.key), [])
-    # A lesson on regular (or irregular) verbs drills only those verbs.
-    regularity = False if "irregular" in node.key else True if "regular" in node.key else None
-    items = []
-    for tense in tenses:
-        for verb_key, verb in conjugator.verbs.items():
-            if regularity is not None and verb.regular != regularity:
-                continue
-            forms = conjugator.conjugate(verb_key, tense)
-            for person in rng.sample(range(6), 2):
-                items.append(
-                    GameItem(
-                        prompt=f"{PERSONS[person]} — {verb.infinitive} ({conjugator.label(tense)})",
-                        answer=forms[person],
-                        node_key=node.key,
-                    )
-                )
+def conjugation_items(node: CurriculumNode, conjugator: Conjugator, rng: random.Random, n: int = 8) -> list[GameItem]:
+    items = [GameItem(prompt=p, answer=a, node_key=node.key) for p, a in conjugator.drill(node.key, rng)]
     rng.shuffle(items)
     return items[:n]
 
@@ -143,13 +112,13 @@ def fill_the_gap_items(node: CurriculumNode, examples: list[str], rng: random.Ra
 
 
 def build_games(
-    node: CurriculumNode, mistakes: list[tuple[str, str]], conjugator: FrenchConjugator | None, rng: random.Random
+    node: CurriculumNode, mistakes: list[tuple[str, str]], conjugator: Conjugator | None, rng: random.Random
 ) -> list[Game]:
     lesson = node.payload.get("lesson") or {}
     examples = list(lesson.get("examples", [])) + [better for _, better in mistakes]
     examples += [str(x) for x in node.payload.get("exponents", []) + node.payload.get("items", [])]
     games: list[Game] = []
-    if conjugator is not None and node.language == "fr":
+    if conjugator is not None:
         duel = conjugation_items(node, conjugator, rng)
         if duel:
             games.append(Game(kind="conjugation_duel", items=duel, time_limit_s=60))
@@ -196,7 +165,7 @@ def lesson_words(node: CurriculumNode) -> list[str]:
 
 
 def key_points_lesson(
-    node: CurriculumNode, city: CityContent, band: int, conjugator: FrenchConjugator | None, rng: random.Random
+    node: CurriculumNode, city: CityContent, band: int, conjugator: Conjugator | None, rng: random.Random
 ) -> Lesson:
     """A lesson taught before the learner needs the rule, straight from the node's authored key points.
     No model call: it opens at once and costs nothing, and every word was reviewed with the curriculum."""
@@ -220,7 +189,10 @@ def build_lesson_builder(
     deps: GraphDeps, checkpointer: BaseCheckpointSaver[str] | None = None
 ) -> CompiledStateGraph[LessonState, Any, LessonState, LessonState]:
     prompt = deps.prompts.get("teacher_lesson")
-    conjugator = FrenchConjugator.load(deps.content_root / "curriculum" / "fr" / "conjugation.yaml")
+    conjugators = {
+        language: load_conjugator(deps.content_root / "curriculum" / language / "conjugation.yaml")
+        for language in LANGUAGE_PACK
+    }
 
     async def pick_examples_from_errors(state: LessonState) -> dict[str, Any]:
         node = await deps.curriculum.get(state.node_key)
@@ -241,7 +213,7 @@ def build_lesson_builder(
         lesson = node.payload.get("lesson") or {}
         rule = lesson.get("rule") or node.title
         profile = await deps.store.profile(state.user_id)
-        ui = LANGUAGE_NAME.get(profile.l1, "English")
+        ui = LANGUAGE_NAME.get(profile.explain_in, "English")
         text = prompt.render(
             school_name=load_city(deps.content_root, state.city).city.school,
             node_title=node.title,
@@ -268,7 +240,7 @@ def build_lesson_builder(
         assert state.node is not None
         rng = random.Random(f"{state.user_id}:{state.node_key}")  # noqa: S311
         mistakes = [(m, b) for m, b in state.mistakes if b]
-        return {"games": build_games(state.node, mistakes, conjugator, rng)}
+        return {"games": build_games(state.node, mistakes, conjugators[state.node.language], rng)}
 
     async def build_homework_scene(state: LessonState) -> dict[str, Any]:
         assert state.node is not None and state.draft is not None

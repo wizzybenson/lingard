@@ -198,3 +198,10 @@ def test_the_second_hearing_prefers_another_vendor_than_the_streaming_one() -> N
     assert build_second_ear(both).name == "openai>elevenlabs"
     alone = both.model_copy(update={"openai_api_key": None})
     assert build_second_ear(alone).name == "elevenlabs", "no other vendor: the batch model still hears it again"
+
+
+def test_vendor_orders_read_json_or_a_plain_list(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("STT_ORDER", '["elevenlabs","openai"]')
+    monkeypatch.setenv("TTS_ORDER", "[voicebox,openai]")  # what `set -a; source .env` leaves of the JSON
+    settings = LiveSettings(_env_file=None)
+    assert settings.stt_order == ["elevenlabs", "openai"] and settings.tts_order == ["voicebox", "openai"]

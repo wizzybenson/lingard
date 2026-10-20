@@ -4,6 +4,20 @@ source_url: https://www.canada.ca/content/dam/ircc/migration/ircc/francais/pdf/p
 as_of: "2012"
 tenses: [present, passe_compose, imparfait, plus_que_parfait, futur_simple, conditionnel_present, conditionnel_passe, subjonctif_present]
 tense_labels: {present: présent, passe_compose: passé composé, imparfait: imparfait, plus_que_parfait: plus-que-parfait, futur_simple: futur simple, conditionnel_present: conditionnel présent, conditionnel_passe: conditionnel passé, subjonctif_present: subjonctif présent}
+engine: french
+persons: [je, tu, il/elle, nous, vous, ils/elles]  # as the conjugation duel shows them
+# The conjugation duel of a grammar point: the tenses it drills, by the longest of these found in its key.
+drills:
+  present: [present]
+  passe_compose: [passe_compose]
+  passe_compose_ou_imparfait: [passe_compose, imparfait]
+  imparfait: [imparfait]
+  si_imparfait: [imparfait, conditionnel_present]
+  plus_que_parfait: [plus_que_parfait]
+  futur: [futur_simple]
+  conditionnel_present: [conditionnel_present]
+  conditionnel_passe: [conditionnel_passe]
+  subjonctif: [subjonctif_present]
 tense_bands: {present: 4, passe_compose: 5, imparfait: 5, futur_simple: 6, conditionnel_present: 6, plus_que_parfait: 7, subjonctif_present: 7, conditionnel_passe: 8}
 verbs:
   etre:     {infinitive: être, aux: avoir, participle: été, present: [suis, es, est, sommes, êtes, sont], futur_stem: ser, imparfait_stem: ét, subjonctif: [sois, sois, soit, soyons, soyez, soient]}

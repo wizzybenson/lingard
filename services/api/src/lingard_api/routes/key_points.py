@@ -20,7 +20,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lingard_api.deps import Db, Principal, State
 from lingard_api.state import AppState
 from lingard_contracts.common import LANGUAGE_CITY, Language, node_language
-from lingard_curriculum.conjugation import FrenchConjugator
+from lingard_curriculum.conjugation import Conjugator, load_conjugator
 from lingard_curriculum.models import CurriculumNode
 from lingard_db.models import Lesson
 from lingard_graphs.graphs.lesson_builder import key_points_lesson
@@ -50,10 +50,9 @@ PLACE_OFFER = 3
 
 
 @cache
-def _conjugator(content_root: Path) -> FrenchConjugator | None:
-    """The conjugation-duel engine (French data); the lesson builder only asks it about nodes it conjugates."""
-    path = content_root / "curriculum" / "fr" / "conjugation.yaml"
-    return FrenchConjugator.load(path) if path.exists() else None
+def _conjugator(content_root: Path, language: Language) -> Conjugator | None:
+    """The language's conjugation-duel engine; it drills only the grammar points its content names."""
+    return load_conjugator(content_root / "curriculum" / language / "conjugation.yaml")
 
 
 async def key_points(state: AppState, db: AsyncSession, user_id: uuid.UUID, language: Language) -> list[KeyPoint]:
@@ -136,7 +135,7 @@ async def open_key_points(node_key: str, principal: Principal, state: State, db:
         node,
         load_city(state.settings.content_root, LANGUAGE_CITY[language]),
         band,
-        _conjugator(state.settings.content_root),
+        _conjugator(state.settings.content_root, language),
         random.Random(f"{principal.user_id}:{node_key}"),  # noqa: S311
     )
     lesson_id = await state.graph_deps.store.save_lesson(principal.user_id, node_key, lesson.model_dump(mode="json"))

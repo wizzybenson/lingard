@@ -31,6 +31,13 @@ class LearnerProfileView:
     crs_inputs: dict[str, Any]
     language_bands: dict[str, int]
     """Current working CLB/NCLC band per language, derived from the posteriors."""
+    ui_locale: str | None = None
+    """The interface language the learner chose (en, fr, ar)."""
+
+    @property
+    def explain_in(self) -> str:
+        """The language explanations are written in: the interface's, else the learner's first language."""
+        return self.ui_locale or self.l1
 
 
 @dataclass

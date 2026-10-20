@@ -91,7 +91,7 @@ def build_night_consolidation(
             state.assessments,
             state.nodes,
             language=state.language,
-            ui_language=profile.l1 if profile.l1 in ("fr", "en") else "en",
+            ui_language=profile.explain_in,
             band=profile.language_bands.get(state.language, 5),
             lessons_suggested=lessons,
             trace_id=state.trace_id,

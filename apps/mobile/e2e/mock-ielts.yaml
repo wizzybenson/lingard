@@ -1,0 +1,24 @@
+# Exam Hall in English: start an IELTS General Training mock and work through the first reading sets. No paid calls.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "Exam Hall, tab.*"
+- scrollUntilVisible:
+    element:
+      text: "Start a full mock"
+      index: 1
+    direction: DOWN
+- tapOn:
+    text: "Start a full mock"
+    index: 1
+- extendedWaitUntil:
+    visible: "Reading.*"
+    timeout: 20000
+- takeScreenshot: mock-ielts-01-first-set
+- tapOn:
+    id: "choice-1"
+- tapOn: "Next.*"
+- extendedWaitUntil:
+    visible: "Questions 2.*"
+    timeout: 10000
+- takeScreenshot: mock-ielts-02-second-set

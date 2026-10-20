@@ -62,6 +62,7 @@ class SqlStore:
             target_bands=profile.target_bands,
             crs_inputs=profile.crs_inputs,
             language_bands=bands,
+            ui_locale=user.ui_locale,
         )
 
     async def scene(self, scene_id: uuid.UUID) -> SceneRecord | None:

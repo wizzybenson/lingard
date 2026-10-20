@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import Annotated
 
-from pydantic import SecretStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import SecretStr, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt, OpenAIStt, SttProvider, VoiceboxStt
 from lingard_live.stt_stream import ElevenLabsRealtimeStt, StreamingStt
@@ -30,9 +32,22 @@ class LiveSettings(BaseSettings):
     openai_api_key: SecretStr | None = None
     elevenlabs_api_key: SecretStr | None = None
     deepgram_api_key: SecretStr | None = None
-    stt_order: list[str] = ["voicebox", "deepgram", "elevenlabs", "openai"]
+    stt_order: Annotated[list[str], NoDecode] = ["voicebox", "deepgram", "elevenlabs", "openai"]
     """Preference order; providers without a key or URL are skipped, the rest become the fallback chain."""
-    tts_order: list[str] = ["voicebox", "elevenlabs", "openai"]
+    tts_order: Annotated[list[str], NoDecode] = ["voicebox", "elevenlabs", "openai"]
+
+    @field_validator("stt_order", "tts_order", mode="before")
+    @classmethod
+    def _vendor_list(cls, value: object) -> object:
+        """A JSON list (as in ``.env``) or a plain comma-separated one: a shell that exported ``.env`` strips the
+        quotes, which turned ``["voicebox","openai"]`` into invalid JSON and every request needing voice into a 500."""
+        if not isinstance(value, str):
+            return value
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return [v.strip(" []\"'") for v in value.split(",") if v.strip(" []\"'")]
+
     voicebox_stt_model: str = "whisper-turbo"
     deepgram_stt_model: str = "nova-3"
     openai_stt_model: str = "gpt-4o-transcribe"
