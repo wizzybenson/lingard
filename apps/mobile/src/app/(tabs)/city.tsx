@@ -112,7 +112,6 @@ export default function City() {
       {today.data && <TodayCard
           today={today.data}
           day={day}
-          scales={Object.fromEntries((cities.data ?? []).map((c) => [c.pack, c.level_scale]))}
           busy={planning} onStartStory={() => void startDay()} />}
       <ErrorText message={error} onRetry={() => void startDay()} />
       {/* The Today card carries the start button; this is only for when it couldn't load. */}

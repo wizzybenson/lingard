@@ -1,11 +1,12 @@
-/** Home hero: the one thing to do next, with the streak, exam countdowns and the gap to the learner's goal.
- * While the learner is new, a short checklist above it shows where they are in getting started. */
+/** Home hero: the one thing to do next and the streak, kept short; under it a slim strip of exam countdowns and the
+ * gap to the goal per skill. While the learner is new, a short checklist above it shows where they are in getting
+ * started. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, I18nManager, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { SkillStatus, Today } from "@/api/types";
 import { levelProgress, levelRange } from "@/home/levels";
@@ -14,11 +15,11 @@ import { useApi } from "@/state/auth";
 import { Card, ProgressBar } from "@/ui/kit";
 import { colors, fonts, gradients, radius, shadow, space, type } from "@/ui/theme";
 
-const STATUS_DOT: Record<SkillStatus, string> = {
-  met: "#7FE0A8",
-  close: "#FFD38A",
-  behind: "#FFA594",
-  unknown: "rgba(255,255,255,0.45)",
+const STATUS_COLOR: Record<SkillStatus, string> = {
+  met: colors.success,
+  close: colors.warning,
+  behind: colors.danger,
+  unknown: colors.border,
 };
 
 function Onboarding({ today }: { today: Today }) {
@@ -65,19 +66,15 @@ function Onboarding({ today }: { today: Today }) {
   );
 }
 
-// Level ranges sit in a left-to-right isolate (U+2066…U+2069) so "<4–8/7" reads the same inside Arabic text.
 /** ``day``: the story day to play next in the chosen city (progress, not the calendar); null while loading. */
 export function TodayCard({
   today,
   day,
-  scales,
   onStartStory,
   busy = false,
 }: {
   today: Today;
   day: number | null;
-  /** The level scale of each exam pack (NCLC, CLB), to explain the levels in plain words. */
-  scales: Record<string, string>;
   onStartStory: () => void;
   busy?: boolean;
 }) {
@@ -113,53 +110,16 @@ export function TodayCard({
         : t("city.startDay")
       : t(`today.next.${today.next_step}`);
   return (
-    <View style={{ gap: space(2) }}>
+    <View style={{ gap: space(1.5) }}>
       <Onboarding today={today} />
       <LinearGradient colors={gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadow(3)]}>
-        <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
-        <View style={styles.streakRow}>
-          <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={28} color="#FFB37D" />
-          <Text style={styles.heroTitle} accessibilityRole="header">
-            {today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}
-          </Text>
-        </View>
-        {today.goals.map((goal) => (
-          <View key={goal.pack} style={{ gap: space(1) }}>
-            <Text style={styles.heroBody}>
-              {goal.days_left === null
-                ? t("today.noDate", { exam: goal.pack_name })
-                : goal.days_left < 0
-                  ? t("today.examPast", { exam: goal.pack_name })
-                  : t("today.examIn", { exam: goal.pack_name, count: goal.days_left })}
-            </Text>
-            <View style={{ gap: space(1.5) }}>
-              {goal.skills.map((s) => (
-                <View
-                  key={s.skill}
-                  style={styles.skill}
-                  accessible
-                  accessibilityLabel={`${t(`skills.${s.skill}`)}: ${levelRange(s.level_low, s.level_high)} / ${s.target}, ${t(`today.status.${s.status}`)}`}
-                >
-                  <View style={styles.skillHead}>
-                    <Text style={styles.skillName}>{t(`skills.${s.skill}`)}</Text>
-                    <Text style={styles.skillStatus}>
-                      {t(`today.status.${s.status}`)} · {t("today.goalLevel", { level: s.target })}
-                    </Text>
-                  </View>
-                  <View style={styles.skillTrack}>
-                    <View
-                      style={[styles.skillFill, { width: `${levelProgress(s.level_low, s.level_high, s.target) * 100}%`, backgroundColor: STATUS_DOT[s.status] }]}
-                    />
-                  </View>
-                </View>
-              ))}
-            </View>
-            {scales[goal.pack] && <Text style={styles.heroHint}>{t("today.levelsHint", { scale: scales[goal.pack] })}</Text>}
+        <View style={styles.rowBetween}>
+          <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
+          <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
+            <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
+            <Text style={styles.streakText}>{today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}</Text>
           </View>
-        ))}
-        {today.lessons_waiting > 0 && today.next_step !== "lesson" && (
-          <Text style={styles.heroNote}>• {t("today.lessonsWaiting", { count: today.lessons_waiting })}</Text>
-        )}
+        </View>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
@@ -174,22 +134,88 @@ export function TodayCard({
           </Text>
         </Pressable>
         {busy && <Text style={[styles.heroNote, { textAlign: "center" }]}>{t("city.planningHint")}</Text>}
-        {today.reviews_due > 0 && (
-          // Reviews follow their own spaced schedule; they sit beside the story and never stand in its way.
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.push("/(tabs)/phone")}
-            style={({ pressed }) => [styles.sideAction, pressed && { opacity: 0.7 }]}
-          >
-            <Ionicons name="flash" size={15} color="#fff" />
-            <Text style={styles.sideActionText} numberOfLines={1}>
-              {t("today.reviewsAction", { count: today.reviews_due })}
-            </Text>
-            <Ionicons name="chevron-forward" size={15} color="rgba(255,255,255,0.8)" />
-          </Pressable>
+        {(today.reviews_due > 0 || (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
+          // Reviews and waiting lessons sit beside the story and never stand in its way.
+          <View style={styles.extras}>
+            {today.reviews_due > 0 && (
+              <Pressable accessibilityRole="button" onPress={() => router.push("/(tabs)/phone")} style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}>
+                <Ionicons name="flash" size={14} color="#fff" />
+                <Text style={styles.extraText} numberOfLines={1}>
+                  {t("today.reviewsAction", { count: today.reviews_due })}
+                </Text>
+              </Pressable>
+            )}
+            {today.lessons_waiting > 0 && today.next_step !== "lesson" && (
+              <Pressable accessibilityRole="button" onPress={() => router.push("/(tabs)/school")} style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}>
+                <Ionicons name="school" size={14} color="#fff" />
+                <Text style={styles.extraText} numberOfLines={1}>
+                  {t("today.lessonsWaiting", { count: today.lessons_waiting })}
+                </Text>
+              </Pressable>
+            )}
+          </View>
         )}
       </LinearGradient>
+      {today.goals.length > 0 && <ExamProgress today={today} />}
     </View>
+  );
+}
+
+/** One slim line per exam: the countdown and a small bar per skill, coloured by how close it is to the goal.
+ * The full picture (levels, targets, what the scale means) is one tap away in the Passport. */
+function ExamProgress({ today }: { today: Today }) {
+  const { t } = useTranslation();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityHint={t("today.examDetails")}
+      onPress={() => router.push("/(tabs)/passport")}
+      style={({ pressed }) => [styles.exams, shadow(1), pressed && { opacity: 0.85 }]}
+    >
+      {today.goals.map((goal, i) => (
+        <View key={goal.pack} style={[{ gap: space(1) }, i > 0 && styles.examDivider]}>
+          <View style={styles.rowBetween}>
+            <Text style={[type.headline, { flexShrink: 1 }]} numberOfLines={1}>
+              {goal.pack_name}
+            </Text>
+            <Text style={type.caption}>
+              {goal.days_left === null
+                ? t("today.noDateShort")
+                : goal.days_left < 0
+                  ? t("today.pastShort")
+                  : t("today.daysLeft", { count: goal.days_left })}
+            </Text>
+          </View>
+          <View style={styles.skills}>
+            {goal.skills.map((s) => (
+              <View
+                key={s.skill}
+                style={styles.skill}
+                accessible
+                accessibilityLabel={`${t(`skills.${s.skill}`)}: ${levelRange(s.level_low, s.level_high)} / ${s.target}, ${t(`today.status.${s.status}`)}`}
+              >
+                <Text style={styles.skillName} numberOfLines={1}>
+                  {t(`skills.${s.skill}`)}
+                </Text>
+                <View style={styles.skillTrack}>
+                  <View style={[styles.skillFill, { width: `${Math.max(levelProgress(s.level_low, s.level_high, s.target), 0.04) * 100}%`, backgroundColor: STATUS_COLOR[s.status] }]} />
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      ))}
+      <View style={styles.legend}>
+        {(["met", "close", "behind"] as const).map((status) => (
+          <View key={status} style={styles.legendItem}>
+            <View style={[styles.legendDot, { backgroundColor: STATUS_COLOR[status] }]} />
+            <Text style={type.caption}>{t(`today.status.${status}`)}</Text>
+          </View>
+        ))}
+        <View style={{ flex: 1 }} />
+        <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={16} color={colors.muted} />
+      </View>
+    </Pressable>
   );
 }
 
@@ -198,24 +224,15 @@ const styles = StyleSheet.create({
   step: { flexDirection: "row", alignItems: "center", gap: space(1.25) },
   stepNumber: { width: 22, height: 22, borderRadius: 11, borderWidth: 1.5, borderColor: colors.border, alignItems: "center", justifyContent: "center" },
   stepNumberCurrent: { backgroundColor: colors.accent, borderColor: colors.accent },
-  hero: { borderRadius: radius.xl, padding: space(3), gap: space(1.5) },
+  hero: { borderRadius: radius.xl, padding: space(2.25), gap: space(1.5) },
   heroOverline: { ...type.overline, color: "rgba(255,255,255,0.72)" },
-  streakRow: { flexDirection: "row", alignItems: "center", gap: space(1) },
-  heroTitle: { fontFamily: fonts.displayBold, fontSize: 28, lineHeight: 34, color: "#fff", flexShrink: 1 },
-  heroBody: { fontFamily: fonts.medium, fontSize: 15, lineHeight: 21, color: "rgba(255,255,255,0.88)" },
+  streak: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,255,255,0.14)", borderRadius: radius.pill, paddingHorizontal: space(1.25), paddingVertical: 4 },
+  streakText: { fontFamily: fonts.semibold, fontSize: 13, color: "#fff" },
   heroNote: { fontFamily: fonts.medium, fontSize: 13, color: "rgba(255,255,255,0.8)" },
-  skills: { flexDirection: "row", flexWrap: "wrap", gap: space(1) },
-  skill: { gap: 6 },
-  skillHead: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", columnGap: space(1) },
-  skillName: { fontFamily: fonts.semibold, fontSize: 14, color: "#fff" },
-  skillTrack: { height: 6, borderRadius: 3, backgroundColor: "rgba(255,255,255,0.18)", overflow: "hidden" },
-  skillFill: { height: "100%", borderRadius: 3 },
-  skillStatus: { fontFamily: fonts.medium, fontSize: 13, color: "rgba(255,255,255,0.85)", flexShrink: 1, textAlign: "right" },
-  heroHint: { fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: "rgba(255,255,255,0.7)" },
-  sideAction: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 40 },
-  sideActionText: { fontFamily: fonts.semibold, fontSize: 14, color: "#fff", flexShrink: 1 },
+  extras: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: space(1) },
+  extra: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 36, paddingHorizontal: space(1.25), borderRadius: radius.pill, backgroundColor: "rgba(255,255,255,0.14)" },
+  extraText: { fontFamily: fonts.semibold, fontSize: 13, color: "#fff", flexShrink: 1 },
   heroButton: {
-    marginTop: space(0.5),
     minHeight: 54,
     borderRadius: radius.md,
     backgroundColor: "#fff",
@@ -226,4 +243,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: space(2),
   },
   heroButtonText: { fontFamily: fonts.semibold, fontSize: 16, color: colors.accentDeep, flexShrink: 1 },
+  exams: { backgroundColor: colors.card, borderRadius: radius.lg, padding: space(2), gap: space(1.5) },
+  examDivider: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, paddingTop: space(1.5) },
+  skills: { flexDirection: "row", gap: space(1) },
+  skill: { flex: 1, gap: 5, minWidth: 0 },
+  skillName: { fontFamily: fonts.medium, fontSize: 12, color: colors.inkSoft },
+  skillTrack: { height: 6, borderRadius: 3, backgroundColor: colors.paper, overflow: "hidden" },
+  skillFill: { height: "100%", borderRadius: 3 },
+  legend: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
+  legendItem: { flexDirection: "row", alignItems: "center", gap: 5 },
+  legendDot: { width: 8, height: 8, borderRadius: 4 },
 });
