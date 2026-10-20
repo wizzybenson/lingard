@@ -16,7 +16,7 @@ from lingard_contracts.common import CITY_LANGUAGE
 from lingard_db.models import Draw, LearnerProfile, Ledger, Scene, Session, SimCrsSnapshot, User, Wallet
 from lingard_economy.crs import DISCLAIMER
 from lingard_economy.events import draw_day, league
-from lingard_economy.rewards import HOLD, SHOP, LedgerEntry
+from lingard_economy.rewards import COINS, HOLD, SHOP, LedgerEntry
 from lingard_graphs.streaks import learner_streak
 from lingard_world import load_city
 
@@ -169,7 +169,9 @@ async def buy(item: str, principal: Principal, state: State, db: Db, body: BuyBo
 
 
 @router.get("/draws/latest")
-async def latest_draw(principal: Principal, db: Db) -> dict[str, Any]:
+async def latest_draw(principal: Principal, state: State, db: Db) -> dict[str, Any]:
+    """The latest real round's cutoff against the learner's simulated score. Reaching it is an Invitation to Apply,
+    paid once per round (``draw_invitation`` coins)."""
     draw = (await db.execute(select(Draw).order_by(Draw.held_at.desc()).limit(1))).scalar_one_or_none()
     snapshot = (
         await db.execute(
@@ -182,7 +184,11 @@ async def latest_draw(principal: Principal, db: Db) -> dict[str, Any]:
     if draw is None:
         return {"draw": None, "disclaimer": DISCLAIMER}
     outcome = draw_day(snapshot or 0, draw.cutoff)
+    reward = LedgerEntry("coins", COINS["draw_invitation"], "draw_invitation", str(draw.id), f"draw:{draw.id}")
+    if snapshot is not None and outcome.invited:
+        await state.graph_deps.store.apply_ledger(principal.user_id, [reward])
     return {
+        "reward": reward.delta,
         "draw": {"held_at": draw.held_at, "cutoff": draw.cutoff, "source_note": draw.source_note},
         "sim_crs": snapshot,
         "invited": outcome.invited,

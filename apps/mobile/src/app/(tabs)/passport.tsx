@@ -31,10 +31,11 @@ interface DrawView {
   draw: { held_at: string; cutoff: number; source_note: string } | null;
   sim_crs?: number | null;
   invited?: boolean;
+  reward?: number;
 }
 
 export default function PassportScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const api = useApi();
   const passport = useResource(() => api.get<Passport>("/v1/passport"));
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"));
@@ -128,9 +129,19 @@ export default function PassportScreen() {
                   color={draw.data.invited ? colors.success : colors.accent}
                 />
                 <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
-                  {draw.data.invited
-                    ? t("passport.drawInvited")
-                    : t("passport.drawGoal", { cutoff: draw.data.draw.cutoff })}
+                  {t(
+                    draw.data.invited
+                      ? "passport.drawInvited"
+                      : "passport.drawGoal",
+                    {
+                      cutoff: draw.data.draw.cutoff,
+                      date: new Date(draw.data.draw.held_at).toLocaleDateString(
+                        i18n.language,
+                        { day: "numeric", month: "long" },
+                      ),
+                      reward: draw.data.reward ?? 0,
+                    },
+                  )}
                 </Text>
               </View>
               <ProgressBar

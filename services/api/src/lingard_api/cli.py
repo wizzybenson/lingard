@@ -5,8 +5,11 @@ from __future__ import annotations
 import argparse
 import asyncio
 import getpass
+from datetime import UTC, datetime, time
+from pathlib import Path
 
 from dotenv import load_dotenv
+from sqlalchemy import select
 
 from lingard_api.auth.pin import WeakPinError
 from lingard_api.auth.provider import AuthError
@@ -14,6 +17,8 @@ from lingard_api.settings import Settings
 from lingard_api.state import AppState
 from lingard_curriculum.seed import load_seed, seed_graph
 from lingard_db.migrate import migrate as run_migrations
+from lingard_db.models import Draw
+from lingard_economy.events import load_draws
 
 
 def migrate(settings: Settings, revision: str = "head") -> None:
@@ -26,9 +31,22 @@ async def seed(settings: Settings) -> dict[str, int]:
         counts = {}
         for language in ("fr", "en"):
             counts[language] = await seed_graph(state.curriculum, load_seed(settings.content_root, language))
+        counts["draws"] = await seed_draws(state, settings.content_root / "crs" / "draws.yaml")
         return counts
     finally:
         await state.close()
+
+
+async def seed_draws(state: AppState, path: Path) -> int:
+    """Adds the recorded real rounds the ``draws`` table doesn't have yet (matched by date); returns how many."""
+    async with state.sessions() as db:
+        held = {d.date() for d in (await db.execute(select(Draw.held_at))).scalars()}
+        new = [d for d in load_draws(path) if d.held_on not in held]
+        for draw in new:
+            when = datetime.combine(draw.held_on, time(12), tzinfo=UTC)
+            db.add(Draw(held_at=when, cutoff=draw.cutoff, source_note=draw.note))
+        await db.commit()
+    return len(new)
 
 
 async def bootstrap_admin(settings: Settings, name: str, pin: str) -> str:

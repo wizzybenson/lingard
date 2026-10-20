@@ -1,0 +1,21 @@
+# Express Entry rounds in the French-language proficiency category: the Draw Day cutoffs (SPEC §18.3).
+# Copied from IRCC's rounds data; refresh with tools/content_cli/draws (rewrites this file from the source).
+source_url: https://www.canada.ca/en/immigration-refugees-citizenship/corporate/mandate/policies-operational-instructions-agreements/ministerial-instructions/express-entry-rounds.html
+data_url: https://www.canada.ca/content/dam/ircc/documents/json/ee_rounds_123_en.json
+as_of: "2026-10-20"
+category: French-language proficiency
+draws:  # newest first
+  - {number: 450, held_on: "2026-10-16", cutoff: 435, invitations: 5000}
+  - {number: 437, held_on: "2026-08-19", cutoff: 382, invitations: 5000}
+  - {number: 433, held_on: "2026-08-06", cutoff: 391, invitations: 5000}
+  - {number: 429, held_on: "2026-07-22", cutoff: 399, invitations: 5000}
+  - {number: 425, held_on: "2026-07-09", cutoff: 420, invitations: 5000}
+  - {number: 418, held_on: "2026-05-28", cutoff: 409, invitations: 4500}
+  - {number: 414, held_on: "2026-04-29", cutoff: 400, invitations: 4000}
+  - {number: 411, held_on: "2026-04-15", cutoff: 419, invitations: 4000}
+  - {number: 405, held_on: "2026-03-18", cutoff: 393, invitations: 4000}
+  - {number: 401, held_on: "2026-03-04", cutoff: 397, invitations: 5500}
+  - {number: 394, held_on: "2026-02-06", cutoff: 400, invitations: 8500}
+  - {number: 388, held_on: "2025-12-17", cutoff: 399, invitations: 6000}
+  - {number: 382, held_on: "2025-11-28", cutoff: 408, invitations: 6000}
+  - {number: 376, held_on: "2025-10-29", cutoff: 416, invitations: 6000}

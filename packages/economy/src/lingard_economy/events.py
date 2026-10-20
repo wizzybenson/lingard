@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, timedelta
+from pathlib import Path
+
+import yaml
 
 
 @dataclass(frozen=True)
@@ -16,6 +19,33 @@ class DrawOutcome:
 
 def draw_day(sim_crs: int, cutoff: int) -> DrawOutcome:
     return DrawOutcome(invited=sim_crs >= cutoff, cutoff=cutoff, score=sim_crs, margin=sim_crs - cutoff)
+
+
+@dataclass(frozen=True)
+class RealDraw:
+    """A real Express Entry round whose cutoff Draw Day uses (``content/crs/draws.yaml``)."""
+
+    number: int
+    held_on: date
+    cutoff: int
+    note: str
+
+
+def load_draws(path: Path) -> list[RealDraw]:
+    """The recorded rounds, each with a note naming its source and the date it was checked."""
+    data = yaml.safe_load(path.read_text())
+    return [
+        RealDraw(
+            number=d["number"],
+            held_on=date.fromisoformat(d["held_on"]),
+            cutoff=d["cutoff"],
+            note=(
+                f"IRCC Express Entry round {d['number']} ({data['category']}, {d['invitations']} invitations). "
+                f"Source: {data['source_url']} (as of {data['as_of']})"
+            ),
+        )
+        for d in data["draws"]
+    ]
 
 
 def streak(

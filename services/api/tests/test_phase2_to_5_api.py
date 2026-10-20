@@ -219,3 +219,26 @@ async def test_shop_items_take_effect_and_rewards_are_per_learner(api) -> None: 
     again = await api.client.post("/v1/shop/npc_gift", json=gift, headers=auth)
     assert again.status_code == 409 and again.json()["detail"] == "Already given today"
     assert (await api.client.get("/v1/wallet", headers=auth)).json()["coins"] == 120
+
+
+async def test_draw_day_uses_real_rounds_and_pays_the_invitation_once(api) -> None:  # type: ignore[no-untyped-def]
+    import uuid as uuid_mod
+
+    from lingard_api.cli import seed_draws
+    from lingard_economy.events import load_draws
+
+    path = api.settings.content_root / "crs" / "draws.yaml"
+    latest = load_draws(path)[0]
+    assert await seed_draws(api.state, path) == len(load_draws(path))
+    assert await seed_draws(api.state, path) == 0, "seeding again adds nothing"
+    token, user_id = await learner(api, "Noor")
+    auth, user = api.bearer(token), uuid_mod.UUID(user_id)
+    before = (await api.client.get("/v1/draws/latest", headers=auth)).json()
+    assert before["draw"]["cutoff"] == latest.cutoff and "canada.ca" in before["draw"]["source_note"]
+    assert before["invited"] is False, "no simulated score yet"
+    await api.state.graph_deps.store.save_crs_snapshot(user, latest.cutoff + 5, {})
+    coins = (await api.client.get("/v1/wallet", headers=auth)).json()["coins"]
+    for _ in range(2):
+        invited = (await api.client.get("/v1/draws/latest", headers=auth)).json()
+        assert invited["invited"] is True and invited["margin"] == 5
+    assert (await api.client.get("/v1/wallet", headers=auth)).json()["coins"] == coins + invited["reward"]
