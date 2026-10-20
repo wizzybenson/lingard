@@ -233,8 +233,10 @@ async def get_scene(scene_id: uuid.UUID, principal: Principal, state: State, db:
     npc = city.npc(view.npc_keys[0]) if view.npc_keys else None
     profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
     band = profile.settings.get("language_bands", {}).get(CITY_LANGUAGE[view.city])
+    exam = await _is_exam(db, row)
     return view.model_copy(
         update={
+            "mission": None if exam else view.mission,  # a mock's speaking part is an exam, not a story mission
             "location_name": location.name,
             "location_kind": location.kind,
             "layer_art": list(location.layer_art),
@@ -299,6 +301,12 @@ async def brush_up(scene_id: uuid.UUID, principal: Principal, state: State, db: 
     return await describe(db, principal.user_id, [(n, False, False) for n in nodes[:PLACE_OFFER]])
 
 
+async def _is_exam(db: Db, row: Scene) -> bool:
+    """A mock exam's live speaking part: exam conditions, so no missions, rewards or lessons around it."""
+    session = await db.get(Session, row.session_id)
+    return session is not None and session.kind == "exam"
+
+
 @router.get("/scenes/{scene_id}/prep", response_model=list[KeyPoint])
 async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
     """Before going in: the word and phrase lessons this conversation will draw on, not yet learned. Grammar targets
@@ -307,6 +315,8 @@ async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) 
     row = await db.get(Scene, scene_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
+    if await _is_exam(db, row):
+        return []
     contract = SceneContract.model_validate(row.contract)
     keys = [*contract.targets.lexset, *contract.targets.functions]
     nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed]
@@ -333,6 +343,8 @@ async def scene_debrief(scene_id: uuid.UUID, principal: Principal, state: State,
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
     if saved := (row.outcome or {}).get("debrief"):
         return DebriefView.model_validate(saved)
+    if await _is_exam(db, row):
+        raise HTTPException(status.HTTP_409_CONFLICT, "A mock exam part is scored by the examiner, not debriefed")
     require_providers(state, llm=True)
     contract = SceneContract.model_validate(row.contract)
     deps = state.graph_deps

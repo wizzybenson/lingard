@@ -1,4 +1,8 @@
+import uuid
+from datetime import UTC, datetime
+
 from lingard_curriculum.seed import load_seed, seed_graph
+from lingard_db.models import Lesson, Scene, Session
 
 from .test_phase2_to_5_api import learner
 
@@ -37,8 +41,21 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
     await api.client.post(f"/v1/lessons/{lesson_id}/complete", json={"correct": 5, "total": 5}, headers=auth)
     after = {k["node_key"]: k for k in (await api.client.get("/v1/key-points?language=fr", headers=auth)).json()}
     assert after[first_core["node_key"]]["status"] == "done"
-    nxt = (await api.client.get("/v1/today", headers=auth)).json()["next_key_point"]
+    today = (await api.client.get("/v1/today", headers=auth)).json()
+    nxt = today["next_key_point"]
     assert nxt is None or nxt["node_key"] != first_core["node_key"]
+    assert today["next_step"] != "key_points", "one rule before each story day, not the whole level first"
+
+    async with api.state.sessions() as db:  # a scene is played (and its day left half-way): the next rule comes first
+        done = await db.get(Lesson, uuid.UUID(lesson_id))
+        assert done is not None
+        owner = {"tenant_id": done.tenant_id, "user_id": done.user_id}
+        day = Session(**owner, kind="live", city="rivemont", started_at=datetime.now(UTC))
+        db.add(day)
+        await db.flush()
+        db.add(Scene(**owner, session_id=day.id, contract={}, status="live"))
+        await db.commit()
+    assert (await api.client.get("/v1/today", headers=auth)).json()["next_step"] == "key_points"
 
     assert (await api.client.post("/v1/key-points/fr.grammar.nope", headers=auth)).status_code == 404
     words = next(k for k in path if k["kind"] == "lexset")

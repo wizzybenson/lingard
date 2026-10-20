@@ -7,7 +7,7 @@ appId: app.lingard
     direction: UP
 - tapOn: "(Begin day .*|Continue your story)"
 - extendedWaitUntil:
-    visible: "Your goal"
+    visible: "Mission"
     timeout: 180000
 - takeScreenshot: 11-scene
 - tapOn: "Start talking"

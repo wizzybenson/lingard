@@ -208,6 +208,18 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     ended = await api.client.post(f"/v1/sessions/{session_id}/end", headers=api.bearer(token))
     assert ended.json()["status"] == "ended" and jobs.jobs[-1][1]["kind"] == "night_consolidation"
 
+    # A mock exam's speaking part is played in the same screen, but it is an exam: no mission, lessons or debrief.
+    async with api.state.sessions() as db:
+        await db.execute(update(Session).where(Session.id == uuid.UUID(session_id)).values(kind="exam"))
+        await db.execute(update(Scene).where(Scene.id == contract.scene_id).values(outcome={}))
+        await db.commit()
+    exam = await api.client.get(f"/v1/scenes/{contract.scene_id}", headers=api.bearer(token))
+    assert exam.status_code == 200 and exam.json()["mission"] is None
+    prep = await api.client.get(f"/v1/scenes/{contract.scene_id}/prep", headers=api.bearer(token))
+    assert prep.json() == []
+    refused = await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))
+    assert refused.status_code == 409
+
 
 async def test_city_catalogue_comes_from_content(api) -> None:  # type: ignore[no-untyped-def]
     token = await api.admin_token("Founder", PIN)

@@ -3,7 +3,7 @@
 appId: app.lingard
 ---
 - extendedWaitUntil:
-    visible: "Your goal"
+    visible: "Mission"
     timeout: 30000
 - takeScreenshot: scene-01-before
 - tapOn: "Start talking"
@@ -21,3 +21,7 @@ appId: app.lingard
     timeout: 15000
 - takeScreenshot: scene-03-after
 - tapOn: "Leave.*"
+- extendedWaitUntil:
+    visible: "Mission accomplished!|Partly done|Not this time"
+    timeout: 30000
+- takeScreenshot: scene-04-debrief
