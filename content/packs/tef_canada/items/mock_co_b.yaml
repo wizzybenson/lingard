@@ -1,0 +1,288 @@
+# TEF Canada, compréhension orale, épreuve B (contenu original écrit pour Lingard). Même format que l'épreuve A.
+# Les images sont décrites en mots. Niveaux : NCLC.
+defaults: {pack: tef_canada, language: fr, skill: listening, section: comprehension_orale, plays: 1}
+items:
+  - id: fr-com-b-s01
+    part: co_scenes
+    task_type: picture_match
+    band: 4
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: Bonjour, un billet pour Montréal, s'il vous plaît.
+      F1: Aller simple ou aller-retour ?
+      M1: Aller-retour, je reviens dimanche.
+      F1: Ça fait quatre-vingt-deux dollars. Le car part dans dix minutes, quai numéro deux.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un homme achète un billet au guichet d'une gare routière", "Image B : un homme conduit un autocar", "Image C : un homme réserve une chambre d'hôtel", "Image D : un homme fait du vélo"]
+    answer: 0
+  - id: fr-com-b-s02
+    part: co_scenes
+    task_type: picture_match
+    band: 4
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Elle vous va très bien, cette veste. Vous voulez essayer la taille au-dessus ?
+      F2: Non, c'est parfait. Est-ce qu'elle existe en bleu ?
+      F1: Oui, je vous l'apporte tout de suite.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : deux femmes cuisinent", "Image B : une cliente essaie un vêtement dans une boutique", "Image C : une femme lave du linge", "Image D : deux femmes courent dans un parc"]
+    answer: 1
+  - id: fr-com-b-s03
+    part: co_scenes
+    task_type: picture_match
+    band: 5
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: Alors, ce pneu ?
+      M2: Il est complètement à plat. Il y avait un clou dedans. Je peux le réparer, mais il vaudrait mieux le changer.
+      M1: D'accord, changez-le. Ce sera prêt pour midi ?
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un mécanicien parle à un client dans un garage", "Image B : un homme achète des clous en quincaillerie", "Image C : un homme fait du vélo sous la pluie", "Image D : deux hommes mangent au restaurant"]
+    answer: 0
+  - id: fr-com-b-s04
+    part: co_scenes
+    task_type: picture_match
+    band: 5
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Tu as mis la crème solaire aux enfants ?
+      M1: Oui, et j'ai pris le parasol. Par contre, j'ai oublié les serviettes dans la voiture.
+      F1: Pas grave, on s'assoit sur la couverture.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : une famille à la plage", "Image B : une famille au cinéma", "Image C : une famille fait du ski", "Image D : une famille dans un magasin de jouets"]
+    answer: 0
+  - id: fr-com-b-s05
+    part: co_scenes
+    task_type: picture_match
+    band: 6
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      F1: Votre candidature nous a beaucoup intéressés. Pouvez-vous nous parler d'une situation difficile que vous avez gérée au travail ?
+      M1: Oui. Dans mon poste précédent, nous avons perdu un client important, et j'ai dû réorganiser l'équipe en deux semaines.
+      F2: Et qu'est-ce que vous en avez retenu ?
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : un homme passe une entrevue d'embauche devant deux personnes", "Image B : un homme donne un cours à des étudiants", "Image C : un homme fait ses valises", "Image D : un homme parle au téléphone dans la rue"]
+    answer: 0
+  - id: fr-com-b-s06
+    part: co_scenes
+    task_type: picture_match
+    band: 6
+    instructions: "Écoutez le dialogue. Quelle image correspond à la situation ?"
+    stimulus: |
+      M1: Il faudrait remonter un peu le cadre, il penche vers la gauche.
+      F1: Comme ça ?
+      M1: Encore un peu… Voilà ! Passe-moi le marteau, je vais planter un deuxième clou pour qu'il tienne mieux.
+    question: "Quelle image correspond à la situation ?"
+    options: ["Image A : deux personnes accrochent un tableau au mur", "Image B : deux personnes visitent un musée", "Image C : deux personnes peignent une clôture", "Image D : deux personnes achètent un cadre"]
+    answer: 0
+sets:
+  - id: fr-com-b-m1
+    part: co_messages
+    task_type: message_detail
+    band: 5
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      F1: Bonjour, ici Caroline Dubé, de l'école primaire des Érables. Je vous appelle au sujet de votre fille Amira. Elle a un peu de fièvre depuis la récréation et elle se plaint d'avoir mal à la tête. Rien de grave, mais elle ne peut pas rester en classe dans cet état. Pourriez-vous venir la chercher le plus tôt possible ? Vous pouvez me joindre au secrétariat jusqu'à seize heures.
+    questions:
+      - question: "Pourquoi l'école appelle-t-elle ?"
+        options: ["Amira s'est blessée", "Amira est malade", "Amira a oublié son repas", "Amira a eu une mauvaise note"]
+        answer: 1
+        band: 4
+      - question: "Que demande Caroline Dubé ?"
+        options: ["D'envoyer un certificat médical", "De venir chercher l'enfant rapidement", "D'appeler le médecin", "De rappeler demain"]
+        answer: 1
+  - id: fr-com-b-m2
+    part: co_messages
+    task_type: announcement_detail
+    band: 5
+    instructions: "Écoutez l'annonce et répondez aux questions."
+    stimulus: |
+      M1: Mesdames et messieurs, bienvenue à bord du traversier Rivemont–Lévis. La traversée durera environ quinze minutes. Pour votre sécurité, les passagers doivent quitter le pont des voitures pendant la traversée et monter au salon. Le casse-croûte est ouvert, mais seul le paiement par carte est accepté aujourd'hui. Nous vous souhaitons une agréable traversée.
+    questions:
+      - question: "Où les passagers doivent-ils aller pendant la traversée ?"
+        options: ["Rester dans leur voiture", "Monter au salon", "Aller sur le pont extérieur", "Descendre au garage"]
+        answer: 1
+      - question: "Qu'est-ce qui est particulier aujourd'hui au casse-croûte ?"
+        options: ["Il est fermé", "On ne peut pas payer en argent comptant", "Les prix sont réduits", "Il ferme plus tôt"]
+        answer: 1
+        band: 6
+  - id: fr-com-b-m3
+    part: co_messages
+    task_type: message_detail
+    band: 6
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      M1: Oui, bonjour, c'est Antoine, le voisin du troisième. Je pars en voyage demain pour deux semaines, et je me demandais si vous pouviez arroser mes plantes une fois par semaine. Je vous laisserai la clé dans votre boîte aux lettres. Et si vous voyez des colis devant ma porte, pourriez-vous les rentrer chez vous ? Merci mille fois, je vous rapporterai quelque chose du Portugal !
+    questions:
+      - question: "Que demande Antoine à sa voisine ?"
+        options: ["De nourrir son chat", "D'arroser ses plantes", "De garder ses enfants", "De relever son courrier tous les jours"]
+        answer: 1
+      - question: "Comment la voisine aura-t-elle la clé ?"
+        options: ["Antoine la lui donnera en main propre", "Elle sera dans sa boîte aux lettres", "Elle sera chez le concierge", "Sous le paillasson"]
+        answer: 1
+  - id: fr-com-b-m4
+    part: co_messages
+    task_type: announcement_detail
+    band: 6
+    instructions: "Écoutez l'annonce et répondez aux questions."
+    stimulus: |
+      F1: Avis aux usagers : en raison de la tempête de neige prévue cette nuit, le stationnement sera interdit des deux côtés des rues du centre-ville de 23 h à 7 h, afin de permettre le déneigement. Les véhicules en infraction seront remorqués à la fourrière municipale. Les stationnements des écoles seront exceptionnellement ouverts gratuitement aux résidents.
+    questions:
+      - question: "Pourquoi le stationnement sera-t-il interdit cette nuit ?"
+        options: ["Pour des travaux de voirie", "Pour permettre le déneigement", "Pour une course à pied", "Pour une manifestation"]
+        answer: 1
+        band: 5
+      - question: "Où les résidents peuvent-ils se garer gratuitement ?"
+        options: ["Au centre commercial", "Dans les stationnements des écoles", "À la fourrière", "Devant la mairie"]
+        answer: 1
+  - id: fr-com-b-m5
+    part: co_messages
+    task_type: message_detail
+    band: 7
+    instructions: "Écoutez le message et répondez aux questions."
+    stimulus: |
+      F1: Bonjour madame Nguyen, ici Lucie Gendron, du service des ressources humaines de Transports Boréal. Nous avons bien reçu votre candidature pour le poste de répartitrice, et nous aimerions vous rencontrer. Je vous propose un entretien mardi prochain à dix heures, à nos bureaux du boulevard Champlain. L'entretien durera environ une heure et comprendra un court test pratique sur ordinateur. Merci de confirmer votre présence par courriel, et n'oubliez pas d'apporter une pièce d'identité.
+    questions:
+      - question: "Pourquoi Lucie Gendron appelle-t-elle ?"
+        options: ["Pour annoncer une embauche", "Pour proposer un entretien", "Pour refuser une candidature", "Pour demander des références"]
+        answer: 1
+        band: 6
+      - question: "Que comprendra l'entretien ?"
+        options: ["Une visite de l'entrepôt", "Un test sur ordinateur", "Un examen de conduite", "Un repas avec l'équipe"]
+        answer: 1
+
+  - id: fr-com-b-v1
+    part: co_micro
+    task_type: vox_pop_opinion
+    band: 6
+    shuffle: false
+    options: ["Elle est pour.", "Elle est contre.", "Elle hésite ou voit des avantages et des inconvénients."]
+    instructions: "Micro-trottoir : « Faut-il rendre le transport en commun gratuit ? » Quelle est l'opinion de chaque personne ?"
+    stimulus: |
+      F1: Personne 1. Absolument ! Ça aiderait les familles, et il y aurait moins de voitures. Je ne vois que des avantages.
+      M1: Personne 2. Gratuit ? Rien n'est gratuit. Ce sont nos impôts qui vont payer. Je préférerais qu'on améliore d'abord le service.
+      F2: Personne 3. C'est une belle idée… mais les autobus sont déjà pleins aux heures de pointe. Si c'est gratuit, ce sera encore pire. J'avoue que je ne sais pas.
+      M2: Personne 4. Moi je dis oui, sans hésiter. Dans d'autres villes, ça a très bien marché.
+    questions:
+      - {question: "Personne 1", answer: 0}
+      - {question: "Personne 2", answer: 1}
+      - {question: "Personne 3", answer: 2, band: 7}
+      - {question: "Personne 4", answer: 0}
+  - id: fr-com-b-v2
+    part: co_micro
+    task_type: vox_pop_opinion
+    band: 7
+    shuffle: false
+    options: ["Elle est pour.", "Elle est contre.", "Elle hésite ou voit des avantages et des inconvénients."]
+    instructions: "Micro-trottoir : « Que pensez-vous des caisses libre-service dans les magasins ? » Quelle est l'opinion de chaque personne ?"
+    stimulus: |
+      M1: Personne 1. Je les évite. On fait le travail du caissier sans être payé, et en plus, ça supprime des emplois.
+      F1: Personne 2. Quand je n'ai que deux ou trois articles, c'est pratique. Mais pour une grosse épicerie, je préfère la caisse normale. Ça dépend.
+      M2: Personne 3. Franchement, c'est un progrès. Plus d'attente, je fais ça en deux minutes.
+      F2: Personne 4. Pas question. La machine se bloque une fois sur deux, et il faut appeler quelqu'un de toute façon.
+    questions:
+      - {question: "Personne 1", answer: 1, band: 6}
+      - {question: "Personne 2", answer: 2, band: 8}
+      - {question: "Personne 3", answer: 0}
+      - {question: "Personne 4", answer: 1, band: 8}
+
+  - id: fr-com-b-r1
+    part: co_reportage
+    task_type: report_detail
+    band: 7
+    instructions: "Écoutez le reportage et répondez aux questions."
+    stimulus: |
+      M1: Au marché public de Rivemont, une nouvelle règle fait parler d'elle : depuis le premier mai, les sacs de plastique sont interdits, même ceux qu'on dit biodégradables. Les marchands doivent proposer des sacs en papier ou en tissu, et ils ont le droit de les facturer.
+      F1: Chez les commerçants, les réactions sont partagées. Certains ont vu leurs clients s'adapter très vite, en apportant leurs propres paniers. D'autres déplorent le coût des sacs en papier, deux à trois fois plus chers, et le fait qu'ils se déchirent sous la pluie.
+      M1: La Ville, elle, se dit satisfaite. Selon ses chiffres, la quantité de déchets ramassés autour du marché a diminué d'un quart en deux mois. Elle prévoit d'étendre la mesure à tous les commerces de la ville d'ici deux ans, après une consultation publique prévue cet automne.
+    questions:
+      - question: "Qu'est-ce qui est interdit au marché depuis le 1er mai ?"
+        options: ["Les sacs en papier", "Tous les sacs de plastique", "Les paniers", "Les sacs en tissu"]
+        answer: 1
+        band: 5
+      - question: "Les marchands peuvent-ils faire payer les nouveaux sacs ?"
+        options: ["Non, jamais", "Oui", "Seulement les sacs en tissu", "Seulement le samedi"]
+        answer: 1
+        band: 6
+      - question: "Quel inconvénient des sacs en papier est mentionné ?"
+        options: ["Ils sont trop lourds", "Ils résistent mal à la pluie", "Ils sont interdits", "Ils sont trop petits"]
+        answer: 1
+      - question: "Quel résultat la Ville annonce-t-elle ?"
+        options: ["Les déchets ont diminué d'environ 25 %", "Les ventes ont augmenté", "Les clients sont moins nombreux", "Les marchands ont tous accepté"]
+        answer: 0
+        band: 8
+      - question: "Que se passera-t-il cet automne ?"
+        options: ["L'interdiction sera annulée", "Une consultation publique aura lieu", "Le marché fermera", "Les sacs en papier seront interdits"]
+        answer: 1
+        band: 8
+  - id: fr-com-b-e1
+    part: co_reportage
+    task_type: interview_detail
+    band: 8
+    plays: 2
+    instructions: "Écoutez l'entretien. Vous l'entendrez deux fois. Répondez aux questions."
+    stimulus: |
+      M1: Docteure Isabelle Royer, vous êtes médecin de famille à Rivemont depuis vingt ans. On entend partout parler de la pénurie de médecins. Comment la vivez-vous au quotidien ?
+      F1: Je la vis surtout à travers mes patients. Beaucoup attendent des mois pour un rendez-vous, et certains finissent aux urgences pour des problèmes qui auraient pu être traités en clinique. C'est frustrant pour eux et pour nous.
+      M1: Quelles solutions voyez-vous ?
+      F1: La première, c'est de mieux utiliser toutes les compétences. Les infirmières praticiennes, les pharmaciens, les physiothérapeutes peuvent prendre en charge une grande partie des consultations. Dans notre clinique, depuis que les pharmaciens renouvellent certaines ordonnances, nous avons gagné l'équivalent d'une journée par semaine.
+      M1: Et la paperasse ?
+      F1: C'est mon cheval de bataille. Je passe presque un tiers de mon temps à remplir des formulaires. Si on simplifiait ces démarches, on libérerait des milliers d'heures de consultation sans former un seul nouveau médecin.
+      M1: La télémédecine aide-t-elle ?
+      F1: Pour certains suivis, oui, mais elle a ses limites. On ne peut pas examiner un ventre par vidéo. Je dirais qu'elle est utile en complément, pas en remplacement.
+      M1: Un message pour les patients ?
+      F1: Inscrivez-vous sur la liste d'attente même si elle est longue, et n'hésitez pas à consulter votre pharmacien pour les petits problèmes. Il est souvent plus disponible qu'on ne le pense.
+    questions:
+      - question: "Selon la docteure Royer, quelle est une conséquence de la pénurie ?"
+        options: ["Les médecins gagnent moins", "Des patients vont aux urgences inutilement", "Les cliniques ferment le soir", "Les pharmaciens refusent de travailler"]
+        answer: 1
+        band: 7
+      - question: "Qu'a permis la collaboration avec les pharmaciens ?"
+        options: ["De gagner du temps de consultation", "De réduire le prix des médicaments", "D'ouvrir une nouvelle clinique", "De former de nouveaux médecins"]
+        answer: 0
+      - question: "Quelle part de son temps consacre-t-elle aux formulaires ?"
+        options: ["Environ un dixième", "Environ un tiers", "La moitié", "Presque tout"]
+        answer: 1
+        band: 7
+      - question: "Selon elle, simplifier les démarches administratives permettrait…"
+        options: ["de supprimer les listes d'attente.", "de libérer beaucoup d'heures de consultation.", "de remplacer les médecins.", "d'augmenter les salaires."]
+        answer: 1
+        band: 9
+      - question: "Quelle est son opinion sur la télémédecine ?"
+        options: ["Elle devrait remplacer les consultations", "Elle est inutile", "Elle est utile en complément", "Elle est dangereuse"]
+        answer: 2
+        band: 8
+      - question: "Que conseille-t-elle aux patients pour les petits problèmes ?"
+        options: ["D'aller aux urgences", "De consulter leur pharmacien", "D'attendre leur rendez-vous", "De chercher sur Internet"]
+        answer: 1
+        band: 7
+  - id: fr-com-b-r2
+    part: co_reportage
+    task_type: report_inference
+    band: 9
+    instructions: "Écoutez le reportage et répondez aux questions."
+    stimulus: |
+      F1: Ils ont entre seize et vingt ans, et ils passent leurs samedis à planter des arbres dans les terrains vagues de Rivemont. Le projet « Racines », lancé par un collectif de jeunes, a déjà permis de planter plus de deux mille arbres en trois ans.
+      M1: L'idée est née d'un constat simple : les quartiers les plus pauvres de la ville sont aussi les moins verts, et donc les plus chauds en été. Les membres du collectif ont commencé par cartographier les îlots de chaleur, puis ils ont demandé aux propriétaires des terrains la permission de planter.
+      F1: Le plus difficile, disent-ils, n'est pas de planter, mais d'assurer la survie des arbres. Les deux premiers étés, faute d'arrosage, près de la moitié des jeunes arbres sont morts. Depuis, chaque arbre est « adopté » par un résident du quartier qui s'engage à l'arroser pendant les deux premières années.
+      M1: Le taux de survie dépasse aujourd'hui les quatre-vingt-dix pour cent. Et le projet a eu un effet inattendu : des voisins qui ne se parlaient pas se retrouvent maintenant autour de leurs arbres. Pour les jeunes du collectif, c'est peut-être leur plus belle réussite.
+    questions:
+      - question: "Pourquoi le collectif plante-t-il dans certains quartiers en priorité ?"
+        options: ["Parce qu'ils sont plus riches", "Parce qu'ils manquent d'arbres et sont plus chauds", "Parce que la Ville le demande", "Parce que les terrains sont gratuits"]
+        answer: 1
+        band: 8
+      - question: "Qu'ont fait les jeunes avant de planter ?"
+        options: ["Ils ont acheté des terrains", "Ils ont repéré les zones les plus chaudes", "Ils ont vendu des arbres", "Ils ont fait une manifestation"]
+        answer: 1
+        band: 8
+      - question: "Quel problème ont-ils rencontré au début ?"
+        options: ["Le manque de bénévoles", "Beaucoup d'arbres sont morts faute d'eau", "Les propriétaires ont refusé", "Les arbres coûtaient trop cher"]
+        answer: 1
+      - question: "Comment ont-ils résolu ce problème ?"
+        options: ["En plantant des arbres plus grands", "En confiant chaque arbre à un résident", "En installant des arroseurs automatiques", "En plantant seulement au printemps"]
+        answer: 1
+        band: 8
+      - question: "Quelle est, pour les jeunes, leur plus belle réussite ?"
+        options: ["Le nombre d'arbres plantés", "Les liens créés entre voisins", "Un prix de la Ville", "La baisse de la température"]
+        answer: 1
+        band: 9

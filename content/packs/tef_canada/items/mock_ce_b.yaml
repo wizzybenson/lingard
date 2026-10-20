@@ -1,0 +1,291 @@
+# TEF Canada, compréhension écrite, épreuve B (contenu original écrit pour Lingard). Même format que l'épreuve A :
+# documents du quotidien, phrases et textes lacunaires, lecture rapide, articles. Niveaux : NCLC.
+defaults: {pack: tef_canada, language: fr, skill: reading, section: comprehension_ecrite}
+items:
+  - id: fr-cem-b-d01
+    part: ce_documents
+    task_type: document_context
+    band: 4
+    stimulus: "Salut Léa ! Le cours de yoga de ce soir est annulé, la prof est malade. On se reprend jeudi, même heure ? Bisous, Inès"
+    question: "Pourquoi Inès écrit-elle ?"
+    options: ["Pour proposer un nouveau cours", "Pour annoncer une annulation", "Pour demander des nouvelles de la prof", "Pour inviter Léa au restaurant"]
+    answer: 1
+  - id: fr-cem-b-d02
+    part: ce_documents
+    task_type: document_detail
+    band: 4
+    stimulus: "BOULANGERIE DU MARCHÉ — Ouvert du mardi au dimanche, de 7 h à 18 h. Fermé le lundi. Pain chaud toutes les heures."
+    question: "Quand la boulangerie est-elle fermée ?"
+    options: ["Le dimanche", "Le lundi", "Le mardi matin", "Tous les soirs à 17 h"]
+    answer: 1
+  - id: fr-cem-b-d03
+    part: ce_documents
+    task_type: document_detail
+    band: 5
+    stimulus: "Collecte des ordures — Nouveau calendrier : les déchets sont ramassés le mercredi ; le recyclage, un vendredi sur deux ; le compost, chaque lundi de mai à novembre. Sortez vos bacs la veille après 19 h."
+    question: "Quand faut-il sortir le bac de compost ?"
+    options: ["Le lundi matin", "Le dimanche soir", "Le mercredi", "Un vendredi sur deux"]
+    answer: 1
+  - id: fr-cem-b-d04
+    part: ce_documents
+    task_type: document_context
+    band: 5
+    stimulus: "Madame, Monsieur, je souhaite résilier mon abonnement au centre sportif à compter du 1er mars, car je déménage dans une autre ville. Pourriez-vous me confirmer que les prélèvements cesseront à cette date ? Cordialement, Paul Morin"
+    question: "Que demande Paul Morin ?"
+    options: ["Un remboursement de son abonnement", "La confirmation de la fin des prélèvements", "Un nouvel abonnement dans une autre ville", "Un changement d'horaire"]
+    answer: 1
+  - id: fr-cem-b-d05
+    part: ce_documents
+    task_type: document_detail
+    band: 5
+    stimulus: "PERDU — Chat gris tigré, collier rouge, répond au nom de Moka. Disparu le 12 octobre près du parc des Érables. Il est craintif : ne pas essayer de l'attraper, appelez-nous au 418 555 0177."
+    question: "Que faut-il faire si on voit le chat ?"
+    options: ["L'attraper et l'apporter au parc", "Téléphoner aux propriétaires", "Lui donner à manger", "Prévenir la SPA"]
+    answer: 1
+  - id: fr-cem-b-d06
+    part: ce_documents
+    task_type: document_detail
+    band: 6
+    stimulus: "Bibliothèque Gabrielle-Roy : à partir du 1er février, les documents en retard ne seront plus soumis à des frais. En revanche, après 30 jours de retard, la carte de l'abonné sera suspendue jusqu'au retour des documents."
+    question: "Que se passera-t-il si un abonné rend un livre avec 40 jours de retard ?"
+    options: ["Il paiera une amende", "Sa carte aura été suspendue", "Il devra racheter le livre", "Rien du tout"]
+    answer: 1
+  - id: fr-cem-b-d07
+    part: ce_documents
+    task_type: document_context
+    band: 6
+    stimulus: "Chers membres, l'assemblée générale annuelle de la coopérative d'habitation aura lieu le 15 mai à 19 h dans la salle commune. À l'ordre du jour : adoption du budget, élection du conseil d'administration et travaux de toiture. Votre présence est importante : le quorum est nécessaire pour voter."
+    question: "Pourquoi la présence des membres est-elle importante ?"
+    options: ["Pour participer aux travaux", "Pour permettre les votes", "Pour payer la cotisation", "Pour choisir la date de la réunion"]
+    answer: 1
+  - id: fr-cem-b-d08
+    part: ce_documents
+    task_type: document_detail
+    band: 7
+    stimulus: "Avis de rappel — La société Bébéconfort rappelle les sièges d'auto modèle « Voyageur 2 » fabriqués entre janvier et juin 2025, dont la boucle peut s'ouvrir en cas de choc. Les propriétaires sont invités à cesser immédiatement de les utiliser et à communiquer avec l'entreprise pour obtenir une boucle de remplacement gratuite."
+    question: "Que propose l'entreprise aux propriétaires ?"
+    options: ["Un remboursement complet", "Une pièce de remplacement sans frais", "Un nouveau siège d'un autre modèle", "Une réparation en magasin payante"]
+    answer: 1
+  - id: fr-cem-b-d09
+    part: ce_documents
+    task_type: document_context
+    band: 7
+    stimulus: "Bonjour à toutes et à tous, comme vous le savez, le stationnement de l'immeuble sera repeint la semaine prochaine. Je vous serais reconnaissante de libérer vos places du lundi 8 h au mercredi 18 h. Des permis temporaires pour la rue Laval sont disponibles à l'accueil. Merci de votre collaboration. — Sylvie, gestionnaire"
+    question: "Quel est le ton de ce message ?"
+    options: ["Menaçant", "Poli et informatif", "Ironique", "Inquiet"]
+    answer: 1
+  - id: fr-cem-b-d10
+    part: ce_documents
+    task_type: document_detail
+    band: 8
+    stimulus: "Programme d'aide à l'achat d'un vélo électrique : la Ville rembourse 25 % du prix d'achat, jusqu'à concurrence de 500 $. Le vélo doit être acheté neuf chez un commerçant de Rivemont, et la demande déposée dans les 60 jours suivant l'achat. Une seule demande par adresse."
+    question: "Une personne achète un vélo électrique neuf à 2 400 $ chez un marchand de Rivemont. Combien la Ville lui remboursera-t-elle ?"
+    options: ["600 $", "500 $", "250 $", "Rien, car le vélo est trop cher"]
+    answer: 1
+
+  - id: fr-cem-b-l01
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 4
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Nous habitons à Rivemont ______ cinq ans."
+    question: "Quel mot complète la phrase ?"
+    options: ["depuis", "pendant", "il y a", "dans"]
+    answer: 0
+  - id: fr-cem-b-l02
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 5
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Si tu ______ le temps demain, passe me voir au bureau."
+    question: "Quel mot complète la phrase ?"
+    options: ["as", "auras", "aurais", "aies"]
+    answer: 0
+  - id: fr-cem-b-l03
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 5
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "C'est la collègue ______ je t'ai parlé hier."
+    question: "Quel mot complète la phrase ?"
+    options: ["que", "qui", "dont", "où"]
+    answer: 2
+  - id: fr-cem-b-l04
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 6
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Le directeur a demandé que chacun ______ à l'heure à la réunion."
+    question: "Quel mot complète la phrase ?"
+    options: ["arrive", "arrivera", "arrivait", "arrivé"]
+    answer: 0
+  - id: fr-cem-b-l05
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 7
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Le projet a été ______ faute de financement."
+    question: "Quel mot complète la phrase ?"
+    options: ["abandonné", "achevé", "financé", "inauguré"]
+    answer: 0
+  - id: fr-cem-b-l06
+    part: ce_lacunes
+    task_type: gapped_sentence
+    band: 8
+    instructions: "Choisissez le mot qui complète la phrase."
+    stimulus: "Bien qu'il ______ beaucoup travaillé, il n'a pas réussi l'examen."
+    question: "Quel mot complète la phrase ?"
+    options: ["ait", "a", "avait", "aura"]
+    answer: 0
+sets:
+  - id: fr-cem-b-lt
+    part: ce_lacunes
+    task_type: gapped_text
+    band: 7
+    instructions: "Lisez le texte et choisissez le mot qui convient pour chaque espace."
+    stimulus: |
+      Le service de covoiturage lancé par la Ville l'an dernier connaît un succès inattendu. (1) ______ six mois, plus de trois mille trajets ont été partagés grâce à l'application. Le principe est simple : les conducteurs indiquent leur itinéraire, et les passagers (2) ______ réservent une place en quelques secondes. Le prix est fixé par la Ville afin (3) ______ éviter les abus. Certains chauffeurs de taxi s'inquiètent (4) ______ de cette concurrence.
+    questions:
+      - {question: "Espace (1)", options: ["En", "Depuis", "Pendant que", "Dès que"], answer: 0}
+      - {question: "Espace (2)", options: ["y", "en", "le", "leur"], answer: 0, band: 8}
+      - {question: "Espace (3)", options: ["d'", "qu'", "pour", "à"], answer: 0, band: 6}
+      - {question: "Espace (4)", options: ["toutefois", "alors que", "parce que", "afin que"], answer: 0, band: 7}
+
+  - id: fr-cem-b-r1
+    part: ce_rapide
+    task_type: quick_reading
+    band: 6
+    shuffle: false
+    options: ["Offre A", "Offre B", "Offre C", "Offre D"]
+    instructions: "Lisez rapidement les quatre offres d'emploi et répondez aux questions."
+    stimulus: |
+      A — Caissier(ère), supermarché, 25 h/semaine, soirs et fins de semaine. Aucune expérience requise.
+      B — Adjoint(e) administratif(ve), cabinet comptable, temps plein, bilinguisme exigé. Télétravail un jour par semaine.
+      C — Préposé(e) à l'entretien, hôpital, nuits. Formation payée. Prime de nuit de 2 $/h.
+      D — Animateur(trice) de camp de jour, juillet-août, 18 ans et plus. Brevet de premiers soins un atout.
+    questions:
+      - {question: "Quelle offre permet de travailler de la maison une partie du temps ?", answer: 1}
+      - {question: "Quelle offre est un emploi d'été ?", answer: 3}
+      - {question: "Quelle offre propose un supplément de salaire ?", answer: 2, band: 7}
+  - id: fr-cem-b-r2
+    part: ce_rapide
+    task_type: chart_reading
+    band: 7
+    instructions: "Observez le tableau et répondez aux questions."
+    stimulus: "Prix moyen d'un logement de 2 chambres à louer, par quartier de Rivemont (en dollars par mois)."
+    figure: |2
+        Quartier          2022     2025    Variation
+        Vieux-Port        1 350    1 720    +27 %
+        Saint-Roch        1 050    1 260    +20 %
+        Haute-Ville       1 480    1 610     +9 %
+        Les Érables         980    1 080    +10 %
+    questions:
+      - question: "Dans quel quartier les loyers ont-ils le plus augmenté ?"
+        options: ["Vieux-Port", "Saint-Roch", "Haute-Ville", "Les Érables"]
+        answer: 0
+      - question: "Quel était le quartier le plus cher en 2022 ?"
+        options: ["Vieux-Port", "Saint-Roch", "Haute-Ville", "Les Érables"]
+        answer: 2
+        band: 6
+      - question: "Selon le tableau, en 2025…"
+        options: ["Les Érables reste le quartier le moins cher.", "Haute-Ville est le quartier le plus cher.", "tous les loyers ont augmenté de plus de 15 %.", "Saint-Roch a dépassé le Vieux-Port."]
+        answer: 0
+        band: 8
+
+  - id: fr-cem-b-a1
+    part: ce_articles
+    task_type: article_detail
+    band: 7
+    stimulus: |
+      DES AÎNÉS ET DES ÉTUDIANTS SOUS LE MÊME TOIT
+
+      Depuis l'automne, une quinzaine d'étudiants de l'université de Rivemont vivent chez des personnes âgées. Le principe de ce programme d'habitation intergénérationnelle : l'étudiant obtient une chambre à un loyer très réduit, en échange d'une présence le soir et de petits services, comme faire les courses ou aider à utiliser une tablette.
+
+      « Je cherchais un logement abordable près du campus, et je me retrouve avec une grand-mère d'adoption », raconte Samuel, 22 ans, qui partage la maison de Mme Fortin, 81 ans. Celle-ci souligne surtout la sécurité : « Je dors mieux en sachant qu'il y a quelqu'un dans la maison. »
+
+      Les jumelages sont préparés avec soin par un organisme communautaire, qui rencontre chaque candidat et vérifie ses références. Les deux parties signent une entente qui précise les attentes de chacun : heures de présence, partage de la cuisine, visites. Selon la coordonnatrice, ce cadre est la clé du succès : « Les malentendus viennent presque toujours d'attentes qui n'ont pas été dites. »
+
+      Le programme a ses limites. Il ne remplace pas les soins à domicile, et les étudiants ne sont pas des aidants professionnels. Mais devant la crise du logement et l'isolement de nombreux aînés, ses responsables espèrent doubler le nombre de jumelages l'an prochain.
+    questions:
+      - question: "Que reçoivent les étudiants dans ce programme ?"
+        options: ["Un salaire", "Un logement à faible coût", "Des cours gratuits", "Une bourse d'études"]
+        answer: 1
+        band: 6
+      - question: "Pour Mme Fortin, le principal avantage est…"
+        options: ["l'argent du loyer.", "l'aide pour le ménage.", "le sentiment de sécurité.", "la compagnie pour sortir."]
+        answer: 2
+      - question: "Quel est le rôle de l'organisme communautaire ?"
+        options: ["Payer les loyers", "Préparer et encadrer les jumelages", "Former les étudiants aux soins", "Construire des logements"]
+        answer: 1
+      - question: "Selon la coordonnatrice, la plupart des problèmes viennent…"
+        options: ["du manque d'argent.", "de la différence d'âge.", "d'attentes non exprimées.", "du bruit des étudiants."]
+        answer: 2
+        band: 8
+      - question: "Quelle limite du programme l'article mentionne-t-il ?"
+        options: ["Il coûte trop cher à la Ville", "Il ne remplace pas les soins professionnels", "Il est réservé aux étudiants étrangers", "Il n'existe qu'en été"]
+        answer: 1
+        band: 8
+  - id: fr-cem-b-a2
+    part: ce_articles
+    task_type: article_opinion
+    band: 8
+    stimulus: |
+      FAUT-IL INTERDIRE LES TÉLÉPHONES À L'ÉCOLE ?
+
+      Plusieurs provinces ont interdit les téléphones cellulaires en classe, et les premiers bilans semblent encourageants : les enseignants décrivent des élèves plus attentifs et des récréations plus animées. Il faut toutefois se garder de conclure trop vite. Ces impressions, aussi sincères soient-elles, ne remplacent pas des études rigoureuses, et celles-ci sont encore rares.
+
+      Les opposants à l'interdiction rappellent que le téléphone peut aussi être un outil pédagogique : dictionnaire, calculatrice, appareil photo pour une sortie scientifique. Ils craignent surtout qu'on traite le symptôme plutôt que la cause. Si les jeunes passent trop de temps devant leurs écrans, c'est d'abord en dehors de l'école que cela se joue, à la maison, le soir et la nuit.
+
+      À mon sens, l'interdiction en classe est une mesure raisonnable, à condition qu'on ne s'arrête pas là. Apprendre aux élèves à gérer leur attention et à se méfier des applications conçues pour les rendre dépendants serait bien plus utile à long terme que de confisquer des appareils. L'école ne peut pas tout, mais elle peut au moins donner aux jeunes les moyens de comprendre ce qui se passe dans leur poche.
+    questions:
+      - question: "Selon l'auteur, les premiers résultats de l'interdiction…"
+        options: ["sont prouvés scientifiquement.", "semblent positifs mais restent à confirmer.", "sont décevants.", "sont inconnus."]
+        answer: 1
+      - question: "Quel argument les opposants avancent-ils ?"
+        options: ["Le téléphone peut servir à apprendre", "Les élèves n'utilisent pas leur téléphone en classe", "L'interdiction coûte trop cher", "Les parents sont contre"]
+        answer: 0
+        band: 7
+      - question: "D'après les opposants, le problème principal se situe…"
+        options: ["en classe.", "pendant les récréations.", "en dehors de l'école.", "dans les transports."]
+        answer: 2
+      - question: "Quelle est la position de l'auteur ?"
+        options: ["Il rejette l'interdiction.", "Il l'approuve, mais la juge insuffisante.", "Il veut interdire les téléphones aussi à la maison.", "Il n'a pas d'opinion."]
+        answer: 1
+        task_type: article_inference
+        band: 9
+      - question: "Que propose l'auteur en plus de l'interdiction ?"
+        options: ["Confisquer les téléphones le soir", "Enseigner aux jeunes à gérer leur attention", "Offrir des tablettes aux élèves", "Punir les parents"]
+        answer: 1
+        task_type: article_inference
+        band: 8
+  - id: fr-cem-b-a3
+    part: ce_articles
+    task_type: article_inference
+    band: 9
+    stimulus: |
+      LA SECONDE VIE DES OBJETS
+
+      Il y a dix ans, le café de réparation du quartier Saint-Roch ne comptait que quatre bénévoles et une table pliante. Aujourd'hui, il accueille chaque samedi une centaine de visiteurs venus faire réparer un grille-pain, une lampe ou un pantalon décousu. On n'y paie rien ; on y apprend surtout à réparer soi-même, sous l'œil d'un bénévole.
+
+      Derrière cette réussite se cache une critique de notre mode de consommation. Beaucoup d'appareils sont conçus de telle façon qu'il est presque impossible de les ouvrir, et les pièces de rechange, quand elles existent, coûtent parfois plus cher qu'un appareil neuf. Les bénévoles constatent que les objets anciens sont souvent plus faciles à réparer que les récents.
+
+      Les choses commencent pourtant à bouger. Une loi adoptée récemment oblige les fabricants à rendre disponibles les pièces et les manuels de réparation pendant plusieurs années. Les associations saluent ce progrès, tout en soulignant que la loi ne s'applique qu'à certains produits et que les contrôles restent limités.
+
+      Pour les fondateurs du café, l'enjeu dépasse l'environnement. « Quand quelqu'un répare lui-même sa lampe, il repart avec plus qu'un objet qui fonctionne : il repart avec la confiance qu'il peut comprendre les choses qui l'entourent. »
+    questions:
+      - question: "Comment le café de réparation a-t-il évolué ?"
+        options: ["Il a fermé faute de bénévoles", "Il est devenu payant", "Il accueille beaucoup plus de monde", "Il ne répare plus que des vêtements"]
+        answer: 2
+        band: 7
+      - question: "Selon les bénévoles, les objets récents…"
+        options: ["sont plus solides.", "sont souvent plus difficiles à réparer.", "ont des pièces bon marché.", "ne tombent jamais en panne."]
+        answer: 1
+        band: 8
+      - question: "Quelle réserve les associations expriment-elles au sujet de la nouvelle loi ?"
+        options: ["Elle est trop sévère pour les fabricants", "Elle ne vise pas tous les produits", "Elle interdit les cafés de réparation", "Elle n'est pas encore votée"]
+        answer: 1
+        band: 9
+      - question: "Pour les fondateurs, le plus important est…"
+        options: ["d'économiser de l'argent.", "de protéger l'environnement seulement.", "de redonner confiance aux gens dans leurs capacités.", "de vendre des objets réparés."]
+        answer: 2
+        band: 9

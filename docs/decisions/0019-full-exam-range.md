@@ -40,5 +40,5 @@ Verified on 2026-10-20:
 ## Still open
 
 - TEF speaking in a mock is recorded as a monologue; the real Section A/B is an interaction with an examiner.
-- A second TEF paper, for varied retakes.
+- (Done the same day: TEF paper B, so both exams have two complete papers and mocks mix them part by part.)
 - IELTS Reading lets candidates move between sections; here a set is answered before the next appears.
