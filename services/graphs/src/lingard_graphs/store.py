@@ -51,6 +51,10 @@ class LearnerStore(Protocol):
 
     async def save_scene(self, record: SceneRecord) -> None: ...
 
+    async def open_exam_session(self, session_id: uuid.UUID, user_id: uuid.UUID, city: str) -> None:
+        """The session that holds a mock's live speaking scenes (idempotent: a resumed graph calls it again)."""
+        ...
+
     async def scenes_for_session(self, session_id: uuid.UUID) -> list[SceneRecord]: ...
 
     async def turns(self, scene_id: uuid.UUID) -> list[TurnEvent]: ...
@@ -172,6 +176,7 @@ class MemoryStore:
     crs: dict[uuid.UUID, list[tuple[int, dict[str, Any]]]] = field(default_factory=lambda: defaultdict(list))
     days: dict[uuid.UUID, set[date]] = field(default_factory=lambda: defaultdict(set))
     mock_records: dict[uuid.UUID, list[dict[str, Any]]] = field(default_factory=lambda: defaultdict(list))
+    exam_sessions: dict[uuid.UUID, tuple[uuid.UUID, str]] = field(default_factory=dict)
 
     async def profile(self, user_id: uuid.UUID) -> LearnerProfileView:
         return self.profiles[user_id]
@@ -181,6 +186,9 @@ class MemoryStore:
 
     async def save_scene(self, record: SceneRecord) -> None:
         self.scenes[record.scene_id] = record
+
+    async def open_exam_session(self, session_id: uuid.UUID, user_id: uuid.UUID, city: str) -> None:
+        self.exam_sessions.setdefault(session_id, (user_id, city))
 
     async def scenes_for_session(self, session_id: uuid.UUID) -> list[SceneRecord]:
         return [s for s in self.scenes.values() if s.session_id == session_id]

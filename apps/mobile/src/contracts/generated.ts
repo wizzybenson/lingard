@@ -198,7 +198,19 @@ export type Y = number;
 export type Hotspots = Hotspot[];
 export type Key4 = string;
 export type Kind3 =
-  ("home" | "cafe" | "bank" | "clinic" | "library" | "town_hall" | "newspaper" | "shop" | "job_centre") | null;
+  | (
+      | "home"
+      | "cafe"
+      | "bank"
+      | "clinic"
+      | "library"
+      | "town_hall"
+      | "newspaper"
+      | "shop"
+      | "job_centre"
+      | "test_centre"
+    )
+  | null;
 export type LayerArt = string[];
 export type Name2 = string;
 export type X1 = number;

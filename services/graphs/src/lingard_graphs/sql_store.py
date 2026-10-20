@@ -79,6 +79,21 @@ class SqlStore:
             created_at=row.created_at,
         )
 
+    async def open_exam_session(self, session_id: uuid.UUID, user_id: uuid.UUID, city: str) -> None:
+        async with self._sessions() as db, db.begin():
+            if await db.get(m.Session, session_id) is None:
+                db.add(
+                    m.Session(
+                        id=session_id,
+                        tenant_id=await self._tenant(db, user_id),
+                        user_id=user_id,
+                        kind="exam",
+                        city=city,
+                        started_at=datetime.now(UTC),
+                        plan={"status": "ready"},
+                    )
+                )
+
     async def save_scene(self, record: SceneRecord) -> None:
         async with self._sessions() as db, db.begin():
             row = await db.get(m.Scene, record.scene_id)

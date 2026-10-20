@@ -27,6 +27,8 @@ export default function Thread() {
   const [text, setText] = useState("");
   const [setAnswers, setSetAnswers] = useState<{ set: string; values: SetAnswer[] }>({ set: "", values: [] });
   const [cloneConsent, setCloneConsent] = useState(false);
+  const [visited, setVisited] = useState<string | null>(null);
+  const [recordInstead, setRecordInstead] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
@@ -48,6 +50,7 @@ export default function Thread() {
     try {
       const next = await api.post<StepView>(`/v1/threads/${params.id}/answer`, { value });
       setText("");
+      setRecordInstead(false);
       setStep(next);
       const nextSection = sectionOf(next);
       if (nextSection && nextSection !== sectionStart.section) {
@@ -126,9 +129,28 @@ export default function Thread() {
         </Card>
       )}
       {prompt.kind === "speaking" && (
-        <Card>
+        <Card style={{ gap: space(2) }}>
+          {prompt.section ? <Overline>{t(`exam.sections.${prompt.section}`)}</Overline> : null}
           <Title>{prompt.prompt}</Title>
-          <Recorder api={api} language={language} onDone={(r) => void send(section ? { transcript: r.text } : r.text)} />
+          {prompt.scene_id && !recordInstead ? (
+            <>
+              <Body muted>{t("exam.liveHint")}</Body>
+              <Button
+                label={t("exam.speakWithExaminer")}
+                icon="mic"
+                onPress={() => {
+                  setVisited(prompt.scene_id ?? null);
+                  router.push({ pathname: "/scene/[id]", params: { id: prompt.scene_id! } });
+                }}
+              />
+              {visited === prompt.scene_id && (
+                <Button label={t("exam.partDone")} kind="tinted" icon="checkmark" busy={busy} onPress={() => void send({ scene_id: prompt.scene_id })} />
+              )}
+              <Button label={t("exam.recordInstead")} kind="ghost" onPress={() => setRecordInstead(true)} />
+            </>
+          ) : (
+            <Recorder api={api} language={language} onDone={(r) => void send(section ? { transcript: r.text } : r.text)} />
+          )}
         </Card>
       )}
       {prompt.kind === "read_aloud" && (

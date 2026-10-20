@@ -45,6 +45,16 @@ districts:
         hotspots:
           - {key: karim, kind: npc, label: Karim Benali, npc_key: bank_karim, x: 0.5, y: 0.52}
           - {key: brochure, kind: sign, label: Brochure, x: 0.2, y: 0.6, text: "Compte nouvel arrivant : aucuns frais mensuels pendant un an."}
+      - key: rivemont.vieux_port.centre_examen
+        kind: test_centre
+        name: Centre d'examen du Vieux-Port
+        description: Une salle calme au premier étage, où l'on passe les épreuves orales des examens de français.
+        x: 0.84
+        y: 0.74
+        layer_art: [rivemont/vieux_port/centre_examen_bg.svg, rivemont/vieux_port/centre_examen_mid.svg]
+        hotspots:
+          - {key: claire, kind: npc, label: Claire Dubois, npc_key: examinatrice_claire, x: 0.55, y: 0.5}
+          - {key: consignes, kind: sign, label: Consignes, x: 0.2, y: 0.32, text: "Épreuves orales : présentez-vous dix minutes avant l'heure, avec une pièce d'identité."}
   - key: rivemont.saint_roch
     name: Saint-Roch
     min_band: 6

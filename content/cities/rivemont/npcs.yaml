@@ -53,6 +53,22 @@ npcs:
     accent: fr-FR-standard
     schedule:
       - {from_hour: 9, to_hour: 17, location_key: rivemont.vieux_port.banque}
+  - key: examinatrice_claire
+    city: rivemont
+    name: Claire Dubois
+    role: examinatrice
+    age: 46
+    personality: Calme, neutre et bienveillante ; laisse parler le candidat, ne corrige jamais pendant l'épreuve.
+    backstory: Ancienne professeure de français, elle fait passer les épreuves orales au centre d'examen depuis douze ans.
+    speech_style: Vouvoie toujours, phrases claires, débit naturel ; joue le rôle demandé par le sujet sans en sortir.
+    secret: Elle a elle-même appris l'anglais en arrivant à Toronto à vingt ans.
+    world_facts:
+      - Claire fait passer les épreuves orales au Centre d'examen du Vieux-Port.
+      - L'épreuve d'expression orale dure quinze minutes en tout.
+    voice_id: fr_f_46_claire
+    accent: fr-FR-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: rivemont.vieux_port.centre_examen}
   - key: conseillere_nadia
     city: rivemont
     name: Nadia Tremblay

@@ -1,5 +1,6 @@
 import itertools
 import re
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -8,6 +9,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
+from lingard_contracts.events import TurnEvent
 from lingard_exam_packs.items import Item, ItemBank
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.graphs.exam_hall import ExamState, build_exam_hall
@@ -79,6 +81,7 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
     config: RunnableConfig = {"configurable": {"thread_id": "mock-1"}}
     result = await graph.ainvoke(ExamState(user_id=USER, pack="tef_canada"), config)
     sections_seen: list[str] = []
+    live_scenes: list[uuid.UUID] = []
     late_answers = 0
     while result.get("__interrupt__"):
         request = result["__interrupt__"][0].value
@@ -96,6 +99,28 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
             resume: Any = {"answers": given, "elapsed_s": elapsed}
         elif request["kind"] == "writing":
             resume = {"text": "Texte assez long. " * 60, "elapsed_s": 1200}
+        elif "scene_id" in request:
+            scene_id = uuid.UUID(request["scene_id"])
+            record = await deps.store.scene(scene_id)
+            assert record is not None and record.contract.cast[0].npc_key == "examinatrice_claire"
+            assert record.contract.approved_facts and record.contract.learner_goal == request["prompt"]
+            live_scenes.append(scene_id)
+            for i, (speaker, text) in enumerate(
+                [("npc", "Bonjour, je vous écoute."), ("learner", "Bonjour, à quelle heure partent les sorties ?")]
+            ):
+                await deps.store.save_turn(
+                    TurnEvent(
+                        trace_id=scene_id,
+                        user_id=USER,
+                        session_id=record.session_id,
+                        scene_id=scene_id,
+                        turn_index=i,
+                        speaker=speaker,
+                        language="fr-FR",
+                        transcript=text,
+                    )
+                )
+            resume = {"scene_id": request["scene_id"]}
         else:
             resume = {"transcript": "Bonjour, je voudrais des renseignements sur les cours du soir."}
         result = await graph.ainvoke(Command(resume=resume), config)
@@ -108,6 +133,9 @@ async def test_full_tef_mock_official_order_timing_and_scores(deps: GraphDeps, s
         len(result["item_ids"]["comprehension_ecrite"]) == 40 and len(result["item_ids"]["comprehension_orale"]) == 40
     )
     assert result["overall"] is None, "TEF reports modules separately"
+    assert len(live_scenes) == 2 and len(set(live_scenes)) == 2, "each speaking part is a live examiner scene"
+    assert "Candidate: Bonjour, à quelle heure partent les sorties ?" in result["speaking"]["section_a"]
+    assert "Examiner: Bonjour, je vous écoute." in result["speaking"]["section_a"]
     assert 6 <= result["levels"]["reading"] <= 8, "items up to band 7 right, above wrong → about NCLC 7"
     assert result["levels"]["writing"] == 7 and result["levels"]["speaking"] == 8
     raw = (await deps.store.mocks(USER))[0]["raw_scores"]

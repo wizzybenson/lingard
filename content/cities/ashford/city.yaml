@@ -45,6 +45,16 @@ districts:
         hotspots:
           - {key: daniel, kind: npc, label: Daniel Osei, npc_key: bank_daniel, x: 0.5, y: 0.52}
           - {key: leaflet, kind: sign, label: Leaflet, x: 0.2, y: 0.6, text: "Newcomer account: no monthly fee for the first year."}
+      - key: ashford.station_quarter.test_centre
+        kind: test_centre
+        name: Ashford Test Centre
+        description: A quiet first-floor room above the post office where English speaking tests are held.
+        x: 0.84
+        y: 0.74
+        layer_art: [ashford/station_quarter/test_centre_bg.svg, ashford/station_quarter/test_centre_mid.svg]
+        hotspots:
+          - {key: ruth, kind: npc, label: Ruth Adeyemi, npc_key: examiner_ruth, x: 0.55, y: 0.5}
+          - {key: rules, kind: sign, label: Candidate notice, x: 0.2, y: 0.32, text: "Speaking tests: arrive ten minutes early and bring the ID you registered with."}
   - key: ashford.kingsway
     name: Kingsway
     min_band: 6

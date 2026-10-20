@@ -12,6 +12,7 @@ const PLACE_ICONS: Record<NonNullable<Location["kind"]>, IconName> = {
   newspaper: "newspaper",
   shop: "construct",
   job_centre: "briefcase",
+  test_centre: "ribbon",
 };
 
 export function placeIcon(location: Location): IconName {

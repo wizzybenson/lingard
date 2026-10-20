@@ -19,7 +19,9 @@ class Hotspot(Strict):
     text: str | None = None
 
 
-LocationKind = Literal["home", "cafe", "bank", "clinic", "library", "town_hall", "newspaper", "shop", "job_centre"]
+LocationKind = Literal[
+    "home", "cafe", "bank", "clinic", "library", "town_hall", "newspaper", "shop", "job_centre", "test_centre"
+]
 """What sort of place it is, the same in every city and language; the app picks its icon from this."""
 
 

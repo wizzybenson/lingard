@@ -1,11 +1,83 @@
 # Sujets d'expression orale pour les examens blancs (originaux). Clés : identifiants des sections du pack.
 # section_a (5 min) : obtenir des renseignements à partir d'un document, en posant une dizaine de questions.
 # section_b (10 min) : présenter un document à un ami et le convaincre, en répondant à ses objections.
+# Chaque sujet se joue en direct avec l'examinatrice : « facts » sont les seules informations qu'elle peut donner,
+# « tactics » disent au personnage comment mener l'échange (en anglais, comme les contrats de scène).
+examiner: {npc_key: examinatrice_claire, location_key: rivemont.vieux_port.centre_examen}
 section_a:
-  - "Vous avez lu cette annonce : « Club de randonnée de Rivemont — sorties tous les dimanches, tous niveaux, renseignements au 418 555 0144. » Vous téléphonez pour obtenir des renseignements (niveau, horaires, prix, équipement, transport…). Posez une dizaine de questions."
-  - "Vous avez vu cette affiche : « Cours de français du soir pour adultes — inscriptions ouvertes au Centre communautaire Saint-Roch. » Vous appelez pour en savoir plus (dates, durée, niveau, coût, certificat…). Posez une dizaine de questions."
-  - "Vous lisez cette petite annonce : « Chambre à louer dans grand appartement près du Vieux-Port, idéal pour étudiant ou jeune travailleur. » Vous appelez le propriétaire pour vous renseigner (loyer, charges, colocataires, règles, date de disponibilité…). Posez une dizaine de questions."
+  - prompt: "Vous avez lu cette annonce : « Club de randonnée de Rivemont — sorties tous les dimanches, tous niveaux, renseignements au 418 555 0144. » Vous téléphonez pour obtenir des renseignements (niveau, horaires, prix, équipement, transport…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the volunteer who answers the hiking club's phone. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Le club organise une sortie chaque dimanche, de 8 h 30 à 15 h environ."
+      - "Le départ se fait en autobus nolisé depuis le stationnement du Vieux-Port."
+      - "Il y a deux groupes : un groupe découverte (8 km) et un groupe sportif (15 km)."
+      - "L'adhésion coûte 60 $ par année ; chaque sortie coûte ensuite 12 $ pour le transport."
+      - "On peut faire une sortie d'essai gratuite avant de s'inscrire."
+      - "Il faut de bonnes chaussures de marche, un imperméable, de l'eau et un dîner froid."
+      - "Le club prête des bâtons de marche aux nouveaux membres."
+      - "Les sorties sont annulées en cas d'orage ; on prévient les membres par courriel le samedi soir."
+      - "Les enfants de plus de 12 ans sont acceptés s'ils sont accompagnés d'un adulte."
+      - "Les inscriptions se font en ligne ou sur place, le dimanche matin."
+  - prompt: "Vous avez vu cette affiche : « Cours de français du soir pour adultes — inscriptions ouvertes au Centre communautaire Saint-Roch. » Vous appelez pour en savoir plus (dates, durée, niveau, coût, certificat…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the receptionist of the community centre. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Les cours ont lieu le mardi et le jeudi, de 18 h 30 à 20 h 30."
+      - "La session dure douze semaines et commence le 15 septembre."
+      - "Il y a trois niveaux : débutant, intermédiaire et avancé ; un court test oral place chaque personne."
+      - "Le cours coûte 180 $ pour la session ; il est gratuit pour les personnes arrivées depuis moins de cinq ans."
+      - "Les groupes ont au maximum quinze personnes."
+      - "Une attestation est remise à ceux qui suivent au moins 80 % des cours."
+      - "Le matériel est fourni ; il faut seulement apporter un cahier."
+      - "Une halte-garderie gratuite est offerte pendant les cours du mardi."
+      - "Le centre est à cinq minutes à pied de la station de métro Saint-Roch."
+      - "On s'inscrit sur place du lundi au vendredi, avec une pièce d'identité."
+  - prompt: "Vous lisez cette petite annonce : « Chambre à louer dans grand appartement près du Vieux-Port, idéal pour étudiant ou jeune travailleur. » Vous appelez le propriétaire pour vous renseigner (loyer, charges, colocataires, règles, date de disponibilité…). Posez une dizaine de questions."
+    targets: [fr.func.ask_information]
+    tactics:
+      - "Play the person renting out the room. Answer each question in one or two sentences with one fact, and never volunteer what was not asked, so the candidate must ask about ten questions in five minutes."
+    facts:
+      - "Le loyer de la chambre est de 650 $ par mois."
+      - "L'électricité, le chauffage et Internet sont compris dans le loyer."
+      - "La chambre est libre à partir du 1er novembre."
+      - "Il y a deux autres colocataires : une infirmière et un étudiant en génie."
+      - "La cuisine et la salle de bain sont partagées."
+      - "La chambre est meublée : lit, bureau et commode."
+      - "Les animaux ne sont pas acceptés et il est interdit de fumer dans l'appartement."
+      - "Un dépôt d'un mois de loyer est demandé à la signature."
+      - "L'appartement est au deuxième étage, sans ascenseur."
+      - "On peut visiter le samedi après-midi."
 section_b:
-  - "Vous avez lu cette annonce : « Devenez bénévole au festival d'été de Rivemont : trois jours de musique, accès gratuit aux concerts pour les bénévoles. » Vous présentez cette offre à un ami et vous essayez de le convaincre de s'inscrire avec vous. Il n'est pas convaincu : répondez à ses objections."
-  - "Vous avez lu cet article : « Les jardins communautaires : cultiver ses légumes en ville, une parcelle pour 30 $ par saison. » Vous présentez ce projet à un ami et vous essayez de le convaincre de prendre une parcelle avec vous. Il hésite : répondez à ses objections."
-  - "Vous avez lu cette publicité : « Abonnement annuel au transport en commun : 20 % de rabais pour les inscriptions avant le 31 août. » Vous présentez cette offre à un ami qui va au travail en voiture et vous essayez de le convaincre de changer ses habitudes. Il n'est pas d'accord : répondez à ses objections."
+  - prompt: "Vous avez lu cette annonce : « Devenez bénévole au festival d'été de Rivemont : trois jours de musique, accès gratuit aux concerts pour les bénévoles. » Vous présentez cette offre à un ami et vous essayez de le convaincre de s'inscrire avec vous. Il n'est pas convaincu : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who is not convinced. Raise one objection at a time (no time, the work sounds tiring, the concerts are too crowded, you know nobody there), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "Le festival dure trois jours, du vendredi au dimanche, à la mi-juillet."
+      - "Les bénévoles travaillent un quart de six heures par jour."
+      - "Les bénévoles ont accès gratuitement à tous les concerts en dehors de leur quart."
+      - "Les bénévoles reçoivent un t-shirt et un repas par quart."
+      - "Les postes vont de l'accueil du public à la vente de boissons et au tri des déchets."
+  - prompt: "Vous avez lu cet article : « Les jardins communautaires : cultiver ses légumes en ville, une parcelle pour 30 $ par saison. » Vous présentez ce projet à un ami et vous essayez de le convaincre de prendre une parcelle avec vous. Il hésite : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend, who hesitates. Raise one objection at a time (you know nothing about gardening, it takes too much time, the garden is far, vegetables are cheap at the store), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "Une parcelle coûte 30 $ pour la saison, de mai à octobre."
+      - "L'eau et les outils sont fournis par le jardin."
+      - "Des ateliers gratuits de jardinage ont lieu le samedi matin."
+      - "Le jardin se trouve à côté du parc des Érables."
+      - "Chaque jardinier doit participer à deux corvées collectives par saison."
+  - prompt: "Vous avez lu cette publicité : « Abonnement annuel au transport en commun : 20 % de rabais pour les inscriptions avant le 31 août. » Vous présentez cette offre à un ami qui va au travail en voiture et vous essayez de le convaincre de changer ses habitudes. Il n'est pas d'accord : répondez à ses objections."
+    targets: [fr.func.persuade]
+    tactics:
+      - "Play the candidate's friend who drives to work and disagrees. Raise one objection at a time (the bus is slow, it is crowded, you need the car after work, winter waits at the stop), and concede a point only to a good argument. Stay friendly but hard to convince for about ten minutes."
+    facts:
+      - "L'abonnement annuel coûte 960 $, soit 768 $ avec le rabais de 20 %."
+      - "L'offre est valable pour les inscriptions avant le 31 août."
+      - "L'abonnement donne accès à l'autobus et au métro sans limite."
+      - "Aux heures de pointe, un autobus passe toutes les dix minutes sur les grandes lignes."
+      - "Certains employeurs remboursent une partie de l'abonnement."

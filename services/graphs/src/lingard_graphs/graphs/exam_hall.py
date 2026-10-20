@@ -21,7 +21,16 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import interrupt
 from pydantic import BaseModel, ConfigDict
 
-from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_NAME, PackId, Skill
+from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_CITY, LANGUAGE_NAME, PackId, Skill
+from lingard_contracts.scene import (
+    CastMember,
+    Condition,
+    ElicitationTactic,
+    Exit,
+    SceneContract,
+    SceneTargets,
+    npc_band_for,
+)
 from lingard_curriculum.packs import ExamPack, PartDef, ielts_overall
 from lingard_economy.events import landing_day_unlocked
 from lingard_economy.rewards import COINS, LedgerEntry
@@ -32,8 +41,13 @@ from lingard_exam_packs.serving import check, serve_set
 from lingard_graphs.agents.writing import WritingExaminer, rubric_text
 from lingard_graphs.deps import GraphDeps
 from lingard_graphs.pedagogy.bands import observe, prior
+from lingard_graphs.store import SceneRecord
+from lingard_world import load_city
 
 EXAMS = {"tef_canada": "TEF Canada", "ielts_gt": "IELTS General Training"}
+TARGET_KINDS = {"functions": "func", "grammar": "grammar", "lexset": "lexset", "pron": "pron"}
+"""Scene target lists by the curriculum key segment that marks each kind of node."""
+TRANSCRIPT_WAIT_TRIES, TRANSCRIPT_WAIT_S = 10, 0.5
 SAMPLES = 3
 
 
@@ -45,9 +59,15 @@ class MockTasks(BaseModel):
     class Speaking(BaseModel):
         part_id: str
         prompt: str
+        targets: list[str] = []
+        tactics: list[str] = []
+        facts: list[str] = []
+        """With facts, the part is played live with the examiner; without, it is answered as a recording."""
 
     writing: list[Writing]
     speaking: list[Speaking]
+    examiner: dict[str, str] | None = None
+    """``npc_key`` and ``location_key`` of the examiner who runs live speaking parts."""
 
 
 class _SpeakingScores(BaseModel):
@@ -65,6 +85,8 @@ class ExamState(BaseModel):
     user_id: uuid.UUID
     pack: PackId
     trace_id: str | None = None
+    attempt: uuid.UUID | None = None
+    """Set once when the paper is assembled; seeds the ids of anything created during the mock."""
     item_ids: dict[str, list[str]] = {}
     sets: dict[str, list[list[str]]] = {}
     """Per receptive section, the question groups in serving order (one screen each)."""
@@ -115,7 +137,12 @@ def build_exam_hall(
                 groups += sorted(chosen, key=lambda g: min(i.band for i in g))  # easier first within a part
             sets[section.id] = [[i.id for i in g] for g in groups]
         tasks = authored_tasks(state.pack) or await generated_tasks(pack, state)
-        return {"sets": sets, "item_ids": {k: [i for g in v for i in g] for k, v in sets.items()}, "tasks": tasks}
+        return {
+            "sets": sets,
+            "item_ids": {k: [i for g in v for i in g] for k, v in sets.items()},
+            "tasks": tasks,
+            "attempt": uuid.uuid4(),
+        }
 
     async def top_up(pack: ExamPack, skill: Skill, part: str, count: int, trace_id: str | None) -> list[Item]:
         bands = spread_bands(count)
@@ -141,9 +168,16 @@ def build_exam_hall(
         if not all(writing.get(t) for t in task_ids) or not all(speaking.get(p) for p in part_ids):
             return None
         pick = random.Random(uuid.uuid4().hex)  # noqa: S311
+
+        def speaking_task(part_id: str) -> MockTasks.Speaking:
+            chosen = pick.choice(speaking[part_id])
+            fields = chosen if isinstance(chosen, dict) else {"prompt": chosen}
+            return MockTasks.Speaking(part_id=part_id, **fields)
+
         return MockTasks(
             writing=[MockTasks.Writing(task_id=t, prompt=pick.choice(writing[t])) for t in task_ids],
-            speaking=[MockTasks.Speaking(part_id=p, prompt=pick.choice(speaking[p])) for p in part_ids],
+            speaking=[speaking_task(p) for p in part_ids],
+            examiner=speaking.get("examiner"),
         )
 
     async def generated_tasks(pack: ExamPack, state: ExamState) -> MockTasks:
@@ -215,20 +249,67 @@ def build_exam_hall(
         else:
             assert state.tasks is not None
             spoken = dict(state.speaking)
-            for part in section.parts or []:  # type: ignore[union-attr]
-                part_prompt = next((p.prompt for p in state.tasks.speaking if p.part_id == part.id), part.id)
-                reply = interrupt(
-                    {
-                        "kind": "speaking",
-                        "section": section.id,
-                        "part": part.id,
-                        "prompt": part_prompt,
-                        "minutes": part.minutes,
-                    }
-                )
-                spoken[part.id] = str(reply.get("transcript", ""))
+            for part in section.part_list():
+                speaking_task = next((p for p in state.tasks.speaking if p.part_id == part.id), None)
+                request: dict[str, Any] = {
+                    "kind": "speaking",
+                    "section": section.id,
+                    "part": part.id,
+                    "prompt": speaking_task.prompt if speaking_task else part.id,
+                    "minutes": part.minutes,
+                }
+                if speaking_task and speaking_task.facts and state.tasks.examiner and state.attempt:
+                    request["scene_id"] = str(await examiner_scene(state, pack, part, speaking_task))
+                reply = interrupt(request)
+                if reply.get("scene_id") and reply.get("scene_id") == request.get("scene_id"):
+                    spoken[part.id] = await examiner_transcript(uuid.UUID(str(reply["scene_id"])))
+                else:
+                    spoken[part.id] = str(reply.get("transcript", ""))
             update["speaking"] = spoken
         return update
+
+    async def examiner_scene(state: ExamState, pack: ExamPack, part: PartDef, task: MockTasks.Speaking) -> uuid.UUID:
+        """A live scene in which the examiner runs this speaking part. Ids come from the attempt, so the graph
+        resuming (which re-runs this node) finds the same session and scene instead of creating new ones."""
+        assert state.attempt is not None and state.tasks is not None and state.tasks.examiner is not None
+        city_key = LANGUAGE_CITY[pack.language]
+        city = load_city(deps.content_root, city_key)
+        examiner = city.npc(state.tasks.examiner["npc_key"])
+        session_id = uuid.uuid5(state.attempt, "speaking")
+        scene_id = uuid.uuid5(state.attempt, part.id)
+        profile = await deps.store.profile(state.user_id)
+        band = profile.language_bands.get(pack.language, 5)
+        minutes = max(part.minutes) if isinstance(part.minutes, list) else (part.minutes or 5)
+        targets = {kind: [t for t in task.targets if f".{abbr}." in t] for kind, abbr in TARGET_KINDS.items()}
+        contract = SceneContract(
+            scene_id=scene_id,
+            city=city_key,
+            location_key=state.tasks.examiner["location_key"],
+            cast=[CastMember(npc_key=examiner.key, role=examiner.role, voice_id=examiner.voice_id)],
+            learner_goal=task.prompt,
+            targets=SceneTargets(**targets),
+            elicitation=[ElicitationTactic(target=t, tactic=" ".join(task.tactics)) for t in task.targets],
+            approved_facts=task.facts,
+            npc_language_band=npc_band_for(band),
+            accent_variety=[examiner.accent],
+            success_conditions=[Condition(description="The candidate completes this part of the speaking test")],
+            max_turns=max(4, min(80, minutes * 5)),
+            exits=[Exit(key="time_up", trigger="The time for this part is over", consequence="Thank the candidate")],
+            pack_alignment=[f"{pack.id}.speaking.{part.id}"],
+        )
+        await deps.store.open_exam_session(session_id, state.user_id, city_key)
+        await deps.store.save_scene(SceneRecord(scene_id, state.user_id, session_id, contract))
+        return scene_id
+
+    async def examiner_transcript(scene_id: uuid.UUID) -> str:
+        """The spoken exchange, examiner and candidate, as the examiner panel scores it. Turns reach the store
+        through the turn stream a moment after they are spoken, so a fresh scene is given a few seconds."""
+        for _ in range(TRANSCRIPT_WAIT_TRIES):
+            turns = await deps.store.turns(scene_id)
+            if any(t.speaker == "learner" for t in turns):
+                break
+            await asyncio.sleep(TRANSCRIPT_WAIT_S)
+        return "\n".join(f"{'Candidate' if t.speaker == 'learner' else 'Examiner'}: {t.transcript}" for t in turns)
 
     def next_after_section(state: ExamState) -> str:
         return "run_section" if state.section_index < len(deps.packs.pack(state.pack).sections) else "score_section"

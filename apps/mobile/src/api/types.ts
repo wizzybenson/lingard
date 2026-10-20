@@ -48,7 +48,7 @@ export type ThreadPrompt =
   | { kind: "item"; skill?: string; section?: string; minutes?: number; item: ServedItem }
   | { kind: "set"; section: string; minutes: number; progress: { done: number; total: number }; set: ServedSet }
   | { kind: "writing"; prompt: string; min_words: number; minutes?: number; task?: string }
-  | { kind: "speaking"; prompt: string; level?: number; part?: string; minutes?: number | number[] }
+  | { kind: "speaking"; prompt: string; level?: number; part?: string; minutes?: number | number[]; section?: string; scene_id?: string }
   | { kind: "read_aloud"; text: string; asks_clone_consent: boolean };
 
 export interface ServedItem {

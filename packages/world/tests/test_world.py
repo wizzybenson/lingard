@@ -8,11 +8,11 @@ CONTENT = Path(__file__).resolve().parents[3] / "content"
 
 
 @pytest.mark.parametrize("city", ["rivemont", "ashford"])
-def test_city_content_is_valid_and_has_three_npcs_in_first_district(city: str) -> None:
+def test_city_content_is_valid_and_has_at_least_three_npcs_in_first_district(city: str) -> None:
     content = load_city(CONTENT, city)
     first = min(content.city.districts, key=lambda d: d.order)
     npc_keys = {h.npc_key for loc in first.locations for h in loc.hotspots if h.kind == "npc" and h.npc_key}
-    assert len(npc_keys) == 3
+    assert len(npc_keys) >= 3, "SPEC phase 1: at least three NPCs in the first district"
     assert all(content.npc(k).world_facts for k in npc_keys)
 
 

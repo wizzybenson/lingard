@@ -52,6 +52,22 @@ npcs:
     accent: en-GB-standard
     schedule:
       - {from_hour: 9, to_hour: 17, location_key: ashford.station_quarter.bank}
+  - key: examiner_ruth
+    city: ashford
+    name: Ruth Adeyemi
+    role: speaking examiner
+    age: 44
+    personality: Calm, neutral and encouraging; lets the candidate talk and never corrects them during the test.
+    backstory: A former secondary-school English teacher, she has examined speaking tests at the Ashford Test Centre for ten years.
+    speech_style: Clear, natural pace, polite and neutral; follows the test script and keeps to time.
+    secret: She learned Yoruba from her grandmother and still speaks it at family weddings.
+    world_facts:
+      - Ruth examines speaking tests at the Ashford Test Centre.
+      - The speaking test takes between eleven and fourteen minutes.
+    voice_id: en_f_44_ruth
+    accent: en-GB-standard
+    schedule:
+      - {from_hour: 9, to_hour: 17, location_key: ashford.station_quarter.test_centre}
   - key: adviser_priya
     city: ashford
     name: Priya Shah

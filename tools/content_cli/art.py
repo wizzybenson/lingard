@@ -28,6 +28,8 @@ KINDS: dict[str, str] = {
     "bank": "bank",
     "emploi": "office",
     "job_centre": "office",
+    "centre_examen": "office",
+    "test_centre": "office",
     "clinique": "clinic",
     "surgery": "clinic",
     "quincaillerie": "shop",

@@ -42,3 +42,14 @@ Verified on 2026-10-20:
 - TEF speaking in a mock is recorded as a monologue; the real Section A/B is an interaction with an examiner.
 - (Done the same day: TEF paper B, so both exams have two complete papers and mocks mix them part by part.)
 - IELTS Reading lets candidates move between sections; here a set is answered before the next appears.
+
+## Addendum (same day): speaking with a live examiner
+
+TEF Expression orale and IELTS Speaking are conversations, not monologues. Each city now has a test centre and an
+examiner NPC (Claire Dubois in Rivemont, Ruth Adeyemi in Ashford). Each speaking task in `speaking_prompts.yaml`
+carries what the examiner may say (`facts`: for TEF A, the details the candidate must find out; for B, the offer being
+argued about) and how she runs the part (`tactics`: answer briefly and volunteer nothing; object one point at a time;
+ask the Part 1 questions in order, and so on). The mock creates a live scene per speaking part. Its ids come from
+the attempt, so resuming the graph never duplicates it. The scene runs in the normal scene screen, and the
+Examiner/Candidate transcript of its turns is what the speaking panel scores. Recording a monologue remains as
+a fallback.
