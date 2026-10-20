@@ -14,6 +14,7 @@ import numpy as np
 from lingard_contracts.live import (
     SAMPLE_RATE,
     BargeIn,
+    LearnerAudio,
     LearnerSpeechResumed,
     LearnerSpeechStarted,
     LearnerTurnEnded,
@@ -24,6 +25,8 @@ from lingard_contracts.live import (
 
 FRAME_MS = 20
 FRAME_SAMPLES = SAMPLE_RATE * FRAME_MS // 1000
+AUDIO_BATCH_FRAMES = 5
+"""Learner audio is emitted for streaming transcription every 100 ms."""
 
 
 class EnergyVad:
@@ -66,6 +69,8 @@ class Endpointer:
     _barge_ms: int = field(default=0, init=False)
     _interrupted: bool = field(default=False, init=False)
     _speculated: bool = field(default=False, init=False)
+    _unsent: bytearray = field(default_factory=bytearray, init=False)
+    """Utterance audio not yet emitted as ``LearnerAudio``."""
 
     def npc_started(self, utterance_id: str) -> None:
         self._npc_utterance = utterance_id
@@ -99,6 +104,7 @@ class Endpointer:
                 self._speech_ms = 0
                 self._pauses = []
                 self._buffer = bytearray()
+                self._unsent = bytearray()
                 out.append(LearnerSpeechStarted(at_ms=self._start_ms))
             elif self._silence_ms >= 120:
                 self._pauses.append(self._silence_ms)
@@ -113,6 +119,10 @@ class Endpointer:
 
         if self._speaking:
             self._buffer.extend(frame)
+            self._unsent.extend(frame)
+            if len(self._unsent) >= AUDIO_BATCH_FRAMES * FRAME_SAMPLES * 2:
+                out.append(LearnerAudio(pcm=bytes(self._unsent), speech_start_ms=self._start_ms))
+                self._unsent = bytearray()
             if (
                 self.policy.speculate
                 and not self._speculated
@@ -121,6 +131,7 @@ class Endpointer:
                 and self._silence_ms < self.policy.eot_ms
             ):
                 self._speculated = True
+                out.extend(self._flush())
                 out.append(
                     SpeculativeTurn(
                         audio=bytes(self._buffer),
@@ -130,6 +141,7 @@ class Endpointer:
                     )
                 )
             if self._silence_ms and self._speech_ms >= self.min_speech_ms and self._turn_complete():
+                out.extend(self._flush())
                 out.append(
                     LearnerTurnEnded(
                         audio=bytes(self._buffer),
@@ -148,6 +160,13 @@ class Endpointer:
                 self._speaking = False  # a cough or click: discard
                 self._silence_ms = 0
         return out
+
+    def _flush(self) -> list[LiveEvent]:
+        """The audio not yet sent, so a streaming transcriber has the whole utterance when the turn is decided."""
+        if not self._unsent:
+            return []
+        pcm, self._unsent = bytes(self._unsent), bytearray()
+        return [LearnerAudio(pcm=pcm, speech_start_ms=self._start_ms)]
 
     def _turn_complete(self) -> bool:
         if self._silence_ms >= self.policy.eot_ms:

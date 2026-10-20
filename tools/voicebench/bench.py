@@ -115,6 +115,11 @@ async def run_bench(
     report.notes.append(f"provider latencies from profile '{profile_name}' ({profile['status']}, {profile['as_of']})")
     rng = random.Random(seed)  # noqa: S311
     draw = _sampler(profile, rng)
+    # With streaming STT the turn only waits for a commit; batch transcription is the fallback.
+    stt_stage = (
+        "stt_stream_commit_ms" if LiveSettings().stt_streaming and "stt_stream_commit_ms" in profile else "stt_ms"
+    )
+    report.notes.append(f"STT stage: {stt_stage}")
     content = ROOT / "content"
     identifier = LanguageIdentifier([load_language(content, "fr"), load_language(content, "en")])
     prompt = PromptRegistry(ROOT / "prompts").get("npc_actor")
@@ -159,7 +164,7 @@ async def run_bench(
             guard_ctx=runtime.guard_ctx,
             language=runtime.language,
             identifier=identifier,
-            stt=ScriptedStt([Transcript(LEARNER[contract.language], 0.95, "sim")], delay_ms=int(draw("stt_ms"))),
+            stt=ScriptedStt([Transcript(LEARNER[contract.language], 0.95, "sim")], delay_ms=int(draw(stt_stage))),
             tts=CachingTts(ScriptedTts(first_chunk_delay_ms=int(draw("tts_first_chunk_ms")))),  # as build_tts wraps it
             publisher=bus,
             hints=bus,

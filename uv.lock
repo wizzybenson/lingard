@@ -1355,6 +1355,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "redis" },
+    { name = "websockets" },
     { name = "wordfreq" },
 ]
 
@@ -1372,6 +1373,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "redis", specifier = ">=5.2" },
+    { name = "websockets", specifier = ">=14" },
     { name = "wordfreq", specifier = ">=3.1" },
 ]
 

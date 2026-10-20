@@ -77,6 +77,15 @@ class LearnerSpeechStarted(Frozen):
     at_ms: int
 
 
+class LearnerAudio(Frozen):
+    """The learner's audio while they speak, in short batches, for streaming transcription. The turn's events
+    still carry the whole utterance, so a consumer that ignores these loses nothing."""
+
+    kind: Literal["learner_audio"] = "learner_audio"
+    pcm: bytes
+    speech_start_ms: int
+
+
 class PartialTranscript(Frozen):
     kind: Literal["partial"] = "partial"
     text: str
@@ -129,6 +138,7 @@ class Closed(Frozen):
 
 LiveEvent = Annotated[
     LearnerSpeechStarted
+    | LearnerAudio
     | PartialTranscript
     | LearnerTurnEnded
     | SpeculativeTurn

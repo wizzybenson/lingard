@@ -27,7 +27,7 @@ from lingard_live.languages import LanguageIdentifier, load_language
 from lingard_live.livekit_transport import LiveKitTransport
 from lingard_live.loop import LiveLoop, SceneIdentity
 from lingard_live.scene import build_scene
-from lingard_live.settings import LiveSettings, build_stt, build_tts
+from lingard_live.settings import LiveSettings, build_streaming_stt, build_stt, build_tts
 from lingard_llm import LLMConfig, LLMRouter, PromptRegistry
 
 READ_BLOCK_MS = 5000
@@ -102,6 +102,7 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
         publisher=bus,
         hints=bus,
         filler_after_ms=settings.filler_after_ms,
+        streaming_stt=build_streaming_stt(settings),
     )
     with telemetry.span("live.scene", trace_id=str(job.trace_id), scene=str(job.contract.scene_id)):
         warm = asyncio.create_task(loop.prewarm())  # alongside the opening line, never before it

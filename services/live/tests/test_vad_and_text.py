@@ -2,6 +2,7 @@ import pytest
 
 from lingard_contracts.live import (
     BargeIn,
+    LearnerAudio,
     LearnerSpeechResumed,
     LearnerSpeechStarted,
     LearnerTurnEnded,
@@ -121,7 +122,9 @@ def test_repetitive_noise_is_low_entropy(noise: str) -> None:
 
 def test_speculation_fires_at_40_percent_of_eot_and_is_cancelled_by_resumed_speech() -> None:
     ep = Endpointer(policy=TurnPolicy(eot_ms=1200))
-    events = ep.feed(speech(800) + silence(700) + speech(500) + silence(1300))
+    events = [
+        e for e in ep.feed(speech(800) + silence(700) + speech(500) + silence(1300)) if not isinstance(e, LearnerAudio)
+    ]
     kinds = [type(e) for e in events]
     assert kinds == [LearnerSpeechStarted, SpeculativeTurn, LearnerSpeechResumed, SpeculativeTurn, LearnerTurnEnded]
     first = next(e for e in events if isinstance(e, SpeculativeTurn))
@@ -135,3 +138,18 @@ def test_speculation_fires_at_40_percent_of_eot_and_is_cancelled_by_resumed_spee
 def test_speculation_can_be_disabled() -> None:
     ep = Endpointer(policy=TurnPolicy(eot_ms=900, speculate=False))
     assert not any(isinstance(e, SpeculativeTurn) for e in ep.feed(speech(800) + silence(1000)))
+
+
+def test_learner_audio_streams_the_whole_utterance_before_each_decision() -> None:
+    """Streaming transcription gets every byte of the turn, in order, before speculation and end of turn."""
+    ep = Endpointer(policy=TurnPolicy(eot_ms=1200))
+    events = ep.feed(speech(830) + silence(700) + speech(500) + silence(1300))
+    streamed = bytearray()
+    for event in events:
+        if isinstance(event, LearnerAudio):
+            streamed.extend(event.pcm)
+        elif isinstance(event, (SpeculativeTurn, LearnerTurnEnded)):
+            assert bytes(streamed) == event.audio, "all audio up to the decision has been streamed"
+    started = events[0]
+    assert isinstance(started, LearnerSpeechStarted)
+    assert all(e.speech_start_ms == started.at_ms for e in events if isinstance(e, LearnerAudio))

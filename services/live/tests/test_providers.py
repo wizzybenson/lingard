@@ -130,3 +130,13 @@ def test_openai_voices_follow_gender_and_stay_stable() -> None:
     assert gender_of("en_m_64_ron") == "m" and gender_of("narrator") == "f"
     assert pick(OPENAI_VOICES["m"], "en_m_64_ron") == pick(OPENAI_VOICES["m"], "en_m_64_ron")
     assert pick(OPENAI_VOICES["m"], "en_m_64_ron") in OPENAI_VOICES["m"]
+
+
+def test_streaming_stt_needs_the_elevenlabs_key_and_can_be_switched_off() -> None:
+    from lingard_live.settings import build_streaming_stt
+
+    assert build_streaming_stt(_settings()) is None
+    assert build_streaming_stt(_settings(elevenlabs_api_key="e")) is not None
+    off = _settings(elevenlabs_api_key="e")
+    off.stt_streaming = False
+    assert build_streaming_stt(off) is None

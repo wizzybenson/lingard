@@ -45,3 +45,6 @@ measured:
   network_ms:
     median: 45
     sigma: 0.25
+  stt_stream_commit_ms:      # ElevenLabs Scribe v2 Realtime, commit → final text; 3 live samples, 2026-10-20
+    median: 250
+    sigma: 0.15

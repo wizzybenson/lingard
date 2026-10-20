@@ -8,6 +8,7 @@ from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt, OpenAIStt, SttProvider, VoiceboxStt
+from lingard_live.stt_stream import ElevenLabsRealtimeStt, StreamingStt
 from lingard_live.tts import CachingTts, ElevenLabsTts, FallbackTts, OpenAITts, TtsProvider, VoiceboxTts
 from lingard_live.voices import load_overrides
 
@@ -29,7 +30,7 @@ class LiveSettings(BaseSettings):
     openai_api_key: SecretStr | None = None
     elevenlabs_api_key: SecretStr | None = None
     deepgram_api_key: SecretStr | None = None
-    stt_order: list[str] = ["voicebox", "deepgram", "openai", "elevenlabs"]
+    stt_order: list[str] = ["voicebox", "deepgram", "elevenlabs", "openai"]
     """Preference order; providers without a key or URL are skipped, the rest become the fallback chain."""
     tts_order: list[str] = ["voicebox", "elevenlabs", "openai"]
     voicebox_stt_model: str = "whisper-turbo"
@@ -48,7 +49,9 @@ class LiveSettings(BaseSettings):
     """Sentences up to this many words (or questions) made only of grounded words skip the check."""
     filler_after_ms: float | None = 150
     """Say a hesitation if the first sentence is still being checked this long after it is ready; empty = never."""
-    """Sentences up to this many words (or questions) made only of grounded words skip the check."""
+    stt_streaming: bool = True
+    """Transcribe while the learner speaks (ElevenLabs Scribe Realtime, when its key is set); batch is the fallback."""
+    elevenlabs_realtime_stt_model: str = "scribe_v2_realtime"
 
 
 def _secret(value: SecretStr | None) -> str | None:
@@ -67,6 +70,13 @@ def stt_providers(settings: LiveSettings) -> dict[str, SttProvider]:
     if key := _secret(settings.elevenlabs_api_key):
         available["elevenlabs"] = ElevenLabsStt(key, settings.elevenlabs_stt_model)
     return {name: available[name] for name in settings.stt_order if name in available}
+
+
+def build_streaming_stt(settings: LiveSettings) -> StreamingStt | None:
+    key = _secret(settings.elevenlabs_api_key)
+    if not settings.stt_streaming or not key:
+        return None
+    return ElevenLabsRealtimeStt(key, settings.elevenlabs_realtime_stt_model)
 
 
 def build_stt(settings: LiveSettings) -> SttProvider:

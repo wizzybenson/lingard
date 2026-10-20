@@ -300,3 +300,48 @@ async def test_prewarm_puts_stock_lines_in_the_tts_cache(runtime: SceneRuntime) 
     async for _ in caching.stream(language.fillers[0], loop.voice):
         pass
     assert caching.hits == 1
+
+
+async def test_a_streamed_utterance_needs_only_a_commit_at_the_end(runtime: SceneRuntime) -> None:
+    """Streaming STT: audio is fed while the learner speaks; the turn costs a commit, not a batch transcription.
+    A speculation the learner then continued is completed by a second commit (the text so far plus the rest)."""
+    from lingard_contracts.live import LearnerAudio, LearnerSpeechResumed, LearnerSpeechStarted, SpeculativeTurn
+    from lingard_live.stt_stream import ScriptedStreamingStt
+
+    loop, session, _bus, _model, _tts = await build(
+        runtime, lambda m: "D'accord.", ["(batch should not be needed)"], stt_delay_ms=900
+    )
+    streaming = ScriptedStreamingStt(["Je voudrais", "récupérer mon dépôt."], commit_ms=30)
+    loop.streaming_stt = streaming
+    task = asyncio.create_task(loop.run())
+    second = b"\x00\x00" * 16000
+    session.push(LearnerSpeechStarted(at_ms=0))
+    session.push(LearnerAudio(pcm=second, speech_start_ms=0))
+    session.push(SpeculativeTurn(audio=second, speech_start_ms=0, speech_end_ms=900, at_ms=1300))
+    await asyncio.sleep(0.05)
+    session.push(LearnerSpeechResumed(speech_start_ms=0, at_ms=1400))
+    session.push(LearnerAudio(pcm=second, speech_start_ms=0))
+    session.push(LearnerTurnEnded(audio=second * 2, speech_start_ms=0, speech_end_ms=1900, eot_decided_ms=2900))
+    await asyncio.sleep(0.3)
+    session.push(Closed())
+    await task
+    outcome = loop.outcomes[-1]
+    assert outcome.learner_text == "Je voudrais récupérer mon dépôt."
+    assert outcome.timing.stt_ms < 300, "a commit, not the 900 ms batch transcription"
+    assert streaming.fed == len(second) * 2 and streaming.opened == 1
+
+
+async def test_a_failed_stream_falls_back_to_batch(runtime: SceneRuntime) -> None:
+    from lingard_contracts.live import LearnerAudio, LearnerSpeechStarted
+    from lingard_live.stt_stream import ScriptedStreamingStt
+
+    loop, session, _bus, _model, _tts = await build(runtime, lambda m: "D'accord.", ["Je voudrais mon dépôt."])
+    loop.streaming_stt = ScriptedStreamingStt([], fail=True)
+    task = asyncio.create_task(loop.run())
+    session.push(LearnerSpeechStarted(at_ms=0))
+    session.push(LearnerAudio(pcm=b"\x00\x00" * 16000, speech_start_ms=0))
+    session.push(turn(1000))
+    await asyncio.sleep(0.2)
+    session.push(Closed())
+    await task
+    assert loop.outcomes[-1].learner_text == "Je voudrais mon dépôt."

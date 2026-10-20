@@ -1,50 +1,53 @@
 {
-  "as_of": "2026-10-15",
+  "as_of": "2026-10-20",
   "tts": {
     "elevenlabs": {
-      "median": 286.4,
-      "p95": 931.3,
-      "sigma": 0.367
+      "median": 259.4,
+      "p95": 581.6,
+      "sigma": 0.388
+    },
+    "openai": {
+      "median": 601.6,
+      "p95": 1349.6,
+      "sigma": 0.4
     }
   },
   "stt": {
     "openai": {
-      "median": 1176.1,
-      "p95": 1352.4,
-      "sigma": 0.119
+      "median": 963.5,
+      "p95": 997.7,
+      "sigma": 0.024
     },
     "elevenlabs": {
-      "median": 915.0,
-      "p95": 1343.8,
-      "sigma": 0.168
+      "median": 804.7,
+      "p95": 903.5,
+      "sigma": 0.154
     }
   },
   "stt_similarity": {
-    "openai": 0.913,
-    "elevenlabs": 0.942
+    "openai": 0.934,
+    "elevenlabs": 0.977
   },
   "llm_first_token": {
     "anthropic": {
-      "median": 1321.9,
-      "p95": 2248.6,
-      "sigma": 0.346
+      "median": 1240.3,
+      "p95": 1336.3,
+      "sigma": 0.265
     }
   },
   "llm_token": {
     "anthropic": {
-      "median": 20.5,
-      "p95": 28.0,
-      "sigma": 0.272
+      "median": 19.6,
+      "p95": 19.7,
+      "sigma": 0.014
     }
   },
   "claim_check": {
     "anthropic": {
-      "median": 1133.2,
-      "p95": 1604.0,
-      "sigma": 0.278
+      "median": 1061.3,
+      "p95": 2103.8,
+      "sigma": 0.343
     }
   },
-  "errors": {
-    "tts:openai": "ReadTimeout('')"
-  }
+  "errors": {}
 }

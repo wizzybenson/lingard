@@ -23,7 +23,9 @@ from lingard_contracts.live import (
     AudioChunk,
     BargeIn,
     Closed,
+    LearnerAudio,
     LearnerSpeechResumed,
+    LearnerSpeechStarted,
     LearnerTurnEnded,
     SpeculativeTurn,
     personalised_turn_policy,
@@ -34,12 +36,15 @@ from lingard_live.guard import ContractGuard, GuardContext, GuardResult, Verdict
 from lingard_live.languages import LanguageConfig, LanguageIdentifier
 from lingard_live.sentences import SentenceSplitter, split_stream
 from lingard_live.stt import SttProvider, Transcript
+from lingard_live.stt_stream import StreamingStt, SttStream
 from lingard_live.transport import LiveSession
 from lingard_live.tts import TtsProvider, VoiceSpec
 from lingard_live.turn_gate import EchoCheck, GatePolicy, TurnDecision, validate_turn
 
 logger = logging.getLogger(__name__)
 _NO_ECHO = EchoCheck(checked=False, matched=False)
+STREAM_FINISH_TIMEOUT_S = 1.5
+"""Longer than a streamed commit ever takes (≈0.3 s), shorter than giving up on batch would cost."""
 WRAP_UP_HINT = "The scene is nearly over: bring the conversation to a natural close in the next reply."
 
 
@@ -134,6 +139,7 @@ class LiveLoop:
         hints: HintSource,
         gate: GatePolicy | None = None,
         filler_after_ms: float | None = None,
+        streaming_stt: StreamingStt | None = None,
     ) -> None:
         """``filler_after_ms``: if a reply's first sentence is still held by the claim check this long after it was
         screened, the NPC says a hesitation (``LanguageConfig.fillers``) first; ``None`` never does."""
@@ -151,6 +157,9 @@ class LiveLoop:
         self.hints = hints
         self.gate = gate or GatePolicy()
         self.filler_after_ms = filler_after_ms
+        self.streaming_stt = streaming_stt
+        self._stream: tuple[int, SttStream] | None = None
+        """The streaming transcription of the utterance in progress, keyed by its speech start."""
         self.outcomes: list[TurnOutcome] = []
         self.pauses: list[int] = []
         self.learner_turns = 0
@@ -180,9 +189,18 @@ class LiveLoop:
 
     async def run(self) -> None:
         async for event in self.session.events():
-            if isinstance(event, SpeculativeTurn):
+            if isinstance(event, LearnerSpeechStarted):
+                await self._close_stream()
+                if self.streaming_stt is not None:
+                    self._stream = (event.at_ms, self.streaming_stt.open(CITY_LOCALE[self.state.contract.city]))
+            elif isinstance(event, LearnerAudio):
+                if self._stream is not None and self._stream[0] == event.speech_start_ms:
+                    await self._stream[1].feed(event.pcm)
+            elif isinstance(event, SpeculativeTurn):
                 await self._discard_speculation()
-                task = asyncio.create_task(self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms))
+                task = asyncio.create_task(
+                    self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms, event.speech_start_ms)
+                )
                 self._speculation = (event.speech_start_ms, task)
             elif isinstance(event, LearnerSpeechResumed):
                 await self._discard_speculation()
@@ -198,7 +216,13 @@ class LiveLoop:
         await self._discard_speculation()
         if self._current is not None:
             await asyncio.gather(self._current, return_exceptions=True)
+        await self._close_stream()
         await asyncio.gather(*self._pending, return_exceptions=True)
+
+    async def _close_stream(self) -> None:
+        if self._stream is not None:
+            stream, self._stream = self._stream[1], None
+            await stream.close()
 
     async def _end_of_turn(self, event: LearnerTurnEnded, committed_at: float) -> None:
         prepared: Prepared | None = None
@@ -210,7 +234,9 @@ class LiveLoop:
         else:
             await self._discard_speculation()
         if prepared is None:
-            prepared = await self._prepare(event.audio, event.speech_end_ms - event.speech_start_ms)
+            prepared = await self._prepare(
+                event.audio, event.speech_end_ms - event.speech_start_ms, event.speech_start_ms
+            )
         await self._commit(prepared, event, committed_at)
 
     async def handle_turn(self, event: LearnerTurnEnded) -> None:
@@ -259,10 +285,22 @@ class LiveLoop:
 
     # ---- preparation (no side effects visible to the learner or the world) ----------------------------------------
 
-    async def _prepare(self, audio: bytes, speech_ms: int) -> Prepared:
+    async def _transcribe(self, audio: bytes, speech_start_ms: int | None) -> Transcript:
+        """The streamed transcript when this utterance was streamed; batch transcription otherwise or on any failure."""
+        locale = CITY_LOCALE[self.state.contract.city]
+        if self._stream is not None and self._stream[0] == speech_start_ms:
+            try:
+                streamed = await self._stream[1].finish(STREAM_FINISH_TIMEOUT_S)
+                if streamed.text:
+                    return streamed
+            except Exception as exc:  # streaming only speeds a turn up; batch stays the source of truth
+                logger.warning("streaming STT failed, using batch: %s", exc)
+        return await self.stt.transcribe(audio, locale)
+
+    async def _prepare(self, audio: bytes, speech_ms: int, speech_start_ms: int | None = None) -> Prepared:
         started = time.perf_counter()
         timing = TurnTiming()
-        transcript = await self.stt.transcribe(audio, CITY_LOCALE[self.state.contract.city])
+        transcript = await self._transcribe(audio, speech_start_ms)
         timing.stt_ms = (time.perf_counter() - started) * 1000
         recent = [t.text for t in self.state.dialogue[-4:] if t.speaker != "learner"]
         decision = validate_turn(
