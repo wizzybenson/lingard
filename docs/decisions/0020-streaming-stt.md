@@ -31,3 +31,13 @@ Small live probes (2026-10-20, a few cents):
 Offline latency eval with measured provider latencies: p50 2,188 → **1,239 ms**, p95 2,861 → **1,874 ms**. The gate
 still fails. The biggest remaining stage is the NPC model's first token (~0.9–1.3 s on Haiku 5.5). Changing the
 fast-tier model is the founder's call.
+
+## Live check (2026-10-20, `tools/voicebench/live_turns.py`, 2 French turns, real providers, no LiveKit hop)
+
+| turn | STT (streamed) | first token | first audio after end of turn | transcript |
+|---|---|---|---|---|
+| 1 | 231 ms | 1,530 ms | 1,348 ms | exact |
+| 2 | 221 ms | 958 ms | 996 ms (hesitation covered the claim check) | exact |
+
+Both replies stayed within the scene's approved facts. The NPC model's first token is now the stage that sets the
+latency.
