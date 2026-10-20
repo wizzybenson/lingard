@@ -292,6 +292,17 @@ async def test_a_slow_first_check_is_covered_by_a_hesitation(runtime: SceneRunti
     assert not loop.outcomes[-1].timing.filler, "a fast check needs no hesitation"
 
 
+async def test_the_opening_line_starts_without_a_hesitation(runtime: SceneRuntime) -> None:
+    """Nobody is waiting on an answer when the scene opens: "So… Hiya" sounded wrong live."""
+    claims = ScriptedClaimChecker(delay_ms=400)
+    loop, session, _bus, _model, _tts = await build(
+        runtime, lambda m: "Le plombier passera demain matin.", [], claims=claims, filler_after_ms=100
+    )
+    await loop.opening()
+    npc = [text for speaker, text in session.captions if speaker == "npc"]
+    assert npc == ["Le plombier passera demain matin."] and not loop.outcomes[-1].timing.filler
+
+
 async def test_prewarm_puts_stock_lines_in_the_tts_cache(runtime: SceneRuntime) -> None:
     loop, _session, _bus, _model, tts = await build(runtime, lambda m: "D'accord.", [])
     caching = CachingTts(tts)

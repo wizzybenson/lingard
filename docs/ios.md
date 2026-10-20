@@ -55,22 +55,34 @@ Screenshots land in `~/.maestro/tests/<timestamp>/`.
 
 ## A real iPhone
 
-Plug it in, trust the Mac, and turn on **Settings → Privacy & Security → Developer Mode**. Signing for a device needs
-your Apple ID in Xcode (Settings → Accounts), because the build is signed with your personal team:
+Lingard needs its own development build: **Expo Go can't run it**, because live conversations use LiveKit's native
+WebRTC module, which Expo Go doesn't include. The development build works like Expo Go (it loads JavaScript from Metro
+and reloads on save) but contains LiveKit.
+
+Once per phone (and again every 7 days with a free Apple ID):
+
+1. Plug the iPhone into the Mac, unlock it and tap **Trust**.
+2. On the phone: **Settings → Privacy & Security → Developer Mode** → on (it restarts).
+3. In Xcode: **Settings → Accounts** → add your Apple ID (the build is signed with your personal team).
+4. Build and install:
+   ```bash
+   cd apps/mobile && npx expo run:ios --device
+   ```
+5. On the phone: **Settings → General → VPN & Device Management** → trust your developer certificate.
+
+Each test session (phone and Mac on the same Wi-Fi):
 
 ```bash
-npx expo run:ios --device
+./tools/tester_session.sh        # services on the LAN address, LiveKit announcing it, migrations, seed, Metro
+./tools/tester_session.sh stop   # stops the API, workers and pronunciation service
 ```
 
-The phone reaches the Mac over Wi-Fi, so run the services on the LAN address (`ipconfig getifaddr en0`):
+Open Lingard on the phone. The first time, it asks for local-network access; allow it. In development the app rewrites
+`localhost` in the API URL and in the LiveKit ticket to the address Metro is served from (`src/config.ts`,
+`reachable`), so nothing else needs configuring.
 
-```bash
-uv run uvicorn lingard_api.main:app --host 0.0.0.0 --port 58000
-LIVEKIT_NODE_IP=192.168.x.y docker compose up -d livekit   # ICE candidates must carry an address the phone can reach
-```
-
-In development the app rewrites `localhost` in the API URL and in the LiveKit ticket to the address Metro is served from
-(`src/config.ts`, `reachable`). iOS asks once for local-network access; allow it.
+For someone else's phone, use TestFlight (Apple Developer Program): archive and upload from Xcode. That build needs an
+API reachable from the internet, not the Mac's LAN.
 
 ## Release builds
 

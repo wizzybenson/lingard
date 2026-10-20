@@ -12,8 +12,9 @@ For someone trying Lingard on a phone or the Simulator for the first time.
 2. Sign in with your name and that PIN. You are then asked to choose your own 6-digit PIN.
 3. Pick the app's language (English, French or Arabic) on the sign-in screen. You can change it later in Settings.
 
-Setup for the founder: `docs/ios.md` covers the Simulator and a real iPhone. Before a session, start the services
-listed in `AGENTS.md` and run `uv run python -m lingard_api.cli seed`.
+Setup for the founder: install the Lingard development build on the phone once (`docs/ios.md`, "A real iPhone";
+Expo Go can't run Lingard's voice), then start each session with `./tools/tester_session.sh` on a Mac on the same
+Wi-Fi.
 
 ## What to try, in each language
 

@@ -392,7 +392,8 @@ class LiveLoop:
                 await pending.put(None)
 
         async def guarded() -> AsyncIterator[Spoken]:
-            first = True
+            # A hesitation covers the wait for an answer; the opening line answers nobody ("So… Hiya" was heard live).
+            first = prepared.decision.reason != "opening"
             while (item := await pending.get()) is not None:
                 screened, confirm, prefetch = item
                 if first and prefetch is not None and self.filler_after_ms is not None:
