@@ -11,12 +11,14 @@ import argparse
 import asyncio
 import json
 import uuid
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 from evals.scenes import eval_scenes
 from lingard_contracts.common import CITY_LOCALE
 from lingard_contracts.live import Closed, LiveSessionConfig, personalised_turn_policy
+from lingard_contracts.scene import SceneContract
 from lingard_live.actor import NpcActor
 from lingard_live.claims import LlmClaimChecker
 from lingard_live.events import MemoryBus
@@ -41,10 +43,14 @@ CHUNK = FRAME_SAMPLES * 2 * 5
 """100 ms of 16 kHz mono PCM, played every 100 ms like a microphone."""
 
 
-async def run(turns: int, language: str, streaming: bool) -> list[dict[str, object]]:
+async def run(
+    turns: int, language: str, streaming: bool, contract: SceneContract | None = None, lines: list[str] | None = None
+) -> list[dict[str, object]]:
     settings = LiveSettings()
     settings.stt_streaming = streaming
-    contract, band, _ = next((c, b, n) for c, b, n in eval_scenes(10) if c.language == language)
+    band = 6
+    if contract is None:
+        contract, band, _ = next((c, b, n) for c, b, n in eval_scenes(10) if c.language == language)
     runtime = build_scene(contract, settings.content_root, learner_name="Sam")
     languages = [load_language(settings.content_root, "fr"), load_language(settings.content_root, "en")]
     identifier = LanguageIdentifier(languages)
@@ -92,7 +98,7 @@ async def run(turns: int, language: str, streaming: bool) -> list[dict[str, obje
     task = asyncio.create_task(loop.run())
     endpointer = Endpointer(policy=policy)
     learner = VoiceSpec(voice_id=f"{language}_m_speaker2", language=language)
-    for line in LINES[language][:turns]:
+    for line in (lines or LINES[language])[:turns]:
         speech = b"".join([chunk.pcm async for chunk in tts.stream(line, learner)])
         audio = speech + b"\x00\x00" * (16 * (policy.eot_ms + 600))
         before = len(loop.outcomes)
@@ -128,8 +134,13 @@ def main() -> None:
     parser.add_argument("--turns", type=int, default=2)
     parser.add_argument("--language", choices=["fr", "en"], default="fr")
     parser.add_argument("--no-streaming", action="store_true")
+    parser.add_argument("--contract", type=Path, help="a scene contract as JSON (e.g. an examiner scene)")
+    parser.add_argument("--line", action="append", help="what the learner says, one per turn")
     args = parser.parse_args()
-    print(json.dumps(asyncio.run(run(args.turns, args.language, not args.no_streaming)), ensure_ascii=False, indent=2))
+    contract = SceneContract.model_validate_json(args.contract.read_text()) if args.contract else None
+    language = contract.language if contract else args.language
+    result = asyncio.run(run(args.turns, language, not args.no_streaming, contract, args.line))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
