@@ -73,7 +73,8 @@ async def test_a_word_lesson_lists_its_words_and_speaks_each_line(api) -> None: 
     assert "current account" in content["words"]
     api.state.tts = tts = ScriptedTts()
     say = f"/v1/lessons/{lesson_id}/say"
-    word = await api.client.get(say, params={"part": "word", "index": content["words"].index("sort code")}, headers=auth)
+    sort_code = content["words"].index("sort code")
+    word = await api.client.get(say, params={"part": "word", "index": sort_code}, headers=auth)
     assert word.status_code == 200 and word.content[:4] == b"RIFF" and tts.spoken[-1] == "sort code"
     model = await api.client.get(say, params={"part": "model", "index": 0}, headers=auth)
     assert model.status_code == 200 and tts.spoken[-1] == content["models"][0]
