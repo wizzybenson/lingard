@@ -214,6 +214,7 @@ export type Kind3 =
   | null;
 export type LayerArt = string[];
 export type Name2 = string;
+export type ShortName = string | null;
 export type X1 = number;
 export type Y1 = number;
 export type Locations = Location[];
@@ -623,6 +624,7 @@ export interface Location {
   kind?: Kind3;
   layer_art?: LayerArt;
   name: Name2;
+  short_name?: ShortName;
   x?: X1;
   y?: Y1;
 }

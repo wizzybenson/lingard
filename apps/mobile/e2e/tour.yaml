@@ -5,6 +5,8 @@ appId: app.lingard
 - scrollUntilVisible:
     element: "Café du Quai.*"
     direction: DOWN
+    centerElement: true  # clear of the tab bar, so the tap lands on the place
+- takeScreenshot: 01b-map
 - tapOn: "Café du Quai.*"
 - takeScreenshot: 02-city-location
 - tapOn: "Phone, tab.*"

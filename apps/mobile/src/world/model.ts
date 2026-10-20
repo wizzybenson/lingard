@@ -1,4 +1,4 @@
-/** Renderer-independent world helpers: projection, parallax, hit-testing. The 3D client will reuse these. */
+/** Renderer-independent world helpers: projection, parallax, marker placement. The 3D client will reuse these. */
 import type { DistrictView, Location, NpcView, WorldView } from "./types";
 
 export interface Size {
@@ -18,7 +18,9 @@ export const LAYERS = [
   { name: "near", depth: 1 },
 ] as const;
 
-export const MARKER_RADIUS = 26;
+export const MARKER_WIDTH = 188;
+/** Height of a place's label pill; it sits above the place's point, which a small pin marks. */
+export const MARKER_HEIGHT = 36;
 
 /** Normalised (0–1) world coordinates → screen, with horizontal parallax for a layer depth. */
 export function project(point: Point, size: Size, panX: number, depth = 1): Point {
@@ -59,19 +61,12 @@ export function npcsAt(view: WorldView, locationKey: string): NpcView[] {
   return view.npcs.filter((n: NpcView) => n.location_key === locationKey);
 }
 
-/** The location whose marker contains the tap, nearest first; null when the tap hits nothing. */
-export function hitTest(view: WorldView, tap: Point, size: Size, panX: number): Location | null {
-  let best: { location: Location; distance: number } | null = null;
-  for (const { location, point } of placedLocations(view)) {
-    const centre = project(point, size, panX);
-    const distance = Math.hypot(centre.x - tap.x, centre.y - tap.y);
-    if (distance <= MARKER_RADIUS * 1.6 && (!best || distance < best.distance)) best = { location, distance };
-  }
-  return best?.location ?? null;
+/** Left edge of a marker centred on ``x``, kept inside its district's screen so a name is never cut off. */
+export function markerLeft(x: number, size: Size, width = MARKER_WIDTH, margin = 6): number {
+  const screen = Math.floor(x / size.width) * size.width;
+  return Math.max(screen + margin, Math.min(x - width / 2, screen + size.width - width - margin));
 }
 
-/** A skyline silhouette as an SVG path: plain string maths, so nothing is allocated in Skia (CanvasKit on the web)
- * on each render. ``widthFactor`` is how many screens wide the world is. */
 export function skyline(size: Size, seed: number, height: number, widthFactor: number): string {
   const r = (n: number) => Math.round(n * 10) / 10;
   const parts = [`M0 ${r(size.height)}`];
@@ -86,13 +81,4 @@ export function skyline(size: Size, seed: number, height: number, widthFactor: n
   }
   parts.push(`L${r(x)} ${r(size.height)}`, "Z");
   return parts.join(" ");
-}
-
-export function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .map((part) => part[0] ?? "")
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 }

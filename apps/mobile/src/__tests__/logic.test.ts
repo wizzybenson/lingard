@@ -8,7 +8,7 @@ import { clock, remaining, wordCount } from "@/games/exam";
 import ar from "@/i18n/ar.json";
 import en from "@/i18n/en.json";
 import fr from "@/i18n/fr.json";
-import { clampPan, hitTest, initials, placedLocations, project, skyline, worldWidth } from "@/world/model";
+import { clampPan, markerLeft, placedLocations, project, skyline, worldWidth } from "@/world/model";
 import type { WorldView } from "@/world/types";
 import { isoDate, monthGrid, parseIso } from "@/ui/DatePicker";
 
@@ -56,15 +56,15 @@ const world: WorldView = {
   npcs: [{ key: "landlord_martin", name: "Martin Lefebvre", role: "propriétaire", location_key: "a" }],
 };
 
-test("projection, parallax, pan clamping and hit-testing", () => {
+test("projection, parallax, pan clamping and marker placement", () => {
   const size = { width: 400, height: 300 };
   expect(project({ x: 0.5, y: 0.5 }, size, -100, 0.5)).toEqual({ x: 150, y: 150 });
   expect(clampPan(50, size)).toBe(0);
   expect(clampPan(-1000, size)).toBeCloseTo(-240);
-  expect(hitTest(world, { x: 82, y: 152 }, size, 0)?.key).toBe("a");
-  expect(hitTest(world, { x: 82 - 200, y: 152 }, size, -200)?.key).toBe("a");
-  expect(hitTest(world, { x: 200, y: 40 }, size, 0)).toBeNull();
-  expect(initials("Martin Lefebvre")).toBe("ML");
+  expect(markerLeft(200, size, 150)).toBe(125);
+  expect(markerLeft(380, size, 150)).toBe(244);
+  expect(markerLeft(10, size, 150)).toBe(6);
+  expect(markerLeft(410, size, 150)).toBe(406);
 });
 
 test("unlocked districts sit side by side so their markers never overlap", () => {
@@ -80,8 +80,6 @@ test("unlocked districts sit side by side so their markers never overlap", () =>
   expect(worldWidth(world)).toBe(1.6);
   expect(worldWidth(both)).toBe(2);
   expect(placedLocations(both).map((p) => [p.location.key, p.point.x])).toEqual([["a", 0.2], ["b", 0.8], ["c", 1.2]]);
-  expect(hitTest(both, { x: 82, y: 152 }, size, 0)?.key).toBe("a");
-  expect(hitTest(both, { x: 82, y: 152 }, size, -400)?.key).toBe("c");
   expect(clampPan(-1000, size, worldWidth(both))).toBe(-400);
 });
 

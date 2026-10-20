@@ -16,6 +16,7 @@ districts:
       - key: rivemont.vieux_port.apartment_3b
         kind: home
         name: Appartement 3B, 14 rue des Remparts
+        short_name: Appartement 3B
         description: Un deux-pièces lumineux au troisième étage, avec une petite fissure dans le mur du salon.
         x: 0.22
         y: 0.38
@@ -27,6 +28,7 @@ districts:
       - key: rivemont.vieux_port.cafe_quai
         kind: cafe
         name: Café du Quai
+        short_name: Café du Quai
         description: Un petit café face au fleuve, tenu par Chloé depuis dix ans.
         x: 0.55
         y: 0.62
@@ -38,6 +40,7 @@ districts:
       - key: rivemont.vieux_port.banque
         kind: bank
         name: Caisse populaire du Vieux-Port
+        short_name: Caisse populaire
         description: Une agence bancaire de quartier où l'on ouvre son premier compte canadien.
         x: 0.78
         y: 0.3
@@ -48,9 +51,10 @@ districts:
       - key: rivemont.vieux_port.centre_examen
         kind: test_centre
         name: Centre d'examen du Vieux-Port
+        short_name: "Centre d'examen"
         description: Une salle calme au premier étage, où l'on passe les épreuves orales des examens de français.
-        x: 0.84
-        y: 0.74
+        x: 0.24
+        y: 0.76
         layer_art: [rivemont/vieux_port/centre_examen_bg.svg, rivemont/vieux_port/centre_examen_mid.svg]
         hotspots:
           - {key: claire, kind: npc, label: Claire Dubois, npc_key: examinatrice_claire, x: 0.55, y: 0.5}
@@ -64,6 +68,7 @@ districts:
       - key: rivemont.saint_roch.centre_emploi
         kind: job_centre
         name: Centre d'emploi Saint-Roch
+        short_name: "Centre d'emploi"
         description: Un bureau au rez-de-chaussée, plein de dépliants, où l'on prépare son CV et ses entrevues.
         x: 0.25
         y: 0.45
@@ -75,6 +80,7 @@ districts:
       - key: rivemont.saint_roch.clinique
         kind: clinic
         name: Clinique médicale Saint-Roch
+        short_name: Clinique
         description: Une clinique de quartier avec une salle d'attente toujours pleine le matin.
         x: 0.6
         y: 0.3
@@ -85,6 +91,7 @@ districts:
       - key: rivemont.saint_roch.quincaillerie
         kind: shop
         name: Quincaillerie Bouchard
+        short_name: Quincaillerie
         description: Une vieille quincaillerie familiale où l'on trouve de tout, des vis aux conseils.
         x: 0.8
         y: 0.6
@@ -102,6 +109,7 @@ districts:
       - key: rivemont.haute_ville.hotel_de_ville
         kind: town_hall
         name: Hôtel de ville de Rivemont
+        short_name: Hôtel de ville
         description: Un grand bâtiment de pierre où se tiennent les consultations publiques et les démarches administratives.
         x: 0.3
         y: 0.35
@@ -112,6 +120,7 @@ districts:
       - key: rivemont.haute_ville.bibliotheque
         kind: library
         name: Bibliothèque Gabrielle-Roy
+        short_name: Bibliothèque
         description: La bibliothèque municipale, avec une salle où se tient chaque mois un débat citoyen.
         x: 0.62
         y: 0.55
@@ -122,6 +131,7 @@ districts:
       - key: rivemont.haute_ville.echo
         kind: newspaper
         name: Rédaction de L'Écho de Rivemont
+        short_name: "L'Écho"
         description: Les bureaux du journal local, encombrés de piles de journaux et de tasses de café.
         x: 0.82
         y: 0.3

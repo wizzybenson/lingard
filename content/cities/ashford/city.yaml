@@ -16,6 +16,7 @@ districts:
       - key: ashford.station_quarter.flat_2a
         kind: home
         name: Flat 2A, 9 Mill Lane
+        short_name: Flat 2A
         description: A one-bedroom flat above a launderette, with a patch of damp in the bathroom.
         x: 0.25
         y: 0.4
@@ -27,6 +28,7 @@ districts:
       - key: ashford.station_quarter.copper_kettle
         kind: cafe
         name: The Copper Kettle
+        short_name: Copper Kettle
         description: A busy café opposite the station, run by Siobhan for eight years.
         x: 0.55
         y: 0.6
@@ -38,6 +40,7 @@ districts:
       - key: ashford.station_quarter.bank
         kind: bank
         name: Northgate Bank, Station Road branch
+        short_name: Northgate Bank
         description: A small high-street branch where newcomers open their first UK account.
         x: 0.8
         y: 0.32
@@ -48,9 +51,10 @@ districts:
       - key: ashford.station_quarter.test_centre
         kind: test_centre
         name: Ashford Test Centre
+        short_name: Test Centre
         description: A quiet first-floor room above the post office where English speaking tests are held.
-        x: 0.84
-        y: 0.74
+        x: 0.24
+        y: 0.76
         layer_art: [ashford/station_quarter/test_centre_bg.svg, ashford/station_quarter/test_centre_mid.svg]
         hotspots:
           - {key: ruth, kind: npc, label: Ruth Adeyemi, npc_key: examiner_ruth, x: 0.55, y: 0.5}
@@ -64,6 +68,7 @@ districts:
       - key: ashford.kingsway.job_centre
         kind: job_centre
         name: Kingsway Job Centre
+        short_name: Job Centre
         description: A ground-floor office full of leaflets, where people work on their CVs and practise for interviews.
         x: 0.25
         y: 0.45
@@ -75,6 +80,7 @@ districts:
       - key: ashford.kingsway.surgery
         kind: clinic
         name: Kingsway Medical Practice
+        short_name: Medical Practice
         description: A busy GP surgery whose phone lines open at eight sharp.
         x: 0.6
         y: 0.3
@@ -85,6 +91,7 @@ districts:
       - key: ashford.kingsway.hardware
         kind: shop
         name: Hargreaves Hardware
+        short_name: Hargreaves
         description: An old family hardware shop that sells everything from screws to advice.
         x: 0.8
         y: 0.6
@@ -102,6 +109,7 @@ districts:
       - key: ashford.civic_quarter.town_hall
         kind: town_hall
         name: Ashford Town Hall
+        short_name: Town Hall
         description: A red-brick Victorian building that hosts council meetings and public consultations.
         x: 0.3
         y: 0.35
@@ -112,6 +120,7 @@ districts:
       - key: ashford.civic_quarter.library
         kind: library
         name: Ashford Central Library
+        short_name: Library
         description: The central library, with a room upstairs where a public debate is held every month.
         x: 0.62
         y: 0.55
@@ -122,6 +131,7 @@ districts:
       - key: ashford.civic_quarter.gazette
         kind: newspaper
         name: The Ashford Gazette
+        short_name: The Gazette
         description: The local newspaper office, cluttered with old editions and half-finished mugs of tea.
         x: 0.82
         y: 0.3

@@ -28,6 +28,8 @@ LocationKind = Literal[
 class Location(Strict):
     key: str
     name: str
+    short_name: str | None = None
+    """What the map pin says when ``name`` is too long for it ("Caisse populaire")."""
     description: str
     kind: LocationKind | None = None
     layer_art: list[str] = Field(default_factory=list)
