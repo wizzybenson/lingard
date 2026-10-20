@@ -100,3 +100,21 @@ async def test_lesson_audio_and_writing_tasks(api) -> None:  # type: ignore[no-u
     assert unconfigured.status_code == 503
     async with api.state.sessions() as db:
         assert (await db.execute(select(Lesson).where(Lesson.id == lesson_id))).scalar_one().status == "planned"
+
+
+async def test_exam_formats_follow_the_official_order(api) -> None:  # type: ignore[no-untyped-def]
+    token, _ = await learner(api)
+    formats = {f["pack"]: f for f in (await api.client.get("/v1/exams/formats", headers=api.bearer(token))).json()}
+    tef = formats["tef_canada"]
+    assert [s["skill"] for s in tef["sections"]] == ["reading", "listening", "writing", "speaking"]
+    assert tef["sections"][0] == {
+        "id": "comprehension_ecrite",
+        "skill": "reading",
+        "minutes": 60,
+        "questions": 40,
+        "tasks": 4,
+    }
+    assert tef["total_minutes"] == 60 + 40 + 60 + 15
+    ielts = formats["ielts_gt"]
+    assert [s["skill"] for s in ielts["sections"]] == ["listening", "reading", "writing", "speaking"]
+    assert ielts["sections"][3]["minutes"] == 14 and ielts["sections"][3]["tasks"] == 3

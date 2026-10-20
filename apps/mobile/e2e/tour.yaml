@@ -12,8 +12,12 @@ appId: app.lingard
 - tapOn: "School, tab.*"
 - takeScreenshot: 04-school
 - tapOn: "Exam Hall, tab.*"
-- assertVisible: "Quick placement.*"
+- assertVisible: "Start a full mock"
 - takeScreenshot: 05-exam
+- scrollUntilVisible:
+    element: "Quick placement.*"
+    direction: DOWN
+- takeScreenshot: 05b-exam-placement
 - tapOn: "Passport, tab.*"
 - takeScreenshot: 06-passport
 - scrollUntilVisible:
@@ -37,4 +41,6 @@ appId: app.lingard
     direction: DOWN
 - takeScreenshot: 10-settings-bottom
 - tapOn: "City, tab.*"
-- assertVisible: "Where to today?"
+- scrollUntilVisible:
+    element: "Where to today?"
+    direction: UP

@@ -7,7 +7,8 @@ import type { Profile } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, Field, goBack, Loading, Screen, Title } from "@/ui/kit";
+import { DatePicker } from "@/ui/DatePicker";
+import { Body, Button, Card, ErrorText, goBack, Loading, Screen, Title } from "@/ui/kit";
 
 const SKILLS = ["listening", "reading", "writing", "speaking"] as const;
 const LEVELS = [4, 5, 6, 7, 8, 9, 10];
@@ -61,15 +62,7 @@ export default function Goal() {
               <Button label={t("goal.prepare")} kind="secondary" onPress={() => setDates((d) => ({ ...d, [pack]: "" }))} />
             ) : (
               <>
-                <Field
-                  label={t("goal.examDate")}
-                  value={dates[pack] ?? ""}
-                  onChangeText={(v) => setDates((d) => ({ ...d, [pack]: v.trim() }))}
-                  placeholder="2027-03-01"
-                  autoCapitalize="none"
-                  keyboardType="numbers-and-punctuation"
-                  maxLength={10}
-                />
+                <DatePicker label={t("goal.examDate")} value={dates[pack] ?? ""} onChange={(v) => setDates((d) => ({ ...d, [pack]: v }))} />
                 <Body muted>{t("goal.target")}</Body>
                 {SKILLS.map((skill) => (
                   <View key={skill} style={{ gap: 4 }}>

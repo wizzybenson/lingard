@@ -90,6 +90,45 @@ async def start_placement(body: PlacementBody, principal: Principal, state: Stat
     return StepView.of(step)
 
 
+class SectionFormat(BaseModel):
+    id: str
+    skill: Skill
+    minutes: int
+    """The longest the section can take (IELTS Speaking: 11–14 minutes → 14)."""
+    questions: int | None
+    """Scored questions (reading and listening); writing and speaking have tasks or parts instead."""
+    tasks: int
+
+
+class ExamFormat(BaseModel):
+    pack: PackId
+    name: str
+    total_minutes: int
+    sections: list[SectionFormat]
+
+
+@router.get("/exams/formats", response_model=list[ExamFormat])
+async def exam_formats(principal: Principal, state: State) -> list[ExamFormat]:
+    """Each exam in its official order, as a full mock runs it (pack.yaml)."""
+    formats = []
+    for pack_id in ("tef_canada", "ielts_gt"):
+        pack = state.packs.pack(pack_id)
+        sections = [
+            SectionFormat(
+                id=s.id,
+                skill=s.skill,
+                minutes=s.max_minutes,
+                questions=s.items,
+                tasks=len(s.tasks) or len(s.part_list()),
+            )
+            for s in pack.ordered_sections()
+        ]
+        formats.append(
+            ExamFormat(pack=pack.id, name=pack.name, total_minutes=sum(s.minutes for s in sections), sections=sections)
+        )
+    return formats
+
+
 @router.post("/exams", response_model=StepView, status_code=201)
 async def start_exam(body: ExamBody, principal: Principal, state: State) -> StepView:
     require_providers(state, llm=True, tts=True)

@@ -10,6 +10,7 @@ import en from "@/i18n/en.json";
 import fr from "@/i18n/fr.json";
 import { clampPan, hitTest, initials, placedLocations, project, skyline, worldWidth } from "@/world/model";
 import type { WorldView } from "@/world/types";
+import { isoDate, monthGrid, parseIso } from "@/ui/DatePicker";
 
 jest.mock("expo-secure-store", () => ({}));
 jest.mock("expo-local-authentication", () => ({}));
@@ -153,4 +154,15 @@ test("progress to a goal uses the middle of the estimate, so a wide range never 
   expect(levelProgress(null, null, 7)).toBe(0);
   expect(levelProgress(3, 8, 7)).toBeCloseTo(5.5 / 7);
   expect(levelProgress(8, 9, 7)).toBe(1);
+});
+
+
+test("date picker: ISO round trip, invalid dates refused, Monday-first month grid", () => {
+  expect(isoDate(parseIso("2027-03-01")!)).toBe("2027-03-01");
+  expect(parseIso("2027-02-30")).toBeNull();
+  expect(parseIso("1/3/2027")).toBeNull();
+  const march2027 = monthGrid(2027, 2); // 1 March 2027 is a Monday
+  expect(march2027[0]![0]).toBe(1);
+  expect(march2027.flat().filter((d) => d !== null)).toHaveLength(31);
+  expect(march2027.every((week) => week.length === 7)).toBe(true);
 });

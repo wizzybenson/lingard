@@ -176,3 +176,11 @@ export interface WritingTask {
   min_words: number;
   prompts: string[];
 }
+
+/** An exam as a full mock runs it: sections in the official order with their timing (GET /v1/exams/formats). */
+export interface ExamFormat {
+  pack: string;
+  name: string;
+  total_minutes: number;
+  sections: { id: string; skill: "listening" | "reading" | "writing" | "speaking"; minutes: number; questions: number | null; tasks: number }[];
+}

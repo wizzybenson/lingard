@@ -169,7 +169,7 @@ export function TodayCard({
           style={({ pressed }) => [styles.heroButton, { transform: [{ scale: pressed ? 0.98 : 1 }], opacity: pressed ? 0.92 : 1 }]}
         >
           {working ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
-          <Text style={styles.heroButtonText} numberOfLines={1}>
+          <Text style={styles.heroButtonText} numberOfLines={2}>
             {action}
           </Text>
         </Pressable>
