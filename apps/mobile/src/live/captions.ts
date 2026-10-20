@@ -2,8 +2,14 @@
 export interface Caption {
   speaker: "npc" | "learner";
   text: string;
+  /** When the bubble began. */
   at: number;
+  /** When its latest sentence arrived (a reply's sentences join one bubble). */
+  until?: number;
 }
+
+/** Sentences from the same speaker this close together are one reply, shown as one bubble. */
+export const SAME_REPLY_MS = 4000;
 
 export function parseCaption(payload: Uint8Array, now: number = Date.now()): Caption | null {
   try {
@@ -16,7 +22,12 @@ export function parseCaption(payload: Uint8Array, now: number = Date.now()): Cap
   }
 }
 
+/** Adds a caption to the rolling log; a sentence that continues the speaker's reply joins its bubble. */
 export function appendCaption(log: Caption[], caption: Caption, limit = 6): Caption[] {
+  const last = log[log.length - 1];
+  if (last && last.speaker === caption.speaker && caption.at - (last.until ?? last.at) <= SAME_REPLY_MS) {
+    return [...log.slice(0, -1), { ...last, text: `${last.text} ${caption.text}`, until: caption.at }];
+  }
   return [...log, caption].slice(-limit);
 }
 

@@ -106,8 +106,14 @@ test("captions parse, roll and fade by band", () => {
   expect(caption).toEqual({ speaker: "npc", text: "Bonjour.", at: 1 });
   expect(parseCaption(new TextEncoder().encode("garbage"))).toBeNull();
   let log = [] as ReturnType<typeof appendCaption>;
-  for (let i = 0; i < 10; i += 1) log = appendCaption(log, { speaker: "npc", text: `${i}`, at: i });
+  for (let i = 0; i < 10; i += 1) log = appendCaption(log, { speaker: i % 2 ? "npc" : "learner", text: `${i}`, at: i });
   expect(log.map((c) => c.text)).toEqual(["4", "5", "6", "7", "8", "9"]);
+  // One reply spoken sentence by sentence is one bubble; a pause longer than a reply's starts another.
+  let reply = appendCaption([], { speaker: "npc", text: "Hello.", at: 0 });
+  reply = appendCaption(reply, { speaker: "npc", text: "I am Daniel.", at: 1500 });
+  reply = appendCaption(reply, { speaker: "npc", text: "Are you here to open an account?", at: 4000 });
+  expect(reply).toEqual([{ speaker: "npc", text: "Hello. I am Daniel. Are you here to open an account?", at: 0, until: 4000 }]);
+  expect(appendCaption(reply, { speaker: "npc", text: "Well?", at: 9000 })).toHaveLength(2);
   expect(captionOpacity(4)).toBe(1);
   expect(captionOpacity(9)).toBe(0);
 });

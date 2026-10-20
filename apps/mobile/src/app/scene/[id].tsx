@@ -1,8 +1,10 @@
+import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import Animated, { cancelAnimation, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
 import type { LiveTicket, SceneView, SessionView } from "@/api/types";
 import { captionOpacity } from "@/live/captions";
@@ -33,6 +35,25 @@ function PillToggle({ label, icon, value, onChange }: { label: string; icon: Ico
         {label}
       </Text>
     </Pressable>
+  );
+}
+
+/** The NPC's face with a soft ring that breathes while they speak. */
+function SpeakingAvatar({ name, speaking, size }: { name: string; speaking: boolean; size: number }) {
+  const pulse = useSharedValue(0);
+  useEffect(() => {
+    if (speaking) pulse.set(withRepeat(withTiming(1, { duration: 700 }), -1, true));
+    else {
+      cancelAnimation(pulse);
+      pulse.set(withTiming(0, { duration: 200 }));
+    }
+  }, [pulse, speaking]);
+  const ring = useAnimatedStyle(() => ({ opacity: 0.25 + 0.5 * pulse.value, transform: [{ scale: 1 + 0.12 * pulse.value }] }));
+  return (
+    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+      <Animated.View style={[StyleSheet.absoluteFill, { borderRadius: size / 2, backgroundColor: colors.sunset }, ring]} />
+      <Avatar name={name} size={size - 8} />
+    </View>
   );
 }
 
@@ -112,8 +133,14 @@ export default function Scene() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("scene.pushToTalk")}
-          onPressIn={() => void live.talk(true)}
-          onPressOut={() => void live.talk(false)}
+          onPressIn={() => {
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            void live.talk(true);
+          }}
+          onPressOut={() => {
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            void live.talk(false);
+          }}
           style={({ pressed }) => [styles.talk, shadow(2), pressed && { transform: [{ scale: 0.97 }], backgroundColor: colors.accentDeep }]}
         >
           <Ionicons name="mic" size={26} color={colors.accentInk} />
@@ -136,7 +163,23 @@ export default function Scene() {
   return (
     <Screen back onBack={back} footer={controls || undefined} followContent={live.status === "live"}>
       <ErrorText message={scene.error} onRetry={scene.reload} />
-      {scene.data && (
+      {scene.data && live.status === "live" && (
+        <Card style={styles.compact}>
+          {npcName ? <SpeakingAvatar name={npcName} speaking={live.npcSpeaking} size={52} /> : null}
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={type.headline} numberOfLines={1}>
+              {npcName || scene.data.location_name}
+            </Text>
+            <View style={{ flexDirection: "row", gap: 6, alignItems: "flex-start" }}>
+              <Ionicons name="flag" size={14} color={colors.accentDeep} style={{ marginTop: 2 }} />
+              <Text style={[type.caption, { flex: 1, color: colors.inkSoft }]} numberOfLines={2}>
+                {scene.data.learner_goal}
+              </Text>
+            </View>
+          </View>
+        </Card>
+      )}
+      {scene.data && live.status !== "live" && (
         <Card style={{ padding: 0, overflow: "hidden" }}>
           {scene.data.layer_art.length > 0 && (
             <Suspense fallback={null}>
@@ -209,7 +252,11 @@ export default function Scene() {
                 // Like a messaging app: the face shows once, beside the last line of a run of lines.
                 const lastOfRun = live.captions[i + 1]?.speaker !== c.speaker;
                 return (
-                  <View key={`${c.at}-${c.text}`} style={[styles.bubbleRow, !npc && { justifyContent: "flex-end" }]}>
+                  <Animated.View
+                    key={`${c.speaker}-${c.at}`}
+                    entering={FadeInDown.duration(220)}
+                    style={[styles.bubbleRow, !npc && { justifyContent: "flex-end" }]}
+                  >
                     {npc && npcName ? lastOfRun ? <Avatar name={npcName} size={28} /> : <View style={{ width: 28 }} /> : null}
                     <View
                       testID={npc ? "caption-npc" : "caption-learner"}
@@ -217,7 +264,7 @@ export default function Scene() {
                     >
                       <Text style={[type.body, !npc && { color: colors.accentInk }]}>{c.text}</Text>
                     </View>
-                  </View>
+                  </Animated.View>
                 );
               })}
             </View>
@@ -243,6 +290,7 @@ export default function Scene() {
 
 const styles = StyleSheet.create({
   person: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
+  compact: { flexDirection: "row", alignItems: "center", gap: space(1.5), paddingVertical: space(1.5) },
   goal: { flexDirection: "row", gap: space(1.25), backgroundColor: colors.accentSoft, borderRadius: radius.md, padding: space(1.75) },
   tip: { flexDirection: "row", alignItems: "center", gap: space(1), paddingHorizontal: space(0.5) },
   liveBar: { gap: space(1.25) },

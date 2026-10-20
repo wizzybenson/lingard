@@ -1,0 +1,23 @@
+# One live scene (paid: the NPC's opening line). Run after signing in and opening the scene, e.g.
+#   xcrun simctl openurl booted lingard://scene/<planned scene id>
+appId: app.lingard
+---
+- extendedWaitUntil:
+    visible: "Your goal"
+    timeout: 30000
+- takeScreenshot: scene-01-before
+- tapOn: "Start talking"
+- runFlow:
+    when:
+      visible: "Allow"
+    commands:
+      - tapOn: "Allow"
+- extendedWaitUntil:
+    visible:
+      id: "caption-npc"
+    timeout: 40000
+- takeScreenshot: scene-02-live
+- waitForAnimationToEnd:
+    timeout: 15000
+- takeScreenshot: scene-03-after
+- tapOn: "Leave.*"
