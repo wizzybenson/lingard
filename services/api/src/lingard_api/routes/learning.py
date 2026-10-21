@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lingard_api.deps import Db, Principal, State
 from lingard_api.graph_runtime import Step, ThreadAccessError
 from lingard_api.jobs import GRAPH_JOBS
+from lingard_api.routes.key_points import plain
 from lingard_api.routes.speech import narrate, require_providers, wav_response
 from lingard_api.state import AppState
 from lingard_contracts.assessment import BandEstimate
@@ -355,11 +356,6 @@ async def lesson_say(
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
     return wav_response(pcm, request)
-
-
-def plain(text: str) -> str:
-    """A teaching line without its ``**`` highlight marks, as it is said."""
-    return text.replace("**", "")
 
 
 async def _current(state: AppState, row: Lesson) -> dict[str, Any]:

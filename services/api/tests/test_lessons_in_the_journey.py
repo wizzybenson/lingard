@@ -38,6 +38,19 @@ async def test_a_rule_card_teaches_without_opening_a_lesson(api) -> None:  # typ
     missing = await api.client.get("/v1/key-points/fr.grammar.nope/card", headers=api.bearer(token))
     assert missing.status_code == 404
 
+    from lingard_live.tts import ScriptedTts
+
+    api.state.tts = tts = ScriptedTts()  # the card can be heard, right before speaking
+    say = "/v1/key-points/fr.grammar.present_regular/say"
+    for part, line in (("model", body["models"][0]), ("better", body["watch_out"][0]["better"])):
+        heard = await api.client.get(say, params={"part": part, "index": 0}, headers=api.bearer(token))
+        assert heard.status_code == 200 and heard.content[:4] == b"RIFF" and tts.spoken[-1] == line
+    teach = [x.replace("**", "") for step in body["teach"] for x in step["examples"]]
+    heard = await api.client.get(say, params={"part": "teach", "index": 0}, headers=api.bearer(token))
+    assert heard.status_code == 200 and tts.spoken[-1] == teach[0]
+    beyond = await api.client.get(say, params={"part": "model", "index": 99}, headers=api.bearer(token))
+    assert beyond.status_code == 404
+
 
 async def test_a_lesson_teaches_before_its_games(api) -> None:  # type: ignore[no-untyped-def]
     from lingard_live.tts import ScriptedTts

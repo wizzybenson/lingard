@@ -12,12 +12,14 @@ from functools import cache
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
+from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lingard_api.deps import Db, Principal, State
+from lingard_api.routes.speech import narrate, wav_response
 from lingard_api.state import AppState
 from lingard_contracts.common import LANGUAGE_CITY, Language, node_language
 from lingard_contracts.planning import LessonExample, TeachStep
@@ -141,11 +143,42 @@ class RuleCard(BaseModel):
     watch_out: list[LessonExample]
 
 
-@router.get("/{node_key}/card", response_model=RuleCard)
-async def rule_card(node_key: str, _: Principal, state: State) -> RuleCard:
+def plain(text: str) -> str:
+    """A teaching line without its ``**`` highlight marks, as it is said."""
+    return text.replace("**", "")
+
+
+async def _taught(state: AppState, node_key: str) -> CurriculumNode:
     node = await state.curriculum.get(node_key)
     if node is None or not node.reviewed or node.kind not in KINDS:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such key point")
+    return node
+
+
+@router.get("/{node_key}/say")
+async def say_card_line(
+    node_key: str, part: Literal["model", "better", "teach"], index: int, request: Request, _: Principal, state: State
+) -> Response:
+    """Hear a line of a rule card (a model sentence, a correction, a teaching example) in the language's native voice,
+    so the rule taught in a mission brief can be heard right before speaking. Only the node's own lines are spoken."""
+    card = await rule_card(node_key, _, state)
+    lines = {
+        "model": card.models,
+        "better": [e.better for e in card.watch_out],
+        "teach": [plain(x) for step in card.teach for x in step.examples],
+    }[part]
+    if not 0 <= index < len(lines):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such line")
+    try:
+        pcm = await narrate(state, lines[index], node_language(node_key))
+    except RuntimeError as exc:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
+    return wav_response(pcm, request)
+
+
+@router.get("/{node_key}/card", response_model=RuleCard)
+async def rule_card(node_key: str, _: Principal, state: State) -> RuleCard:
+    node = await _taught(state, node_key)
     content = node.payload.get("lesson") or {}
     return RuleCard(
         node_key=node.key,

@@ -1,6 +1,6 @@
 /** The rule a mission practises, taught right in its brief (decision 0025): one slim row that never blocks "Start
  * talking", which opens in place into the rule a step at a time (verb tables, examples, the mistake to avoid), with the
- * full lesson a tap further. Nothing here is required. */
+ * full lesson a tap further. Every example can be heard in a native voice. Nothing here is required. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import { useMemo, useState } from "react";
@@ -14,6 +14,7 @@ import { RichText } from "@/school/RichText";
 import { Teach } from "@/school/Teach";
 import { VerbContext, openVerb, useVerbIndex } from "@/school/verbs";
 import { languageOf } from "@/school/verbText";
+import { SpeakButton } from "@/live/SpeakButton";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Button, ErrorText, Loading } from "@/ui/kit";
@@ -33,6 +34,7 @@ export function MissionRule({ point }: { point: KeyPoint }) {
   const verbs = useVerbIndex(api, open ? language : null, point.node_key);
   const links = useMemo(() => ({ index: verbs?.index ?? null, open: (verb: string) => openVerb(language, verb, verbs?.focus[0]) }), [verbs, language]);
 
+  const say = (part: "model" | "better" | "teach", index: number) => `/v1/key-points/${encodeURIComponent(point.node_key)}/say?part=${part}&index=${index}`;
   const toggle = () => {
     void Haptics.selectionAsync();
     setOpen((v) => !v);
@@ -79,14 +81,15 @@ export function MissionRule({ point }: { point: KeyPoint }) {
             {card.data && (
               <>
                 <RichText text={card.data.rule} style={styles.rule} />
-                {card.data.teach.length > 0 && <Teach api={api} language={language} steps={card.data.teach} />}
+                {card.data.teach.length > 0 && <Teach api={api} language={language} steps={card.data.teach} sayPath={(n) => say("teach", n)} />}
                 {card.data.models.length > 0 && (
                   <View style={{ gap: space(0.75) }}>
                     <Text style={type.overline}>{t("school.models")}</Text>
-                    {card.data.models.slice(0, 3).map((m) => (
+                    {card.data.models.slice(0, 3).map((m, i) => (
                       <View key={m} style={styles.line}>
                         <Ionicons name="chatbubble-ellipses" size={16} color={colors.accent} style={{ marginTop: 3 }} />
                         <RichText text={m} style={[type.body, { flex: 1 }]} />
+                        <SpeakButton api={api} path={say("model", i)} label={`${t("studio.listen")}: ${m}`} size={18} />
                       </View>
                     ))}
                   </View>
@@ -101,6 +104,7 @@ export function MissionRule({ point }: { point: KeyPoint }) {
                     <View style={styles.line}>
                       <Ionicons name="checkmark-circle" size={16} color={colors.success} style={{ marginTop: 3 }} />
                       <RichText text={card.data.watch_out[0].better} style={[type.callout, { flex: 1, color: colors.ink }]} />
+                      <SpeakButton api={api} path={say("better", 0)} label={`${t("studio.listen")}: ${card.data.watch_out[0].better}`} size={18} />
                     </View>
                   </View>
                 )}

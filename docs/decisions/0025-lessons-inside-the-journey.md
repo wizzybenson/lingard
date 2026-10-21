@@ -52,5 +52,8 @@ lessons.
 
 ## Open
 
-The teaching is machine-authored and not yet read by a human teacher (as for the rest of the curriculum). The rule card
-in a brief has no audio (lines are only spoken from a lesson's own content).
+The teaching is machine-authored and not yet read by a human teacher (as for the rest of the curriculum).
+
+Rule cards speak: their model sentences, the correction and the teaching examples are narrated from the curriculum
+(`/v1/key-points/{node}/say`, the node's own lines only, cached like lesson audio), so the rule can be heard right
+before speaking.
