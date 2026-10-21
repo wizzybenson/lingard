@@ -2,8 +2,8 @@
 
 Nobody speaks well without the rules, so every grammar node up to the learner's level is a short lesson, in an order
 where prerequisites come first; the words (vocabulary sets) and the ways of saying things (functions) of each level
-are lessons too. Nodes at the learner's own level are *core*: Today sends the learner to the core grammar before the
-next story day, and offers the core words and phrases beside it. Lower ones are a refresher; the next level's a preview.
+are lessons too. Nodes at the learner's own level are *core*: the journey offers them beside the story and inside its
+missions, never before it (decision 0025). Lower ones are a refresher; higher ones a look ahead.
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ class KeyPointStep:
     core: bool
     """At the learner's own level: taught before the next story day."""
     preview: bool
-    """One level up: open to look ahead, never required."""
+    """Above the learner's level: open to look ahead, never required."""
 
 
 @cache
@@ -60,10 +60,11 @@ def ordered(nodes: list[CurriculumNode], prereqs: dict[str, list[str]], order: d
 
 
 async def key_points_path(
-    curriculum: CurriculumGraph, content_root: Path, language: Language, band: int | None
+    curriculum: CurriculumGraph, content_root: Path, language: Language, band: int | None, *, every_level: bool = False
 ) -> list[KeyPointStep]:
+    """Up to one level above the learner's; with ``every_level``, every level the curriculum teaches."""
     level = max(FIRST_BAND, band or FIRST_BAND)
-    nodes = await curriculum.nodes(language, kinds=list(KINDS), max_band=level + 1)
+    nodes = await curriculum.nodes(language, kinds=list(KINDS), max_band=None if every_level else level + 1)
     prereqs = {n.key: [e.to_key for e in await curriculum.edges(n.key, "prereq")] for n in nodes}
     steps = ordered(nodes, prereqs, authored_order(content_root, language))
     return [KeyPointStep(node=n, core=n.band == level, preview=n.band > level) for n in steps]

@@ -1,7 +1,7 @@
 /** UI kit: one-thumb friendly sizes (≥ 48 px targets), accessible labels everywhere, the tokens in theme.ts. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
-import { useEffect, useRef, useState, type ComponentProps, type ReactNode, type Ref } from "react";
+import { useEffect, useRef, useState, type ComponentProps, type ReactNode, type Ref, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -64,12 +64,15 @@ interface ScreenProps {
   footer?: ReactNode;
   /** Keep the newest content in view as it grows (live captions). */
   followContent?: boolean;
+  /** For a screen that scrolls itself to a part of its content (a lesson's games once practice starts). */
+  scroller?: RefObject<ScrollView | null>;
 }
 
-export function Screen({ children, scroll = true, title, eyebrow, back = false, onBack, onRefresh, footer, followContent = false }: ScreenProps) {
+export function Screen({ children, scroll = true, title, eyebrow, back = false, onBack, onRefresh, footer, followContent = false, scroller: given }: ScreenProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const scroller = useRef<ScrollView>(null);
+  const own = useRef<ScrollView>(null);
+  const scroller = given ?? own;
   const [refreshing, setRefreshing] = useState(false);
   const refresh = onRefresh
     ? () => {

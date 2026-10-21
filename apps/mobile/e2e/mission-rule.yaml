@@ -1,0 +1,23 @@
+# The rule a mission practises, taught in its brief (decision 0025). Free: the scene is opened, never started.
+# Run after signing in: xcrun simctl openurl booted lingard://scene/<planned scene id>
+appId: app.lingard
+---
+- extendedWaitUntil:
+    visible: "Mission"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "Rule for this mission: .*"
+    direction: DOWN
+- takeScreenshot: mission-01-rule-closed
+- tapOn: "Rule for this mission: .*"
+- extendedWaitUntil:
+    visible: "Step by step|STEP BY STEP|1"
+    timeout: 10000
+- takeScreenshot: mission-02-rule-open
+- scrollUntilVisible:
+    element: "Got it"
+    direction: DOWN
+- takeScreenshot: mission-03-rule-end
+- tapOn: "Got it"
+- assertVisible: "Start talking"
+- takeScreenshot: mission-04-start-talking

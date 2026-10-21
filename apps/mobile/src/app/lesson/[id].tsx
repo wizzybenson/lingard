@@ -1,10 +1,13 @@
-/** A School lesson (SPEC §16): the rule, model sentences, the mistakes to avoid, scored games, then a same-day scene. */
+/** A School lesson (SPEC §16), taught before it is tested: first the rule a step at a time (verb tables, patterns,
+ * examples to hear), model sentences and the mistakes to avoid; then, when the learner is ready, scored games; then a
+ * same-day scene. Any verb in the teaching opens its full tables. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, type ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 import type { ApiClient } from "@/api/client";
 import type { GameProgress, LessonRow } from "@/api/types";
@@ -12,6 +15,10 @@ import type { Game, GameItem } from "@/contracts/generated";
 import { choices, isCorrect, score, type GameResult } from "@/games/engine";
 import { PlayButton } from "@/live/PlayButton";
 import { SpeakButton } from "@/live/SpeakButton";
+import { RichText } from "@/school/RichText";
+import { Teach } from "@/school/Teach";
+import { VerbContext, openVerb, useVerbIndex } from "@/school/verbs";
+import { languageOf } from "@/school/verbText";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, Chip, Choice, ErrorText, Field, goBack, Loading, Overline, Screen } from "@/ui/kit";
@@ -252,6 +259,17 @@ export default function LessonScreen() {
   const [finished, setFinished] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Practice opens once the learner has been taught: by their tap, or straight away when they had already started.
+  const [practising, setPractising] = useState(false);
+  const scroller = useRef<ScrollView>(null);
+  const gamesAt = useRef(0);
+  const nodeKey = lesson.data?.node_key ?? "";
+  const language = nodeKey ? languageOf(nodeKey) : null;
+  const verbs = useVerbIndex(api, language, nodeKey || undefined);
+  const links = useMemo(
+    () => ({ index: verbs?.index ?? null, open: (verb: string) => language && openVerb(language, verb, verbs?.focus[0]) }),
+    [verbs, language],
+  );
   if (!lesson.data)
     return (
       <Screen back>
@@ -280,6 +298,13 @@ export default function LessonScreen() {
     }
   };
   const done = lesson.data.status === "done";
+  const started = practising || done || Object.keys(savedGames).length > 0;
+  const teach = content.teach ?? [];
+  const startPractice = () => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setPractising(true);
+    setTimeout(() => scroller.current?.scrollTo({ y: Math.max(0, gamesAt.current - space(1)), animated: true }), 120);
+  };
   // Lessons open from the journey (a scene, the map, the School): finishing returns the learner to where they were.
   const footer = finished ? (
     <View style={{ flexDirection: "row", alignItems: "center", gap: space(1.5) }}>
@@ -290,6 +315,8 @@ export default function LessonScreen() {
     </View>
   ) : done ? (
     <Chip label={t("school.done")} tone="success" icon="checkmark-done" />
+  ) : !started ? (
+    <Button label={t("school.startPractice", { count: content.games.length })} icon="arrow-down" onPress={startPractice} />
   ) : (
     <Button
       label={`${t("school.finish")} · ${scored.length}/${content.games.length}`}
@@ -301,93 +328,127 @@ export default function LessonScreen() {
   );
 
   return (
-    <Screen back footer={footer}>
-      <View style={{ gap: space(1) }}>
-        <View style={{ flexDirection: "row", gap: space(0.75) }}>
-          <Chip label={t(`school.lessonKind.${content.kind ?? "remedial"}`)} tone={keyPoints ? "accent" : "sunset"} icon={keyPoints ? "key" : "construct"} />
-          <Chip label={t("units.minutes", { count: content.minutes })} icon="time-outline" />
+    <VerbContext.Provider value={links}>
+      <Screen back footer={footer} scroller={scroller}>
+        <View style={{ gap: space(1) }}>
+          <View style={{ flexDirection: "row", gap: space(0.75) }}>
+            <Chip label={t(`school.lessonKind.${content.kind ?? "remedial"}`)} tone={keyPoints ? "accent" : "sunset"} icon={keyPoints ? "key" : "construct"} />
+            <Chip label={t("units.minutes", { count: content.minutes })} icon="time-outline" />
+          </View>
+          <Text accessibilityRole="header" style={type.largeTitle}>
+            {content.title}
+          </Text>
         </View>
-        <Text accessibilityRole="header" style={type.largeTitle}>
-          {content.title}
-        </Text>
-      </View>
 
-      <Card style={{ gap: space(1.5) }}>
-        <Overline>{t(SUMMARY[lesson.data.node_key.split(".")[1] ?? ""] ?? "school.rule")}</Overline>
-        <Text style={styles.rule}>{content.rule}</Text>
-      </Card>
+        <Phase n={1} title={t("school.learn")} hint={verbs && Object.keys(verbs.index).length > 0 ? t("school.tapVerbHint") : undefined} />
 
-      {(content.models?.length ?? 0) > 0 && (
-        <Card style={{ gap: space(1.25) }}>
-          <Overline>{t("school.models")}</Overline>
-          {content.models!.map((m, i) => (
-            <View key={m} style={styles.line}>
-              <Ionicons name="chatbubble-ellipses" size={18} color={colors.accent} style={{ marginTop: 3 }} />
-              <Text style={[type.body, { flex: 1 }]}>{m}</Text>
-              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=model&index=${i}`} label={`${t("studio.listen")}: ${m}`} />
+        <Card style={{ gap: space(1.5) }}>
+          <Overline>{t(SUMMARY[lesson.data.node_key.split(".")[1] ?? ""] ?? "school.rule")}</Overline>
+          <RichText text={content.rule} style={styles.rule} />
+        </Card>
+
+        {teach.length > 0 && (
+          <Card style={{ gap: space(2) }}>
+            <Overline>{t("school.stepByStep")}</Overline>
+            <Teach api={api} language={language ?? ""} steps={teach} sayPath={(n) => `/v1/lessons/${id}/say?part=teach&index=${n}`} />
+          </Card>
+        )}
+
+        {(content.models?.length ?? 0) > 0 && (
+          <Card style={{ gap: space(1.25) }}>
+            <Overline>{t("school.models")}</Overline>
+            {content.models!.map((m, i) => (
+              <View key={m} style={styles.line}>
+                <Ionicons name="chatbubble-ellipses" size={18} color={colors.accent} style={{ marginTop: 3 }} />
+                <RichText text={m} style={[type.body, { flex: 1 }]} />
+                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=model&index=${i}`} label={`${t("studio.listen")}: ${m}`} />
+              </View>
+            ))}
+          </Card>
+        )}
+
+        {(content.words?.length ?? 0) > 0 && (
+          <Card style={{ gap: space(1.25) }}>
+            <Overline>{t("school.wordsToHear")}</Overline>
+            <View style={styles.words}>
+              {content.words!.map((w, i) => (
+                <View key={w} style={styles.word}>
+                  <Text style={[type.callout, { color: colors.ink }]}>{w}</Text>
+                  <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=word&index=${i}`} label={`${t("studio.listen")}: ${w}`} size={16} />
+                </View>
+              ))}
+            </View>
+          </Card>
+        )}
+
+        <Card style={{ gap: space(1.5) }}>
+          <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
+          {content.examples.map((e, i) => (
+            <View key={e.learner_said} style={styles.pair}>
+              <View style={styles.line}>
+                <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
+                <Text style={[type.body, styles.wrong]}>{e.learner_said}</Text>
+              </View>
+              <View style={styles.line}>
+                <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
+                <RichText text={e.better} style={[type.body, { flex: 1, fontFamily: fonts.medium }]} />
+                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
+              </View>
+              {e.note ? <Body muted>{e.note}</Body> : null}
             </View>
           ))}
         </Card>
-      )}
 
-      {(content.words?.length ?? 0) > 0 && (
-        <Card style={{ gap: space(1.25) }}>
-          <Overline>{t("school.wordsToHear")}</Overline>
-          <View style={styles.words}>
-            {content.words!.map((w, i) => (
-              <View key={w} style={styles.word}>
-                <Text style={[type.callout, { color: colors.ink }]}>{w}</Text>
-                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=word&index=${i}`} label={`${t("studio.listen")}: ${w}`} size={16} />
-              </View>
-            ))}
-          </View>
-        </Card>
-      )}
-
-      <Card style={{ gap: space(1.5) }}>
-        <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
-        {content.examples.map((e, i) => (
-          <View key={e.learner_said} style={styles.pair}>
-            <View style={styles.line}>
-              <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
-              <Text style={[type.body, styles.wrong]}>{e.learner_said}</Text>
-            </View>
-            <View style={styles.line}>
-              <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
-              <Text style={[type.body, { flex: 1, fontFamily: fonts.medium }]}>{e.better}</Text>
-              <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
-            </View>
-            {e.note ? <Body muted>{e.note}</Body> : null}
-          </View>
-        ))}
-      </Card>
-
-      {content.games.map((game, i) => (
-        <GameView
-          key={`${game.kind}-${i}`}
-          api={api}
-          lessonId={id}
-          index={i}
-          game={game}
-          saved={savedGames[String(i)]}
-          onProgress={(g) => recordProgress(i, g)}
-        />
-      ))}
-
-      <Card tone="sunset" style={{ gap: space(1) }}>
-        <View style={styles.line}>
-          <Ionicons name="walk" size={20} color="#9A3E1E" />
-          <Text style={[type.headline, { flex: 1 }]}>{t("school.homeworkTitle")}</Text>
+        <View
+          onLayout={(e) => {
+            gamesAt.current = e.nativeEvent.layout.y;
+          }}
+        >
+          <Phase n={2} title={t("school.practise")} hint={started ? undefined : t("school.practiseHint", { count: content.games.length })} muted={!started} />
         </View>
-        <Body>{t("school.homework")}</Body>
-        <Body muted>{content.homework.story_beat}</Body>
-      </Card>
-      <ErrorText message={error} />
-    </Screen>
+
+        {started &&
+          content.games.map((game, i) => (
+            <Animated.View key={`${game.kind}-${i}`} entering={FadeInDown.delay(i * 80).duration(260)}>
+              <GameView api={api} lessonId={id} index={i} game={game} saved={savedGames[String(i)]} onProgress={(g) => recordProgress(i, g)} />
+            </Animated.View>
+          ))}
+
+        {started && (
+          <Card tone="sunset" style={{ gap: space(1) }}>
+            <View style={styles.line}>
+              <Ionicons name="walk" size={20} color="#9A3E1E" />
+              <Text style={[type.headline, { flex: 1 }]}>{t("school.homeworkTitle")}</Text>
+            </View>
+            <Body>{t("school.homework")}</Body>
+            <Body muted>{content.homework.story_beat}</Body>
+          </Card>
+        )}
+        <ErrorText message={error} />
+      </Screen>
+    </VerbContext.Provider>
+  );
+}
+
+/** A lesson's two parts, learn then practise, each opened by a numbered heading. */
+function Phase({ n, title, hint, muted = false }: { n: number; title: string; hint?: string; muted?: boolean }) {
+  return (
+    <View style={styles.phase} accessibilityRole="header">
+      <View style={[styles.phaseNumber, muted && { backgroundColor: colors.border }]}>
+        <Text style={styles.phaseNumberText}>{n}</Text>
+      </View>
+      <View style={{ flex: 1, gap: 2 }}>
+        <Text style={[type.title, muted && { color: colors.muted }]}>{title}</Text>
+        {hint ? <Text style={type.caption}>{hint}</Text> : null}
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  phase: { flexDirection: "row", alignItems: "center", gap: space(1.5), marginTop: space(1) },
+  phaseNumber: { width: 32, height: 32, borderRadius: 16, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" },
+  phaseNumberText: { fontFamily: fonts.bold, fontSize: 15, color: colors.paper },
   rule: {
     fontFamily: fonts.display,
     fontSize: 20,

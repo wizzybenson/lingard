@@ -83,32 +83,30 @@ export function TodayCard({ today, day, onStartStory, busy = false }: { today: T
   const [opening, setOpening] = useState(false);
   const go = () => {
     switch (today.next_step) {
-      case "key_points":
-        if (!today.next_key_point) return router.push("/(tabs)/school");
-        setOpening(true);
-        return void openKeyPoint(api, today.next_key_point.node_key)
-          .catch(() => router.push("/(tabs)/school"))
-          .finally(() => setOpening(false));
       case "set_goal":
         return router.push("/goal");
       case "placement":
         return router.push("/(tabs)/exam");
-      case "lesson":
-        return router.push("/(tabs)/school");
       default:
         return onStartStory();
     }
   };
-  const working = busy || opening;
+  // The next rule is offered beside the day, never in its way: the missions teach it too, where it's needed.
+  const learnRule = () => {
+    if (!today.next_key_point) return;
+    setOpening(true);
+    void openKeyPoint(api, today.next_key_point.node_key)
+      .catch(() => router.push("/(tabs)/school"))
+      .finally(() => setOpening(false));
+  };
   const action = busy
     ? t("city.planning")
-    : today.next_step === "key_points" && today.next_key_point
-      ? t("today.next.key_points", { title: today.next_key_point.title })
-      : today.next_step === "story"
-        ? day
-          ? t("today.next.story", { day })
-          : t("city.startDay")
-        : t(`today.next.${today.next_step}`);
+    : today.next_step === "story"
+      ? day
+        ? t("today.next.story", { day })
+        : t("city.startDay")
+      : t(`today.next.${today.next_step}`);
+  const rule = today.next_step === "story" ? today.next_key_point : null;
   return (
     <View style={{ gap: space(1.5) }}>
       <Onboarding today={today} />
@@ -150,8 +148,8 @@ export function TodayCard({ today, day, onStartStory, busy = false }: { today: T
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
-          accessibilityState={{ busy: working, disabled: working }}
-          disabled={working}
+          accessibilityState={{ busy, disabled: busy }}
+          disabled={busy}
           onPress={go}
           style={({ pressed }) => [
             styles.heroButton,
@@ -161,15 +159,30 @@ export function TodayCard({ today, day, onStartStory, busy = false }: { today: T
             },
           ]}
         >
-          {working ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
+          {busy ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
           <Text style={styles.heroButtonText} numberOfLines={2}>
             {action}
           </Text>
         </Pressable>
         {busy && <Text style={[styles.heroNote, { textAlign: "center" }]}>{t("city.planningHint")}</Text>}
-        {(today.reviews_due > 0 || (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
-          // Reviews and waiting lessons sit beside the story and never stand in its way.
+        {(today.reviews_due > 0 || today.lessons_waiting > 0 || rule) && (
+          // A rule to learn, reviews and waiting lessons sit beside the story and never stand in its way.
           <View style={styles.extras}>
+            {rule && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("today.nextRule", { title: rule.title })}
+                accessibilityState={{ busy: opening }}
+                disabled={opening}
+                onPress={learnRule}
+                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
+              >
+                {opening ? <ActivityIndicator size="small" color="#fff" /> : <Ionicons name="book" size={14} color="#fff" />}
+                <Text style={styles.extraText} numberOfLines={1}>
+                  {t("today.nextRule", { title: rule.title })}
+                </Text>
+              </Pressable>
+            )}
             {today.reviews_due > 0 && (
               <Pressable
                 accessibilityRole="button"
@@ -182,7 +195,7 @@ export function TodayCard({ today, day, onStartStory, busy = false }: { today: T
                 </Text>
               </Pressable>
             )}
-            {today.lessons_waiting > 0 && today.next_step !== "lesson" && (
+            {today.lessons_waiting > 0 && (
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.push("/(tabs)/school")}

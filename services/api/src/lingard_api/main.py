@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from lingard_api.routes import (
     admin,
     auth,
+    conjugations,
     economy,
     glance,
     key_points,
@@ -50,7 +51,22 @@ def create_app(settings: Settings | None = None, state: AppState | None = None) 
         allow_methods=["*"],
         allow_headers=["Authorization", "Content-Type", "X-Lingard-Client"],
     )
-    routers = (auth, me, admin, world, sessions, learning, key_points, economy, voice, glance, speech, studio, today)
+    routers = (
+        auth,
+        me,
+        admin,
+        world,
+        sessions,
+        learning,
+        key_points,
+        conjugations,
+        economy,
+        voice,
+        glance,
+        speech,
+        studio,
+        today,
+    )
     for module in routers:
         app.include_router(module.router)
 

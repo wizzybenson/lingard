@@ -83,6 +83,20 @@ def _conjugation_nodes(language: Language, path: Path, reviewed: bool) -> list[C
     return nodes
 
 
+TEACH_FILE = "teach.yaml"
+"""Each grammar point's step-by-step teaching, kept beside the rules so a teacher can read it on its own."""
+
+
+def _merge_teaching(bundle: SeedBundle, data: dict[str, Any]) -> None:
+    """Put each node's teaching into its lesson (``payload.lesson.teach``); a key naming no node is a content error."""
+    nodes = bundle.by_key()
+    for key, steps in data["teach"].items():
+        if key not in nodes:
+            raise ValueError(f"{TEACH_FILE}: no node {key!r}")
+        payload = nodes[key].payload
+        payload["lesson"] = {**payload.get("lesson", {}), "teach": steps}
+
+
 def load_seed(content_root: str | Path, language: Language, *, mark_reviewed: bool = True) -> SeedBundle:
     folder = Path(content_root) / "curriculum" / language
     bundle = SeedBundle()
@@ -90,7 +104,7 @@ def load_seed(content_root: str | Path, language: Language, *, mark_reviewed: bo
     pending_exercises: list[tuple[str, str]] = []
 
     for path in sorted(folder.glob("*.yaml")):
-        if path.name == "conjugation.yaml":
+        if path.name in ("conjugation.yaml", TEACH_FILE):
             continue
         data = _read(path)
         defaults = dict(data.get("defaults", {}))
@@ -111,6 +125,9 @@ def load_seed(content_root: str | Path, language: Language, *, mark_reviewed: bo
                 pending_exercises.append((node.key, exercises_skill))
             if auto == "same_band":
                 pending_auto.append(node)
+
+    if (folder / TEACH_FILE).is_file():
+        _merge_teaching(bundle, _read(folder / TEACH_FILE))
 
     conjugation = folder / "conjugation.yaml"
     if conjugation.is_file():

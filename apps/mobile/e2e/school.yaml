@@ -18,6 +18,11 @@ appId: app.lingard
 - extendedWaitUntil:
     visible: "The rule"
     timeout: 10000
+- runFlow:
+    when:
+      visible: "I'm ready: .*"
+    commands:
+      - tapOn: "I'm ready: .*"
 - takeScreenshot: school-03-lesson
 - scrollUntilVisible:
     element: "Spot the error"
@@ -33,6 +38,11 @@ appId: app.lingard
 - extendedWaitUntil:
     visible: "In short"
     timeout: 10000
+- runFlow:  # practice opens once the learner is ready
+    when:
+      visible: "I'm ready: .*"
+    commands:
+      - tapOn: "I'm ready: .*"
 - scrollUntilVisible:
     element: "Fill the gap"
     direction: DOWN

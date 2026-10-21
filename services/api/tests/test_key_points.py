@@ -1,13 +1,10 @@
-import uuid
-from datetime import UTC, datetime
-
 from lingard_curriculum.seed import load_seed, seed_graph
-from lingard_db.models import Lesson, Scene, Session
 
 from .test_phase2_to_5_api import learner
 
 
-async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  # type: ignore[no-untyped-def]
+async def test_key_points_are_offered_beside_the_story_and_open_at_once(api) -> None:  # type: ignore[no-untyped-def]
+    """Lessons never stand between the learner and the city (founder, 2026-10-21; decision 0025)."""
     await seed_graph(api.state.curriculum, load_seed(api.settings.content_root, "fr"))
     token, _ = await learner(api)
     auth = api.bearer(token)
@@ -26,7 +23,7 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
 
     today = (await api.client.get("/v1/today", headers=auth)).json()
     first_core = next(k for k in path if k["core"] and k["kind"] == "grammar")
-    assert today["next_step"] == "key_points"
+    assert today["next_step"] == "story", "the day can start with no lesson learned"
     assert today["next_key_point"] == {"node_key": first_core["node_key"], "title": first_core["title"]}
 
     opened = await api.client.post(f"/v1/key-points/{first_core['node_key']}", headers=auth)
@@ -44,18 +41,10 @@ async def test_key_points_come_before_the_story_and_open_at_once(api) -> None:  
     today = (await api.client.get("/v1/today", headers=auth)).json()
     nxt = today["next_key_point"]
     assert nxt is None or nxt["node_key"] != first_core["node_key"]
-    assert today["next_step"] != "key_points", "one rule before each story day, not the whole level first"
+    assert today["next_step"] == "story"
 
-    async with api.state.sessions() as db:  # a scene is played (and its day left half-way): the next rule comes first
-        done = await db.get(Lesson, uuid.UUID(lesson_id))
-        assert done is not None
-        owner = {"tenant_id": done.tenant_id, "user_id": done.user_id}
-        day = Session(**owner, kind="live", city="rivemont", started_at=datetime.now(UTC))
-        db.add(day)
-        await db.flush()
-        db.add(Scene(**owner, session_id=day.id, contract={}, status="live"))
-        await db.commit()
-    assert (await api.client.get("/v1/today", headers=auth)).json()["next_step"] == "key_points"
+    library = (await api.client.get("/v1/key-points?language=fr&every_level=true", headers=auth)).json()
+    assert len(library) > len(path) and max(k["band"] for k in library) > max(k["band"] for k in path)
 
     assert (await api.client.post("/v1/key-points/fr.grammar.nope", headers=auth)).status_code == 404
     words = next(k for k in path if k["kind"] == "lexset")

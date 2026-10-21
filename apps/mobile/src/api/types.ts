@@ -1,6 +1,6 @@
 import type { GameResult } from "@/games/engine";
 /** Shapes of API responses that are not generated from packages/contracts. */
-import type { BandEstimate, CityEntry, Lesson, WorldView } from "@/contracts/generated";
+import type { BandEstimate, CityEntry, Lesson, TeachStep, WorldView } from "@/contracts/generated";
 
 export type { BandEstimate, CityEntry, Lesson, WorldView };
 
@@ -206,6 +206,8 @@ export interface KeyPoint {
   /** One level up: a look ahead. */
   preview: boolean;
   status: "new" | "open" | "done";
+  /** Done because the learner has been using it well in the city, lesson or not. */
+  learned_in_use?: boolean;
   lesson_id: string | null;
   /** Kinds of place where this is useful: the journey offers it there. */
   places: string[];
@@ -255,8 +257,9 @@ export interface Today {
       status: SkillStatus;
     }[];
   }[];
-  next_step: "set_goal" | "placement" | "key_points" | "lesson" | "story";
-  /** The first rule at the learner's level not yet learned (when next_step is key_points). */
+  /** Lessons never come before the day: once the goal and level are known, it is always the story. */
+  next_step: "set_goal" | "placement" | "story";
+  /** The first rule at the learner's level not yet learned, offered beside the day. */
   next_key_point: { node_key: string; title: string } | null;
   onboarding: { goal: boolean; placement: boolean; first_story: boolean };
 }
@@ -285,4 +288,46 @@ export interface ExamFormat {
     questions: number | null;
     tasks: number;
   }[];
+}
+
+/** One cell of a verb table: subject, an auxiliary for compound tenses, then the stem and the ending to learn. */
+export interface VerbForm {
+  subject: string;
+  aux: string;
+  stem: string;
+  ending: string;
+  /** Breaks the tense's pattern (own stem, own form, spelling change). */
+  irregular: boolean;
+}
+
+export interface TenseTable {
+  tense: string;
+  label: string;
+  band: number;
+  forms: VerbForm[];
+}
+
+export interface VerbTables {
+  key: string;
+  infinitive: string;
+  irregular: boolean;
+  tenses: TenseTable[];
+}
+
+/** Which words in a sentence are verbs (lower-cased, without an elided pronoun), and the tenses a rule is about. */
+export interface VerbIndex {
+  persons: string[];
+  tenses: TenseTable[];
+  index: Record<string, string>;
+  focus: string[];
+}
+
+/** A rule taught where it's needed (a mission brief) without opening a lesson. */
+export interface RuleCard {
+  node_key: string;
+  title: string;
+  rule: string;
+  teach: TeachStep[];
+  models: string[];
+  watch_out: { learner_said: string; better: string; note?: string }[];
 }

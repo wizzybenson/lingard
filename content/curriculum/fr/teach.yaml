@@ -1,0 +1,694 @@
+# How each French grammar point is taught, a step at a time, before any exercise (decision 0025).
+# Original Lingard content. Each step: `say` (one idea), then optionally `verb` + `tense` (a verb's table from
+# conjugation.yaml, endings in colour), `table` (head + rows), `examples`. `**x**` marks the part to look at.
+# The learner can tap any verb in a step to open all its forms.
+teach:
+  fr.grammar.present_regular:
+    - say: "Un verbe a deux parties : le **radical** (qui ne change pas) et la **terminaison** (qui change avec la personne). Pour un verbe en -er, enlevez **-er** : parler → **parl-**."
+      verb: parler
+      tense: present
+    - say: "Ajoutez la terminaison de la personne. À l'oral, je parle, tu parles, il parle et ils parlent se prononcent pareil : seules les terminaisons de nous (**-ons**) et de vous (**-ez**) s'entendent."
+      table:
+        head: ["", "-er (parler)", "-ir (finir)"]
+        rows:
+          - ["je", "parl**e**", "fin**is**"]
+          - ["tu", "parl**es**", "fin**is**"]
+          - ["il / elle / on", "parl**e**", "fin**it**"]
+          - ["nous", "parl**ons**", "fin**issons**"]
+          - ["vous", "parl**ez**", "fin**issez**"]
+          - ["ils / elles", "parl**ent**", "fin**issent**"]
+    - say: "Les verbes en -ir comme finir ajoutent **-iss-** au pluriel : nous fin**iss**ons, ils fin**iss**ent."
+      verb: finir
+      tense: present
+    - say: "Devant une voyelle ou un h muet, je devient **j'**."
+      examples: ["**J'**habite près du marché.", "**J'**aime le quartier.", "Nous travaill**ons** au port."]
+
+  fr.grammar.present_irregular:
+    - say: "Les verbes les plus utiles sont irréguliers : leurs formes s'apprennent par cœur. Commencez par **être** et **avoir**."
+      verb: etre
+      tense: present
+    - say: "Avoir sert partout : l'âge, la possession, et le passé composé."
+      verb: avoir
+      tense: present
+      examples: ["**J'ai** trente ans.", "Vous **avez** une pièce d'identité ?"]
+    - say: "Aller et faire : retenez surtout **je vais**, **ils vont**, **vous faites**, **ils font**."
+      verb: aller
+      tense: present
+      examples: ["Je **vais** à la banque.", "Vous **faites** quoi ce soir ?"]
+    - say: "Venir, prendre, pouvoir, vouloir changent de radical : un radical pour je/tu/il, un autre pour nous/vous, un troisième pour ils."
+      table:
+        head: ["", "je", "nous", "ils"]
+        rows:
+          - ["venir", "**vien**s", "**ven**ons", "**vienn**ent"]
+          - ["prendre", "**prend**s", "**pren**ons", "**prenn**ent"]
+          - ["pouvoir", "**peu**x", "**pouv**ons", "**peuv**ent"]
+          - ["vouloir", "**veu**x", "**voul**ons", "**veul**ent"]
+      examples: ["Elle **prend** le bus.", "Je **peux** vous aider ?"]
+
+  fr.grammar.cest_il_est_il_y_a:
+    - say: "**C'est** + un nom avec un petit mot devant (un, le, mon…) ou un pronom : pour présenter ou identifier."
+      examples: ["**C'est** mon voisin.", "**C'est** une bonne idée.", "Qui est là ? **C'est** moi."]
+    - say: "**Il est / elle est** + un adjectif, ou une profession **sans article**."
+      examples: ["**Il est** infirmier.", "**Elle est** très gentille."]
+    - say: "Attention : avec un article, on revient à **c'est**."
+      table:
+        head: ["sans article", "avec article"]
+        rows:
+          - ["Il est **médecin**.", "C'est **un** médecin."]
+          - ["Elle est **française**.", "C'est **une** Française."]
+    - say: "**Il y a** + un nom : pour dire qu'une chose existe quelque part. Il ne change jamais."
+      examples: ["**Il y a** une pharmacie près de la gare.", "**Il y a** deux chambres."]
+
+  fr.grammar.articles_gender:
+    - say: "Chaque nom est **masculin** ou **féminin**. Apprenez le nom avec son article : **le** loyer, **la** clé."
+      table:
+        head: ["", "masculin", "féminin", "pluriel"]
+        rows:
+          - ["défini (celui qu'on connaît)", "**le** / **l'**", "**la** / **l'**", "**les**"]
+          - ["indéfini (un parmi d'autres)", "**un**", "**une**", "**des**"]
+          - ["partitif (une partie de)", "**du** / **de l'**", "**de la** / **de l'**", "**des**"]
+    - say: "Le partitif sert pour ce qu'on ne compte pas : le pain, l'eau, le temps."
+      examples: ["Je voudrais **du** pain.", "Vous avez **de l'**eau ?", "Il faut **de la** patience."]
+    - say: "Après une négation, un, une, des, du, de la deviennent **de / d'**. Mais le, la, les ne changent pas, et après **être** on garde l'article."
+      table:
+        head: ["phrase", "négation"]
+        rows:
+          - ["J'ai **une** voiture.", "Je n'ai pas **de** voiture."]
+          - ["Il y a **du** lait.", "Il n'y a pas **de** lait."]
+          - ["J'aime **le** lait.", "Je n'aime pas **le** lait."]
+          - ["C'est **une** voiture.", "Ce n'est pas **une** voiture."]
+
+  fr.grammar.adjectifs_accord:
+    - say: "L'adjectif prend le genre et le nombre du nom : **+e** au féminin, **+s** au pluriel."
+      table:
+        head: ["", "singulier", "pluriel"]
+        rows:
+          - ["masculin", "petit", "petit**s**"]
+          - ["féminin", "petit**e**", "petit**es**"]
+    - say: "Quelques adjectifs changent plus : beau → **belle**, nouveau → **nouvelle**, vieux → **vieille**, bon → **bonne**, cher → **chère**."
+      examples: ["Une **belle** vue.", "Une **nouvelle** adresse.", "Les fenêtres sont **ouvertes**."]
+    - say: "En général l'adjectif se place **après** le nom. Quelques adjectifs courts et fréquents se placent **avant** : beau, bon, grand, petit, jeune, vieux, nouveau."
+      examples: ["Une voiture **rouge**.", "Un **petit** appartement **calme**."]
+
+  fr.grammar.possessifs_demonstratifs:
+    - say: "Le possessif s'accorde avec **la chose possédée**, pas avec la personne : **sa** clé (la clé de Paul ou de Marie)."
+      table:
+        head: ["", "masculin", "féminin", "pluriel"]
+        rows:
+          - ["à moi", "**mon**", "**ma**", "**mes**"]
+          - ["à toi", "**ton**", "**ta**", "**tes**"]
+          - ["à lui / elle", "**son**", "**sa**", "**ses**"]
+          - ["à nous", "**notre**", "**notre**", "**nos**"]
+          - ["à vous", "**votre**", "**votre**", "**vos**"]
+          - ["à eux / elles", "**leur**", "**leur**", "**leurs**"]
+    - say: "Devant une voyelle, on dit **mon, ton, son** même au féminin, pour la prononciation."
+      examples: ["**Mon** adresse.", "**Son** amie.", "Voici **mon** adresse."]
+    - say: "Pour montrer : **ce** (masculin), **cet** (masculin devant une voyelle), **cette** (féminin), **ces** (pluriel)."
+      examples: ["**Ce** studio.", "**Cet** appartement est encore libre.", "**Ces** clés sont à vous ?"]
+
+  fr.grammar.prepositions_lieu:
+    - say: "Pour une ville : **à**. Pour un pays, cela dépend de son genre."
+      table:
+        head: ["", "préposition", "exemple"]
+        rows:
+          - ["ville", "**à**", "à Rivemont, à Paris"]
+          - ["pays féminin (souvent en -e)", "**en**", "en France, en Algérie"]
+          - ["pays qui commence par une voyelle", "**en**", "en Iran, en Ontario"]
+          - ["pays masculin", "**au**", "au Canada, au Maroc"]
+          - ["pays pluriel", "**aux**", "aux États-Unis"]
+    - say: "Chez une personne ou un professionnel : **chez**."
+      examples: ["Je vais **chez** le médecin demain.", "On dîne **chez** Léa."]
+    - say: "Pour situer : sur, sous, devant, derrière, **à côté de**, **en face de**, **près de**."
+      examples: ["La banque est **en face de** la gare.", "J'habite **au** Canada, **à** Rivemont."]
+
+  fr.grammar.negation:
+    - say: "La négation a deux parties qui entourent le verbe conjugué : **ne** + verbe + **pas**. Ne devient **n'** devant une voyelle."
+      examples: ["Je **ne** fume **pas**.", "Il **n'**habite **pas** ici."]
+    - say: "Changez la deuxième partie pour changer le sens."
+      table:
+        head: ["négation", "sens", "exemple"]
+        rows:
+          - ["ne… **pas**", "simple non", "Je ne travaille pas."]
+          - ["ne… **jamais**", "à aucun moment", "Je ne travaille jamais le dimanche."]
+          - ["ne… **plus**", "c'est fini", "Je ne travaille plus là."]
+          - ["ne… **rien**", "aucune chose", "Je ne veux rien."]
+    - say: "Au passé composé, la négation entoure l'**auxiliaire** : ne + avoir/être + pas + participe."
+      examples: ["Il **n'a jamais** vu la mer.", "Je **ne suis pas** allé au bureau."]
+
+  fr.grammar.quantites:
+    - say: "Après une expression de quantité, on met **de** + le nom, **sans article** (d' devant une voyelle)."
+      table:
+        head: ["quantité", "+ de", "nom"]
+        rows:
+          - ["beaucoup", "**de**", "travail"]
+          - ["un peu", "**de**", "sucre"]
+          - ["trop", "**d'**", "étapes"]
+          - ["un kilo", "**de**", "pommes"]
+          - ["une bouteille", "**d'**", "eau"]
+    - say: "Exception : **la plupart des** + nom pluriel."
+      examples: ["J'ai **beaucoup de** travail.", "Un kilo **de** pommes, s'il vous plaît.", "**La plupart des** gens prennent le bus."]
+
+  fr.grammar.questions:
+    - say: "Trois façons de poser la même question, de la plus familière à la plus soutenue."
+      table:
+        head: ["registre", "question"]
+        rows:
+          - ["familier : l'intonation monte", "Vous venez ?"]
+          - ["courant : **est-ce que**", "**Est-ce que** vous venez ?"]
+          - ["soutenu : sujet après le verbe", "Ven**ez-vous** ?"]
+    - say: "Avec un mot interrogatif (où, quand, comment, pourquoi, combien, à quelle heure), il se place au début."
+      examples: ["**Où est-ce que** vous habitez ?", "**À quelle heure** part le train ?", "**Combien** coûte le loyer ?"]
+    - say: "Au bureau ou au téléphone, l'inversion avec le conditionnel est très polie."
+      examples: ["**Pourriez-vous** m'aider ?", "**Est-ce que** le bureau est ouvert ?"]
+
+  fr.grammar.futur_proche:
+    - say: "Pour un projet proche, utilisez **aller au présent + l'infinitif** du verbe."
+      verb: aller
+      tense: present
+    - say: "Seul aller se conjugue ; l'autre verbe reste à l'infinitif. À la négation, ne… pas entoure aller."
+      examples: ["Je **vais appeler** le propriétaire.", "On **va visiter** l'appartement demain.", "Je **ne vais pas signer** aujourd'hui."]
+
+  fr.grammar.verbes_pronominaux:
+    - say: "Un verbe pronominal a un petit pronom en plus, qui renvoie au sujet : se lever, s'appeler, se préparer."
+      table:
+        head: ["sujet", "pronom", "verbe"]
+        rows:
+          - ["je", "**me**", "lève"]
+          - ["tu", "**te**", "lèves"]
+          - ["il / elle", "**se**", "lève"]
+          - ["nous", "**nous**", "levons"]
+          - ["vous", "**vous**", "levez"]
+          - ["ils / elles", "**se**", "lèvent"]
+    - say: "Me, te, se deviennent **m', t', s'** devant une voyelle."
+      examples: ["Je **m'**appelle Sara.", "Il **s'**inscrit au cours."]
+    - say: "À la négation, **ne** se place avant le pronom."
+      examples: ["Je **ne me** lève **pas** tôt.", "Comment vous **appelez-vous** ?", "Nous **nous** préparons pour l'entretien."]
+
+  fr.grammar.passe_recent_en_train_de:
+    - say: "**Venir de + infinitif** : une action qui vient juste de se terminer."
+      verb: venir
+      tense: present
+      examples: ["Je **viens d'**arriver à Rivemont.", "Nous **venons de** signer le bail."]
+    - say: "**Être en train de + infinitif** : une action en cours, en ce moment."
+      examples: ["Il **est en train de** remplir le formulaire.", "Je **suis en train de** chercher un logement."]
+
+  fr.grammar.passe_compose_avoir:
+    - say: "Le passé composé raconte une action terminée. Il a deux parties : **avoir au présent** + le **participe passé**."
+      verb: payer
+      tense: passe_compose
+    - say: "Le participe dépend de la fin de l'infinitif. Les irréguliers s'apprennent : avoir → eu, être → été, faire → fait, prendre → pris."
+      table:
+        head: ["infinitif", "participe"]
+        rows:
+          - ["-er : parl**er**", "parl**é**"]
+          - ["-ir : fin**ir**", "fin**i**"]
+          - ["-re : attend**re**", "attend**u**"]
+          - ["irréguliers", "eu, été, fait, pris, dit, mis, vu, pu, voulu, dû, su"]
+    - say: "Si le complément (COD) est placé **avant** le verbe, le participe s'accorde avec lui."
+      examples: ["**J'ai payé** le loyer.", "Les clés ? Je **les** ai rendu**es** hier."]
+
+  fr.grammar.passe_compose_etre:
+    - say: "Quelques verbes de mouvement prennent **être** : aller, venir, arriver, partir, naître, mourir, rester, tomber, entrer, sortir, monter, descendre, retourner."
+      verb: aller
+      tense: passe_compose
+    - say: "Avec être, le participe **s'accorde avec le sujet** : +e au féminin, +s au pluriel."
+      table:
+        head: ["sujet", "passé composé"]
+        rows:
+          - ["il", "il est arriv**é**"]
+          - ["elle", "elle est arriv**ée**"]
+          - ["ils", "ils sont arriv**és**"]
+          - ["elles", "elles sont arriv**ées**"]
+    - say: "Les verbes pronominaux prennent aussi être. Sortir, monter, descendre prennent **avoir** quand ils ont un complément direct."
+      examples: ["Elle **est arrivée** à Rivemont lundi.", "Nous **nous sommes inscrits** au cours.", "Elle **est sortie**, mais elle **a sorti** les poubelles."]
+
+  fr.grammar.imparfait:
+    - say: "Pour former l'imparfait : prenez la forme **nous** du présent, enlevez **-ons**, ajoutez les terminaisons."
+      table:
+        head: ["nous au présent", "radical", "imparfait"]
+        rows:
+          - ["nous parl**ons**", "parl-", "je parl**ais**"]
+          - ["nous finiss**ons**", "finiss-", "je finiss**ais**"]
+          - ["nous pren**ons**", "pren-", "je pren**ais**"]
+          - ["nous av**ons**", "av-", "j'av**ais**"]
+    - say: "Les terminaisons sont les mêmes pour tous les verbes."
+      verb: parler
+      tense: imparfait
+    - say: "Une seule exception : **être → ét-** (j'étais, nous étions)."
+      verb: etre
+      tense: imparfait
+    - say: "L'imparfait décrit le décor, une habitude, un état."
+      examples: ["Quand **j'étais** petit, je **jouais** au foot.", "Il **pleuvait** quand je suis sorti."]
+
+  fr.grammar.passe_compose_ou_imparfait:
+    - say: "Dans une histoire, les deux temps travaillent ensemble : l'**imparfait** pose le décor, le **passé composé** fait avancer l'histoire."
+      table:
+        head: ["imparfait : le décor", "passé composé : l'événement"]
+        rows:
+          - ["description, état", "action ponctuelle"]
+          - ["habitude (tous les jours)", "une fois, à un moment précis"]
+          - ["action en cours", "action qui interrompt"]
+    - say: "Une action en cours (imparfait) est souvent interrompue par un événement (passé composé)."
+      examples: ["Je **dormais** quand le téléphone **a sonné**.", "Quand **j'étais** enfant, **j'allais** à l'école à pied.", "Hier, **j'ai visité** trois appartements."]
+
+  fr.grammar.expressions_de_temps:
+    - say: "Quatre petits mots pour situer dans le temps : choisissez selon la question."
+      table:
+        head: ["mot", "question", "temps du verbe"]
+        rows:
+          - ["**depuis**", "Ça dure depuis quand ?", "présent (ça continue)"]
+          - ["**il y a**", "C'était quand ?", "passé"]
+          - ["**pendant**", "Combien de temps ?", "tous les temps"]
+          - ["**dans**", "Ça arrivera quand ?", "futur"]
+    - say: "Attention : avec **depuis**, le verbe est au **présent** parce que la situation continue."
+      examples: ["J'habite ici **depuis** deux ans.", "Je suis arrivé **il y a** trois mois.", "Je vais rester **pendant** deux mois.", "Je pars **dans** une semaine."]
+
+  fr.grammar.comparatif_superlatif:
+    - say: "Pour comparer : **plus / moins / aussi** + adjectif + **que**."
+      table:
+        head: ["", "exemple"]
+        rows:
+          - ["supérieur", "**plus** calme **que**"]
+          - ["inférieur", "**moins** cher **que**"]
+          - ["égal", "**aussi** grand **que**"]
+    - say: "Pour le plus haut degré : **le / la / les plus** + adjectif."
+      examples: ["Cet appartement est **plus calme que** l'autre.", "C'est le quartier **le plus cher** de la ville."]
+    - say: "Deux formes spéciales : bon → **meilleur**, bien → **mieux**."
+      examples: ["Ce café est **meilleur**.", "Elle parle **mieux** que moi."]
+
+  fr.grammar.imperatif:
+    - say: "L'impératif donne un ordre ou un conseil. Il a trois personnes et **pas de sujet**."
+      table:
+        head: ["", "prendre", "parler"]
+        rows:
+          - ["tu", "prend**s** !", "parl**e** !"]
+          - ["nous", "pren**ons** !", "parl**ons** !"]
+          - ["vous", "pren**ez** !", "parl**ez** !"]
+    - say: "Les verbes en -er perdent le **-s** au « tu » : tu parles → **parle** !"
+      examples: ["**Prenez** la deuxième rue à droite.", "**Parle** plus fort, s'il te plaît."]
+    - say: "À la négation, ne… pas entoure le verbe, et le pronom reste devant."
+      examples: ["**Ne** t'inquiète **pas**.", "**Ne** fermez **pas** la porte."]
+
+  fr.grammar.pronoms_cod_coi:
+    - say: "Un pronom remplace un nom déjà dit. **COD** : le verbe agit directement sur la chose ou la personne (connaître quelqu'un). **COI** : avec **à** (parler à quelqu'un)."
+      table:
+        head: ["", "COD", "COI (à…)"]
+        rows:
+          - ["moi", "**me**", "**me**"]
+          - ["toi", "**te**", "**te**"]
+          - ["lui / elle", "**le / la**", "**lui**"]
+          - ["nous", "**nous**", "**nous**"]
+          - ["vous", "**vous**", "**vous**"]
+          - ["eux / elles", "**les**", "**leur**"]
+    - say: "Le pronom se place **avant le verbe conjugué**, ou avant l'auxiliaire au passé composé."
+      examples: ["Je **le** connais depuis deux ans.", "Je **lui** ai envoyé un courriel."]
+    - say: "Avec un infinitif, il se place devant l'infinitif. À l'impératif affirmatif, après le verbe."
+      examples: ["Je vais **lui** téléphoner.", "Téléphone-**lui** !"]
+
+  fr.grammar.pronoms_y_en:
+    - say: "**Y** remplace **à + une chose** ou un **lieu**."
+      examples: ["Le marché ? J'**y** vais le samedi.", "Vous pensez à votre rendez-vous ? Oui, j'**y** pense."]
+    - say: "**En** remplace **de + un nom**, ou une quantité. Gardez le nombre à la fin."
+      examples: ["Des pommes ? J'**en** voudrais trois.", "Du café ? Non merci, j'**en** ai déjà."]
+    - say: "Comme les autres pronoms, y et en se placent devant le verbe conjugué."
+      table:
+        head: ["phrase", "avec le pronom"]
+        rows:
+          - ["Je vais **à la banque**.", "J'**y** vais."]
+          - ["J'ai besoin **de ce document**.", "J'**en** ai besoin."]
+          - ["Il a **deux enfants**.", "Il **en** a deux."]
+
+  fr.grammar.adverbes:
+    - say: "Pour former un adverbe : prenez l'adjectif **au féminin** et ajoutez **-ment**."
+      table:
+        head: ["masculin", "féminin", "adverbe"]
+        rows:
+          - ["lent", "lente", "lente**ment**"]
+          - ["heureux", "heureuse", "heureuse**ment**"]
+          - ["courant", "—", "cour**amment**"]
+          - ["évident", "—", "évid**emment**"]
+    - say: "Les adjectifs en -ant donnent **-amment**, ceux en -ent donnent **-emment**."
+      examples: ["Parlez **lentement**, s'il vous plaît.", "Elle parle **couramment** l'arabe."]
+    - say: "Au passé composé, bien, mal, déjà, souvent se placent **entre l'auxiliaire et le participe**."
+      examples: ["J'ai **déjà** rempli le formulaire.", "J'ai **bien** compris.", "Je suis rentré **tard**."]
+
+  fr.grammar.indefinis_ne_que:
+    - say: "Chaque mot positif a son contraire avec **ne**."
+      table:
+        head: ["positif", "négatif"]
+        rows:
+          - ["**quelqu'un**", "ne… **personne**"]
+          - ["**quelque chose**", "ne… **rien**"]
+          - ["**chaque** + nom singulier", "ne… **aucun(e)** + nom singulier"]
+    - say: "Personne et rien peuvent aussi être sujets : ils viennent alors en premier, avec ne devant le verbe."
+      examples: ["**Personne n'**a appelé ce matin.", "Il **n'**y a **aucun** problème."]
+    - say: "**Ne… que** n'est pas une négation : il veut dire **seulement**."
+      examples: ["Je **n'**ai **que** dix minutes.", "Il **ne** parle **que** français."]
+
+  fr.grammar.futur_simple:
+    - say: "Le futur simple se forme sur l'**infinitif** + les terminaisons **-ai, -as, -a, -ons, -ez, -ont** (celles d'avoir au présent)."
+      verb: parler
+      tense: futur_simple
+    - say: "Les verbes en -re perdent le **-e** final : prendre → **prendr**ai."
+      verb: prendre
+      tense: futur_simple
+    - say: "Quelques radicaux sont irréguliers ; les terminaisons, elles, ne changent jamais."
+      table:
+        head: ["verbe", "radical", "futur"]
+        rows:
+          - ["être", "**ser-**", "je serai"]
+          - ["avoir", "**aur-**", "j'aurai"]
+          - ["aller", "**ir-**", "j'irai"]
+          - ["faire", "**fer-**", "je ferai"]
+          - ["pouvoir", "**pourr-**", "je pourrai"]
+          - ["venir", "**viendr-**", "je viendrai"]
+      examples: ["Je vous **rappellerai** demain.", "Quand tu **arriveras**, appelle-moi."]
+
+  fr.grammar.conditionnel_present:
+    - say: "Le conditionnel = **radical du futur** + **terminaisons de l'imparfait** (-ais, -ais, -ait, -ions, -iez, -aient)."
+      verb: vouloir
+      tense: conditionnel_present
+    - say: "C'est la forme de la **politesse** : je voudrais plutôt que je veux."
+      table:
+        head: ["direct", "poli"]
+        rows:
+          - ["Je **veux** un rendez-vous.", "Je **voudrais** un rendez-vous."]
+          - ["Vous **pouvez** répéter ?", "**Pourriez**-vous répéter ?"]
+          - ["Il **faut** signer.", "Il **faudrait** signer."]
+      examples: ["Je **voudrais** prendre rendez-vous.", "**Pourriez**-vous répéter, s'il vous plaît ?"]
+
+  fr.grammar.relatifs_qui_que_ou:
+    - say: "Un pronom relatif relie deux phrases et évite de répéter un nom. Le choix dépend de son rôle dans la deuxième phrase."
+      table:
+        head: ["pronom", "rôle", "après lui"]
+        rows:
+          - ["**qui**", "sujet", "un verbe"]
+          - ["**que / qu'**", "complément direct", "un sujet + verbe"]
+          - ["**où**", "lieu ou moment", "un sujet + verbe"]
+    - say: "Astuce : si un verbe suit directement, c'est **qui** ; si un sujet suit (je, il, mon voisin…), c'est **que**."
+      examples: ["La voisine **qui** habite en face est infirmière.", "Le studio **que** j'ai visité est petit.", "Le jour **où** je suis arrivé…"]
+
+  fr.grammar.si_present_futur:
+    - say: "Pour une condition probable : **si + présent**, puis **futur** (ou impératif)."
+      table:
+        head: ["si + présent", "résultat"]
+        rows:
+          - ["S'il **fait** beau,", "nous **irons** au parc."]
+          - ["Si tu **as** besoin d'aide,", "**appelle**-moi."]
+    - say: "Jamais de futur juste après **si**. Si devient **s'** devant il et ils."
+      examples: ["**S'il fait** beau, nous **irons** au parc.", "**Si** vous **venez** demain, je vous **montrerai** le bureau."]
+
+  fr.grammar.si_imparfait:
+    - say: "Pour imaginer une situation qui n'est pas vraie maintenant : **si + imparfait**, puis **conditionnel présent**."
+      table:
+        head: ["si + imparfait", "conditionnel présent"]
+        rows:
+          - ["Si j'**avais** le temps,", "je **viendrais**."]
+          - ["Si vous **refusiez**,", "j'**irais** au tribunal."]
+    - say: "Jamais de conditionnel juste après **si**."
+      verb: avoir
+      tense: imparfait
+      examples: ["Si j'**avais** plus de temps, je **suivrais** un cours du soir."]
+
+  fr.grammar.relatif_dont:
+    - say: "**Dont** remplace un complément avec **de** : parler de, avoir besoin de, se souvenir de, le nom de."
+      table:
+        head: ["deux phrases", "avec dont"]
+        rows:
+          - ["Voici le document. Vous avez besoin **de ce document**.", "Voici le document **dont** vous avez besoin."]
+          - ["C'est la collègue. Je t'ai parlé **de cette collègue**.", "C'est la collègue **dont** je t'ai parlé."]
+    - say: "Vérifiez le verbe : s'il se construit avec **de**, c'est dont."
+      examples: ["Voici le document **dont** vous avez besoin.", "C'est la collègue **dont** je t'ai parlé."]
+
+  fr.grammar.doubles_pronoms:
+    - say: "Avec deux pronoms devant le verbe, l'ordre est fixe : suivez les colonnes de gauche à droite."
+      table:
+        head: ["1", "2", "3", "4", "5"]
+        rows:
+          - ["me, te, se, nous, vous", "le, la, les", "lui, leur", "y", "en"]
+    - say: "Exemples : on prend un pronom dans deux colonnes différentes, dans l'ordre."
+      examples: ["Je **vous l'**envoie aujourd'hui.", "Le formulaire ? Je **le lui** ai déjà donné.", "Des places ? Il **y en** a encore."]
+    - say: "À l'impératif affirmatif, l'ordre change : le / la / les d'abord, puis moi / nous / lui / leur."
+      examples: ["Donne-**le-moi**.", "Envoyez-**la-leur**."]
+
+  fr.grammar.pronoms_demonstratifs_possessifs:
+    - say: "Pour ne pas répéter un nom : **celui, celle, ceux, celles**, toujours suivis de **-ci / -là**, de **qui / que**, ou de **de**."
+      table:
+        head: ["", "singulier", "pluriel"]
+        rows:
+          - ["masculin", "**celui**", "**ceux**"]
+          - ["féminin", "**celle**", "**celles**"]
+      examples: ["Quel formulaire ? **Celui de** la mairie.", "Je préfère **celle qui** donne sur le parc."]
+    - say: "Le pronom possessif remplace mon/ton/votre + nom. Il s'accorde avec la chose possédée."
+      table:
+        head: ["", "masc.", "fém.", "pluriel"]
+        rows:
+          - ["à moi", "le **mien**", "la **mienne**", "les **miens / miennes**"]
+          - ["à vous", "le **vôtre**", "la **vôtre**", "les **vôtres**"]
+          - ["à eux", "le **leur**", "la **leur**", "les **leurs**"]
+      examples: ["Ce n'est pas ma clé, c'est **la vôtre**."]
+
+  fr.grammar.plus_que_parfait:
+    - say: "Le plus-que-parfait raconte une action **avant** une autre action passée. Forme : **avoir ou être à l'imparfait** + participe passé."
+      verb: partir
+      tense: plus_que_parfait
+    - say: "Sur une ligne du temps : le plus-que-parfait est le plus loin dans le passé."
+      table:
+        head: ["d'abord", "ensuite", "maintenant"]
+        rows:
+          - ["le train **était parti**", "je **suis arrivé**", "je raconte"]
+      examples: ["Quand je suis arrivé, le train **était** déjà **parti**.", "Il m'a dit qu'il **avait perdu** ses clés."]
+
+  fr.grammar.subjonctif_present:
+    - say: "Après une **nécessité**, une **volonté** ou une **émotion** + **que**, le verbe se met au subjonctif."
+      table:
+        head: ["déclencheur", "+ subjonctif"]
+        rows:
+          - ["Il faut que", "vous **signiez**"]
+          - ["Je veux que", "tu **viennes**"]
+          - ["Je suis content que", "vous **soyez** là"]
+          - ["avant que, pour que", "il **parte**"]
+    - say: "Formation : radical de **ils** au présent (ils parl**ent** → parl-) + -e, -es, -e, -ent ; pour nous et vous, comme l'imparfait (-ions, -iez)."
+      verb: parler
+      tense: subjonctif_present
+    - say: "Quelques verbes ont leur propre forme : être, avoir, aller, faire, pouvoir, savoir."
+      verb: etre
+      tense: subjonctif_present
+      examples: ["Il faut que vous **signiez** ici.", "Je voudrais que tu **viennes** avec moi."]
+
+  fr.grammar.gerondif:
+    - say: "Le gérondif = **en** + participe présent. Le participe présent se forme sur **nous** au présent : enlevez -ons, ajoutez **-ant**."
+      table:
+        head: ["nous", "participe présent", "gérondif"]
+        rows:
+          - ["nous conduis**ons**", "conduis**ant**", "**en** conduisant"]
+          - ["nous pratiqu**ons**", "pratiqu**ant**", "**en** pratiquant"]
+          - ["exceptions", "étant, ayant, sachant", "en étant…"]
+    - say: "Il exprime deux actions **en même temps** ou **la manière**, avec le même sujet."
+      examples: ["J'écoute la radio **en conduisant**.", "C'est **en pratiquant** qu'on progresse."]
+
+  fr.grammar.connecteurs_logiques:
+    - say: "Les connecteurs montrent le lien entre deux idées. Classez-les par fonction."
+      table:
+        head: ["fonction", "connecteurs"]
+        rows:
+          - ["cause", "parce que, puisque, car, comme"]
+          - ["conséquence", "donc, c'est pourquoi, si bien que"]
+          - ["opposition", "mais, pourtant, alors que"]
+          - ["concession", "bien que (+ subjonctif), même si (+ indicatif)"]
+    - say: "Attention au mode : **bien que** veut le subjonctif, **même si** l'indicatif."
+      examples: ["**Puisque** le bail est terminé, je demande mon dépôt.", "**Bien qu'il soit** tard, je vais finir ce rapport.", "**Même s'il est** tard, je vais finir."]
+
+  fr.grammar.conditionnel_passe:
+    - say: "Pour un **regret** ou un **reproche** : avoir ou être **au conditionnel présent** + participe passé."
+      verb: devoir
+      tense: conditionnel_passe
+    - say: "Les trois formes les plus utiles : j'aurais dû, tu aurais pu, j'aurais voulu."
+      examples: ["**J'aurais dû** vérifier le contrat.", "Vous **auriez pu** me prévenir.", "Elle **serait venue** plus tôt."]
+
+  fr.grammar.futur_anterieur:
+    - say: "Le futur antérieur : une action future **terminée avant** une autre. Forme : avoir ou être **au futur** + participe passé (j'aurai fini, je serai arrivé). Voici **avoir** au futur."
+      verb: avoir
+      tense: futur_simple
+    - say: "Après **quand, dès que, lorsque**, utilisez le futur (pas le présent) quand l'action est dans l'avenir."
+      table:
+        head: ["d'abord (futur antérieur)", "ensuite (futur)"]
+        rows:
+          - ["Dès que j'**aurai reçu** ma carte,", "je vous l'**enverrai**."]
+          - ["Quand vous **serez arrivés**,", "appelez-moi."]
+      examples: ["J'**aurai fini** le dossier avant vendredi."]
+
+  fr.grammar.accord_participe_avoir:
+    - say: "Avec **avoir**, le participe ne s'accorde pas avec le sujet. Il s'accorde seulement avec le **COD placé avant** le verbe."
+      table:
+        head: ["COD après : pas d'accord", "COD avant : accord"]
+        rows:
+          - ["J'ai trouvé **les clés**.", "Je **les** ai trouv**ées**."]
+          - ["J'ai écrit **la lettre**.", "La lettre **que** j'ai écrit**e**…"]
+    - say: "Le COD avant le verbe est souvent un pronom (**la, les**) ou le relatif **que**."
+      examples: ["Les clés ? Je **les** ai trouv**ées**.", "La lettre **que** j'ai écrit**e** est partie hier."]
+
+  fr.grammar.si_plus_que_parfait:
+    - say: "Pour imaginer un passé différent : **si + plus-que-parfait**, puis **conditionnel passé**."
+      table:
+        head: ["si + plus-que-parfait", "conditionnel passé"]
+        rows:
+          - ["Si j'**avais su**,", "je **serais venu** plus tôt."]
+          - ["Si vous m'**aviez prévenu**,", "j'**aurais réparé** le mur."]
+    - say: "Les deux parties sont composées : l'auxiliaire change de temps, le participe reste."
+      verb: venir
+      tense: conditionnel_passe
+
+  fr.grammar.subjonctif_vs_indicatif:
+    - say: "Ce qu'on croit vrai → **indicatif**. Ce dont on doute → **subjonctif**."
+      table:
+        head: ["+ indicatif (certitude)", "+ subjonctif (doute)"]
+        rows:
+          - ["Je pense qu'il **a** raison.", "Je ne pense pas qu'il **ait** raison."]
+          - ["Je suis sûr qu'il **vient**.", "Je doute qu'il **vienne**."]
+          - ["Il est évident que c'**est** cher.", "Il est possible que ce **soit** cher."]
+    - say: "Une même expression change de mode à la négation : je pense que + indicatif, je **ne** pense **pas** que + subjonctif."
+      verb: avoir
+      tense: subjonctif_present
+
+  fr.grammar.subjonctif_conjonctions:
+    - say: "Certaines conjonctions demandent toujours le subjonctif, d'autres jamais."
+      table:
+        head: ["+ subjonctif", "+ indicatif"]
+        rows:
+          - ["bien que, pour que, afin que", "parce que, pendant que"]
+          - ["avant que, à condition que, sans que", "après que, dès que"]
+    - say: "Avec le **même sujet**, on préfère **pour / avant de / sans + infinitif**."
+      examples: ["Je vous appelle **pour que** vous **soyez** prêt.", "**Bien qu'il fasse** froid, le marché est ouvert.", "J'économise **pour payer** le dépôt."]
+
+  fr.grammar.discours_rapporte:
+    - say: "Quand le verbe qui rapporte est au passé (il a dit que…), les temps reculent d'un pas."
+      table:
+        head: ["paroles", "rapportées au passé"]
+        rows:
+          - ["présent : « Je **viens**. »", "imparfait : Il a dit qu'il **venait**."]
+          - ["passé composé : « J'**ai fini**. »", "plus-que-parfait : Il a dit qu'il **avait fini**."]
+          - ["futur : « Je **viendrai**. »", "conditionnel : Il a dit qu'il **viendrait**."]
+    - say: "Une question oui/non devient **si** ; les pronoms changent selon qui parle."
+      examples: ["Il a dit qu'il **viendrait**.", "Elle m'a demandé **si** j'**avais rempli** le formulaire."]
+
+  fr.grammar.voix_passive:
+    - say: "Au passif, le sujet subit l'action. Forme : **être** au temps voulu + **participe passé accordé** avec le sujet."
+      table:
+        head: ["actif", "passif"]
+        rows:
+          - ["Le conseil **a pris** la décision.", "La décision **a été prise** par le conseil."]
+          - ["On **convoquera** les candidats.", "Les candidats **seront convoqués**."]
+    - say: "Le temps est porté par **être** ; celui qui fait l'action est introduit par **par** (parfois **de**)."
+      verb: etre
+      tense: futur_simple
+      examples: ["Elle est appréciée **de** tous."]
+
+  fr.grammar.infinitif_passe_participe_present:
+    - say: "**Après + infinitif passé** (avoir ou être + participe) : une action faite avant, par le même sujet."
+      examples: ["**Après avoir signé** le bail, il a reçu les clés.", "**Après être arrivés**, nous avons cherché un logement."]
+    - say: "À l'écrit, le **participe présent** (-ant) donne une cause ou décrit : étant, ayant."
+      examples: ["**Étant** malade, elle n'est pas venue.", "**Ayant** perdu ses clés, il a appelé le gardien."]
+
+  fr.grammar.concordance_des_temps:
+    - say: "Un récit au passé utilise quatre temps, chacun avec son rôle."
+      table:
+        head: ["temps", "rôle"]
+        rows:
+          - ["passé composé", "les **événements**"]
+          - ["imparfait", "le **cadre**, la description"]
+          - ["plus-que-parfait", "ce qui s'est passé **avant**"]
+          - ["conditionnel", "le **futur vu du passé**"]
+    - say: "Lisez les exemples en repérant chaque rôle."
+      examples: ["Elle **savait** qu'elle **partirait**, car on lui **avait proposé** un poste.", "Quand je **suis arrivé**, il **pleuvait** et le bureau **avait** déjà **fermé**."]
+
+  fr.grammar.subjonctif_passe:
+    - say: "Le subjonctif passé : avoir ou être **au subjonctif présent** + participe passé. Pour une action **déjà faite** par rapport au verbe principal."
+      verb: avoir
+      tense: subjonctif_present
+    - say: "Comparez : présent (en même temps ou après) / passé (avant)."
+      table:
+        head: ["subjonctif présent", "subjonctif passé"]
+        rows:
+          - ["Je suis ravi que vous **acceptiez**.", "Je suis ravi que vous **ayez accepté**."]
+          - ["Bien qu'il **parte** tôt…", "Bien qu'il **soit parti** tôt…"]
+
+  fr.grammar.relatifs_composes:
+    - say: "Après une **préposition** (sur, pour, avec, dans…), pour une chose : **lequel**, accordé avec le nom."
+      table:
+        head: ["", "singulier", "pluriel"]
+        rows:
+          - ["masculin", "**lequel**", "**lesquels**"]
+          - ["féminin", "**laquelle**", "**lesquelles**"]
+      examples: ["Le dossier **sur lequel** je travaille est urgent.", "C'est la raison **pour laquelle** j'ai démissionné."]
+    - say: "**À + lequel = auquel**, **de + lequel = duquel** (au pluriel : auxquels, desquels). Pour une personne, on préfère **à qui, avec qui**."
+      examples: ["Le projet **auquel** je participe commence lundi.", "La collègue **avec qui** je travaille."]
+
+  fr.grammar.passe_simple:
+    - say: "Le passé simple se lit dans les romans et les biographies ; on ne le parle presque jamais. Il faut surtout le **reconnaître**."
+      table:
+        head: ["groupe", "il / elle", "ils / elles"]
+        rows:
+          - ["-er (parler)", "parl**a**", "parl**èrent**"]
+          - ["-ir, -re (finir, prendre)", "fin**it**, pr**it**", "fin**irent**, pr**irent**"]
+          - ["-oir, -re en u (avoir, vivre)", "e**ut**, véc**ut**", "e**urent**, véc**urent**"]
+          - ["être, venir", "f**ut**, v**int**", "f**urent**, v**inrent**"]
+    - say: "Repérez les terminaisons -a, -it, -ut, -èrent : elles signalent une action du récit."
+      examples: ["Il **entra**, **regarda** autour de lui et **sourit**.", "En 1608, Champlain **fonda** la ville de Québec."]
+
+  fr.grammar.accord_participe_pronominaux:
+    - say: "Avec un verbe pronominal, demandez-vous : **se** est-il un complément direct (se laver = laver soi-même) ou indirect (se parler = parler **à** soi / l'un à l'autre) ?"
+      table:
+        head: ["se = direct : accord", "se = indirect : pas d'accord"]
+        rows:
+          - ["Elles se sont lav**ées**.", "Elles se sont **parlé**."]
+          - ["Elles se sont inscrit**es**.", "Ils se sont **téléphoné**."]
+    - say: "Si un COD vient **après** le verbe, pas d'accord."
+      examples: ["Elle s'est **lavé** les mains.", "Elles se sont **inscrites** hier."]
+
+  fr.grammar.nominalisation:
+    - say: "À l'écrit, on transforme souvent un verbe en **nom** pour condenser une phrase."
+      table:
+        head: ["verbe", "nom"]
+        rows:
+          - ["augmenter", "l'augment**ation**"]
+          - ["décider", "la déci**sion**"]
+          - ["signer", "la signat**ure**"]
+          - ["payer", "le paie**ment**"]
+          - ["arriver", "l'arriv**ée**"]
+    - say: "Comparez la phrase verbale et la phrase nominale."
+      examples: ["Les loyers **augmentent**, ce qui inquiète les locataires. → **L'augmentation** des loyers inquiète les locataires.", "Après **la signature** du contrat…"]
+
+  fr.grammar.mise_en_relief:
+    - say: "Pour souligner un élément, encadrez-le : **c'est… qui** (sujet) ou **c'est… que** (complément)."
+      table:
+        head: ["phrase neutre", "mise en relief"]
+        rows:
+          - ["La sécurité m'inquiète.", "**C'est** la sécurité **qui** m'inquiète."]
+          - ["Je propose un compromis.", "**Ce que** je propose, **c'est** un compromis."]
+    - say: "**Ce qui / ce que…, c'est…** annonce l'idée puis la révèle à la fin."
+      examples: ["**Ce qui** compte, **c'est** la qualité.", "**C'est** demain **que** tout se décide."]
+
+  fr.grammar.hypothese_concession_nuancees:
+    - say: "Trois expressions soutenues pour nuancer un argument, chacune avec son mode."
+      table:
+        head: ["expression", "sens", "mode"]
+        rows:
+          - ["**à moins que** (ne)", "sauf si", "subjonctif"]
+          - ["**pour peu que**", "il suffit que", "subjonctif"]
+          - ["**quand bien même**", "même si", "conditionnel"]
+    - say: "Le **ne** après à moins que n'est pas une négation (ne explétif)."
+      examples: ["Nous signerons, **à moins que** vous **ne trouviez** mieux.", "**Quand bien même** il **serait** d'accord, le budget ne suffirait pas.", "**Pour peu qu'**on l'**écoute**, il propose de bonnes idées."]
+
+  fr.grammar.articulateurs_soutenus:
+    - say: "Les articulateurs guident le lecteur d'un argument à l'autre."
+      table:
+        head: ["fonction", "articulateurs"]
+        rows:
+          - ["confirmer, expliquer", "en effet"]
+          - ["introduire un fait nouveau", "or"]
+          - ["opposer", "néanmoins, toutefois"]
+          - ["contraster", "en revanche"]
+          - ["conclure", "dès lors, par conséquent"]
+    - say: "Placez-les en tête de phrase ou après un point-virgule, suivis d'une virgule."
+      examples: ["Le projet est coûteux ; **néanmoins**, il créera des emplois.", "Le loyer devait baisser. **Or**, il a augmenté de 10 %.", "Les transports sont saturés ; **dès lors**, il faut investir."]

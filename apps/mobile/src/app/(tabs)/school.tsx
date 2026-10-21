@@ -1,9 +1,12 @@
-/** The School: key points first (the rules, words and phrases a learner needs before speaking), then lessons built
- * from their own mistakes (SPEC §16). Key-point lessons open at once: the server builds them from authored content. */
+/** The School: the whole library of key points (the rules, words and phrases), the learner's level first, then lessons
+ * built from their own mistakes, then every level above, then the basics (SPEC §16). Nothing here is required: the
+ * missions teach what they need where they need it (decision 0025). Key-point lessons open at once from authored
+ * content. */
 import { router, useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import type { KeyPoint, LessonRow, Profile } from "@/api/types";
 import { KIND_ICONS, openKeyPoint } from "@/school/keyPoints";
@@ -11,7 +14,7 @@ import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title } from "@/ui/kit";
-import { space, type } from "@/ui/theme";
+import { colors, space, type } from "@/ui/theme";
 
 type Language = "fr" | "en";
 
@@ -31,7 +34,7 @@ export default function School() {
   const studying = profile.data ? cities.data?.find((c) => c.pack in (profile.data?.exam_dates ?? {})) ?? cities.data?.[0] : undefined;
   const language: Language | null = picked ?? studying?.language ?? null;
 
-  const path = useResource(() => (language ? api.get<KeyPoint[]>(`/v1/key-points?language=${language}`) : Promise.resolve(null)), [api, language]);
+  const path = useResource(() => (language ? api.get<KeyPoint[]>(`/v1/key-points?language=${language}&every_level=true`) : Promise.resolve(null)), [api, language]);
   const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"), [api]);
   const { reload: reloadPath } = path;
   const { reload: reloadLessons } = lessons;
@@ -68,7 +71,7 @@ export default function School() {
     <ListRow
       key={point.node_key}
       title={point.title}
-      subtitle={point.status === "done" ? t("school.done") : t("units.minutes", { count: 5 })}
+      subtitle={point.learned_in_use ? t("school.learnedInUse") : point.status === "done" ? t("school.done") : t("units.minutes", { count: 5 })}
       leading={
         <IconBubble
           name={point.status === "done" ? "checkmark" : KIND_ICONS[point.kind][point.status === "open" ? 1 : 0]}
@@ -137,8 +140,32 @@ export default function School() {
         ))}
       </Section>
 
-      {ahead.length > 0 && <Section title={t("school.comingUp")}>{ahead.map(row)}</Section>}
+      {[...new Set(ahead.map((k) => k.band))].map((band) => (
+        <LevelGroup key={band} band={band} points={ahead.filter((k) => k.band === band)} row={row} />
+      ))}
       {basics.length > 0 && <Section title={t("school.basics")}>{basics.map(row)}</Section>}
     </Screen>
+  );
+}
+
+/** A level above the learner's, folded to one line until opened: the library is all there, without a wall of rows. */
+function LevelGroup({ band, points, row }: { band: number; points: KeyPoint[]; row: (point: KeyPoint) => ReactNode }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const done = points.filter((k) => k.status === "done").length;
+  return (
+    <View style={{ gap: space(1) }}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen((v) => !v)}
+        style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", gap: space(1), marginHorizontal: space(1), minHeight: 40 }, pressed && { opacity: 0.7 }]}
+      >
+        <Text style={[type.overline, { flex: 1 }]}>{t("school.level", { level: band })}</Text>
+        <Text style={type.caption}>{done > 0 ? t("school.learned", { done, total: points.length }) : t("school.lessonsCount", { count: points.length })}</Text>
+        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.muted} />
+      </Pressable>
+      {open && <Section>{points.map(row)}</Section>}
+    </View>
   );
 }

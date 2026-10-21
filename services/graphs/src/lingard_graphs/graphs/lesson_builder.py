@@ -14,7 +14,7 @@ from langgraph.graph.state import CompiledStateGraph
 from pydantic import BaseModel, ConfigDict
 
 from lingard_contracts.common import LANGUAGE_NAME, LANGUAGE_PACK, CityKey
-from lingard_contracts.planning import Game, GameItem, Lesson, LessonExample, SceneBrief
+from lingard_contracts.planning import Game, GameItem, Lesson, LessonExample, SceneBrief, TeachStep
 from lingard_curriculum.conjugation import Conjugator, load_conjugator
 from lingard_curriculum.models import CurriculumNode
 from lingard_graphs.deps import GraphDeps
@@ -164,6 +164,11 @@ def lesson_words(node: CurriculumNode) -> list[str]:
     return [str(w) for w in node.payload.get("items") or node.payload.get("exponents") or []]
 
 
+def teach_steps(node: CurriculumNode) -> list[TeachStep]:
+    """The node's authored teaching, a step at a time (the curriculum's ``lesson.teach``)."""
+    return [TeachStep.model_validate(step) for step in (node.payload.get("lesson") or {}).get("teach", [])]
+
+
 def key_points_lesson(
     node: CurriculumNode, city: CityContent, band: int, conjugator: Conjugator | None, rng: random.Random
 ) -> Lesson:
@@ -176,6 +181,7 @@ def key_points_lesson(
         kind="key_points",
         title=node.title,
         rule=content.get("rule") or node.title,
+        teach=teach_steps(node),
         models=list(content.get("examples", [])),
         words=lesson_words(node),
         examples=[LessonExample(learner_said=e["wrong"], better=e["right"]) for e in errors],

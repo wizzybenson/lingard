@@ -19,6 +19,49 @@ drills:
   conditionnel_passe: [conditionnel_passe]
   subjonctif: [subjonctif_present]
 tense_bands: {present: 4, passe_compose: 5, imparfait: 5, futur_simple: 6, conditionnel_present: 6, plus_que_parfait: 7, subjonctif_present: 7, conditionnel_passe: 8}
+# Regular -er and -ir (finir) verbs, every form derived from the infinitive (value: the passé composé auxiliary).
+# They fill the verb tables a learner opens by tapping a verb, and the regular-present drill.
+regular:
+  travailler: avoir
+  habiter: avoir
+  aimer: avoir
+  chercher: avoir
+  demander: avoir
+  donner: avoir
+  écouter: avoir
+  regarder: avoir
+  trouver: avoir
+  penser: avoir
+  porter: avoir
+  jouer: avoir
+  louer: avoir
+  réserver: avoir
+  commander: avoir
+  montrer: avoir
+  téléphoner: avoir
+  visiter: avoir
+  préparer: avoir
+  signer: avoir
+  expliquer: avoir
+  garder: avoir
+  fermer: avoir
+  laisser: avoir
+  oublier: avoir
+  étudier: avoir
+  manger: avoir
+  commencer: avoir
+  voyager: avoir
+  changer: avoir
+  passer: avoir
+  entrer: être
+  rester: être
+  rentrer: être
+  tomber: être
+  choisir: avoir
+  réussir: avoir
+  remplir: avoir
+# Forms that are far more often another word in a sentence stay plain text.
+not_tappable: [été, passé, passée, passés, passées]  # « participe passé », « le passé » far more often than passer
 verbs:
   etre:     {infinitive: être, aux: avoir, participle: été, present: [suis, es, est, sommes, êtes, sont], futur_stem: ser, imparfait_stem: ét, subjonctif: [sois, sois, soit, soyons, soyez, soient]}
   avoir:    {infinitive: avoir, aux: avoir, participle: eu, present: [ai, as, a, avons, avez, ont], futur_stem: aur, subjonctif: [aie, aies, ait, ayons, ayez, aient]}

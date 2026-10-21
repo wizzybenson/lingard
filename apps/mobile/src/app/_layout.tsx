@@ -56,7 +56,19 @@ export default function RootLayout() {
         <AuthProvider>
           <AuthGate />
           <StatusBar style="dark" />
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.paper } }} />
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.paper } }}>
+            {/* A verb's tables slide up over the lesson or brief that opened them, which stays right underneath. */}
+            <Stack.Screen
+              name="verb/[language]/[key]"
+              options={{
+                presentation: "formSheet",
+                sheetAllowedDetents: [0.7, 1],
+                sheetGrabberVisible: true,
+                sheetCornerRadius: 28,
+                contentStyle: { backgroundColor: colors.paper },
+              }}
+            />
+          </Stack>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

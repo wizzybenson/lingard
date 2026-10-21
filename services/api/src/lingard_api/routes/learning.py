@@ -23,7 +23,7 @@ from lingard_db.models import BandPosterior, Lesson, SimCrsSnapshot, WritingSubm
 from lingard_economy.crs import DISCLAIMER
 from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_exam_packs.prompts import writing_prompts
-from lingard_graphs.graphs.lesson_builder import lesson_words
+from lingard_graphs.graphs.lesson_builder import lesson_words, teach_steps
 from lingard_graphs.pedagogy.bands import BandPosterior as Posterior
 from lingard_graphs.pedagogy.bands import summarise
 from lingard_graphs.pedagogy.review import new_card, review
@@ -322,14 +322,14 @@ async def lesson_audio(
     return wav_response(pcm, request)
 
 
-Sayable = Literal["model", "better", "word"]
-"""A lesson line that can be heard: a model sentence, a correction, a word or phrase."""
+Sayable = Literal["model", "better", "word", "teach"]
+"""A lesson line that can be heard: a model sentence, a correction, a word or phrase, a teaching example."""
 
 
 @router.get("/lessons/{lesson_id}/say")
 async def lesson_say(
     lesson_id: uuid.UUID,
-    part: Literal["model", "better", "word"],
+    part: Sayable,
     index: int,
     request: Request,
     principal: Principal,
@@ -341,11 +341,12 @@ async def lesson_say(
     row = await db.get(Lesson, lesson_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such lesson")
-    content = await _with_words(state, row)
+    content = await _current(state, row)
     lines = {
         "model": content.get("models", []),
         "better": [e["better"] for e in content.get("examples", [])],
         "word": content.get("words", []),
+        "teach": [plain(x) for step in content.get("teach", []) for x in step.get("examples", [])],
     }[part]
     if not 0 <= index < len(lines):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such line")
@@ -356,12 +357,20 @@ async def lesson_say(
     return wav_response(pcm, request)
 
 
-async def _with_words(state: AppState, row: Lesson) -> dict[str, Any]:
-    """Key-point lessons made before words were part of a lesson get them from their node."""
+def plain(text: str) -> str:
+    """A teaching line without its ``**`` highlight marks, as it is said."""
+    return text.replace("**", "")
+
+
+async def _current(state: AppState, row: Lesson) -> dict[str, Any]:
+    """A key-point lesson's words and teaching come from its node as it is now: lessons opened before either was
+    authored (or since improved) teach the current version."""
     content = dict(row.content)
-    if content.get("kind") == "key_points" and not content.get("words"):
+    if content.get("kind") == "key_points":
         node = await state.curriculum.get(row.node_key)
-        content["words"] = lesson_words(node) if node else []
+        if node is not None:
+            content["words"] = content.get("words") or lesson_words(node)
+            content["teach"] = [step.model_dump(mode="json") for step in teach_steps(node)]
     return content
 
 
@@ -374,7 +383,7 @@ async def get_lesson(lesson_id: uuid.UUID, principal: Principal, state: State, d
         "id": row.id,
         "node_key": row.node_key,
         "status": row.status,
-        "content": await _with_words(state, row),
+        "content": await _current(state, row),
         "progress": row.progress or {},
     }
 

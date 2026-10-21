@@ -1,0 +1,56 @@
+# Lessons never block the day, and teach before they test (decision 0025). Free: no scene is played, no day planned.
+# Home offers "Begin day" with the next rule beside it; the School lists every level; a lesson opens on Learn (steps,
+# verb tables), a verb's tables open as a sheet with a tab per tense; practice opens on "I'm ready".
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- tapOn: "City, tab.*"
+- extendedWaitUntil:
+    visible: "Begin day .*|Start your day.*"
+    timeout: 15000
+- assertNotVisible: "Learn first.*"
+- takeScreenshot: learn-01-home-day-first
+- tapOn: "School, tab.*"
+- extendedWaitUntil:
+    visible: "Rules · .*"
+    timeout: 10000
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element: "(Level|LEVEL) \\d+.*"
+    direction: DOWN
+    timeout: 60000
+- tapOn: "(Level|LEVEL) \\d+.*"
+- takeScreenshot: learn-02-school-every-level
+- scrollUntilVisible:
+    element: "Start lesson"
+    direction: UP
+    timeout: 60000
+- waitForAnimationToEnd
+- tapOn: "Start lesson"
+- extendedWaitUntil:
+    visible: "Step by step|STEP BY STEP"
+    timeout: 15000
+- assertVisible: "Learn"
+- takeScreenshot: learn-03-lesson-learn
+- scrollUntilVisible:
+    element: "All tenses"
+    direction: DOWN
+- takeScreenshot: learn-04-verb-table-inline
+- tapOn: "All tenses"
+- extendedWaitUntil:
+    visible: "imparfait|past simple"
+    timeout: 10000
+- takeScreenshot: learn-05-verb-sheet
+- tapOn: "imparfait|present perfect"
+- takeScreenshot: learn-06-verb-sheet-perfect
+- tapOn: "Close"
+- runFlow:  # a lesson already started opens with its games
+    when:
+      visible: "I'm ready: .*"
+    commands:
+      - tapOn: "I'm ready: .*"
+- scrollUntilVisible:
+    element: "Check answers"
+    direction: DOWN
+    timeout: 30000
+- takeScreenshot: learn-07-practise

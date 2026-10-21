@@ -278,3 +278,25 @@ def test_every_word_set_and_phrase_set_has_a_lesson(language: Language) -> None:
             lesson = node.payload["lesson"]
             assert lesson["rule"] and len(lesson["examples"]) >= 2 and lesson["common_errors"], node.key
             assert all(e["wrong"] != e["right"] for e in lesson["common_errors"]), node.key
+
+
+@pytest.mark.parametrize("language", ["fr", "en"])
+def test_every_rule_is_taught_before_it_is_practised(language: Language) -> None:
+    """Every grammar point teaches a step at a time (decision 0025): at least two steps, each verb table naming a verb
+    and tense the conjugation content has, and every highlight closed."""
+    from lingard_contracts.planning import TeachStep
+    from lingard_curriculum.conjugation import load_conjugator
+
+    root = Path(__file__).resolve().parents[3] / "content"
+    conjugator = load_conjugator(root / "curriculum" / language / "conjugation.yaml")
+    assert conjugator is not None
+    tables = {v.key: {t.tense for t in v.tenses} for v in conjugator.tables().verbs}
+    grammar = [n for n in load_seed(root, language).nodes if n.kind == "grammar"]
+    for node in grammar:
+        steps = [TeachStep.model_validate(s) for s in node.payload["lesson"].get("teach", [])]
+        assert len(steps) >= 2, f"{node.key} is not taught step by step"
+        for step in steps:
+            lines = [step.say, *step.examples, *(c for row in (step.table.rows if step.table else []) for c in row)]
+            assert all(line.count("**") % 2 == 0 for line in lines), f"{node.key}: unclosed highlight"
+            if step.verb:
+                assert step.tense in tables.get(step.verb, set()), f"{node.key}: no table {step.verb}/{step.tense}"

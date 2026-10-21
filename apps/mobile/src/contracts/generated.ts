@@ -82,6 +82,16 @@ export type Minutes = number;
 export type Models = string[];
 export type NodeKey3 = string;
 export type Rule = string;
+export type Examples1 = string[];
+export type Say = string;
+export type Head = string[];
+/**
+ * @minItems 1
+ */
+export type Rows = [string[], ...string[][]];
+export type Tense = string | null;
+export type Verb = string | null;
+export type Teach = TeachStep[];
 export type Title = string;
 export type Words = string[];
 export type Accent = string;
@@ -367,6 +377,7 @@ export interface Lesson {
   models?: Models;
   node_key: NodeKey3;
   rule: Rule;
+  teach?: Teach;
   title: Title;
   words?: Words;
 }
@@ -397,6 +408,30 @@ export interface GameItem {
   distractors?: Distractors;
   node_key: NodeKey2;
   prompt: Prompt;
+}
+/**
+ * One idea of a lesson's teaching, shown before any exercise: a sentence, then what makes it concrete (a verb's
+ * table, a pattern table, examples). ``**x**`` marks the part to look at.
+ *
+ * This interface was referenced by `LingardContracts`'s JSON-Schema
+ * via the `definition` "TeachStep".
+ */
+export interface TeachStep {
+  examples?: Examples1;
+  say: Say;
+  table?: TeachTable | null;
+  tense?: Tense;
+  verb?: Verb;
+}
+/**
+ * A small table of forms or patterns (le · la · les); ``**x**`` in a cell marks the part to look at.
+ *
+ * This interface was referenced by `LingardContracts`'s JSON-Schema
+ * via the `definition` "TeachTable".
+ */
+export interface TeachTable {
+  head?: Head;
+  rows: Rows;
 }
 /**
  * This interface was referenced by `LingardContracts`'s JSON-Schema

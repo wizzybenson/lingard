@@ -8,6 +8,7 @@ import Animated, { cancelAnimation, FadeInDown, useAnimatedStyle, useSharedValue
 
 import type { Debrief, KeyPoint, LiveTicket, SceneView, SessionView } from "@/api/types";
 import { MissionBriefCard, MissionDebriefCard } from "@/missions/Mission";
+import { MissionRule } from "@/missions/RuleCard";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { captionOpacity } from "@/live/captions";
 import { useLiveScene, type LiveError } from "@/live/useLiveScene";
@@ -88,8 +89,9 @@ export default function Scene() {
   const [preparingNext, setPreparingNext] = useState(false);
   const { width } = useWindowDimensions();
   const band = scene.data?.learner_band ?? 4; // unknown band: keep captions fully visible
-  // Lessons woven into the scene, never in its way: the words and phrases this conversation will use, before going
-  // in, and the confirmed mistakes of this conversation once it is over (or while the next scene is prepared).
+  // Lessons woven into the scene, never in its way: the rule and the words and phrases this conversation will use,
+  // before going in, and the confirmed mistakes of this conversation once it is over (or while the next scene is
+  // prepared).
   const prep = useResource(() => api.get<KeyPoint[]>(`/v1/scenes/${id}/prep`), [api, id]);
   const over = live.status === "ended" || preparingNext;
   // The mission is judged once it is over; its debrief is the screen between this scene and the next.
@@ -262,7 +264,10 @@ export default function Scene() {
       )}
       {scene.data && live.status === "idle" && (
         <View style={{ gap: space(1.5) }}>
-          <KeyPointStrip id={`scene.${id}.prep`} eyebrow={t("journey.beforeScene")} points={prep.data} />
+          {prep.data
+            ?.filter((k) => k.kind === "grammar")
+            .map((k) => <MissionRule key={k.node_key} point={k} />)}
+          <KeyPointStrip id={`scene.${id}.prep`} eyebrow={t("journey.beforeScene")} points={prep.data?.filter((k) => k.kind !== "grammar")} />
           <View style={styles.tip}>
             <Ionicons name="headset" size={18} color={colors.muted} />
             <Text style={[type.callout, { flex: 1 }]}>{t("scene.headphones")}</Text>

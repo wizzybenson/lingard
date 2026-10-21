@@ -142,7 +142,9 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
             )
         await db.commit()
     ready = (await api.client.get(f"/v1/scenes/{contract.scene_id}/prep", headers=api.bearer(token))).json()
-    assert [k["node_key"] for k in ready] == ["fr.lex.housing.deposit_repairs"], "its words; grammar stays hidden"
+    rule, *words = ready
+    assert rule["kind"] == "grammar" and rule["node_key"] in contract.targets.grammar, "the rule, taught in the brief"
+    assert [k["node_key"] for k in words] == ["fr.lex.housing.deposit_repairs"], "then its words"
     brush = (await api.client.get(f"/v1/scenes/{contract.scene_id}/brush-up", headers=api.bearer(token))).json()
     assert [k["node_key"] for k in brush] == ["fr.grammar.si_imparfait"]
 

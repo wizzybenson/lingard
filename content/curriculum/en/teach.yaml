@@ -1,0 +1,608 @@
+# How each English grammar point is taught, a step at a time, before any exercise (decision 0025).
+# Original Lingard content. Each step: `say` (one idea), then optionally `verb` + `tense` (a verb's table from
+# conjugation.yaml, endings in colour), `table` (head + rows), `examples`. `**x**` marks the part to look at.
+# The learner can tap any verb in a step to open all its forms.
+teach:
+  en.grammar.present_simple_continuous:
+    - say: "The **present simple** is for habits, routines and facts. With he, she and it, the verb adds **-s**."
+      verb: work
+      tense: present_simple
+      examples: ["I **take** the bus to work.", "She **works** nights."]
+    - say: "The **present continuous** is for something happening **now** or for a **temporary** situation: am / is / are + verb**-ing**."
+      table:
+        head: ["", "be", "verb + -ing"]
+        rows:
+          - ["I", "**am** ('m)", "working"]
+          - ["he / she / it", "**is** ('s)", "working"]
+          - ["you / we / they", "**are** ('re)", "working"]
+    - say: "Compare: the habit, and the situation just for now."
+      table:
+        head: ["usually (simple)", "now / for a while (continuous)"]
+        rows:
+          - ["She **works** in an office.", "She**'s working** from home this week."]
+          - ["I **live** in Leeds.", "I**'m staying** with a friend until I find a flat."]
+    - say: "Some verbs describe states, not actions, and stay simple: **know, like, want, need, believe, own**."
+      examples: ["I **know** the answer.", "We **need** a bigger flat."]
+
+  en.grammar.there_is_it_is:
+    - say: "Use **there is** (one thing) and **there are** (more than one) to say that something exists or where it is."
+      table:
+        head: ["", "positive", "question"]
+        rows:
+          - ["singular", "There **is** a pharmacy.", "**Is there** a pharmacy?"]
+          - ["plural", "There **are** two bedrooms.", "**Are there** two bedrooms?"]
+    - say: "Once you have mentioned the thing, use **it** (or **they**) to talk about it."
+      examples: ["There is a lift in the building. **It's** next to the stairs.", "There are two bedrooms in the flat. **They're** quite small."]
+
+  en.grammar.subject_verb_agreement:
+    - say: "In the present simple, only **he, she, it** (and one person or thing) change: the verb takes **-s**."
+      verb: live
+      tense: present_simple
+    - say: "Spelling: after **-s, -sh, -ch, -x, -o** add **-es**; after a consonant + **y**, change y to **-ies**. **Have** becomes **has**."
+      table:
+        head: ["base", "he / she / it"]
+        rows:
+          - ["work", "work**s**"]
+          - ["watch", "watch**es**"]
+          - ["go", "go**es**"]
+          - ["study", "stud**ies**"]
+          - ["have", "**has**"]
+    - say: "With a long subject, find the **main noun**: it decides the verb."
+      examples: ["**The list** of documents **is** on the website.", "**The keys** to the flat **are** on the table.", "The landlord **lives** upstairs."]
+
+  en.grammar.adverbs_of_frequency:
+    - say: "Adverbs of frequency say **how often**. Put them in order from always to never."
+      table:
+        head: ["adverb", "how often"]
+        rows:
+          - ["**always**", "100%"]
+          - ["**usually**", "about 90%"]
+          - ["**often**", "about 70%"]
+          - ["**sometimes**", "about 50%"]
+          - ["**rarely**", "about 10%"]
+          - ["**never**", "0%"]
+    - say: "They go **before the main verb**, but **after be** and after the first auxiliary (have, can…)."
+      table:
+        head: ["position", "example"]
+        rows:
+          - ["before the main verb", "I **usually** take the bus."]
+          - ["after be", "She is **never** late."]
+          - ["after the first auxiliary", "I have **always** lived in a city."]
+
+  en.grammar.articles:
+    - say: "**A / an** = one of many, or the first time you mention something. **An** before a vowel sound."
+      examples: ["I saw **a** flat on Mill Road.", "It takes **an** hour."]
+    - say: "**The** = a specific thing, or one you have already mentioned, or the only one."
+      examples: ["**The** flat has two bedrooms.", "Can you close **the** door?"]
+    - say: "**No article** for things in general: plurals and uncountable nouns."
+      table:
+        head: ["in general (no article)", "a specific one (the)"]
+        rows:
+          - ["**Rent** is expensive here.", "**The rent** for this flat is high."]
+          - ["I like **dogs**.", "**The dogs** next door bark at night."]
+
+  en.grammar.pronouns_possessives:
+    - say: "Each person has four forms: who does it, who receives it, and two possessives."
+      table:
+        head: ["subject", "object", "before a noun", "alone"]
+        rows:
+          - ["I", "me", "my", "mine"]
+          - ["you", "you", "your", "yours"]
+          - ["he", "him", "his", "his"]
+          - ["she", "her", "her", "hers"]
+          - ["it", "it", "its", "—"]
+          - ["we", "us", "our", "ours"]
+          - ["they", "them", "their", "theirs"]
+    - say: "For people, add **'s**. Note: **its** (possessive) has no apostrophe; **it's** = it is."
+      examples: ["This is **my** key, not **yours**.", "Can you give it to **her**?", "Those boxes are **Tom's**."]
+    - say: "**This / these** for things near you; **that / those** for things further away."
+      table:
+        head: ["", "near", "far"]
+        rows:
+          - ["singular", "**this**", "**that**"]
+          - ["plural", "**these**", "**those**"]
+
+  en.grammar.prepositions_time_place:
+    - say: "Think of three sizes: **at** for a point, **on** for a day or a line, **in** for a bigger space or period."
+      table:
+        head: ["", "time", "place"]
+        rows:
+          - ["**at**", "at 9:30, at night, at the weekend", "at the station, at home"]
+          - ["**on**", "on Monday, on 3 May", "on Mill Lane, on the second floor"]
+          - ["**in**", "in June, in 2024, in the morning", "in Ashford, in Canada, in the kitchen"]
+    - say: "Put the smaller unit first when you give both."
+      examples: ["The appointment is **at** 10:15 **on** Tuesday.", "I moved here **in** March.", "She lives **in** Ashford, **on** Mill Lane."]
+
+  en.grammar.past_simple:
+    - say: "The past simple is for a **finished action at a finished time**. Regular verbs add **-ed** (or **-d**, or y → **-ied**). It is the same for every person."
+      verb: move
+      tense: past_simple
+    - say: "Irregular verbs have their own past form: learn them in groups."
+      table:
+        head: ["base", "past"]
+        rows:
+          - ["go", "**went**"]
+          - ["buy", "**bought**"]
+          - ["see", "**saw**"]
+          - ["take", "**took**"]
+          - ["get", "**got**"]
+          - ["be", "**was / were**"]
+    - say: "Questions and negatives use **did** + the **base form** (not the past form)."
+      table:
+        head: ["", "example"]
+        rows:
+          - ["positive", "I **moved** here in March."]
+          - ["negative", "I **didn't move** in May."]
+          - ["question", "**Did** you **get** my message?"]
+
+  en.grammar.comparatives:
+    - say: "Short adjectives add **-er** and **-est**; long adjectives use **more** and **most**."
+      table:
+        head: ["adjective", "comparative", "superlative"]
+        rows:
+          - ["cheap", "cheap**er** than", "the cheap**est**"]
+          - ["big", "big**ger** than", "the big**gest**"]
+          - ["easy", "eas**ier** than", "the eas**iest**"]
+          - ["expensive", "**more** expensive than", "the **most** expensive"]
+    - say: "Two common irregulars: good → **better** → **best**; bad → **worse** → **worst**."
+      examples: ["This route is **quicker than** the motorway.", "It's **the most expensive** area in town.", "The weather is **worse** today."]
+
+  en.grammar.questions:
+    - say: "Most questions put an **auxiliary before the subject**: be, do/does/did, have, can, will…"
+      table:
+        head: ["question word", "auxiliary", "subject", "verb"]
+        rows:
+          - ["Where", "**do**", "you", "work?"]
+          - ["How long", "**have**", "you", "lived here?"]
+          - ["—", "**Are**", "you", "ready?"]
+          - ["What time", "**does**", "the office", "open?"]
+    - say: "When **who** or **what** is the subject, there is no auxiliary: the verb follows directly."
+      examples: ["**Who called**?", "**What happened** next?"]
+
+  en.grammar.can_could_be_able_to:
+    - say: "**Can** = ability now, and requests. **Could** = ability in the past, and more polite requests. The verb after them is the **base form**."
+      examples: ["**Can** you help me with this form?", "I **couldn't** find the address.", "**Could** you repeat that, please?"]
+    - say: "Can has no future or perfect form: use **be able to** instead."
+      table:
+        head: ["time", "form"]
+        rows:
+          - ["future", "You **will be able to** collect it on Friday."]
+          - ["present perfect", "I **haven't been able to** call them."]
+
+  en.grammar.countable_uncountable:
+    - say: "**Countable** nouns have a plural (one bag, two bags). **Uncountable** nouns don't: no plural and no **a / an**."
+      table:
+        head: ["countable", "uncountable"]
+        rows:
+          - ["a suitcase, two suitcases", "luggage"]
+          - ["a job, jobs", "work"]
+          - ["a tip, tips", "advice"]
+          - ["a chair, chairs", "furniture"]
+    - say: "To count an uncountable noun, use **a piece of**, or quantity words like **some** and **much**."
+      examples: ["Could you give me **some information**?", "How **much luggage** do you have?", "That's **a useful piece of advice**."]
+
+  en.grammar.quantifiers:
+    - say: "The word depends on the noun: countable plurals or uncountable."
+      table:
+        head: ["", "countable plural", "uncountable"]
+        rows:
+          - ["a large amount", "**many**", "**much**"]
+          - ["a small amount", "**a few**", "**a little**"]
+          - ["both", "**a lot of**", "**a lot of**"]
+    - say: "**Some** in positive sentences, offers and requests; **any** in negatives and most questions."
+      examples: ["Is there **any** milk left?", "I've got **a few** questions.", "We don't have **much** time.", "Would you like **some** tea?"]
+
+  en.grammar.present_perfect:
+    - say: "Form: **have / has** + **past participle**. Regular participles end in **-ed**; irregular ones must be learned."
+      verb: live
+      tense: present_perfect
+    - say: "Irregular participles to know first."
+      table:
+        head: ["base", "past", "participle"]
+        rows:
+          - ["be", "was / were", "**been**"]
+          - ["go", "went", "**gone**"]
+          - ["see", "saw", "**seen**"]
+          - ["do", "did", "**done**"]
+    - say: "Use it for **life experience**, a time that **isn't finished** (with for / since), or a **result now**. Never with a finished time like yesterday."
+      examples: ["I**'ve lived** here **for** six months.", "**Have** you **ever been** to London?", "I**'ve lost** my keys."]
+
+  en.grammar.past_continuous:
+    - say: "Form: **was / were** + verb**-ing**. It shows an action **in progress** at a moment in the past."
+      table:
+        head: ["subject", "be", "-ing"]
+        rows:
+          - ["I / he / she / it", "**was**", "cooking"]
+          - ["you / we / they", "**were**", "cooking"]
+    - say: "It often sets the scene, and a past simple action **interrupts** it."
+      examples: ["I **was cooking** when the landlord **rang**.", "It **was raining** all morning."]
+
+  en.grammar.future_forms:
+    - say: "English has three common ways to talk about the future, each with its own job."
+      table:
+        head: ["form", "use", "example"]
+        rows:
+          - ["**will** + verb", "a decision now, a prediction", "I**'ll call** you back."]
+          - ["**going to** + verb", "a plan already made", "We**'re going to look** at a flat."]
+          - ["**present continuous**", "a fixed arrangement", "I**'m meeting** the agent at ten."]
+    - say: "Ask yourself: did I just decide (will), have I planned it (going to), or is it in my diary (present continuous)?"
+
+  en.grammar.zero_conditional_time_clauses:
+    - say: "**If / when + present, present**: for facts and things that always happen."
+      examples: ["**If** you **press** this button, the heating **comes** on."]
+    - say: "After **when, as soon as, before, after, until**, use the **present** even for the future. Will goes in the other part."
+      table:
+        head: ["time clause (present)", "main clause (will / imperative)"]
+        rows:
+          - ["when I **get** home,", "I**'ll call** you."]
+          - ["until the doctor **is** ready.", "**Wait** here"]
+          - ["as soon as it **arrives**,", "I**'ll let** you know."]
+
+  en.grammar.modals_obligation:
+    - say: "Choose the modal by who decides and how strong it is."
+      table:
+        head: ["modal", "meaning"]
+        rows:
+          - ["**have to**", "a rule from outside"]
+          - ["**must**", "strong personal obligation, written rules"]
+          - ["**should**", "advice"]
+          - ["**don't have to**", "not necessary (you can choose)"]
+          - ["**mustn't**", "not allowed"]
+    - say: "Careful: **don't have to** and **mustn't** are very different."
+      examples: ["You **have to** show ID at the bank.", "You **should** complain to the council.", "You **don't have to** pay now.", "You **mustn't** park here."]
+
+  en.grammar.first_conditional:
+    - say: "For a **real possibility** in the future: **if + present simple**, then **will + base form**."
+      table:
+        head: ["if + present", "will + verb"]
+        rows:
+          - ["If it **rains**,", "we**'ll take** the bus."]
+          - ["If you **sign** today,", "you**'ll get** the keys on Friday."]
+    - say: "**No will after if.** The two halves can swap places (then no comma)."
+      examples: ["We**'ll take** the bus **if** it **rains**."]
+
+  en.grammar.relative_clauses:
+    - say: "A relative clause tells you **which one**. Choose the word by what it refers to."
+      table:
+        head: ["word", "for"]
+        rows:
+          - ["**who**", "people"]
+          - ["**which**", "things"]
+          - ["**that**", "people or things"]
+          - ["**where**", "places"]
+    - say: "When the relative word is the **object** (a subject follows), you can leave it out."
+      examples: ["The woman **who** runs the café is from Leeds.", "The flat (**that**) I liked has gone.", "That's the office **where** I work."]
+
+  en.grammar.gerund_infinitive:
+    - say: "Some verbs are followed by **-ing**, others by **to + verb**. Learn them in two lists."
+      table:
+        head: ["+ -ing", "+ to-infinitive"]
+        rows:
+          - ["enjoy, avoid, mind, suggest", "want, decide, hope, agree"]
+          - ["finish, keep, consider", "need, plan, offer, refuse"]
+    - say: "A few change meaning: **stop doing** (no more) / **stop to do** (pause in order to)."
+      examples: ["I suggest **calling** the agency.", "We decided **to stay**.", "He stopped **smoking**.", "He stopped **to buy** a coffee."]
+
+  en.grammar.used_to_would:
+    - say: "**Used to** + base form: past habits and states that are no longer true."
+      examples: ["I **used to live** in Casablanca.", "I **didn't use to like** coffee."]
+    - say: "**Would** + base form: repeated actions in the past only, never states."
+      table:
+        head: ["", "used to", "would"]
+        rows:
+          - ["repeated action", "We **used to walk** by the sea.", "We **would walk** by the sea."]
+          - ["state", "I **used to have** a car.", "— (not possible)"]
+
+  en.grammar.present_perfect_or_past_simple:
+    - say: "The question is: **is the time finished?**"
+      table:
+        head: ["past simple: finished time", "present perfect: connected to now"]
+        rows:
+          - ["yesterday, last week, in 2020, ago", "ever, never, yet, today, this week, since, for"]
+          - ["I **lost** my keys yesterday.", "I**'ve lost** my keys. Can you help me?"]
+    - say: "Compare the two forms of the same verb."
+      verb: lose
+      tense: present_perfect
+      examples: ["I **have lived** here **since** May.", "I **lived** in Leeds **in 2020**."]
+
+  en.grammar.too_enough_so_such:
+    - say: "**Too** + adjective = more than you want. **Enough** comes **after** an adjective but **before** a noun."
+      table:
+        head: ["word", "pattern", "example"]
+        rows:
+          - ["too", "too + adjective", "The flat is **too small**."]
+          - ["enough", "adjective + enough", "Is the room **big enough**?"]
+          - ["enough", "enough + noun", "We have **enough space**."]
+    - say: "**So** + adjective; **such (a)** + adjective + noun."
+      examples: ["It was **so long**.", "It was **such a long** day."]
+
+  en.grammar.phrasal_verbs:
+    - say: "A phrasal verb is a verb + a small word, with its **own meaning**. Learn the most useful ones as words."
+      table:
+        head: ["phrasal verb", "meaning"]
+        rows:
+          - ["**fill in**", "complete (a form)"]
+          - ["**look for**", "try to find"]
+          - ["**find out**", "get information"]
+          - ["**sort out**", "solve, organise"]
+          - ["**turn down**", "refuse; make quieter"]
+    - say: "With many of them, a **pronoun** goes **between** the verb and the small word."
+      examples: ["Please **fill in** this form. → Please **fill it in**.", "Can you **sort it out** today?"]
+
+  en.grammar.substitution_ellipsis:
+    - say: "To answer without repeating the whole sentence, use **so** (yes) and **not** (no)."
+      table:
+        head: ["yes", "no"]
+        rows:
+          - ["I think **so**.", "I don't think **so**."]
+          - ["I hope **so**.", "I hope **not**."]
+          - ["—", "I'm afraid **not**."]
+    - say: "Use **one / ones** instead of repeating a countable noun."
+      examples: ["Will it rain later? I hope **not**.", "Is the office open? I think **so**.", "I prefer the blue **one**."]
+
+  en.grammar.second_conditional:
+    - say: "For an **imagined** situation now or in the future: **if + past simple**, then **would + base form**."
+      table:
+        head: ["if + past", "would + verb"]
+        rows:
+          - ["If I **had** more time,", "I**'d take** an evening course."]
+          - ["If I **were** you,", "I**'d ask** for a refund."]
+    - say: "The past form here does **not** mean the past: it means \"not real\". Formal English uses **were** for every person."
+
+  en.grammar.past_perfect:
+    - say: "Form: **had** + past participle, the same for every person. It shows the **earlier** of two past actions."
+      verb: leave
+      tense: past_perfect
+    - say: "Put the two actions on a timeline."
+      table:
+        head: ["first (past perfect)", "then (past simple)"]
+        rows:
+          - ["the train **had left**", "I **got** to the station"]
+          - ["she **had lost** her keys", "she **told** me"]
+      examples: ["When I got to the station, the train **had left**.", "She told me she **had lost** her keys."]
+
+  en.grammar.passive_voice:
+    - say: "Passive = **be** (in the tense you need) + **past participle**. The thing that receives the action becomes the subject."
+      table:
+        head: ["tense", "passive"]
+        rows:
+          - ["present", "The rent **is paid** monthly."]
+          - ["past", "My application **was rejected**."]
+          - ["future", "The repairs **will be done** next week."]
+          - ["present perfect", "The form **has been sent**."]
+    - say: "Use it when the action matters more than who did it. Add **by** + the person only if it matters."
+      examples: ["The decision was made **by** the council."]
+
+  en.grammar.linking_words:
+    - say: "Linking words show how two ideas connect."
+      table:
+        head: ["meaning", "words"]
+        rows:
+          - ["contrast", "however, although, whereas"]
+          - ["cause", "because, since, due to"]
+          - ["result", "therefore, as a result"]
+          - ["addition", "moreover, furthermore"]
+    - say: "Watch the punctuation: **although** joins two clauses; **however** starts a new sentence (or follows a semicolon) and takes a comma."
+      examples: ["**Although** the flat is small, it's very bright.", "The flat is small. **However**, it's very bright.", "The bus was cancelled; **as a result**, I was late."]
+
+  en.grammar.question_tags:
+    - say: "A question tag checks something you think is true. **Positive** sentence → **negative** tag; **negative** sentence → **positive** tag."
+      table:
+        head: ["sentence", "tag"]
+        rows:
+          - ["You**'re** new here,", "**aren't** you?"]
+          - ["She **didn't** call,", "**did** she?"]
+          - ["They **live** nearby,", "**don't** they?"]
+          - ["He **can** drive,", "**can't** he?"]
+    - say: "Use the **same auxiliary** as the sentence; with no auxiliary, use **do / does / did**."
+
+  en.grammar.present_perfect_continuous:
+    - say: "Form: **have / has been** + verb**-ing**. For an activity that started in the past and is **still going on** (or has just stopped)."
+      table:
+        head: ["subject", "have been", "-ing"]
+        rows:
+          - ["I / you / we / they", "**have been**", "waiting"]
+          - ["he / she / it", "**has been**", "waiting"]
+    - say: "It often answers **how long**, with **for** or **since**. State verbs (know, believe, own) keep the simple form."
+      examples: ["I**'ve been waiting** for an hour.", "How long **have** you **been learning** English?", "I**'ve known** him for years."]
+
+  en.grammar.modals_of_deduction:
+    - say: "Choose the modal by how **sure** you are."
+      table:
+        head: ["how sure", "modal", "example"]
+        rows:
+          - ["sure it's true", "**must** be", "That **must** be the landlord."]
+          - ["possible", "**might / may / could** be", "The office **might** be closed."]
+          - ["sure it's not true", "**can't** be", "It **can't** be far from here."]
+    - say: "The opposite of must here is **can't**, not mustn't."
+
+  en.grammar.unless_in_case:
+    - say: "Three ways to set a condition, each with its own meaning."
+      table:
+        head: ["expression", "means"]
+        rows:
+          - ["**unless**", "if not"]
+          - ["**in case**", "as a precaution"]
+          - ["**as long as / provided that**", "only if"]
+    - say: "Like if, they take a **present** verb for the future."
+      examples: ["You can't park here **unless** you **have** a permit.", "Take an umbrella **in case** it **rains**.", "You can borrow it **as long as** you **bring** it back."]
+
+  en.grammar.word_formation:
+    - say: "**Suffixes** change the word class."
+      table:
+        head: ["suffix", "makes", "example"]
+        rows:
+          - ["-tion, -ment, -ity", "nouns", "inform → informa**tion**, employ → employ**ment**"]
+          - ["-ful, -ive, -able", "adjectives", "use → use**ful**, rely → reli**able**"]
+          - ["-ly", "adverbs", "slow → slow**ly**"]
+    - say: "**Prefixes** change the meaning."
+      table:
+        head: ["prefix", "meaning", "example"]
+        rows:
+          - ["un-, in-, dis-", "not", "**un**fair, **in**complete, **dis**agree"]
+          - ["re-", "again", "**re**new"]
+          - ["over-", "too much", "**over**crowded"]
+      examples: ["The decision was **unfair**.", "Public transport here is very **reliable**."]
+
+  en.grammar.third_conditional:
+    - say: "To imagine a **different past**: **if + past perfect**, then **would have + past participle**."
+      table:
+        head: ["if + past perfect", "would have + participle"]
+        rows:
+          - ["If I**'d known**,", "I **would have come** earlier."]
+          - ["If you **had told** me,", "I **would have fixed** the wall."]
+    - say: "**'d** can mean **had** (after if) or **would** (in the result): look at the next word."
+      verb: know
+      tense: past_perfect
+
+  en.grammar.reported_speech:
+    - say: "When the reporting verb is in the past (he said…), the tenses usually move **one step back**."
+      table:
+        head: ["direct", "reported"]
+        rows:
+          - ["\"I **am** busy.\"", "He said he **was** busy."]
+          - ["\"I **will** call.\"", "He said he **would** call."]
+          - ["\"I **lost** it.\"", "She said she **had lost** it."]
+    - say: "Reported questions use **statement word order**, with **if / whether** for yes/no questions."
+      examples: ["He said he **would call** back.", "She asked **whether I had filled** in the form."]
+
+  en.grammar.non_defining_relatives:
+    - say: "A non-defining clause adds **extra information** between **commas**. The sentence still works without it."
+      table:
+        head: ["defining (which one?)", "non-defining (extra)"]
+        rows:
+          - ["The man **who lives upstairs** is noisy.", "My landlord**, who is retired,** lives next door."]
+    - say: "Use **who** or **which**, **never that**, in a non-defining clause."
+      examples: ["The council**, which meets monthly,** rejected the plan."]
+
+  en.grammar.wish_if_only:
+    - say: "**Wish / if only** go one tense back to show a regret."
+      table:
+        head: ["regret about", "form", "example"]
+        rows:
+          - ["now", "wish + **past simple**", "I wish I **lived** closer to work."]
+          - ["the past", "wish + **past perfect**", "If only I **had read** the contract."]
+          - ["someone's annoying habit", "wish + **would**", "I wish he **would** stop."]
+    - say: "After wish, formal English uses **were** for every person, and **could** for an ability you don't have."
+      examples: ["I wish I **were** taller.", "I wish I **could** speak French.", "If only I **had read** the contract."]
+
+  en.grammar.past_modals:
+    - say: "Modal + **have** + past participle talks about the past."
+      table:
+        head: ["form", "use", "example"]
+        rows:
+          - ["**should have**", "regret, criticism", "I **should have read** the contract."]
+          - ["**must have**", "sure it happened", "She **must have forgotten**."]
+          - ["**might / could have**", "possibly happened", "She **could have missed** the train."]
+          - ["**can't have**", "sure it didn't happen", "He **can't have seen** it."]
+    - say: "The participle is the third form of the verb."
+      verb: forget
+      tense: present_perfect
+
+  en.grammar.causative:
+    - say: "When **someone else** does a job for you: **have / get** + the thing + **past participle**."
+      table:
+        head: ["have / get", "object", "participle"]
+        rows:
+          - ["I'm **having**", "the boiler", "**repaired**"]
+          - ["Where can I **get**", "my documents", "**translated**?"]
+          - ["We **had**", "the locks", "**changed**."]
+    - say: "Compare: I **repaired** the boiler (I did it) / I **had** the boiler **repaired** (someone did it for me)."
+
+  en.grammar.future_continuous_perfect:
+    - say: "**Will be + -ing**: an action **in progress** at a time in the future."
+      examples: ["This time tomorrow I**'ll be flying** to Toronto.", "Don't call at eight; I**'ll be working**."]
+    - say: "**Will have + past participle**: an action **finished before** a time in the future, often with **by**."
+      examples: ["**By** June I **will have finished** the course."]
+
+  en.grammar.mixed_conditionals:
+    - say: "Mixed conditionals join two different times: a past condition with a present result, or the reverse."
+      table:
+        head: ["condition", "result"]
+        rows:
+          - ["past: If I**'d saved** more,", "now: I **wouldn't be** worried."]
+          - ["present: If I **spoke** better French,", "past: I **would have got** the job."]
+    - say: "Each half keeps the form of its own time: **had + participle** for a past condition, **would + verb** for a present result; **past simple** for a present condition, **would have + participle** for a past result."
+      examples: ["If I**'d saved** more, I **wouldn't be** worried now.", "If I **spoke** better French, I **would have got** the job."]
+
+  en.grammar.participle_clauses:
+    - say: "A participle clause shortens a sentence. **-ing** = active; **past participle** = passive; **having + participle** = done before."
+      table:
+        head: ["long", "short"]
+        rows:
+          - ["After she had finished the report, she left.", "**Having finished** the report, she left early."]
+          - ["The station, which was built in 1890, needs repairs.", "**Built** in 1890, the station needs repairs."]
+    - say: "The hidden subject must be the **same** as the subject of the main clause."
+
+  en.grammar.cleft_sentences:
+    - say: "To focus on one part, split the sentence: **It is / was … that / who …**"
+      table:
+        head: ["neutral", "focused"]
+        rows:
+          - ["The noise bothers me.", "**It's** the noise **that** bothers me."]
+          - ["I'd suggest a compromise.", "**What** I'd suggest **is** a compromise."]
+    - say: "**What … is …** builds up to the important part at the end."
+
+  en.grammar.hedging:
+    - say: "In formal writing, soften claims so they sound careful, not absolute."
+      table:
+        head: ["direct", "hedged"]
+        rows:
+          - ["Public transport reduces pollution.", "**It is widely believed that** public transport reduces pollution."]
+          - ["Remote work suits experienced staff.", "Remote work **tends to** suit experienced staff."]
+          - ["Prices will rise.", "Prices **are expected to** rise."]
+    - say: "Other useful tools: **may**, **arguably**, **it could be argued that**, **X is said to**."
+
+  en.grammar.nominalisation:
+    - say: "Formal writing often turns verbs and adjectives into **nouns** to pack information."
+      table:
+        head: ["verb / adjective", "noun"]
+        rows:
+          - ["decide", "a deci**sion**"]
+          - ["increase", "an increase **in**"]
+          - ["introduce", "the introduc**tion** of"]
+          - ["important", "the import**ance** of"]
+    - say: "Compare the everyday and the formal sentence."
+      examples: ["Rents have increased, which worries tenants. → **The increase in rents** worries many tenants."]
+
+  en.grammar.discourse_markers:
+    - say: "Discourse markers link ideas across sentences. Choose by function."
+      table:
+        head: ["function", "markers"]
+        rows:
+          - ["add a point", "moreover, furthermore"]
+          - ["contrast", "however, nevertheless"]
+          - ["compare two sides", "on the other hand"]
+          - ["result", "consequently, therefore"]
+          - ["two facts in one sentence", "whereas"]
+    - say: "Most come at the start of a sentence (or after a semicolon) followed by a comma."
+      examples: ["Remote work saves time; **moreover**, it reduces traffic.", "Rents rose sharply; **consequently**, many families moved out."]
+
+  en.grammar.inversion:
+    - say: "After a **negative adverb** at the start (never, rarely, not only, at no time, only then), the **auxiliary comes before the subject**, like a question."
+      table:
+        head: ["normal", "inverted (formal)"]
+        rows:
+          - ["I have rarely seen such poor service.", "**Rarely have I** seen such poor service."]
+          - ["The flat was damp, and…", "**Not only was the flat** damp, but…"]
+    - say: "With no auxiliary in the normal sentence, add **do / does / did**: Never **did** I expect…"
+
+  en.grammar.complex_noun_phrases:
+    - say: "Academic writing packs details **into the noun phrase**, often by shortening a relative clause."
+      table:
+        head: ["with a relative clause", "shortened"]
+        rows:
+          - ["people **who live** in rural areas", "people **living** in rural areas"]
+          - ["measures **that were designed** to cut pollution", "measures **designed** to cut pollution"]
+    - say: "Prepositional phrases add more: **the rise in** the cost **of** housing."
+      examples: ["**People living in rural areas** often lack public transport.", "**The rise in the cost of housing** affects young families most."]
+
+  en.grammar.formal_subjunctive:
+    - say: "After **suggest, recommend, insist, demand, it is essential that**, formal English uses **that + base form** for every person (no -s)."
+      table:
+        head: ["trigger", "that + base form"]
+        rows:
+          - ["The doctor recommended", "that she **rest**."]
+          - ["It is essential", "that every applicant **provide** proof."]
+    - say: "Two traps: **suggest** never takes object + to-infinitive, and **insist** takes **on + -ing**."
+      examples: ["He insisted **on paying** for the meal.", "I suggest **that you call** them. (not: I suggest you to call)"]

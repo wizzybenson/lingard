@@ -11,10 +11,67 @@ drills:
   past_perfect: [participle]
   past_modals: [participle]
 form_labels: {past: past simple, participle: past participle}
-tense_bands: {past_simple: 4, present_perfect: 5, past_perfect: 7}
+# The verb tables a learner opens by tapping a verb in a lesson: these tenses, easiest first.
+persons: [I, you, he/she/it, we, they]
+tenses: [present_simple, past_simple, present_perfect, past_perfect]
+tense_labels: {present_simple: present simple, past_simple: past simple, present_perfect: present perfect, past_perfect: past perfect}
+tense_bands: {present_simple: 4, past_simple: 4, present_perfect: 5, past_perfect: 7}
+# The tenses a grammar point's tables open on, by the longest of these found in its key.
+focus:
+  present_simple: [present_simple]
+  subject_verb_agreement: [present_simple]
+  adverbs_of_frequency: [present_simple]
+  past_simple: [past_simple]
+  present_perfect: [present_perfect]
+  present_perfect_or_past_simple: [present_perfect, past_simple]
+  present_perfect_continuous: [present_perfect]
+  past_perfect: [past_perfect]
+  third_conditional: [past_perfect]
+  second_conditional: [past_simple]
+  reported_speech: [past_simple, past_perfect]
+# Forms that are far more often another word in a sentence (left = not right) stay plain text.
+not_tappable: [left, saw, found, felt, lay, lie, rose, will]
+# Regular verbs: -ed in the past (a spelling given where it isn't simply -ed, -d or -ied).
+regular:
+  work: ~
+  live: ~
+  want: ~
+  need: ~
+  ask: ~
+  call: ~
+  help: ~
+  like: ~
+  love: ~
+  start: ~
+  finish: ~
+  open: ~
+  close: ~
+  arrive: ~
+  move: ~
+  rent: ~
+  book: ~
+  order: ~
+  study: ~
+  try: ~
+  carry: ~
+  stop: stopped
+  plan: planned
+  travel: travelled
+  cook: ~
+  clean: ~
+  watch: ~
+  listen: ~
+  answer: ~
+  apply: ~
+  visit: ~
+  wait: ~
+  change: ~
+  use: ~
+  explain: ~
+  complain: ~
 verbs:
-  be: {base: be, past: was/were, participle: been}
-  have: {base: have, past: had, participle: had}
+  be: {base: be, past: was/were, participle: been, present: [am, are, is, are, are]}
+  have: {base: have, past: had, participle: had, third_person: has}
   go: {base: go, past: went, participle: gone}
   do: {base: do, past: did, participle: done}
   make: {base: make, past: made, participle: made}

@@ -300,7 +300,11 @@ async def brush_up(scene_id: uuid.UUID, principal: Principal, state: State, db: 
     ).scalars()
     keys = list(dict.fromkeys(t.node_key for batch in tags for t in map(ErrorTag.model_validate, batch) if t.showable))
     nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed and n.kind in KINDS]
-    return await describe(db, principal.user_id, [(n, False, False) for n in nodes[:PLACE_OFFER]])
+    return await describe(state, db, principal.user_id, [(n, False, False) for n in nodes[:PLACE_OFFER]])
+
+
+RULES_OFFERED = 1
+"""Rules taught in a mission brief: the one this conversation practises most, so the brief stays a brief."""
 
 
 async def _is_exam(db: Db, row: Scene) -> bool:
@@ -311,20 +315,26 @@ async def _is_exam(db: Db, row: Scene) -> bool:
 
 @router.get("/scenes/{scene_id}/prep", response_model=list[KeyPoint])
 async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) -> list[KeyPoint]:
-    """Before going in: the word and phrase lessons this conversation will draw on, not yet learned. Grammar targets
-    stay hidden (SPEC §9); words and phrases are taught before the scene that needs them (SPEC §16). With none of
-    those, the words and phrases useful at this kind of place."""
+    """Before going in, what this conversation will draw on and the learner hasn't learned yet: the rule it practises
+    (taught right in the mission brief, decision 0025), then its words and phrases (SPEC §16). With no words or
+    phrases of its own, those useful at this kind of place."""
     row = await db.get(Scene, scene_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
     if await _is_exam(db, row):
         return []
     contract = SceneContract.model_validate(row.contract)
-    keys = [*contract.targets.lexset, *contract.targets.functions]
-    nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed]
-    offered = [
-        k for k in await describe(db, principal.user_id, [(n, True, False) for n in nodes]) if k.status != "done"
-    ]
+
+    async def unlearned(keys: list[str]) -> list[KeyPoint]:
+        nodes = [n for k in keys if (n := await state.curriculum.get(k)) and n.reviewed and n.kind in KINDS]
+        return [
+            k
+            for k in await describe(state, db, principal.user_id, [(n, True, False) for n in nodes])
+            if k.status != "done"
+        ]
+
+    rules = (await unlearned(contract.targets.grammar))[:RULES_OFFERED]
+    offered = await unlearned([*contract.targets.lexset, *contract.targets.functions])
     if not offered:
         kind = load_city(state.settings.content_root, contract.city).location(contract.location_key).kind
         language = CITY_LANGUAGE[contract.city]
@@ -333,7 +343,7 @@ async def prep(scene_id: uuid.UUID, principal: Principal, state: State, db: Db) 
             for k in await key_points(state, db, principal.user_id, language)
             if kind in k.places and k.status != "done" and not k.preview
         ]
-    return offered[:PLACE_OFFER]
+    return [*rules, *offered[:PLACE_OFFER]]
 
 
 @router.post("/scenes/{scene_id}/debrief", response_model=DebriefView)

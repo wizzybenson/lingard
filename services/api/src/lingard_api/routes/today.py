@@ -14,13 +14,13 @@ from lingard_api.routes.key_points import key_points
 from lingard_api.routes.learning import learner_bands
 from lingard_api.routes.me import DEFAULT_TARGETS
 from lingard_contracts.common import LANGUAGE_PACK, Language, PackId
-from lingard_db.models import LearnerProfile, Lesson, Scene, Session, Wallet
+from lingard_db.models import LearnerProfile, Lesson, Session, Wallet
 from lingard_graphs.pedagogy.review import due_at
 from lingard_graphs.streaks import learner_streak
 
 router = APIRouter(prefix="/v1", tags=["today"])
 
-NextStep = Literal["set_goal", "placement", "key_points", "lesson", "story"]
+NextStep = Literal["set_goal", "placement", "story"]
 SKILL_ORDER = ["listening", "reading", "writing", "speaking"]
 
 
@@ -49,7 +49,7 @@ class Onboarding(BaseModel):
 
 
 class NextKeyPoint(BaseModel):
-    """The first rule at the learner's level not yet learned: the Today card opens it directly."""
+    """The first rule at the learner's level not yet learned: offered beside the story day, never in its way."""
 
     node_key: str
     title: str
@@ -133,36 +133,14 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     pending = None
     for language in studying:
         steps = await key_points(state, db, principal.user_id, language)
-        # The rules gate the story; the level's words and phrases are offered beside it in School.
         pending = pending or next((k for k in steps if k.core and k.kind == "grammar" and k.status != "done"), None)
-    # One rule before each story day, not the whole level at once: a learner who has learned a rule since their last
-    # day in the story goes on with the story, and the next rule comes before the day after.
-    # The last scene played in the story (a day left half-way never ends, so the day's end time can't be used).
-    last_story = (
-        await db.execute(
-            select(func.max(Scene.updated_at))
-            .join(Session, Session.id == Scene.session_id)
-            .where(Scene.user_id == principal.user_id, Scene.status != "planned", Session.kind == "live")
-        )
-    ).scalar_one()
-    last_rule = (
-        await db.execute(
-            select(func.max(Lesson.updated_at)).where(
-                Lesson.user_id == principal.user_id, Lesson.status == "done", Lesson.node_key.like("%.grammar.%")
-            )
-        )
-    ).scalar_one()
-    rule_since_story = last_rule is not None and (last_story is None or last_rule > last_story)
     step: NextStep
-    # Progress decides what comes next, never the calendar: due reviews are offered beside the story, not before it.
+    # Nothing comes between the learner and the city once the goal and level are known: rules, words and lessons are
+    # offered beside the story and inside its missions (decision 0025), never before it.
     if not exam_dates:
         step = "set_goal"
     elif not bands:
         step = "placement"
-    elif pending is not None and not rule_since_story:
-        step = "key_points"  # the rules come before the scene that needs them
-    elif lessons_waiting:
-        step = "lesson"
     else:
         step = "story"
     coins = (await db.execute(select(Wallet.coins).where(Wallet.user_id == principal.user_id))).scalar_one_or_none()

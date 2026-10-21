@@ -69,6 +69,25 @@ class LessonExample(Strict):
     note: str = ""
 
 
+class TeachTable(Strict):
+    """A small table of forms or patterns (le · la · les); ``**x**`` in a cell marks the part to look at."""
+
+    head: list[str] = Field(default_factory=list)
+    rows: list[list[str]] = Field(min_length=1)
+
+
+class TeachStep(Strict):
+    """One idea of a lesson's teaching, shown before any exercise: a sentence, then what makes it concrete (a verb's
+    table, a pattern table, examples). ``**x**`` marks the part to look at."""
+
+    say: str
+    verb: str | None = None
+    """A verb key whose full table this step shows, in ``tense`` (the conjugation content's names)."""
+    tense: str | None = None
+    table: TeachTable | None = None
+    examples: list[str] = Field(default_factory=list)
+
+
 class Lesson(Strict):
     node_key: NodeKey
     kind: Literal["key_points", "remedial"] = "remedial"
@@ -76,6 +95,8 @@ class Lesson(Strict):
     remedial: built from the learner's own mistakes."""
     title: str
     rule: str
+    teach: list[TeachStep] = Field(default_factory=list)
+    """The rule taught a step at a time before the games (key points: authored with the curriculum)."""
     models: list[str] = Field(default_factory=list)
     """Correct sentences that show the rule at work."""
     words: list[str] = Field(default_factory=list)

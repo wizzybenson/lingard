@@ -1,5 +1,6 @@
 /** The scene as a mission: the brief before going in (what to do, what can be won, what it pays) and the debrief
- * after (what was achieved, how it ended, the coins earned). Hidden learning targets never appear here. */
+ * after (what was achieved, how it ended, the coins earned). The rule a mission practises is taught beside it
+ * (``MissionRule``); its other learning targets stay hidden. */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Haptics from "expo-haptics";
 import { useEffect } from "react";
