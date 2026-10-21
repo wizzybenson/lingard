@@ -52,6 +52,8 @@ class LiveSettings(BaseSettings):
     deepgram_stt_model: str = "nova-3"
     openai_stt_model: str = "gpt-4o-transcribe"
     elevenlabs_stt_model: str = "scribe_v2"
+    tts_timeout_s: float = 10.0
+    """Per request: short for live replies; lesson narration, which nobody waits on mid-sentence, sets more."""
     elevenlabs_tts_model: str = "eleven_flash_v2_5"
     openai_tts_model: str = "gpt-4o-mini-tts"
     claim_check: bool = True
@@ -133,10 +135,13 @@ def tts_providers(settings: LiveSettings) -> dict[str, TtsProvider]:
             key,
             settings.elevenlabs_tts_model,
             voices=overrides.get("elevenlabs"),
+            timeout=settings.tts_timeout_s,
             accents=load_accents(settings.voices_config),
         )
     if key := _secret(settings.openai_api_key):
-        available["openai"] = OpenAITts(key, settings.openai_tts_model, voices=overrides.get("openai"))
+        available["openai"] = OpenAITts(
+            key, settings.openai_tts_model, voices=overrides.get("openai"), timeout=settings.tts_timeout_s
+        )
     return {name: available[name] for name in settings.tts_order if name in available}
 
 

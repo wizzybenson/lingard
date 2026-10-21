@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import io
 import logging
@@ -21,7 +22,7 @@ from lingard_exam_packs.items import ItemBank
 from lingard_live.audio import pcm_to_wav, wav_to_pcm
 from lingard_live.languages import load_language
 from lingard_live.settings import LiveSettings, build_stt, build_tts, tts_providers
-from lingard_live.tts import VoiceSpec
+from lingard_live.tts import TtsProvider, VoiceSpec
 from lingard_llm.config import any_llm_configured
 from lingard_storage import AUDIO_BUCKET
 
@@ -59,6 +60,7 @@ def _live_settings(state: State) -> LiveSettings:
         deepgram_api_key=settings.deepgram_api_key,
         content_root=settings.content_root,
         elevenlabs_tts_model=settings.narration_tts_model,
+        tts_timeout_s=30.0,
     )
 
 
@@ -147,6 +149,28 @@ def item_bank(content_root: Path) -> ItemBank:
     return ItemBank.load(content_root)
 
 
+NARRATION_SLOTS = asyncio.Semaphore(2)
+"""Lesson and exam recordings rendered at once, per API process; the live plane has its own budget."""
+RENDERING: dict[str, asyncio.Future[bytes]] = {}
+"""Renders in flight, by cache key."""
+
+
+async def _cached(state: AppState, key: str) -> bytes | None:
+    try:
+        return await state.objects.get(AUDIO_BUCKET, key)
+    except Exception as exc:  # a miss (or an unreachable cache) just means rendering it
+        log.debug("tts cache miss %s: %s", key, exc)
+        return None
+
+
+async def _render(tts: TtsProvider, text: str, language: Language, narrator: str) -> bytes:
+    pieces = []
+    for tag, line in script_turns(text):
+        voice = VoiceSpec(voice_id=speaker_voice(language, tag, narrator), language=language, rate="slow")
+        pieces.append(b"".join([chunk.pcm async for chunk in tts.stream(line, voice)]))
+    return TURN_GAP.join(pieces)
+
+
 async def narrate(state: AppState, text: str, language: Language) -> bytes:
     """16 kHz PCM of ``text``, one voice per speaker. Rendered once per provider and text, then served from the
     object store: replays cost nothing and start at once. Raises ``RuntimeError`` when no TTS is configured."""
@@ -157,19 +181,45 @@ async def narrate(state: AppState, text: str, language: Language) -> bytes:
     recipe = f"{NARRATION_EDITION}|{type(state.tts).__name__}|{language}|{narrator}|{text}"
     digest = hashlib.sha256(recipe.encode()).hexdigest()
     key = f"cache/tts/{digest}.pcm"
+    if (cached := await _cached(state, key)) is not None:
+        return cached
+    # The same line asked for again while it renders (iOS fetches a recording in several byte ranges) waits for that
+    # render instead of starting another.
+    if (running := RENDERING.get(key)) is not None:
+        return await asyncio.shield(running)
+    done: asyncio.Future[bytes] = asyncio.get_running_loop().create_future()
+    done.add_done_callback(lambda f: f.cancelled() or f.exception())  # an error nobody awaited is not "unretrieved"
+    RENDERING[key] = done
     try:
-        return await state.objects.get(AUDIO_BUCKET, key)
-    except Exception as exc:  # a miss (or an unreachable cache) just means rendering it
-        log.debug("tts cache miss %s: %s", key, exc)
-    pieces = []
-    for tag, line in script_turns(text):
-        voice = VoiceSpec(voice_id=speaker_voice(language, tag, narrator), language=language, rate="slow")
-        pieces.append(b"".join([chunk.pcm async for chunk in state.tts.stream(line, voice)]))
-    pcm = TURN_GAP.join(pieces)
-    try:
-        await state.objects.put(AUDIO_BUCKET, key, pcm, "audio/L16")
-    except Exception as exc:  # the audio is still served; it is only re-rendered next time
-        log.warning("tts cache write failed for %s: %s", key, exc)
+        pcm = await _narrate_once(state, state.tts, key, text, language, narrator)
+    except BaseException as exc:
+        done.set_exception(exc)
+        raise
+    else:
+        done.set_result(pcm)
+    finally:
+        RENDERING.pop(key, None)
+    return pcm
+
+
+async def _narrate_once(
+    state: AppState, tts: TtsProvider, key: str, text: str, language: Language, narrator: str
+) -> bytes:
+    # A few renders at a time: a lesson opening asked for every recording at once and the provider answered 429
+    # (Starter allows only a few concurrent requests). The rest wait, then usually find their text already cached.
+    async with NARRATION_SLOTS:
+        if (cached := await _cached(state, key)) is not None:
+            return cached
+        try:
+            pcm = await _render(tts, text, language, narrator)
+        except Exception:
+            log.warning("narration failed once; retrying", exc_info=True)
+            await asyncio.sleep(1.5)
+            pcm = await _render(tts, text, language, narrator)
+        try:  # cached before the slot is freed, so a request waiting for the same line finds it
+            await state.objects.put(AUDIO_BUCKET, key, pcm, "audio/L16")
+        except Exception as exc:  # the audio is still served; it is only re-rendered next time
+            log.warning("tts cache write failed for %s: %s", key, exc)
     return pcm
 
 

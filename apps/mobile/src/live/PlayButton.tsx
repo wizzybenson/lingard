@@ -1,43 +1,50 @@
-import { useAudioPlayer } from "expo-audio";
-import { useEffect, useState } from "react";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
 import type { ApiClient } from "@/api/client";
-import { Button, ErrorText } from "@/ui/kit";
 import { playAloud } from "@/live/audioMode";
+import { Button, ErrorText } from "@/ui/kit";
 
-/** Plays an authenticated server audio resource (scripts never leave the server). If the server can't render it
- * (no text-to-speech provider configured, say), the button is disabled and the reason is shown instead of a silent
- * failure. The check request warms the server's synthesis cache, so the player's own fetch is cheap. */
+/** Plays an authenticated server audio resource (scripts never leave the server). The audio is fetched when tapped,
+ * not when the screen opens: a lesson asking for all its recordings at once hit the voice provider's limit. If the
+ * server can't render it (no text-to-speech provider configured, say), the reason is shown instead of silence. */
 export function PlayButton({ api, path, label }: { api: ApiClient; path: string; label?: string }) {
   const { t } = useTranslation();
-  // Results are tagged with their path, so a new path shows nothing until its own check finishes.
-  const [checked, setChecked] = useState<{ path: string; source?: { uri: string; headers: Record<string, string> }; error?: string } | null>(null);
-  useEffect(() => {
-    let live = true;
-    api
-      .text(path)
-      .then(() => api.mediaSource(path))
-      .then((source) => live && setChecked({ path, source }))
-      .catch((e: unknown) => live && setChecked({ path, error: e instanceof Error ? e.message : String(e) }));
-    return () => {
-      live = false;
-    };
-  }, [api, path]);
-  const current = checked?.path === path ? checked : null;
-  const source = current?.source ?? null;
-  const error = current?.error ?? null;
-  const player = useAudioPlayer(source);
+  const player = useAudioPlayer(null);
+  const status = useAudioPlayerStatus(player);
+  const [loadedPath, setLoadedPath] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const play = async () => {
+    setError(null);
+    try {
+      await playAloud();
+      if (loadedPath !== path) {
+        setBusy(true);
+        await api.text(path); // renders (or finds) the recording, and surfaces the server's reason if it can't
+        player.replace(await api.mediaSource(path));
+        setLoadedPath(path);
+      }
+      player.seekTo(0);
+      player.play();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <>
       <Button
         label={label ?? t("studio.listen")}
-        icon="volume-high"
+        icon={status.playing ? "volume-high" : "volume-medium-outline"}
         kind="secondary"
-        busy={current === null}
-        disabled={!source}
-        onPress={() => void playAloud().then(() => player.play())}
+        busy={busy}
+        onPress={() => void play()}
       />
       <ErrorText message={error} />
     </>

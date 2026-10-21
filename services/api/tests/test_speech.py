@@ -3,6 +3,8 @@ from pathlib import Path
 
 from lingard_api.routes.speech import decode_audio
 
+CONTENT = Path(__file__).resolve().parents[3] / "content"
+
 
 def test_decode_phone_recording_to_16k_pcm(m4a: Callable[[float], bytes]) -> None:
     pcm = decode_audio(m4a(1.0))
@@ -84,3 +86,44 @@ def test_audio_answers_byte_ranges_as_ios_asks_for_them() -> None:
     assert wav_response(pcm, ask("bytes=100-")).body == wav[100:]
     assert wav_response(pcm, ask("bytes=-10")).body == wav[-10:]
     assert wav_response(pcm, ask(f"bytes={len(wav)}-")).status_code == 416
+
+
+async def test_lesson_audio_renders_a_few_at_a_time_and_retries_once() -> None:
+    """A lesson asked for every recording at once; the provider answered 429 and the learner saw a server error."""
+    import asyncio
+    from types import SimpleNamespace
+
+    from lingard_api.routes import speech
+    from lingard_contracts.live import AudioChunk
+
+    class Store:
+        def __init__(self) -> None:
+            self.saved: dict[str, bytes] = {}
+
+        async def get(self, bucket: str, key: str) -> bytes:
+            return self.saved[key]
+
+        async def put(self, bucket: str, key: str, data: bytes, content_type: str) -> None:
+            self.saved[key] = data
+
+    class Tts:
+        def __init__(self) -> None:
+            self.now = self.most = self.calls = 0
+
+        async def stream(self, text: str, voice: object):  # type: ignore[no-untyped-def]
+            self.calls += 1
+            if self.calls == 1:
+                raise RuntimeError("429 Too Many Requests")
+            self.now += 1
+            self.most = max(self.most, self.now)
+            await asyncio.sleep(0.02)
+            self.now -= 1
+            yield AudioChunk(pcm=b"\x00\x00" * 8)
+
+    tts = Tts()
+    root = CONTENT
+    state = SimpleNamespace(tts=tts, objects=Store(), settings=SimpleNamespace(content_root=root))
+    lines = [f"Phrase {i}." for i in range(6)] + ["Phrase 0."] * 3
+    audio = await asyncio.gather(*(speech.narrate(state, line, "fr") for line in lines))  # type: ignore[arg-type]
+    assert all(audio) and tts.most <= 2, "two renders at a time at most"
+    assert tts.calls == 1 + 6, "the failed render is retried; the same line is never rendered twice"
