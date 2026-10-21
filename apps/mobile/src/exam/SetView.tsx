@@ -11,6 +11,7 @@ import type { ServedItem, ServedSet, SetAnswer } from "@/api/types";
 import { wordCount } from "@/games/exam";
 import { Card, Chip, Choice, ErrorText, Field, Overline, ProgressBar, Segmented } from "@/ui/kit";
 import { colors, fonts, radius, space, type } from "@/ui/theme";
+import { playAloud } from "@/live/audioMode";
 
 /** Long passages get a Text / Questions switch, so a phone never scrolls past a wall of text to reach question 1. */
 const LONG_TEXT = 700;
@@ -39,7 +40,7 @@ function Recording({ api, path, plays }: { api: ApiClient; path: string; plays: 
   const play = () => {
     setUsed((n) => n + 1);
     player.seekTo(0);
-    player.play();
+    void playAloud().then(() => player.play());
   };
   return (
     <Card tone="accent" style={{ gap: space(1.5) }}>

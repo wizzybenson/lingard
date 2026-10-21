@@ -7,6 +7,7 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
 
 import type { ApiClient } from "@/api/client";
+import { playAloud } from "@/live/audioMode";
 import { colors } from "@/ui/theme";
 
 export function SpeakButton({ api, path, label, size = 20 }: { api: ApiClient; path: string; label: string; size?: number }) {
@@ -19,6 +20,7 @@ export function SpeakButton({ api, path, label, size = 20 }: { api: ApiClient; p
     setLoading(true);
     setFailed(false);
     try {
+      await playAloud();
       player.replace(await api.mediaSource(path));
       player.seekTo(0);
       player.play();

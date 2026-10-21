@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import type { ApiClient } from "@/api/client";
 import { Button, ErrorText } from "@/ui/kit";
+import { playAloud } from "@/live/audioMode";
 
 /** Plays an authenticated server audio resource (scripts never leave the server). If the server can't render it
  * (no text-to-speech provider configured, say), the button is disabled and the reason is shown instead of a silent
@@ -36,7 +37,7 @@ export function PlayButton({ api, path, label }: { api: ApiClient; path: string;
         kind="secondary"
         busy={current === null}
         disabled={!source}
-        onPress={() => player.play()}
+        onPress={() => void playAloud().then(() => player.play())}
       />
       <ErrorText message={error} />
     </>
