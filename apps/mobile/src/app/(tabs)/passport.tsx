@@ -10,21 +10,7 @@ import { useResource } from "@/state/resource";
 import { StyleSheet, Text, View } from "react-native";
 
 import { levelProgress, levelWords } from "@/home/levels";
-import {
-  Body,
-  Button,
-  Caption,
-  Card,
-  Chip,
-  ErrorText,
-  ListRow,
-  Loading,
-  Overline,
-  ProgressBar,
-  Screen,
-  Section,
-  Title,
-} from "@/ui/kit";
+import { Body, Button, Caption, Card, Chip, ErrorText, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
 import { colors, fonts, space, type } from "@/ui/theme";
 
 interface DrawView {
@@ -75,9 +61,7 @@ export default function PassportScreen() {
             }}
           >
             {passport.data.sim_crs === null ? (
-              <Text style={[type.callout, { flex: 1 }]}>
-                {t("passport.crsPending")}
-              </Text>
+              <Text style={[type.callout, { flex: 1 }]}>{t("passport.crsPending")}</Text>
             ) : (
               <Text
                 style={{
@@ -98,27 +82,12 @@ export default function PassportScreen() {
                   paddingBottom: space(1),
                 }}
               >
-                <Stat
-                  icon="cash"
-                  value={wallet.data.coins}
-                  label={t("wallet.coins")}
-                />
-                <Stat
-                  icon="star"
-                  value={wallet.data.stars_total}
-                  label={t("wallet.stars")}
-                />
+                <Stat icon="cash" value={wallet.data.coins} label={t("wallet.coins")} />
+                <Stat icon="star" value={wallet.data.stars_total} label={t("wallet.stars")} />
               </View>
             )}
           </View>
-          {wallet.data && (
-            <Button
-              kind="tinted"
-              icon="bag-handle"
-              label={t("shop.open")}
-              onPress={() => router.push("/shop")}
-            />
-          )}
+          {wallet.data && <Button kind="tinted" icon="bag-handle" label={t("shop.open")} onPress={() => router.push("/shop")} />}
           {draw.data?.draw && (
             <View style={{ gap: space(0.75) }}>
               <View
@@ -128,37 +97,17 @@ export default function PassportScreen() {
                   gap: space(1),
                 }}
               >
-                <Ionicons
-                  name={draw.data.invited ? "mail-open" : "mail"}
-                  size={16}
-                  color={draw.data.invited ? colors.success : colors.accent}
-                />
+                <Ionicons name={draw.data.invited ? "mail-open" : "mail"} size={16} color={draw.data.invited ? colors.success : colors.accent} />
                 <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
-                  {t(
-                    draw.data.invited
-                      ? "passport.drawInvited"
-                      : "passport.drawGoal",
-                    {
-                      cutoff: draw.data.draw.cutoff,
-                      category: t(
-                        `passport.drawCategory.${draw.data.draw.category}`,
-                      ),
-                      date: new Date(draw.data.draw.held_at).toLocaleDateString(
-                        i18n.language,
-                        { day: "numeric", month: "long" },
-                      ),
-                      reward: draw.data.reward ?? 0,
-                    },
-                  )}
+                  {t(draw.data.invited ? "passport.drawInvited" : "passport.drawGoal", {
+                    cutoff: draw.data.draw.cutoff,
+                    category: t(`passport.drawCategory.${draw.data.draw.category}`),
+                    date: new Date(draw.data.draw.held_at).toLocaleDateString(i18n.language, { day: "numeric", month: "long" }),
+                    reward: draw.data.reward ?? 0,
+                  })}
                 </Text>
               </View>
-              <ProgressBar
-                value={Math.min(
-                  1,
-                  (draw.data.sim_crs ?? 0) / draw.data.draw.cutoff,
-                )}
-                tone={draw.data.invited ? "success" : "accent"}
-              />
+              <ProgressBar value={Math.min(1, (draw.data.sim_crs ?? 0) / draw.data.draw.cutoff)} tone={draw.data.invited ? "success" : "accent"} />
             </View>
           )}
           <Caption>{t("passport.disclaimer")}</Caption>
@@ -173,24 +122,13 @@ export default function PassportScreen() {
         [...new Set(passport.data.bands.map((b) => b.pack))].map((pack) => (
           <View key={pack} style={{ gap: space(1.5) }}>
             <Title>{packOf(pack)?.pack_name ?? pack}</Title>
-            {packOf(pack)?.level_scale && (
-              <Caption>
-                {t("today.levelsHint", { scale: packOf(pack)!.level_scale })}
-              </Caption>
-            )}
+            {packOf(pack)?.level_scale && <Caption>{t("today.levelsHint", { scale: packOf(pack)!.level_scale })}</Caption>}
             <Card style={{ gap: 0, paddingVertical: space(0.5) }}>
               {passport
                 .data!.bands.filter((b) => b.pack === pack)
                 .map((band, i) => {
-                  const target =
-                    profile.data?.target_bands[band.pack]?.[band.skill];
-                  const reach = target
-                    ? levelProgress(
-                        band.clb_nclc_low,
-                        band.clb_nclc_high,
-                        target,
-                      )
-                    : 0;
+                  const target = profile.data?.target_bands[band.pack]?.[band.skill];
+                  const reach = target ? levelProgress(band.clb_nclc_low, band.clb_nclc_high, target) : 0;
                   return (
                     <View
                       key={`${band.pack}-${band.skill}`}
@@ -211,34 +149,13 @@ export default function PassportScreen() {
                           flexWrap: "wrap",
                         }}
                       >
-                        <Text style={type.headline}>
-                          {t(`skills.${band.skill}`)}
-                        </Text>
-                        {target !== undefined && (
-                          <Chip
-                            label={t("today.goalLevel", { level: target })}
-                            tone="accent"
-                            icon="flag"
-                          />
-                        )}
+                        <Text style={type.headline}>{t(`skills.${band.skill}`)}</Text>
+                        {target !== undefined && <Chip label={t("today.goalLevel", { level: target })} tone="accent" icon="flag" />}
                       </View>
-                      <ProgressBar
-                        value={reach}
-                        tone={
-                          reach >= 1
-                            ? "success"
-                            : reach >= 0.8
-                              ? "warning"
-                              : "accent"
-                        }
-                      />
+                      <ProgressBar value={reach} tone={reach >= 1 ? "success" : reach >= 0.8 ? "warning" : "accent"} />
                       <Text style={type.callout}>
                         {t("passport.levelEstimate", {
-                          range: levelWords(
-                            t,
-                            band.clb_nclc_low,
-                            band.clb_nclc_high,
-                          ),
+                          range: levelWords(t, band.clb_nclc_low, band.clb_nclc_high),
                         })}
                       </Text>
                       <Caption>
@@ -255,42 +172,18 @@ export default function PassportScreen() {
           </View>
         ))}
       <Section>
-        <ListRow
-          icon="flag"
-          title={t("settings.goal")}
-          onPress={() => router.push("/goal")}
-        />
-        <ListRow
-          icon="mic"
-          title={t("studio.title")}
-          onPress={() => router.push("/studio")}
-        />
+        <ListRow icon="flag" title={t("settings.goal")} onPress={() => router.push("/goal")} />
+        <ListRow icon="mic" title={t("studio.title")} onPress={() => router.push("/studio")} />
       </Section>
     </Screen>
   );
 }
 
-function Stat({
-  icon,
-  value,
-  label,
-}: {
-  icon: "cash" | "star";
-  value: number;
-  label: string;
-}) {
+function Stat({ icon, value, label }: { icon: "cash" | "star"; value: number; label: string }) {
   return (
-    <View
-      style={{ alignItems: "center" }}
-      accessible
-      accessibilityLabel={`${label}: ${value}`}
-    >
+    <View style={{ alignItems: "center" }} accessible accessibilityLabel={`${label}: ${value}`}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-        <Ionicons
-          name={icon}
-          size={16}
-          color={icon === "star" ? colors.warning : colors.sunset}
-        />
+        <Ionicons name={icon} size={16} color={icon === "star" ? colors.warning : colors.sunset} />
         <Text style={type.headline}>{value}</Text>
       </View>
       <Caption>{label}</Caption>

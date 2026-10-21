@@ -1,21 +1,9 @@
 /** Auth context: the API client, sign-in state and the PIN-change gate. */
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Platform } from "react-native";
 
 import { ApiClient, type Tokens } from "@/api/client";
-import {
-  markPinVerified,
-  secureTokenStore,
-  unlockWithBiometrics,
-} from "@/auth/store";
+import { markPinVerified, secureTokenStore, unlockWithBiometrics } from "@/auth/store";
 import { API_URL } from "@/config";
 
 type Status = "booting" | "signedOut" | "locked" | "signedIn";
@@ -49,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         undefined,
         () => setStatus("signedOut"),
         WEB,
+        () => setPinChangeRequired(true),
       ),
     [],
   );
@@ -62,9 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return;
     }
-    void secureTokenStore
-      .load()
-      .then((tokens) => setStatus(tokens ? "locked" : "signedOut"));
+    void secureTokenStore.load().then((tokens) => setStatus(tokens ? "locked" : "signedOut"));
   }, [api]);
 
   const accept = useCallback(async (tokens: Tokens) => {
@@ -83,8 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSignInPin(tokens.pinChangeRequired ? pin : null);
       await accept(tokens);
     },
-    redeem: async (code, name, pin) =>
-      accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL)),
+    redeem: async (code, name, pin) => accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL)),
     unlock: async () => {
       const ok = await unlockWithBiometrics();
       if (ok) setStatus("signedIn");

@@ -3,56 +3,18 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
-import Animated, {
-  cancelAnimation,
-  FadeInDown,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import Animated, { cancelAnimation, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
-import type {
-  Debrief,
-  KeyPoint,
-  LiveTicket,
-  SceneView,
-  SessionView,
-} from "@/api/types";
+import type { Debrief, KeyPoint, LiveTicket, SceneView, SessionView } from "@/api/types";
 import { MissionBriefCard, MissionDebriefCard } from "@/missions/Mission";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { captionOpacity } from "@/live/captions";
 import { useLiveScene, type LiveError } from "@/live/useLiveScene";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import {
-  Avatar,
-  Button,
-  Card,
-  ErrorText,
-  goBack,
-  Loading,
-  Screen,
-  Title,
-  type IconName,
-} from "@/ui/kit";
-import {
-  colors,
-  fonts,
-  MAX_WIDTH,
-  radius,
-  shadow,
-  space,
-  type,
-} from "@/ui/theme";
+import { Avatar, Button, Card, ErrorText, goBack, Loading, Screen, Title, type IconName } from "@/ui/kit";
+import { colors, fonts, MAX_WIDTH, radius, shadow, space, type } from "@/ui/theme";
 
 const NEXT_SCENE_POLL_MS = 2000;
 const NEXT_SCENE_TIMEOUT_MS = 3 * 60 * 1000;
@@ -65,17 +27,7 @@ const LocationArt = lazy(() =>
 );
 
 /** A pill that switches a setting on and off (open mic, captions). */
-function PillToggle({
-  label,
-  icon,
-  value,
-  onChange,
-}: {
-  label: string;
-  icon: IconName;
-  value: boolean;
-  onChange: (v: boolean) => void;
-}) {
+function PillToggle({ label, icon, value, onChange }: { label: string; icon: IconName; value: boolean; onChange: (v: boolean) => void }) {
   return (
     <Pressable
       accessibilityRole="switch"
@@ -84,18 +36,8 @@ function PillToggle({
       onPress={() => onChange(!value)}
       style={[styles.pill, value ? styles.pillOn : styles.pillOff]}
     >
-      <Ionicons
-        name={icon}
-        size={16}
-        color={value ? colors.accentInk : colors.inkSoft}
-      />
-      <Text
-        style={[
-          styles.pillText,
-          { color: value ? colors.accentInk : colors.inkSoft },
-        ]}
-        numberOfLines={1}
-      >
+      <Ionicons name={icon} size={16} color={value ? colors.accentInk : colors.inkSoft} />
+      <Text style={[styles.pillText, { color: value ? colors.accentInk : colors.inkSoft }]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -103,19 +45,10 @@ function PillToggle({
 }
 
 /** The NPC's face with a soft ring that breathes while they speak. */
-function SpeakingAvatar({
-  name,
-  speaking,
-  size,
-}: {
-  name: string;
-  speaking: boolean;
-  size: number;
-}) {
+function SpeakingAvatar({ name, speaking, size }: { name: string; speaking: boolean; size: number }) {
   const pulse = useSharedValue(0);
   useEffect(() => {
-    if (speaking)
-      pulse.set(withRepeat(withTiming(1, { duration: 700 }), -1, true));
+    if (speaking) pulse.set(withRepeat(withTiming(1, { duration: 700 }), -1, true));
     else {
       cancelAnimation(pulse);
       pulse.set(withTiming(0, { duration: 200 }));
@@ -134,13 +67,7 @@ function SpeakingAvatar({
         justifyContent: "center",
       }}
     >
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { borderRadius: size / 2, backgroundColor: colors.sunset },
-          ring,
-        ]}
-      />
+      <Animated.View style={[StyleSheet.absoluteFill, { borderRadius: size / 2, backgroundColor: colors.sunset }, ring]} />
       <Avatar name={name} size={size - 8} />
     </View>
   );
@@ -163,29 +90,14 @@ export default function Scene() {
   const band = scene.data?.learner_band ?? 4; // unknown band: keep captions fully visible
   // Lessons woven into the scene, never in its way: the words and phrases this conversation will use, before going
   // in, and the confirmed mistakes of this conversation once it is over (or while the next scene is prepared).
-  const prep = useResource(
-    () => api.get<KeyPoint[]>(`/v1/scenes/${id}/prep`),
-    [api, id],
-  );
+  const prep = useResource(() => api.get<KeyPoint[]>(`/v1/scenes/${id}/prep`), [api, id]);
   const over = live.status === "ended" || preparingNext;
   // The mission is judged once it is over; its debrief is the screen between this scene and the next.
   // A mock exam's speaking part has no mission: it is scored by the examiner, so it simply ends.
   const mission = scene.data?.mission ?? null;
   const judged = live.status === "ended" && mission !== null;
-  const debrief = useResource(
-    () =>
-      judged
-        ? api.post<Debrief>(`/v1/scenes/${id}/debrief`)
-        : Promise.resolve(null),
-    [api, id, judged],
-  );
-  const brushUp = useResource(
-    () =>
-      over
-        ? api.get<KeyPoint[]>(`/v1/scenes/${id}/brush-up`)
-        : Promise.resolve(null),
-    [api, id, over],
-  );
+  const debrief = useResource(() => (judged ? api.post<Debrief>(`/v1/scenes/${id}/debrief`) : Promise.resolve(null)), [api, id, judged]);
+  const brushUp = useResource(() => (over ? api.get<KeyPoint[]>(`/v1/scenes/${id}/brush-up`) : Promise.resolve(null)), [api, id, over]);
   const { reload: reloadPrep } = prep;
   const { reload: reloadBrushUp } = brushUp;
   useFocusEffect(
@@ -195,13 +107,11 @@ export default function Scene() {
     }, [reloadPrep, reloadBrushUp]),
   );
 
-  const start = () =>
-    live.connect(() => api.post<LiveTicket>(`/v1/scenes/${id}/live`));
+  const start = () => live.connect(() => api.post<LiveTicket>(`/v1/scenes/${id}/live`));
 
   const describe = (error: LiveError | null): string | null => {
     if (!error) return null;
-    if (error.code === "failed")
-      return t("scene.failed", { detail: error.detail ?? "" });
+    if (error.code === "failed") return t("scene.failed", { detail: error.detail ?? "" });
     return t(`scene.${error.code}`);
   };
 
@@ -237,8 +147,7 @@ export default function Scene() {
       const view = await api.get<SessionView>(`/v1/sessions/${sessionId}`);
       const following = view.scene_ids[view.scene_ids.indexOf(id) + 1];
       if (following) return following;
-      if (view.complete || view.status !== "ready" || Date.now() > deadline)
-        return null;
+      if (view.complete || view.status !== "ready" || Date.now() > deadline) return null;
       setPreparingNext(true);
       await new Promise((r) => setTimeout(r, NEXT_SCENE_POLL_MS));
     }
@@ -256,20 +165,10 @@ export default function Scene() {
     );
   }
   const npcName = scene.data?.npc_name ?? "";
-  const status = live.npcSpeaking
-    ? t("scene.speaking")
-    : live.learnerSpeaking
-      ? t("scene.listening")
-      : null;
+  const status = live.npcSpeaking ? t("scene.speaking") : live.learnerSpeaking ? t("scene.listening") : null;
 
   // Going in stays one tap away, whatever is offered above it.
-  const enter = scene.data && live.status === "idle" && (
-    <Button
-      label={t("scene.connect")}
-      icon="mic"
-      onPress={() => void start()}
-    />
-  );
+  const enter = scene.data && live.status === "idle" && <Button label={t("scene.connect")} icon="mic" onPress={() => void start()} />;
   const onward = live.status === "ended" && (
     <Button
       label={t(mission ? "mission.continue" : "app.continue")}
@@ -310,60 +209,29 @@ export default function Scene() {
       <View style={{ flexDirection: "row", gap: space(1) }}>
         {live.openMic && (
           <View style={{ flex: 1 }}>
-            <Button
-              label={t("scene.pause")}
-              kind="secondary"
-              icon="pause"
-              onPress={() => void live.setOpenMic(false)}
-            />
+            <Button label={t("scene.pause")} kind="secondary" icon="pause" onPress={() => void live.setOpenMic(false)} />
           </View>
         )}
         <View style={{ flex: 1 }}>
-          <Button
-            label={t("scene.end")}
-            kind="tinted"
-            icon="exit-outline"
-            onPress={() => void live.leave()}
-          />
+          <Button label={t("scene.end")} kind="tinted" icon="exit-outline" onPress={() => void live.leave()} />
         </View>
       </View>
     </>
   );
 
   return (
-    <Screen
-      back
-      onBack={back}
-      footer={controls || enter || onward || undefined}
-      followContent={live.status === "live"}
-    >
+    <Screen back onBack={back} footer={controls || enter || onward || undefined} followContent={live.status === "live"}>
       <ErrorText message={scene.error} onRetry={scene.reload} />
       {scene.data && (live.status === "live" || live.status === "ended") && (
         <Card style={styles.compact}>
-          {npcName ? (
-            <SpeakingAvatar
-              name={npcName}
-              speaking={live.npcSpeaking}
-              size={52}
-            />
-          ) : null}
+          {npcName ? <SpeakingAvatar name={npcName} speaking={live.npcSpeaking} size={52} /> : null}
           <View style={{ flex: 1, gap: 2 }}>
             <Text style={type.headline} numberOfLines={1}>
               {npcName || scene.data.location_name}
             </Text>
-            <View
-              style={{ flexDirection: "row", gap: 6, alignItems: "flex-start" }}
-            >
-              <Ionicons
-                name="flag"
-                size={14}
-                color={colors.accentDeep}
-                style={{ marginTop: 2 }}
-              />
-              <Text
-                style={[type.caption, { flex: 1, color: colors.inkSoft }]}
-                numberOfLines={2}
-              >
+            <View style={{ flexDirection: "row", gap: 6, alignItems: "flex-start" }}>
+              <Ionicons name="flag" size={14} color={colors.accentDeep} style={{ marginTop: 2 }} />
+              <Text style={[type.caption, { flex: 1, color: colors.inkSoft }]} numberOfLines={2}>
                 {scene.data.learner_goal}
               </Text>
             </View>
@@ -374,11 +242,7 @@ export default function Scene() {
         <Card style={{ padding: 0, overflow: "hidden" }}>
           {scene.data.layer_art.length > 0 && (
             <Suspense fallback={null}>
-              <LocationArt
-                api={api}
-                layers={scene.data.layer_art}
-                width={Math.min(width, MAX_WIDTH) - space(5)}
-              />
+              <LocationArt api={api} layers={scene.data.layer_art} width={Math.min(width, MAX_WIDTH) - space(5)} />
             </Suspense>
           )}
           <View style={{ padding: space(2.5), gap: space(1.5) }}>
@@ -392,25 +256,16 @@ export default function Scene() {
                 </View>
               </View>
             ) : null}
-            <MissionBriefCard
-              goal={scene.data.learner_goal}
-              brief={scene.data.mission}
-            />
+            <MissionBriefCard goal={scene.data.learner_goal} brief={scene.data.mission} />
           </View>
         </Card>
       )}
       {scene.data && live.status === "idle" && (
         <View style={{ gap: space(1.5) }}>
-          <KeyPointStrip
-            id={`scene.${id}.prep`}
-            eyebrow={t("journey.beforeScene")}
-            points={prep.data}
-          />
+          <KeyPointStrip id={`scene.${id}.prep`} eyebrow={t("journey.beforeScene")} points={prep.data} />
           <View style={styles.tip}>
             <Ionicons name="headset" size={18} color={colors.muted} />
-            <Text style={[type.callout, { flex: 1 }]}>
-              {t("scene.headphones")}
-            </Text>
+            <Text style={[type.callout, { flex: 1 }]}>{t("scene.headphones")}</Text>
           </View>
         </View>
       )}
@@ -425,11 +280,7 @@ export default function Scene() {
       {live.status === "error" && (
         <Card>
           <ErrorText message={describe(live.error)} />
-          <Button
-            label={t("app.retry")}
-            icon="refresh"
-            onPress={() => void start()}
-          />
+          <Button label={t("app.retry")} icon="refresh" onPress={() => void start()} />
           <Button label={t("app.back")} kind="ghost" onPress={back} />
         </Card>
       )}
@@ -441,37 +292,17 @@ export default function Scene() {
                 style={[
                   styles.statusDot,
                   {
-                    backgroundColor: live.npcSpeaking
-                      ? colors.sunset
-                      : live.learnerSpeaking
-                        ? colors.success
-                        : colors.muted,
+                    backgroundColor: live.npcSpeaking ? colors.sunset : live.learnerSpeaking ? colors.success : colors.muted,
                   },
                 ]}
               />
-              <Text
-                style={[
-                  type.caption,
-                  { fontFamily: fonts.semibold, color: colors.inkSoft },
-                ]}
-                numberOfLines={1}
-              >
+              <Text style={[type.caption, { fontFamily: fonts.semibold, color: colors.inkSoft }]} numberOfLines={1}>
                 {status ?? t("scene.live")}
               </Text>
             </View>
             <View style={{ flexDirection: "row", gap: space(0.75) }}>
-              <PillToggle
-                label={t("scene.openMic")}
-                icon="mic-outline"
-                value={live.openMic}
-                onChange={(v) => void live.setOpenMic(v)}
-              />
-              <PillToggle
-                label={t("scene.captions")}
-                icon="text"
-                value={showCaptions}
-                onChange={setShowCaptions}
-              />
+              <PillToggle label={t("scene.openMic")} icon="mic-outline" value={live.openMic} onChange={(v) => void live.setOpenMic(v)} />
+              <PillToggle label={t("scene.captions")} icon="text" value={showCaptions} onChange={setShowCaptions} />
             </View>
           </View>
           {showCaptions && (
@@ -484,31 +315,14 @@ export default function Scene() {
                   <Animated.View
                     key={`${c.speaker}-${c.at}`}
                     entering={FadeInDown.duration(220)}
-                    style={[
-                      styles.bubbleRow,
-                      !npc && { justifyContent: "flex-end" },
-                    ]}
+                    style={[styles.bubbleRow, !npc && { justifyContent: "flex-end" }]}
                   >
-                    {npc && npcName ? (
-                      lastOfRun ? (
-                        <Avatar name={npcName} size={28} />
-                      ) : (
-                        <View style={{ width: 28 }} />
-                      )
-                    ) : null}
+                    {npc && npcName ? lastOfRun ? <Avatar name={npcName} size={28} /> : <View style={{ width: 28 }} /> : null}
                     <View
                       testID={npc ? "caption-npc" : "caption-learner"}
-                      style={[
-                        styles.bubble,
-                        npc ? styles.bubbleNpc : styles.bubbleMe,
-                        { opacity: Math.max(0.35, captionOpacity(band)) },
-                      ]}
+                      style={[styles.bubble, npc ? styles.bubbleNpc : styles.bubbleMe, { opacity: Math.max(0.35, captionOpacity(band)) }]}
                     >
-                      <Text
-                        style={[type.body, !npc && { color: colors.accentInk }]}
-                      >
-                        {c.text}
-                      </Text>
+                      <Text style={[type.body, !npc && { color: colors.accentInk }]}>{c.text}</Text>
                     </View>
                   </Animated.View>
                 );
@@ -517,22 +331,12 @@ export default function Scene() {
           )}
         </>
       )}
-      {judged && (
-        <MissionDebriefCard debrief={debrief.data} error={debrief.error} />
-      )}
-      {over && (
-        <KeyPointStrip
-          id={`scene.${id}`}
-          eyebrow={t("journey.afterScene")}
-          points={brushUp.data}
-        />
-      )}
+      {judged && <MissionDebriefCard debrief={debrief.data} error={debrief.error} />}
+      {over && <KeyPointStrip id={`scene.${id}`} eyebrow={t("journey.afterScene")} points={brushUp.data} />}
       {preparingNext && (
         <View style={styles.tip} accessibilityLiveRegion="polite">
           <ActivityIndicator color={colors.accent} />
-          <Text style={[type.callout, { flex: 1 }]}>
-            {t("scene.preparingNext")}
-          </Text>
+          <Text style={[type.callout, { flex: 1 }]}>{t("scene.preparingNext")}</Text>
         </View>
       )}
       <ErrorText message={moveError} onRetry={() => void next()} />

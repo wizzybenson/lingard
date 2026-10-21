@@ -6,29 +6,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  ActivityIndicator,
-  I18nManager,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, I18nManager, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { SkillStatus, Today } from "@/api/types";
 import { levelProgress, levelRange } from "@/home/levels";
 import { openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
 import { Card, ProgressBar } from "@/ui/kit";
-import {
-  colors,
-  fonts,
-  gradients,
-  radius,
-  shadow,
-  space,
-  type,
-} from "@/ui/theme";
+import { colors, fonts, gradients, radius, shadow, space, type } from "@/ui/theme";
 
 const STATUS_COLOR: Record<SkillStatus, string> = {
   met: colors.success,
@@ -51,31 +36,16 @@ function Onboarding({ today }: { today: Today }) {
     <Card>
       <View style={styles.rowBetween}>
         <Text style={type.headline}>{t("onboarding.title")}</Text>
-        <Text style={type.caption}>
-          {t("onboarding.progress", { done, total: steps.length })}
-        </Text>
+        <Text style={type.caption}>{t("onboarding.progress", { done, total: steps.length })}</Text>
       </View>
       <ProgressBar value={done / steps.length} tone="success" />
-      <View
-        style={{ gap: space(1.25), marginTop: space(0.5) }}
-        accessible
-        accessibilityLabel={t("onboarding.title")}
-      >
+      <View style={{ gap: space(1.25), marginTop: space(0.5) }} accessible accessibilityLabel={t("onboarding.title")}>
         {steps.map((s, i) => (
           <View key={s.label} style={styles.step}>
             {s.done ? (
-              <Ionicons
-                name="checkmark-circle"
-                size={22}
-                color={colors.success}
-              />
+              <Ionicons name="checkmark-circle" size={22} color={colors.success} />
             ) : (
-              <View
-                style={[
-                  styles.stepNumber,
-                  i === current && styles.stepNumberCurrent,
-                ]}
-              >
+              <View style={[styles.stepNumber, i === current && styles.stepNumberCurrent]}>
                 <Text
                   style={[
                     type.caption,
@@ -107,17 +77,7 @@ function Onboarding({ today }: { today: Today }) {
 }
 
 /** ``day``: the story day to play next in the chosen city (progress, not the calendar); null while loading. */
-export function TodayCard({
-  today,
-  day,
-  onStartStory,
-  busy = false,
-}: {
-  today: Today;
-  day: number | null;
-  onStartStory: () => void;
-  busy?: boolean;
-}) {
+export function TodayCard({ today, day, onStartStory, busy = false }: { today: Today; day: number | null; onStartStory: () => void; busy?: boolean }) {
   const { t } = useTranslation();
   const api = useApi();
   const [opening, setOpening] = useState(false);
@@ -152,35 +112,14 @@ export function TodayCard({
   return (
     <View style={{ gap: space(1.5) }}>
       <Onboarding today={today} />
-      <LinearGradient
-        colors={gradients.dusk}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.hero, shadow(3)]}
-      >
+      <LinearGradient colors={gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadow(3)]}>
         <View style={styles.rowBetween}>
           <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
-          <View
-            style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}
-          >
-            <View
-              style={styles.streak}
-              accessible
-              accessibilityLabel={
-                today.streak > 0
-                  ? t("today.streak", { count: today.streak })
-                  : t("today.noStreak")
-              }
-            >
-              <Ionicons
-                name={today.streak > 0 ? "flame" : "flame-outline"}
-                size={16}
-                color="#FFB37D"
-              />
+          <View style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}>
+            <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
+              <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
               <Text style={styles.streakText} numberOfLines={1}>
-                {today.streak > 0
-                  ? t("today.streak", { count: today.streak })
-                  : t("today.noStreak")}
+                {today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}
               </Text>
               {today.freezes > 0 && (
                 <View
@@ -222,32 +161,20 @@ export function TodayCard({
             },
           ]}
         >
-          {working ? (
-            <ActivityIndicator color={colors.accent} />
-          ) : (
-            <Ionicons name="play" size={18} color={colors.accent} />
-          )}
+          {working ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
           <Text style={styles.heroButtonText} numberOfLines={2}>
             {action}
           </Text>
         </Pressable>
-        {busy && (
-          <Text style={[styles.heroNote, { textAlign: "center" }]}>
-            {t("city.planningHint")}
-          </Text>
-        )}
-        {(today.reviews_due > 0 ||
-          (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
+        {busy && <Text style={[styles.heroNote, { textAlign: "center" }]}>{t("city.planningHint")}</Text>}
+        {(today.reviews_due > 0 || (today.lessons_waiting > 0 && today.next_step !== "lesson")) && (
           // Reviews and waiting lessons sit beside the story and never stand in its way.
           <View style={styles.extras}>
             {today.reviews_due > 0 && (
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.push("/(tabs)/phone")}
-                style={({ pressed }) => [
-                  styles.extra,
-                  pressed && { opacity: 0.7 },
-                ]}
+                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
               >
                 <Ionicons name="flash" size={14} color="#fff" />
                 <Text style={styles.extraText} numberOfLines={1}>
@@ -259,10 +186,7 @@ export function TodayCard({
               <Pressable
                 accessibilityRole="button"
                 onPress={() => router.push("/(tabs)/school")}
-                style={({ pressed }) => [
-                  styles.extra,
-                  pressed && { opacity: 0.7 },
-                ]}
+                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
               >
                 <Ionicons name="school" size={14} color="#fff" />
                 <Text style={styles.extraText} numberOfLines={1}>
@@ -287,27 +211,16 @@ function ExamProgress({ today }: { today: Today }) {
       accessibilityRole="button"
       accessibilityHint={t("today.examDetails")}
       onPress={() => router.push("/(tabs)/passport")}
-      style={({ pressed }) => [
-        styles.exams,
-        shadow(1),
-        pressed && { opacity: 0.85 },
-      ]}
+      style={({ pressed }) => [styles.exams, shadow(1), pressed && { opacity: 0.85 }]}
     >
       {today.goals.map((goal, i) => (
-        <View
-          key={goal.pack}
-          style={[{ gap: space(1) }, i > 0 && styles.examDivider]}
-        >
+        <View key={goal.pack} style={[{ gap: space(1) }, i > 0 && styles.examDivider]}>
           <View style={styles.rowBetween}>
             <Text style={[type.headline, { flexShrink: 1 }]} numberOfLines={1}>
               {goal.pack_name}
             </Text>
             <Text style={type.caption}>
-              {goal.days_left === null
-                ? t("today.noDateShort")
-                : goal.days_left < 0
-                  ? t("today.pastShort")
-                  : t("today.daysLeft", { count: goal.days_left })}
+              {goal.days_left === null ? t("today.noDateShort") : goal.days_left < 0 ? t("today.pastShort") : t("today.daysLeft", { count: goal.days_left })}
             </Text>
           </View>
           <View style={styles.skills}>
@@ -340,21 +253,12 @@ function ExamProgress({ today }: { today: Today }) {
       <View style={styles.legend}>
         {(["met", "close", "behind"] as const).map((status) => (
           <View key={status} style={styles.legendItem}>
-            <View
-              style={[
-                styles.legendDot,
-                { backgroundColor: STATUS_COLOR[status] },
-              ]}
-            />
+            <View style={[styles.legendDot, { backgroundColor: STATUS_COLOR[status] }]} />
             <Text style={type.caption}>{t(`today.status.${status}`)}</Text>
           </View>
         ))}
         <View style={{ flex: 1 }} />
-        <Ionicons
-          name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"}
-          size={16}
-          color={colors.muted}
-        />
+        <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={16} color={colors.muted} />
       </View>
     </Pressable>
   );

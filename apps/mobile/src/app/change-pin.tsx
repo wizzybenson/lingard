@@ -46,20 +46,9 @@ export default function ChangePin() {
           secureTextEntry
         />
       )}
-      <Field
-        label={t("pin.new")}
-        value={next}
-        onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))}
-        keyboardType="number-pad"
-        secureTextEntry
-      />
+      <Field label={t("pin.new")} value={next} onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
       <ErrorText message={error} />
-      <Button
-        label={t("app.save")}
-        busy={busy}
-        disabled={current.length !== 6 || next.length !== 6}
-        onPress={() => void submit()}
-      />
+      <Button label={t("app.save")} busy={busy} disabled={current.length !== 6 || next.length !== 6} onPress={() => void submit()} />
     </Screen>
   );
 }

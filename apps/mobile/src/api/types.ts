@@ -1,10 +1,5 @@
 /** Shapes of API responses that are not generated from packages/contracts. */
-import type {
-  BandEstimate,
-  CityEntry,
-  Lesson,
-  WorldView,
-} from "@/contracts/generated";
+import type { BandEstimate, CityEntry, Lesson, WorldView } from "@/contracts/generated";
 
 export type { BandEstimate, CityEntry, Lesson, WorldView };
 

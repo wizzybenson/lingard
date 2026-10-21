@@ -10,19 +10,7 @@ import type { CityEntry, Friend, ShopItem, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import {
-  Avatar,
-  Button,
-  Card,
-  ErrorText,
-  IconBubble,
-  type IconName,
-  ListRow,
-  Loading,
-  Screen,
-  Section,
-  Segmented,
-} from "@/ui/kit";
+import { Avatar, Button, Card, ErrorText, IconBubble, type IconName, ListRow, Loading, Screen, Section, Segmented } from "@/ui/kit";
 import { colors, radius, space, type } from "@/ui/theme";
 
 const ICONS: Record<string, IconName> = {
@@ -39,13 +27,7 @@ export default function Shop() {
   const [chosen, setChosen] = useState<CityEntry["city"] | null>(null);
   const city = chosen ?? cities.data?.[0]?.city ?? null;
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"), [api]);
-  const friends = useResource(
-    () =>
-      city
-        ? api.get<Friend[]>(`/v1/shop/friends?city=${city}`)
-        : Promise.resolve(null),
-    [api, city],
-  );
+  const friends = useResource(() => (city ? api.get<Friend[]>(`/v1/shop/friends?city=${city}`) : Promise.resolve(null)), [api, city]);
   const [busy, setBusy] = useState<string | null>(null);
   // What happened to the last purchase, shown in that item's card, where the learner is looking.
   const [result, setResult] = useState<{
@@ -58,11 +40,7 @@ export default function Shop() {
   if (!wallet.data) {
     return (
       <Screen back title={t("shop.title")}>
-        {wallet.error ? (
-          <ErrorText message={wallet.error} onRetry={wallet.reload} />
-        ) : (
-          <Loading />
-        )}
+        {wallet.error ? <ErrorText message={wallet.error} onRetry={wallet.reload} /> : <Loading />}
       </Screen>
     );
   }
@@ -89,12 +67,10 @@ export default function Shop() {
     }
   };
 
-  const full = (item: ShopItem) =>
-    item.limit !== null && item.held >= item.limit;
+  const full = (item: ShopItem) => item.limit !== null && item.held >= item.limit;
   const action = (item: ShopItem) => {
     if (item.key === "npc_gift") return () => setGiving((g) => !g);
-    const body: Record<string, string> =
-      item.key === "cafe_visit" && city ? { city } : {};
+    const body: Record<string, string> = item.key === "cafe_visit" && city ? { city } : {};
     return () => void buy(item.key, body);
   };
 
@@ -104,9 +80,7 @@ export default function Shop() {
         <View style={styles.balance}>
           <Ionicons name="cash" size={28} color={colors.sunset} />
           <View style={{ flex: 1 }}>
-            <Text style={type.title}>
-              {t("wallet.coinsCount", { count: coins })}
-            </Text>
+            <Text style={type.title}>{t("wallet.coinsCount", { count: coins })}</Text>
             <Text style={type.caption}>{t("shop.earn")}</Text>
           </View>
         </View>
@@ -124,18 +98,10 @@ export default function Shop() {
       {wallet.data.items.map((item) => (
         <Card key={item.key}>
           <View style={styles.item}>
-            <IconBubble
-              name={ICONS[item.key] ?? "pricetag"}
-              tone="accent"
-              size={44}
-            />
+            <IconBubble name={ICONS[item.key] ?? "pricetag"} tone="accent" size={44} />
             <View style={{ flex: 1, gap: space(0.5) }}>
-              <Text style={type.headline}>
-                {t(`shop.items.${item.key}.name`)}
-              </Text>
-              <Text style={type.callout}>
-                {t(`shop.items.${item.key}.what`)}
-              </Text>
+              <Text style={type.headline}>{t(`shop.items.${item.key}.name`)}</Text>
+              <Text style={type.callout}>{t(`shop.items.${item.key}.what`)}</Text>
               {item.limit !== null && (
                 <Text style={type.caption}>
                   {t(`shop.items.${item.key}.held`, {
@@ -147,13 +113,7 @@ export default function Shop() {
             </View>
           </View>
           <Button
-            label={
-              full(item)
-                ? t("shop.full")
-                : coins < item.price
-                  ? t("shop.short", { count: item.price - coins })
-                  : t("shop.buy", { price: item.price })
-            }
+            label={full(item) ? t("shop.full") : coins < item.price ? t("shop.short", { count: item.price - coins }) : t("shop.buy", { price: item.price })}
             icon={full(item) ? "checkmark" : "cash"}
             kind={item.key === "npc_gift" && giving ? "tinted" : "primary"}
             busy={busy === item.key}
@@ -163,23 +123,15 @@ export default function Shop() {
           {result?.item === item.key &&
             (result.ok ? (
               <View style={styles.done} accessibilityLiveRegion="polite">
-                <Ionicons
-                  name="checkmark-circle"
-                  size={18}
-                  color={colors.success}
-                />
-                <Text style={[type.callout, { flex: 1, color: colors.ink }]}>
-                  {result.text}
-                </Text>
+                <Ionicons name="checkmark-circle" size={18} color={colors.success} />
+                <Text style={[type.callout, { flex: 1, color: colors.ink }]}>{result.text}</Text>
               </View>
             ) : (
               <ErrorText message={result.text} />
             ))}
           {item.key === "npc_gift" && giving && (
             <View style={{ gap: space(1) }}>
-              {friends.data && friends.data.length === 0 && (
-                <Text style={type.caption}>{t("shop.noFriends")}</Text>
-              )}
+              {friends.data && friends.data.length === 0 && <Text style={type.caption}>{t("shop.noFriends")}</Text>}
               {friends.data && friends.data.length > 0 && (
                 <Section title={t("shop.giveTo")}>
                   {friends.data.map((f) => (
@@ -189,12 +141,7 @@ export default function Shop() {
                       subtitle={f.gifted_today ? t("shop.giftedToday") : f.role}
                       leading={<Avatar name={f.name} size={36} />}
                       disabled={f.gifted_today || busy !== null}
-                      onPress={
-                        city && !f.gifted_today
-                          ? () =>
-                              void buy("npc_gift", { city, npc_key: f.npc_key })
-                          : undefined
-                      }
+                      onPress={city && !f.gifted_today ? () => void buy("npc_gift", { city, npc_key: f.npc_key }) : undefined}
                     />
                   ))}
                 </Section>
@@ -204,9 +151,7 @@ export default function Shop() {
           )}
         </Card>
       ))}
-      <Text style={[type.caption, { textAlign: "center" }]}>
-        {t("shop.fair")}
-      </Text>
+      <Text style={[type.caption, { textAlign: "center" }]}>{t("shop.fair")}</Text>
     </Screen>
   );
 }

@@ -1,4 +1,4 @@
-import { ApiClient, ApiError, type TokenStore, type Tokens } from "@/api/client";
+import { ApiClient, ApiError, PIN_CHANGE_REQUIRED, type TokenStore, type Tokens } from "@/api/client";
 
 function memoryStore(initial: Tokens | null): TokenStore & { value: Tokens | null } {
   return {
@@ -116,4 +116,13 @@ test("web: a request made before resume finishes still refreshes from the cookie
   }) as typeof fetch;
   const api = new ApiClient("http://api", memoryStore(null), fake, undefined, true);
   expect(await api.get<{ ok: boolean }>("/v1/passport")).toEqual({ ok: true });
+});
+
+test("a request held for a PIN change sends the learner to the PIN screen", async () => {
+  let asked = 0;
+  const forbidden = (async () => json(403, { detail: PIN_CHANGE_REQUIRED })) as typeof fetch;
+  const store = memoryStore({ accessToken: "a", refreshToken: "r", pinChangeRequired: false });
+  const api = new ApiClient("http://x", store, forbidden, () => {}, false, () => (asked += 1));
+  await expect(api.get("/v1/today")).rejects.toThrow(PIN_CHANGE_REQUIRED);
+  expect(asked).toBe(1);
 });

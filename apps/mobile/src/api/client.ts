@@ -41,6 +41,9 @@ export function tokensFrom(body: TokenResponse): Tokens {
   };
 }
 
+/** The server's answer to any request made before a one-time PIN is replaced (``lingard_api.deps``). */
+export const PIN_CHANGE_REQUIRED = "PIN change required";
+
 export class ApiClient {
   private refreshing: Promise<Tokens | null> | null = null;
 
@@ -50,6 +53,7 @@ export class ApiClient {
     private readonly fetchImpl: Fetch = (input, init) => fetch(input, init), // browsers reject an unbound fetch
     private readonly onSignedOut: () => void = () => {},
     private readonly cookieAuth = false,
+    private readonly onPinChangeRequired: () => void = () => {},
   ) {}
 
   private async raw(path: string, init: RequestInit, token?: string): Promise<Response> {
@@ -58,7 +62,11 @@ export class ApiClient {
     if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
     if (this.cookieAuth && path.startsWith("/v1/auth/")) {
       headers.set("X-Lingard-Client", "web");
-      return this.fetchImpl(`${this.baseUrl}${path}`, { ...init, headers, credentials: "include" });
+      return this.fetchImpl(`${this.baseUrl}${path}`, {
+        ...init,
+        headers,
+        credentials: "include",
+      });
     }
     return this.fetchImpl(`${this.baseUrl}${path}`, { ...init, headers });
   }
@@ -122,6 +130,9 @@ export class ApiClient {
       } catch {
         // non-JSON error body
       }
+      // The server holds every request until a one-time or reset PIN is replaced, whichever way the app got here
+      // (a saved session unlocked with Face ID never saw the sign-in response that says so).
+      if (response.status === 403 && detail === PIN_CHANGE_REQUIRED) this.onPinChangeRequired();
       throw new ApiError(response.status, detail);
     }
     return response;
@@ -130,7 +141,10 @@ export class ApiClient {
   /** For media players that fetch by URL themselves (listening items, golden-self audio). */
   async mediaSource(path: string): Promise<{ uri: string; headers: Record<string, string> }> {
     const tokens = await this.store.load();
-    return { uri: `${this.baseUrl}${path}`, headers: tokens ? { Authorization: `Bearer ${tokens.accessToken}` } : {} };
+    return {
+      uri: `${this.baseUrl}${path}`,
+      headers: tokens ? { Authorization: `Bearer ${tokens.accessToken}` } : {},
+    };
   }
 
   get<T>(path: string): Promise<T> {
@@ -138,7 +152,10 @@ export class ApiClient {
   }
 
   post<T>(path: string, body?: unknown): Promise<T> {
-    return this.request<T>(path, { method: "POST", body: body === undefined ? undefined : JSON.stringify(body) });
+    return this.request<T>(path, {
+      method: "POST",
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
   }
 
   /** Multipart upload (recordings). React Native accepts ``{ uri, name, type }`` file parts; the web needs a Blob. */
@@ -147,16 +164,25 @@ export class ApiClient {
   }
 
   patch<T>(path: string, body: unknown): Promise<T> {
-    return this.request<T>(path, { method: "PATCH", body: JSON.stringify(body) });
+    return this.request<T>(path, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
   }
 
   async signIn(displayName: string, pin: string, deviceLabel: string): Promise<Tokens> {
     const response = await this.raw("/v1/auth/sign-in", {
       method: "POST",
-      body: JSON.stringify({ display_name: displayName, pin, device_label: deviceLabel }),
+      body: JSON.stringify({
+        display_name: displayName,
+        pin,
+        device_label: deviceLabel,
+      }),
     });
     if (!response.ok) {
-      const body = (await response.json().catch(() => ({}))) as { detail?: string };
+      const body = (await response.json().catch(() => ({}))) as {
+        detail?: string;
+      };
       throw new ApiError(response.status, body.detail ?? "Sign-in failed");
     }
     const tokens = tokensFrom((await response.json()) as TokenResponse);
@@ -167,10 +193,17 @@ export class ApiClient {
   async redeemInvite(code: string, displayName: string, pin: string, deviceLabel: string): Promise<Tokens> {
     const response = await this.raw("/v1/auth/redeem-invite", {
       method: "POST",
-      body: JSON.stringify({ invite_code: code, display_name: displayName, pin, device_label: deviceLabel }),
+      body: JSON.stringify({
+        invite_code: code,
+        display_name: displayName,
+        pin,
+        device_label: deviceLabel,
+      }),
     });
     if (!response.ok) {
-      const body = (await response.json().catch(() => ({}))) as { detail?: string };
+      const body = (await response.json().catch(() => ({}))) as {
+        detail?: string;
+      };
       throw new ApiError(response.status, body.detail ?? "Invite failed");
     }
     const tokens = tokensFrom((await response.json()) as TokenResponse);
