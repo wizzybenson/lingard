@@ -24,6 +24,7 @@ export default function ChangePin() {
         current_pin: current,
         new_pin: next,
       });
+      await api.renew(); // the access token from sign-in still holds every request for the PIN change
       pinChanged(next);
       router.replace("/");
     } catch (e) {

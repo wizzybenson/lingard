@@ -61,6 +61,10 @@ async def test_lockout_escalates_then_requires_admin_reset(api) -> None:  # type
         "/v1/auth/change-pin", json={"current_pin": new_pin, "new_pin": "195837"}, headers=api.bearer(token)
     )
     assert changed.status_code == 204
+    assert (await api.client.get("/v1/me", headers=api.bearer(token))).status_code == 403, "the old token still holds"
+    renewed = await api.client.post("/v1/auth/refresh", json={"refresh_token": signed.json()["refresh_token"]})
+    assert renewed.json()["pin_change_required"] is False, "the app renews this session's token after the change"
+    assert (await api.client.get("/v1/me", headers=api.bearer(renewed.json()["access_token"]))).status_code == 200
     fresh = await api.sign_in("Amina", "195837")
     assert fresh.json()["pin_change_required"] is False
     assert (await api.client.get("/v1/me", headers=api.bearer(fresh.json()["access_token"]))).status_code == 200

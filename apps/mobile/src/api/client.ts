@@ -95,6 +95,11 @@ export class ApiClient {
     return this.refreshing;
   }
 
+  /** A new access token now: after a PIN change, the old one still says the PIN must be changed. */
+  renew(): Promise<Tokens | null> {
+    return this.refresh();
+  }
+
   /** After a web reload: trade the HttpOnly cookie for a fresh access token, or null when there is no live session. */
   resume(): Promise<Tokens | null> {
     return this.refresh().catch(() => null);

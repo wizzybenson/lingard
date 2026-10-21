@@ -126,3 +126,11 @@ test("a request held for a PIN change sends the learner to the PIN screen", asyn
   await expect(api.get("/v1/today")).rejects.toThrow(PIN_CHANGE_REQUIRED);
   expect(asked).toBe(1);
 });
+
+test("renew trades the refresh token for an access token that no longer asks for a PIN change", async () => {
+  const store = memoryStore({ accessToken: "held", refreshToken: "r1", pinChangeRequired: true });
+  const fake = (async () => json(200, { access_token: "free", refresh_token: "r2", pin_change_required: false })) as typeof fetch;
+  const tokens = await new ApiClient("http://x", store, fake).renew();
+  expect(tokens?.pinChangeRequired).toBe(false);
+  expect(store.value?.accessToken).toBe("free");
+});
