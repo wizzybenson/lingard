@@ -58,6 +58,7 @@ def _live_settings(state: State) -> LiveSettings:
         openai_api_key=settings.openai_api_key,
         deepgram_api_key=settings.deepgram_api_key,
         content_root=settings.content_root,
+        elevenlabs_tts_model=settings.narration_tts_model,
     )
 
 
@@ -152,7 +153,9 @@ async def narrate(state: AppState, text: str, language: Language) -> bytes:
     if state.tts is None:
         state.tts = build_tts(_live_settings(state))
     narrator = load_language(state.settings.content_root, language).narrator_voice
-    digest = hashlib.sha256(f"{type(state.tts).__name__}|{language}|{narrator}|{text}".encode()).hexdigest()
+    # The edition changes whenever the voices or pace change, so learners never get the old recording again.
+    recipe = f"{NARRATION_EDITION}|{type(state.tts).__name__}|{language}|{narrator}|{text}"
+    digest = hashlib.sha256(recipe.encode()).hexdigest()
     key = f"cache/tts/{digest}.pcm"
     try:
         return await state.objects.get(AUDIO_BUCKET, key)
@@ -160,7 +163,7 @@ async def narrate(state: AppState, text: str, language: Language) -> bytes:
         log.debug("tts cache miss %s: %s", key, exc)
     pieces = []
     for tag, line in script_turns(text):
-        voice = VoiceSpec(voice_id=speaker_voice(language, tag, narrator), language=language)
+        voice = VoiceSpec(voice_id=speaker_voice(language, tag, narrator), language=language, rate="slow")
         pieces.append(b"".join([chunk.pcm async for chunk in state.tts.stream(line, voice)]))
     pcm = TURN_GAP.join(pieces)
     try:
@@ -171,6 +174,10 @@ async def narrate(state: AppState, text: str, language: Language) -> bytes:
 
 
 RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
+
+
+NARRATION_EDITION = 2
+"""2: native voices per language and accent (config/voices.yaml), a slower pace, the fuller model (2026-10-21)."""
 
 
 def wav_response(pcm: bytes, request: Request) -> Response:

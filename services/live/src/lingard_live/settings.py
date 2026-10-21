@@ -12,7 +12,7 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 from lingard_live.stt import DeepgramStt, ElevenLabsStt, FallbackStt, OpenAIStt, SttProvider, VoiceboxStt
 from lingard_live.stt_stream import ElevenLabsRealtimeStt, StreamingStt
 from lingard_live.tts import CachingTts, ElevenLabsTts, FallbackTts, OpenAITts, TtsProvider, VoiceboxTts
-from lingard_live.voices import load_overrides
+from lingard_live.voices import load_accents, load_overrides
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -129,7 +129,12 @@ def tts_providers(settings: LiveSettings) -> dict[str, TtsProvider]:
         available["voicebox"] = VoiceboxTts(settings.voicebox_url)
     overrides = load_overrides(settings.voices_config)
     if key := _secret(settings.elevenlabs_api_key):
-        available["elevenlabs"] = ElevenLabsTts(key, settings.elevenlabs_tts_model, voices=overrides.get("elevenlabs"))
+        available["elevenlabs"] = ElevenLabsTts(
+            key,
+            settings.elevenlabs_tts_model,
+            voices=overrides.get("elevenlabs"),
+            accents=load_accents(settings.voices_config),
+        )
     if key := _secret(settings.openai_api_key):
         available["openai"] = OpenAITts(key, settings.openai_tts_model, voices=overrides.get("openai"))
     return {name: available[name] for name in settings.tts_order if name in available}

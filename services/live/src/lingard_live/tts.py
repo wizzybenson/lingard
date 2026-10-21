@@ -12,13 +12,13 @@ import logging
 from collections import OrderedDict
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 import httpx
 
 from lingard_contracts.live import SAMPLE_RATE, AudioChunk
 from lingard_live.audio import chunked, resample, silence, tone, wav_to_pcm, whole_samples
-from lingard_live.voices import OPENAI_VOICES, gender_of, pick
+from lingard_live.voices import OPENAI_VOICES, choose_pool, gender_of, pick
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +39,10 @@ class TtsProvider(Protocol):
     def stream(self, text: str, voice: VoiceSpec) -> AsyncIterator[AudioChunk]: ...
 
 
+SPEED = {"slow": 0.88, "normal": 1.0}
+"""ElevenLabs speaking speed per ``VoiceSpec.rate``: lessons and beginners' scenes are read a little slower."""
+
+
 class ElevenLabsTts:
     name = "elevenlabs"
     URL = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream"
@@ -53,42 +57,47 @@ class ElevenLabsTts:
         model: str = "eleven_flash_v2_5",
         voices: dict[str, str] | None = None,
         timeout: float = 10.0,
+        accents: dict[str, list[str]] | None = None,
     ) -> None:
+        """``accents``: per language, the accents a voice may have (``config/voices.yaml``)."""
         self._key = api_key
         self._model = model
         self._voices = voices or {}
         self._timeout = timeout
-        self._pools: dict[str, list[str]] | None = None
+        self._accents = accents or {}
+        self._catalogue: list[dict[str, Any]] | None = None
 
-    async def voice_for(self, logical_id: str) -> str:
-        """Override, else a stable pick among the account's voices of the same gender (fetched once)."""
+    async def voice_for(self, logical_id: str, language: str = "") -> str:
+        """Override, else a stable pick among the account's voices of the line's language (an allowed accent where the
+        account has one) and the same gender. A French line read by an English voice sounded strange and rushed."""
         if logical_id in self._voices:
             return self._voices[logical_id]
-        if self._pools is None:
+        if self._catalogue is None:
             async with httpx.AsyncClient(timeout=self._timeout) as client:
                 response = await client.get(self.VOICES_URL, headers={"xi-api-key": self._key})
                 response.raise_for_status()
-            pools: dict[str, list[str]] = {"f": [], "m": [], "all": []}
-            for item in sorted(response.json().get("voices", []), key=lambda v: v["voice_id"]):
-                if item.get("category") in self.PRIVATE_VOICE_CATEGORIES:
-                    continue
-                gender = str((item.get("labels") or {}).get("gender", "")).lower()
-                pools["all"].append(item["voice_id"])
-                if gender in ("female", "male"):
-                    pools[gender[0]].append(item["voice_id"])
-            if not pools["all"]:
+            voices = sorted(response.json().get("voices", []), key=lambda v: v["voice_id"])
+            self._catalogue = [v for v in voices if v.get("category") not in self.PRIVATE_VOICE_CATEGORIES]
+            if not self._catalogue:
                 raise RuntimeError("the ElevenLabs account has no voices; add some or pin them in config/voices.yaml")
-            self._pools = pools
-        return pick(self._pools[gender_of(logical_id)] or self._pools["all"], logical_id)
+        return pick(
+            choose_pool(self._catalogue, language, self._accents.get(language, []), gender_of(logical_id)), logical_id
+        )
 
     async def stream(self, text: str, voice: VoiceSpec) -> AsyncIterator[AudioChunk]:
         body = {
             "text": text,
             "model_id": self._model,
             "language_code": voice.language,
-            "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True},
+            "voice_settings": {
+                "stability": 0.45,
+                "similarity_boost": 0.8,
+                "style": 0.3,
+                "use_speaker_boost": True,
+                "speed": SPEED.get(voice.rate, 1.0),
+            },
         }
-        voice_id = await self.voice_for(voice.voice_id)
+        voice_id = await self.voice_for(voice.voice_id, voice.language)
         async with (
             httpx.AsyncClient(timeout=self._timeout) as client,
             client.stream(

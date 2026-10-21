@@ -1,9 +1,14 @@
-# Pin an NPC to a specific provider voice: provider → logical voice id (from content/cities/*/npcs.yaml) → voice.
-# Unlisted ids get a stable voice of the same gender: ElevenLabs picks from the voices in your account (fetched once),
-# OpenAI from its built-in voices. Example:
-#   elevenlabs:
-#     fr_m_58_martin: <voice id from your ElevenLabs voice library>
-#   openai:
-#     en_f_41_siobhan: coral
-elevenlabs: {}
+# Which provider voice says what. Logical voice ids come from content (content/cities/*/npcs.yaml, the narrator in
+# content/languages/*.yaml).
+#
+# accents: for each language, the accents a voice may have (ElevenLabs labels). Unpinned ids get a stable voice of the
+#   same language, gender and an allowed accent from the voices in your account, so a French line is never read by an
+#   English voice. Add voices from the ElevenLabs Voice Library to widen the choice.
+# elevenlabs / openai: pins, logical voice id → provider voice.
+accents:
+  fr: [standard, parisian, quebec]   # TEF Canada mixes European and Canadian French
+  en: [british]                      # Ashford is in England; IELTS GT uses British English first
+elevenlabs:
+  fr_f_narrator: tMyQcCxfGDdIt7wJ2RQw   # Marie Alice: calm, standard French (Voice Library, added 2026-10-21)
+  en_f_narrator: Xb7hH8MSUJpSbSDYk0k2   # Alice: clear British educator (premade)
 openai: {}

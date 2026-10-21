@@ -113,6 +113,41 @@ async def test_elevenlabs_maps_logical_voices_to_account_voices(monkeypatch: pyt
     assert fetches == ["/v1/voices"], "the voice list is fetched once"
 
 
+async def test_a_line_is_read_by_a_voice_of_its_language_and_accent(monkeypatch: pytest.MonkeyPatch) -> None:
+    """French lines were read by American voices (the account had no French one): strange and rushed."""
+    voices = [
+        {"voice_id": "us-f", "labels": {"gender": "female", "language": "en", "accent": "american"}},
+        {"voice_id": "gb-f", "labels": {"gender": "female", "language": "en", "accent": "british"}},
+        {"voice_id": "gb-m", "labels": {"gender": "male", "language": "en", "accent": "british"}},
+        {"voice_id": "fr-f", "labels": {"gender": "female", "language": "fr", "accent": "standard"}},
+        {"voice_id": "qc-m", "labels": {"gender": "male", "language": "fr", "accent": "quebec"}},
+    ]
+    _fake(monkeypatch, httpx.MockTransport(lambda request: httpx.Response(200, json={"voices": voices})))
+    tts = ElevenLabsTts("k", accents={"en": ["british"], "fr": ["standard", "quebec"]})
+    assert await tts.voice_for("fr_f_46_nadia", "fr") == "fr-f"
+    assert await tts.voice_for("fr_m_58_martin", "fr") == "qc-m"
+    assert await tts.voice_for("en_f_41_siobhan", "en") == "gb-f", "an allowed accent first"
+    assert await tts.voice_for("en_m_50_graham", "en") == "gb-m"
+    assert await tts.voice_for("ar_f_x", "ar") in {v["voice_id"] for v in voices}, "no voice of the language: any"
+
+
+async def test_slow_scenes_and_lessons_are_read_a_little_slower(monkeypatch: pytest.MonkeyPatch) -> None:
+    sent: list[dict[str, object]] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/voices":
+            return httpx.Response(200, json={"voices": [{"voice_id": "v", "labels": {"gender": "female"}}]})
+        sent.append(json.loads(request.content))
+        return httpx.Response(200, content=b"\x00\x00" * 160)
+
+    _fake(monkeypatch, httpx.MockTransport(handle))
+    tts = ElevenLabsTts("k")
+    for rate in ("slow", "normal"):
+        async for _ in tts.stream("Bonjour.", VoiceSpec(voice_id="fr_f_x", language="fr", rate=rate)):
+            pass
+    assert [s["voice_settings"]["speed"] for s in sent] == [0.88, 1.0]  # type: ignore[index]
+
+
 async def test_elevenlabs_stream_never_splits_a_sample(monkeypatch: pytest.MonkeyPatch) -> None:
     """HTTP chunks can end mid-sample; an odd byte count crashed the NPC's first line (2026-10-18)."""
     pcm = bytes(range(200))  # 100 samples

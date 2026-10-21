@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     pronunciation_url: str | None = None
     """Internal pronunciation service (``lingard_pronunciation.server``); unset → Studio scoring unavailable."""
     elevenlabs_api_key: SecretStr | None = None
+    narration_tts_model: str = "eleven_multilingual_v2"
+    """Lessons and exam recordings are rendered once and cached: ElevenLabs' fuller model, not the live one."""
     openai_api_key: SecretStr | None = None
     deepgram_api_key: SecretStr | None = None
     audio_retention_days: int = 30

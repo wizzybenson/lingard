@@ -66,7 +66,8 @@ def test_audio_answers_byte_ranges_as_ios_asks_for_them() -> None:
     """iOS's player requests a range before playing; a whole file in reply left it buffering in silence."""
     from starlette.requests import Request
 
-    from lingard_api.routes.speech import pcm_to_wav, wav_response
+    from lingard_api.routes.speech import wav_response
+    from lingard_live.audio import pcm_to_wav
 
     pcm = bytes(range(256)) * 40
     wav = pcm_to_wav(pcm)
