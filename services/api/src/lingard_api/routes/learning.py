@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import Response
@@ -370,4 +370,34 @@ async def get_lesson(lesson_id: uuid.UUID, principal: Principal, state: State, d
     row = await db.get(Lesson, lesson_id)
     if row is None or row.user_id != principal.user_id:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No such lesson")
-    return {"id": row.id, "node_key": row.node_key, "status": row.status, "content": await _with_words(state, row)}
+    return {
+        "id": row.id,
+        "node_key": row.node_key,
+        "status": row.status,
+        "content": await _with_words(state, row),
+        "progress": row.progress or {},
+    }
+
+
+class GameProgress(BaseModel):
+    answers: list[Annotated[str, Field(max_length=500)]] = Field(max_length=50)
+    result: dict[str, Any] | None = None
+    """The game's score once checked (kind, correct, total, missed)."""
+
+
+class LessonProgress(BaseModel):
+    games: dict[str, GameProgress] = Field(max_length=20)
+    """By game index."""
+
+
+@router.put("/lessons/{lesson_id}/progress", status_code=204)
+async def save_progress(lesson_id: uuid.UUID, body: LessonProgress, principal: Principal, db: Db) -> None:
+    """Saved as the learner answers, so leaving a lesson half-way loses nothing; finishing still goes through
+    ``/complete``."""
+    row = await db.get(Lesson, lesson_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such lesson")
+    row.progress = body.model_dump(mode="json")
+    if row.status == "planned":
+        row.status = "open"
+    await db.commit()

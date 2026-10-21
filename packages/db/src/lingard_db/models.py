@@ -260,6 +260,8 @@ class Lesson(Owned, Base):
     node_key: Mapped[str] = mapped_column(String(160))
     status: Mapped[str] = mapped_column(String(16), default="planned")
     content: Mapped[Json] = mapped_column(JSONB, default=dict)
+    progress: Mapped[Json] = mapped_column(JSONB, default=dict, server_default="{}")
+    """Answers and checked games of a lesson in progress, by game index: saved as the learner goes."""
     homework_scene_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("scenes.id", ondelete="SET NULL"))
 
 

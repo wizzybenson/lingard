@@ -1,3 +1,4 @@
+import type { GameResult } from "@/games/engine";
 /** Shapes of API responses that are not generated from packages/contracts. */
 import type { BandEstimate, CityEntry, Lesson, WorldView } from "@/contracts/generated";
 
@@ -184,6 +185,13 @@ export interface LessonRow {
   node_key: string;
   status: string;
   content: Lesson;
+  /** Answers and checked games of a lesson not finished yet, by game index (saved as the learner goes). */
+  progress?: { games?: Record<string, GameProgress> };
+}
+
+export interface GameProgress {
+  answers: string[];
+  result: GameResult | null;
 }
 
 /** One step of the key-points path: a grammar rule taught before a scene needs it. */

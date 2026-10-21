@@ -97,3 +97,25 @@ async def test_a_word_lesson_lists_its_words_and_speaks_each_line(api) -> None: 
     assert model.status_code == 200 and tts.spoken[-1] == content["models"][0]
     assert (await api.client.get(say, params={"part": "word", "index": 99}, headers=auth)).status_code == 404
     assert (await api.client.get(say, params={"part": "rule", "index": 0}, headers=auth)).status_code == 422
+
+
+async def test_a_lesson_left_half_way_keeps_its_answers(api) -> None:  # type: ignore[no-untyped-def]
+    """Progress lived only on screen: leaving a lesson before Finish lost every game played (founder, 2026-10-21)."""
+    await seed_graph(api.state.curriculum, load_seed(api.settings.content_root, "fr"))
+    token, _ = await learner(api, "Nora")
+    auth = api.bearer(token)
+    opened = await api.client.post("/v1/key-points/fr.grammar.present_regular", headers=auth)
+    lesson_id = opened.json()["id"]
+    progress = {
+        "games": {
+            "0": {"answers": ["parle", "", "finis"], "result": None},
+            "1": {"answers": ["a"], "result": {"kind": "dictation", "correct": 1, "total": 1, "missed": []}},
+        }
+    }
+    saved = await api.client.put(f"/v1/lessons/{lesson_id}/progress", json=progress, headers=auth)
+    assert saved.status_code == 204
+    back = (await api.client.get(f"/v1/lessons/{lesson_id}", headers=auth)).json()
+    assert back["progress"] == progress and back["status"] == "open"
+    other, _ = await learner(api, "Omar")
+    stranger = await api.client.put(f"/v1/lessons/{lesson_id}/progress", json=progress, headers=api.bearer(other))
+    assert stranger.status_code == 404

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { ApiClient } from "@/api/client";
-import type { LessonRow } from "@/api/types";
+import type { GameProgress, LessonRow } from "@/api/types";
 import type { Game, GameItem } from "@/contracts/generated";
 import { choices, isCorrect, score, type GameResult } from "@/games/engine";
 import { PlayButton } from "@/live/PlayButton";
@@ -122,23 +122,27 @@ function GameView({
   lessonId,
   index,
   game,
-  onScored,
+  saved,
+  onProgress,
 }: {
   api: ApiClient;
   lessonId: string;
   index: number;
   game: Game;
-  onScored: (result: GameResult) => void;
+  /** Where the learner left this game last time. */
+  saved?: GameProgress;
+  onProgress: (progress: GameProgress) => void;
 }) {
   const { t } = useTranslation();
-  const [answers, setAnswers] = useState<string[]>(game.items.map(() => ""));
+  const [answers, setAnswers] = useState<string[]>(() => game.items.map((_, i) => saved?.answers[i] ?? ""));
   // The timer checks the game from its own callback, so it reads the answers from here rather than a stale render.
   const latest = useRef(answers);
   const answer = (i: number, v: string) => {
     latest.current = latest.current.map((x, j) => (j === i ? v : x));
     setAnswers(latest.current);
+    onProgress({ answers: latest.current, result: null });
   };
-  const [result, setResult] = useState<GameResult | null>(null);
+  const [result, setResult] = useState<GameResult | null>(saved?.result ?? null);
   const [left, setLeft] = useState<number | null>(null);
   const started = answers.some(Boolean);
   const limit = game.time_limit_s ?? null;
@@ -147,7 +151,7 @@ function GameView({
     if (result) return;
     const scored = score(game, latest.current);
     setResult(scored);
-    onScored(scored);
+    onProgress({ answers: latest.current, result: scored });
     void Haptics.notificationAsync(scored.correct === scored.total ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Warning);
   };
 
@@ -214,6 +218,37 @@ export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const lesson = useResource(() => api.get<LessonRow>(`/v1/lessons/${id}`), [id]);
   const [results, setResults] = useState<Record<number, GameResult>>({});
+  // Saved as the learner goes (a moment after each change), and restored when the lesson is opened again.
+  const progress = useRef<Record<string, GameProgress> | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSave = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    if (!lesson.data || progress.current !== null) return;
+    progress.current = { ...(lesson.data.progress?.games ?? {}) };
+    const restored = Object.entries(progress.current).filter(([, g]) => g.result);
+    setResults(Object.fromEntries(restored.map(([i, g]) => [Number(i), g.result!])));
+  }, [lesson.data]);
+  useEffect(
+    () => () => {
+      // Leaving the lesson: an answer typed a moment ago is sent now rather than dropped with the timer.
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      pendingSave.current?.();
+    },
+    [],
+  );
+  const recordProgress = (index: number, game: GameProgress) => {
+    progress.current = { ...(progress.current ?? {}), [String(index)]: game };
+    const result = game.result;
+    if (result) setResults((all) => ({ ...all, [index]: result }));
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    const send = () => {
+      pendingSave.current = null;
+      void api.request(`/v1/lessons/${id}/progress`, { method: "PUT", body: JSON.stringify({ games: progress.current }) }).catch(() => undefined);
+    };
+    pendingSave.current = send;
+    if (result) send(); // a checked game is saved at once
+    else saveTimer.current = setTimeout(send, 800);
+  };
   const [finished, setFinished] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -225,6 +260,7 @@ export default function LessonScreen() {
       </Screen>
     );
   const content = lesson.data.content;
+  const savedGames = lesson.data.progress?.games ?? {};
   const keyPoints = content.kind === "key_points";
   const scored = Object.values(results);
   const correct = scored.reduce((n, r) => n + r.correct, 0);
@@ -327,7 +363,15 @@ export default function LessonScreen() {
       </Card>
 
       {content.games.map((game, i) => (
-        <GameView key={`${game.kind}-${i}`} api={api} lessonId={id} index={i} game={game} onScored={(r) => setResults((all) => ({ ...all, [i]: r }))} />
+        <GameView
+          key={`${game.kind}-${i}`}
+          api={api}
+          lessonId={id}
+          index={i}
+          game={game}
+          saved={savedGames[String(i)]}
+          onProgress={(g) => recordProgress(i, g)}
+        />
       ))}
 
       <Card tone="sunset" style={{ gap: space(1) }}>
