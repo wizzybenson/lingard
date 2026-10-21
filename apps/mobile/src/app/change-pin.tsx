@@ -8,8 +8,9 @@ import { Body, Button, ErrorText, Field, Screen, Title } from "@/ui/kit";
 
 export default function ChangePin() {
   const { t } = useTranslation();
-  const { api, pinChanged } = useAuth();
-  const [current, setCurrent] = useState("");
+  const { api, pinChanged, signInPin } = useAuth();
+  const [typed, setTyped] = useState("");
+  const current = signInPin ?? typed; // right after signing in with a one-time PIN, it is not asked for again
   const [next, setNext] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +20,10 @@ export default function ChangePin() {
     if (weak) return setError(t(weak));
     setBusy(true);
     try {
-      await api.post("/v1/auth/change-pin", { current_pin: current, new_pin: next });
+      await api.post("/v1/auth/change-pin", {
+        current_pin: current,
+        new_pin: next,
+      });
       pinChanged();
       router.replace("/");
     } catch (e) {
@@ -33,10 +37,29 @@ export default function ChangePin() {
     <Screen>
       <Title>{t("pin.change")}</Title>
       <Body>{t("signIn.mustChange")}</Body>
-      <Field label={t("pin.current")} value={current} onChangeText={(v) => setCurrent(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
-      <Field label={t("pin.new")} value={next} onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
+      {signInPin === null && (
+        <Field
+          label={t("pin.current")}
+          value={typed}
+          onChangeText={(v) => setTyped(v.replace(/\D/g, "").slice(0, 6))}
+          keyboardType="number-pad"
+          secureTextEntry
+        />
+      )}
+      <Field
+        label={t("pin.new")}
+        value={next}
+        onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))}
+        keyboardType="number-pad"
+        secureTextEntry
+      />
       <ErrorText message={error} />
-      <Button label={t("app.save")} busy={busy} disabled={current.length !== 6 || next.length !== 6} onPress={() => void submit()} />
+      <Button
+        label={t("app.save")}
+        busy={busy}
+        disabled={current.length !== 6 || next.length !== 6}
+        onPress={() => void submit()}
+      />
     </Screen>
   );
 }

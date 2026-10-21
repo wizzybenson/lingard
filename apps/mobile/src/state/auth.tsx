@@ -1,9 +1,21 @@
 /** Auth context: the API client, sign-in state and the PIN-change gate. */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { Platform } from "react-native";
 
 import { ApiClient, type Tokens } from "@/api/client";
-import { markPinVerified, secureTokenStore, unlockWithBiometrics } from "@/auth/store";
+import {
+  markPinVerified,
+  secureTokenStore,
+  unlockWithBiometrics,
+} from "@/auth/store";
 import { API_URL } from "@/config";
 
 type Status = "booting" | "signedOut" | "locked" | "signedIn";
@@ -12,6 +24,8 @@ interface AuthValue {
   api: ApiClient;
   status: Status;
   pinChangeRequired: boolean;
+  /** The PIN just used to sign in when it must be changed, held in memory only, so the learner isn't asked twice. */
+  signInPin: string | null;
   signIn(name: string, pin: string): Promise<void>;
   redeem(code: string, name: string, pin: string): Promise<void>;
   unlock(): Promise<boolean>;
@@ -26,8 +40,16 @@ const WEB = Platform.OS === "web";
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("booting");
   const [pinChangeRequired, setPinChangeRequired] = useState(false);
+  const [signInPin, setSignInPin] = useState<string | null>(null);
   const api = useMemo(
-    () => new ApiClient(API_URL, secureTokenStore, undefined, () => setStatus("signedOut"), WEB),
+    () =>
+      new ApiClient(
+        API_URL,
+        secureTokenStore,
+        undefined,
+        () => setStatus("signedOut"),
+        WEB,
+      ),
     [],
   );
 
@@ -40,7 +62,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return;
     }
-    void secureTokenStore.load().then((tokens) => setStatus(tokens ? "locked" : "signedOut"));
+    void secureTokenStore
+      .load()
+      .then((tokens) => setStatus(tokens ? "locked" : "signedOut"));
   }, [api]);
 
   const accept = useCallback(async (tokens: Tokens) => {
@@ -53,8 +77,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     api,
     status,
     pinChangeRequired,
-    signIn: async (name, pin) => accept(await api.signIn(name, pin, DEVICE_LABEL)),
-    redeem: async (code, name, pin) => accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL)),
+    signInPin,
+    signIn: async (name, pin) => {
+      const tokens = await api.signIn(name, pin, DEVICE_LABEL);
+      setSignInPin(tokens.pinChangeRequired ? pin : null);
+      await accept(tokens);
+    },
+    redeem: async (code, name, pin) =>
+      accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL)),
     unlock: async () => {
       const ok = await unlockWithBiometrics();
       if (ok) setStatus("signedIn");
@@ -62,9 +92,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     signOut: async () => {
       await api.signOut();
+      setSignInPin(null);
       setStatus("signedOut");
     },
-    pinChanged: () => setPinChangeRequired(false),
+    pinChanged: () => {
+      setPinChangeRequired(false);
+      setSignInPin(null);
+    },
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

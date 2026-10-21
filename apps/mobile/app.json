@@ -45,6 +45,7 @@
       "output": "single"
     },
     "plugins": [
+      "./plugins/withoutRemotePush",
       "expo-router",
       "expo-secure-store",
       [
