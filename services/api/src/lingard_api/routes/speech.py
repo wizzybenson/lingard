@@ -11,7 +11,7 @@ from functools import cache
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import Response
 
 from lingard_api.deps import Principal, State
@@ -84,7 +84,7 @@ async def transcribe(
 
 
 @router.get("/items/{item_id}/audio")
-async def item_audio(item_id: str, principal: Principal, state: State) -> Response:
+async def item_audio(item_id: str, request: Request, principal: Principal, state: State) -> Response:
     """Listening items are rendered here; the client never receives the script."""
     try:
         item = item_bank(state.settings.content_root).get(item_id)
@@ -96,7 +96,7 @@ async def item_audio(item_id: str, principal: Principal, state: State) -> Respon
         pcm = await narrate(state, item.stimulus, item.language)
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
-    return wav_response(pcm)
+    return wav_response(pcm, request)
 
 
 def require_providers(state: AppState, *, llm: bool = False, tts: bool = False) -> None:
@@ -170,5 +170,21 @@ async def narrate(state: AppState, text: str, language: Language) -> bytes:
     return pcm
 
 
-def wav_response(pcm: bytes) -> Response:
-    return Response(pcm_to_wav(pcm), media_type="audio/wav", headers={"Cache-Control": "private, max-age=86400"})
+RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
+
+
+def wav_response(pcm: bytes, request: Request) -> Response:
+    """The audio as WAV, honouring a byte range: iOS's player asks for ranges before it plays, and stalled forever
+    ("buffering") when the whole file came back instead."""
+    wav = pcm_to_wav(pcm)
+    headers = {"Cache-Control": "private, max-age=86400", "Accept-Ranges": "bytes"}
+    asked = RANGE.match(request.headers.get("range", "").strip())
+    if asked is None or asked.groups() == ("", ""):
+        return Response(wav, media_type="audio/wav", headers=headers)
+    first, last = asked.groups()
+    size = len(wav)
+    start, end = (size - int(last), size - 1) if first == "" else (int(first), min(int(last or size - 1), size - 1))
+    if start < 0 or start >= size or start > end:
+        return Response(status_code=416, headers={**headers, "Content-Range": f"bytes */{size}"})
+    headers["Content-Range"] = f"bytes {start}-{end}/{size}"
+    return Response(wav[start : end + 1], status_code=206, media_type="audio/wav", headers=headers)

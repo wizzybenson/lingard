@@ -60,3 +60,26 @@ async def test_narration_is_rendered_once_then_cached() -> None:
     again = await narrate(state, "F1: Bonjour.\nM1: Bonjour madame.", "fr")  # type: ignore[arg-type]
     assert first == again and tts.voices == ["fr_f_speaker1", "fr_m_speaker1"], "the second play is free"
     assert len(first) > 40, "a pause sits between the two speakers"
+
+
+def test_audio_answers_byte_ranges_as_ios_asks_for_them() -> None:
+    """iOS's player requests a range before playing; a whole file in reply left it buffering in silence."""
+    from starlette.requests import Request
+
+    from lingard_api.routes.speech import pcm_to_wav, wav_response
+
+    pcm = bytes(range(256)) * 40
+    wav = pcm_to_wav(pcm)
+
+    def ask(value: str | None) -> Request:
+        headers = [(b"range", value.encode())] if value else []
+        return Request({"type": "http", "method": "GET", "headers": headers})
+
+    whole = wav_response(pcm, ask(None))
+    assert whole.status_code == 200 and whole.body == wav and whole.headers["accept-ranges"] == "bytes"
+    probe = wav_response(pcm, ask("bytes=0-1"))
+    assert probe.status_code == 206 and probe.body == wav[:2]
+    assert probe.headers["content-range"] == f"bytes 0-1/{len(wav)}"
+    assert wav_response(pcm, ask("bytes=100-")).body == wav[100:]
+    assert wav_response(pcm, ask("bytes=-10")).body == wav[-10:]
+    assert wav_response(pcm, ask(f"bytes={len(wav)}-")).status_code == 416

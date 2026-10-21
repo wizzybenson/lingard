@@ -11,7 +11,7 @@ from typing import Annotated, Any
 
 import httpx
 import yaml
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -99,13 +99,15 @@ async def _reference(
 
 
 @router.get("/reference")
-async def reference(principal: Principal, state: State, db: Db, line: str, language: Language) -> Response:
+async def reference(
+    request: Request, principal: Principal, state: State, db: Db, line: str, language: Language
+) -> Response:
     if line not in _line_nodes(state, language):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "not a studio line")
     pcm = await _reference(state, db, principal.user_id, line, language)
     if pcm is None:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "no TTS provider available")
-    return wav_response(pcm)
+    return wav_response(pcm, request)
 
 
 @router.post("/shadow")

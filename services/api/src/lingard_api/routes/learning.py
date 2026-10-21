@@ -6,7 +6,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -305,7 +305,7 @@ async def complete_lesson(
 
 @router.get("/lessons/{lesson_id}/audio")
 async def lesson_audio(
-    lesson_id: uuid.UUID, game: int, item: int, principal: Principal, state: State, db: Db
+    lesson_id: uuid.UUID, game: int, item: int, request: Request, principal: Principal, state: State, db: Db
 ) -> Response:
     """Dictation and listening games: the item is spoken by the narrator, never sent as text first."""
     row = await db.get(Lesson, lesson_id)
@@ -319,7 +319,7 @@ async def lesson_audio(
         pcm = await narrate(state, sentence, node_language(row.node_key))
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
-    return wav_response(pcm)
+    return wav_response(pcm, request)
 
 
 Sayable = Literal["model", "better", "word"]
@@ -331,6 +331,7 @@ async def lesson_say(
     lesson_id: uuid.UUID,
     part: Literal["model", "better", "word"],
     index: int,
+    request: Request,
     principal: Principal,
     state: State,
     db: Db,
@@ -352,7 +353,7 @@ async def lesson_say(
         pcm = await narrate(state, str(lines[index]), node_language(row.node_key))
     except RuntimeError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
-    return wav_response(pcm)
+    return wav_response(pcm, request)
 
 
 async def _with_words(state: AppState, row: Lesson) -> dict[str, Any]:
