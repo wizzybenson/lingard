@@ -1,13 +1,15 @@
 /** Game scoring shared by every School game (pure, unit-tested). */
 import type { Game, GameItem } from "@/contracts/generated";
 
+/** What an answer is judged on: the words and their spelling (accents included), not case, spacing or punctuation.
+ * A dictation heard right but typed "Vous venez?" for « Vous venez ? », or without its comma, was marked wrong. */
 export function normalise(answer: string): string {
   return answer
-    .trim()
     .toLocaleLowerCase()
-    .replace(/[’']/g, "'")
+    .replace(/[’‘`]/g, "'")
+    .replace(/[.,;:!?¿¡…«»“”"()\[\]–—]/g, " ")
     .replace(/\s+/g, " ")
-    .replace(/[.!?]+$/, "");
+    .trim();
 }
 
 export function isCorrect(item: GameItem, answer: string): boolean {

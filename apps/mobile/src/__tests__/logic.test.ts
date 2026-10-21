@@ -170,3 +170,12 @@ test("date picker: ISO round trip, invalid dates refused, Monday-first month gri
   expect(march2027.flat().filter((d) => d !== null)).toHaveLength(31);
   expect(march2027.every((week) => week.length === 7)).toBe(true);
 });
+
+test("a dictation is judged on its words and spelling, not its punctuation", () => {
+  const item = { prompt: "", answer: "Bonjour, vous venez ce soir ?", node_key: "fr.grammar.questions" };
+  expect(isCorrect(item, "bonjour vous venez ce soir?")).toBe(true);
+  expect(isCorrect(item, "Bonjour , vous venez ce soir")).toBe(true);
+  expect(isCorrect({ ...item, answer: "C’est l’hôpital." }, "c'est l'hôpital")).toBe(true);
+  expect(isCorrect({ ...item, answer: "C’est l’hôpital." }, "c'est l'hopital")).toBe(false); // accents are spelling
+  expect(isCorrect(item, "bonjour vous venez se soir")).toBe(false);
+});

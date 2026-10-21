@@ -102,6 +102,7 @@ export default function SignIn() {
           onChangeText={setName}
           autoCapitalize="words"
           autoComplete="username"
+          selectTextOnFocus // a pre-filled name is replaced by typing, not appended to
           returnKeyType="next"
           submitBehavior="submit"
           onSubmitEditing={() => pinField.current?.focus()}
