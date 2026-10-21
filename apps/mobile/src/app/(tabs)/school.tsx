@@ -28,7 +28,7 @@ export default function School() {
   const [error, setError] = useState<string | null>(null);
 
   // The learner's pick, else the language whose exam they are preparing for, else the first city.
-  const studying = profile.data ? cities.data?.find((c) => profile.data?.exam_dates[c.pack]) ?? cities.data?.[0] : undefined;
+  const studying = profile.data ? cities.data?.find((c) => c.pack in (profile.data?.exam_dates ?? {})) ?? cities.data?.[0] : undefined;
   const language: Language | null = picked ?? studying?.language ?? null;
 
   const path = useResource(() => (language ? api.get<KeyPoint[]>(`/v1/key-points?language=${language}`) : Promise.resolve(null)), [api, language]);

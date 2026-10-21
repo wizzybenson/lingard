@@ -19,7 +19,7 @@ export default function Goal() {
   const api = useApi();
   const cities = useCities();
   const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);
-  const [dates, setDates] = useState<Record<string, string>>({});
+  const [dates, setDates] = useState<Record<string, string | null>>({});
   const [targets, setTargets] = useState<Record<string, Record<string, number>>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -39,7 +39,8 @@ export default function Goal() {
     setError(null);
     try {
       const packs = cities.data?.map((c) => c.pack) ?? [];
-      const examDates = Object.fromEntries(packs.map((p) => [p, dates[p] ? dates[p] : null]));
+      // Preparing without a date yet is still preparing (""): only an exam not chosen at all is cleared (null).
+      const examDates = Object.fromEntries(packs.map((p) => [p, dates[p] === undefined ? null : (dates[p] ?? "")]));
       await api.patch("/v1/me", { exam_dates: examDates, target_bands: targets });
       goBack();
     } catch (e) {

@@ -21,7 +21,7 @@ function sectionOf(step: StepView | null): string {
 export default function Thread() {
   const { t } = useTranslation();
   const api = useApi();
-  const params = useLocalSearchParams<{ id: string; first?: string; language?: string }>();
+  const params = useLocalSearchParams<{ id: string; first?: string; language?: string; then?: "home" | "passport" }>();
   const language: "fr" | "en" = params.language === "en" ? "en" : "fr";
   const [step, setStep] = useState<StepView | null>(() => (params.first ? (JSON.parse(params.first) as StepView) : null));
   const [text, setText] = useState("");
@@ -57,7 +57,7 @@ export default function Thread() {
         // eslint-disable-next-line react-hooks/purity -- runs in the answer handler after the await, not during render
         setSectionStart({ section: nextSection, at: Date.now() });
       }
-      if (next.done) router.replace("/(tabs)/passport");
+      if (next.done) router.navigate(params.then === "home" ? "/(tabs)/city" : "/(tabs)/passport");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

@@ -1,0 +1,79 @@
+# First run, as a brand-new learner: one-time PIN → own PIN → goal → skip placement → first rule → story.
+# Needs a fresh account: MAESTRO_ONBOARD_NAME and MAESTRO_ONBOARD_PIN (its one-time PIN); MAESTRO_ONBOARD_NEW_PIN is
+# the PIN it chooses. No paid calls until the story is started.
+appId: app.lingard
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "This is the developer menu.*"
+    commands:
+      - tapOn: "Continue"
+- runFlow:
+    when:
+      visible: "Choose a new PIN"
+    commands:
+      - tapOn: "Sign out"
+- runFlow:
+    when:
+      visible: "Settings, tab.*"
+    commands:
+      - tapOn: "Settings, tab.*"
+      - scrollUntilVisible:
+          element: "Sign out"
+      - tapOn: "Sign out"
+- extendedWaitUntil:
+    visible: "Welcome to Lingard"
+    timeout: 15000
+- tapOn:
+    id: "sign-in-name"
+- eraseText
+- inputText: ${MAESTRO_ONBOARD_NAME}
+- pressKey: Enter
+- eraseText
+- inputText: ${MAESTRO_ONBOARD_PIN}
+- extendedWaitUntil:
+    visible: "Choose a new PIN"
+    timeout: 15000
+- assertNotVisible: "Current PIN"      # the one-time PIN was just typed: not asked again
+- takeScreenshot: onboard-01-new-pin
+- tapOn:
+    id: "new-pin"
+- inputText: ${MAESTRO_ONBOARD_NEW_PIN}
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Settings, tab.*"           # into the app, not back to the PIN screen
+    timeout: 15000
+- assertNotVisible: "Choose a new PIN"
+- takeScreenshot: onboard-02-home
+- tapOn: "Set your goal"
+- tapOn:
+    text: "I'm preparing for this exam"
+    index: 0
+- scrollUntilVisible:
+    element: "Save my goal"
+- tapOn: "Save my goal"
+- extendedWaitUntil:
+    visible: "Find your level.*"
+    timeout: 15000
+- takeScreenshot: onboard-03-goal-set
+- tapOn: "Find your level.*"
+- extendedWaitUntil:
+    visible: "Step 2 of 3"
+    timeout: 15000
+- takeScreenshot: onboard-04-placement
+- tapOn: "Skip placement.*"
+- extendedWaitUntil:
+    visible: "Learn first.*"              # back at Home, with the next step waiting
+    timeout: 20000
+- takeScreenshot: onboard-05-back-home
+- tapOn: "Learn first.*"
+- extendedWaitUntil:
+    visible: "The rule"
+    timeout: 15000
+- takeScreenshot: onboard-06-first-rule
+- tapOn: "Back"
+- extendedWaitUntil:
+    visible: "Learn first.*|Begin day.*"
+    timeout: 15000
+- takeScreenshot: onboard-07-home-again

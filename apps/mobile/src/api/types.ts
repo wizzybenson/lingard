@@ -219,7 +219,8 @@ export interface Profile {
   intensity_cap: "calm" | "tense" | "heated";
   l1: string;
   language_bands: Record<string, number>;
-  exam_dates: Record<string, string>;
+  /** The exams being prepared for; null when the date isn't known yet. */
+  exam_dates: Record<string, string | null>;
 }
 
 export type SkillStatus = "met" | "close" | "behind" | "unknown";

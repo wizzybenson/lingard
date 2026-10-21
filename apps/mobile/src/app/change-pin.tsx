@@ -8,7 +8,7 @@ import { Body, Button, ErrorText, Field, Screen, Title } from "@/ui/kit";
 
 export default function ChangePin() {
   const { t } = useTranslation();
-  const { api, pinChanged, signInPin } = useAuth();
+  const { api, pinChanged, signInPin, signOut } = useAuth();
   const [typed, setTyped] = useState("");
   const current = signInPin ?? typed; // right after signing in with a one-time PIN, it is not asked for again
   const [next, setNext] = useState("");
@@ -47,9 +47,11 @@ export default function ChangePin() {
           secureTextEntry
         />
       )}
-      <Field label={t("pin.new")} value={next} onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
+      <Field testID="new-pin" label={t("pin.new")} value={next} onChangeText={(v) => setNext(v.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" secureTextEntry />
       <ErrorText message={error} />
       <Button label={t("app.save")} busy={busy} disabled={current.length !== 6 || next.length !== 6} onPress={() => void submit()} />
+      {/* A learner who doesn't know the current PIN must not be trapped here: signing out lets them start over. */}
+      <Button label={t("settings.signOut")} kind="ghost" icon="log-out-outline" onPress={() => void signOut().then(() => router.replace("/sign-in"))} />
     </Screen>
   );
 }

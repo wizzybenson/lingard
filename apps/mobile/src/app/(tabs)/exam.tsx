@@ -1,10 +1,10 @@
 /** Exam Hall: each exam as a full mock runs it (sections in the official order and timing), placement beside it. */
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 
-import type { CityEntry, ExamFormat, StepView } from "@/api/types";
+import type { CityEntry, ExamFormat, StepView, Today } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
@@ -23,6 +23,12 @@ export default function ExamHall() {
   const api = useApi();
   const cities = useCities();
   const formats = useResource(() => api.get<ExamFormat[]>("/v1/exams/formats"), [api]);
+  const today = useResource(() => api.get<Today>("/v1/today"), [api]);
+  const { reload: reloadToday } = today;
+  useFocusEffect(useCallback(() => reloadToday(), [reloadToday]));
+  // During onboarding the hall opens on the one thing asked of the learner here: find a level, or skip it.
+  const placing = today.data?.onboarding.goal === true && !today.data.onboarding.placement;
+  const studying = new Set(today.data?.goals.map((g) => g.pack));
   const [starting, setStarting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,8 +37,10 @@ export default function ExamHall() {
     setStarting(key);
     try {
       const step = await api.post<StepView>(path, body);
-      if (step.done) router.push("/(tabs)/passport");
-      else router.push({ pathname: "/thread/[id]", params: { id: step.thread_id, first: JSON.stringify(step), language } });
+      // A placement ends at Home, where the next step of the journey waits; a mock ends at its scores in the Passport.
+      const then = key.endsWith(":mock") ? "passport" : "home";
+      if (step.done) router.navigate(then === "home" ? "/(tabs)/city" : "/(tabs)/passport");
+      else router.push({ pathname: "/thread/[id]", params: { id: step.thread_id, first: JSON.stringify(step), language, then } });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -50,7 +58,36 @@ export default function ExamHall() {
 
   return (
     <Screen title={t("exam.title")} onRefresh={formats.reload}>
-      <Body muted>{t("exam.intro")}</Body>
+      {placing ? (
+        <Card tone="accent" style={{ gap: space(1.5) }}>
+          <Overline>{t("onboarding.stepOf", { step: 2, total: 3 })}</Overline>
+          <Title>{t("onboarding.placementTitle")}</Title>
+          <Body>{t("onboarding.placementBody")}</Body>
+          {cities.data
+            ?.filter((c) => studying.size === 0 || studying.has(c.pack))
+            .map(({ language, pack, pack_name }) => (
+              <Section key={pack} title={pack_name}>
+                <ListRow
+                  icon="speedometer"
+                  title={t("exam.quick")}
+                  subtitle={t("exam.placement")}
+                  disabled={starting !== null}
+                  onPress={() => void begin(`${pack}:quick`, "/v1/placement", { language, path: "quick" }, language)}
+                />
+                <ListRow
+                  icon="play-skip-forward"
+                  title={t("exam.skip")}
+                  subtitle={t("onboarding.skipHint")}
+                  disabled={starting !== null}
+                  onPress={() => void begin(`${pack}:skip`, "/v1/placement", { language, path: "skip" }, language)}
+                />
+              </Section>
+            ))}
+          <Button label={t("onboarding.backHome")} kind="ghost" icon="home" onPress={() => router.navigate("/(tabs)/city")} />
+        </Card>
+      ) : (
+        <Body muted>{t("exam.intro")}</Body>
+      )}
       <ErrorText message={cities.error ?? formats.error ?? error} />
       {cities.data?.map(({ language, pack, pack_name }) => {
         const format = formats.data?.find((f) => f.pack === pack);

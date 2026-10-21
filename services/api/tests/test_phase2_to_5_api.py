@@ -262,3 +262,16 @@ async def test_draw_day_uses_real_rounds_and_pays_the_invitation_once(api) -> No
         invited = (await api.client.get("/v1/draws/latest", headers=auth)).json()
         assert invited["invited"] is True and invited["margin"] == 5
     assert (await api.client.get("/v1/wallet", headers=auth)).json()["coins"] == coins + invited["reward"]
+
+
+async def test_preparing_without_an_exam_date_is_a_goal(api) -> None:  # type: ignore[no-untyped-def]
+    """A learner who doesn't know their exam date yet still moves past "Set your goal" (it used to drop the goal)."""
+    token, _ = await learner(api, "Tariq")
+    auth = api.bearer(token)
+    await api.client.patch("/v1/me", json={"exam_dates": {"tef_canada": ""}}, headers=auth)
+    me = (await api.client.get("/v1/me", headers=auth)).json()
+    assert me["exam_dates"] == {"tef_canada": None}
+    today = (await api.client.get("/v1/today", headers=auth)).json()
+    assert today["onboarding"]["goal"] is True and today["next_step"] == "placement"
+    await api.client.patch("/v1/me", json={"exam_dates": {"tef_canada": None}}, headers=auth)
+    assert (await api.client.get("/v1/me", headers=auth)).json()["exam_dates"] == {}, "null stops preparing"
