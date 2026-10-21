@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { Platform } from "react-native";
 
 import { ApiClient, type Tokens } from "@/api/client";
+import { remember } from "@/auth/remembered";
 import { markPinVerified, secureTokenStore, unlockWithBiometrics } from "@/auth/store";
 import { API_URL } from "@/config";
 
@@ -18,7 +19,8 @@ interface AuthValue {
   redeem(code: string, name: string, pin: string): Promise<void>;
   unlock(): Promise<boolean>;
   signOut(): Promise<void>;
-  pinChanged(): void;
+  /** The new PIN is saved as this device's suggestion for the name that signed in. */
+  pinChanged(newPin: string): void;
 }
 
 const AuthContext = createContext<AuthValue | null>(null);
@@ -29,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("booting");
   const [pinChangeRequired, setPinChangeRequired] = useState(false);
   const [signInPin, setSignInPin] = useState<string | null>(null);
+  const [signInName, setSignInName] = useState<string | null>(null);
   const api = useMemo(
     () =>
       new ApiClient(
@@ -68,9 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signIn: async (name, pin) => {
       const tokens = await api.signIn(name, pin, DEVICE_LABEL);
       setSignInPin(tokens.pinChangeRequired ? pin : null);
+      setSignInName(name);
+      void remember(name, tokens.pinChangeRequired ? null : pin); // a one-time PIN is never offered again
       await accept(tokens);
     },
-    redeem: async (code, name, pin) => accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL)),
+    redeem: async (code, name, pin) => {
+      await accept(await api.redeemInvite(code, name, pin, DEVICE_LABEL));
+      void remember(name, pin);
+    },
     unlock: async () => {
       const ok = await unlockWithBiometrics();
       if (ok) setStatus("signedIn");
@@ -81,9 +89,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSignInPin(null);
       setStatus("signedOut");
     },
-    pinChanged: () => {
+    pinChanged: (newPin) => {
       setPinChangeRequired(false);
       setSignInPin(null);
+      if (signInName) void remember(signInName, newPin);
     },
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

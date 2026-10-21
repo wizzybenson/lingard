@@ -24,7 +24,7 @@ export default function ChangePin() {
         current_pin: current,
         new_pin: next,
       });
-      pinChanged();
+      pinChanged(next);
       router.replace("/");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));

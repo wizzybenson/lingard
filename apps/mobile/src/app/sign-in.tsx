@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { pinWeakness } from "@/auth/pin";
+import { hasSavedPin, rememberedNames, savedPin } from "@/auth/remembered";
 import { useAuth } from "@/state/auth";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, TextInput, View } from "react-native";
@@ -22,6 +23,22 @@ export default function SignIn() {
   // Before anything else: the interface in the learner's own language (the device's, unless they pick another).
   const [locale, setLocale] = useState<UiLocale>(currentLocale());
   const pinField = useRef<TextInput>(null);
+  // Suggestions from this device: the last name pre-filled, others one tap away, and a saved PIN behind Face ID.
+  const [names, setNames] = useState<string[]>([]);
+  const [canUseSaved, setCanUseSaved] = useState(false);
+  useEffect(() => {
+    void rememberedNames().then((saved) => {
+      setNames(saved);
+      if (saved[0]) setName((typed) => typed || saved[0]!);
+    });
+  }, []);
+  useEffect(() => {
+    void hasSavedPin(name).then(setCanUseSaved);
+  }, [name]);
+  const fillSavedPin = async () => {
+    const saved = await savedPin(name);
+    if (saved) setPin(saved); // six digits: signs in by itself
+  };
   // With the keyboard up, the brand folds away so the fields and the button stay in view on a small phone.
   const typing = useKeyboardVisible();
 
@@ -89,6 +106,15 @@ export default function SignIn() {
           submitBehavior="submit"
           onSubmitEditing={() => pinField.current?.focus()}
         />
+        {names.filter((n) => n !== name).length > 0 && (
+          <View style={styles.suggestions}>
+            {names
+              .filter((n) => n !== name)
+              .map((n) => (
+                <Button key={n} label={n} kind="secondary" compact icon="person-circle-outline" onPress={() => setName(n)} />
+              ))}
+          </View>
+        )}
         <Field
           ref={pinField}
           testID="sign-in-pin"
@@ -100,6 +126,9 @@ export default function SignIn() {
           autoComplete="off"
           textContentType="oneTimeCode"
         />
+        {invite === null && canUseSaved && pin.length === 0 && (
+          <Button label={t("signIn.useSavedPin")} kind="tinted" icon="key" onPress={() => void fillSavedPin()} />
+        )}
         {invite !== null && <Field label={t("signIn.invite")} value={invite} onChangeText={setInvite} autoCapitalize="characters" />}
         <ErrorText message={error} />
         <Button
@@ -116,6 +145,7 @@ export default function SignIn() {
 }
 
 const styles = StyleSheet.create({
+  suggestions: { flexDirection: "row", flexWrap: "wrap", gap: space(1) },
   brand: { borderRadius: radius.xl, padding: space(3), paddingTop: space(4), gap: space(1), marginTop: space(2) },
   mark: {
     width: 56,
