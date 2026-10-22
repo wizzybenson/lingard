@@ -5,19 +5,21 @@ import { Text, useWindowDimensions, View } from "react-native";
 
 import type { KeyPoint, Profile, SessionView, Today, WorldView } from "@/api/types";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
-import { TodayCard } from "@/home/TodayCard";
+import { ExamLine, Stats, TodayCard } from "@/home/TodayCard";
+import { TodayPath } from "@/home/TodayPath";
 import { refreshReminderText, reminderText } from "@/state/reminders";
 import { useApi } from "@/state/auth";
-import { useCities } from "@/state/cities";
 import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
-import { Avatar, Body, Button, Card, ErrorText, IconBubble, ListRow, Loading, Screen, Section, Segmented, Title } from "@/ui/kit";
+import { Avatar, Body, Button, Card, Caption, Disclosure, ErrorText, IconBubble, ListRow, Loading, Screen, Section, Title } from "@/ui/kit";
+import { FocusSwitch } from "@/ui/FocusSwitch";
 import { colors, MAX_WIDTH, radius, shadow, space, type } from "@/ui/theme";
 import { placeIcon } from "@/world/icons";
 import { npcsAt, unlockedLocations } from "@/world/model";
 import type { Location } from "@/world/types";
 
 const POLL_MS = 2500;
+const COACH_POLL_MS = 4000;
 const PLAN_TIMEOUT_MS = 3 * 60 * 1000; // a day plan normally takes well under a minute
 // Loaded on first render, after the root layout has initialised Skia (CanvasKit on the web).
 const CityCanvas = lazy(() => import("@/world/renderer/CityCanvas").then((m) => ({ default: m.CityCanvas })));
@@ -40,7 +42,6 @@ export default function City() {
   const { t } = useTranslation();
   const api = useApi();
   const { width } = useWindowDimensions();
-  const cities = useCities();
   const focus = useFocus();
   const city = focus.city?.city ?? null;
   const cityLanguage = focus.language;
@@ -54,6 +55,14 @@ export default function City() {
   const [ahead, setAhead] = useState<SessionView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
+  // The coach tailors the day in the background: look again shortly, and the path updates in place.
+  const thinking = today.data?.coach === "thinking";
+  const { reload: reloadToday } = today;
+  useEffect(() => {
+    if (!thinking) return;
+    const timer = setTimeout(reloadToday, COACH_POLL_MS);
+    return () => clearTimeout(timer);
+  }, [thinking, reloadToday, today.data]);
   const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);
   // Coming back from a goal, a lesson or a scene must show the updated streak and next step.
   useFocusEffect(today.reload);
@@ -126,42 +135,46 @@ export default function City() {
 
   const name = profile.data?.display_name.split(" ")[0];
   const places = world.data ? unlockedLocations(world.data) : [];
-  const locked = world.data?.districts.filter((d) => !d.unlocked) ?? [];
+  const nextChapter = world.data?.districts.find((d) => !d.unlocked);
+  const storyLabel = planning
+    ? t("city.planning")
+    : day
+      ? t(ahead?.city === city && ahead.played > 0 ? "today.next.continue" : "today.next.story", { day })
+      : t("city.startDay");
+  const path = today.data?.path ?? [];
 
   return (
     <Screen
       eyebrow={day && world.data ? t("city.dayIn", { day, city: world.data.name }) : undefined}
       title={name ? t("city.greeting", { name }) : t("tabs.city")}
+      accessory={today.data ? <Stats today={today.data} /> : undefined}
       onRefresh={() => {
         today.reload();
         world.reload();
       }}
     >
-      {today.data && <TodayCard
-          today={today.data}
-          day={day}
-          continuing={ahead?.city === city && ahead.played > 0}
-          busy={planning} onStartStory={() => void startDay()} />}
-      {/* Errors sit where they happened: the day's at the top with its card, the map's beside the map. */}
+      {/* One guided path once the level is known; before that, the getting-started steps (decision 0029). */}
+      {today.data && path.length > 0 && (
+        <TodayPath stops={path} coach={today.data.coach} storyLabel={storyLabel} storyBusy={planning} onStory={() => void startDay()} />
+      )}
+      {today.data && path.length === 0 && today.data.next_step !== "story" && <TodayCard today={today.data} />}
+      {/* Errors sit where they happened: the day's at the top with its path, the map's beside the map. */}
       <ErrorText message={error} onRetry={() => void startDay()} />
       <ErrorText message={today.error} onRetry={today.reload} />
-      {/* The Today card carries the start button; this is only for when it couldn't load. */}
-      {!today.data && !today.loading && (
-        <Button label={planning ? t("city.planning") : t("city.startDay")} icon="play" busy={planning} onPress={() => void startDay()} />
+      {/* The path carries the start button; this is only for when it couldn't load. */}
+      {!today.loading && (!today.data || (path.length === 0 && today.data.next_step === "story")) && (
+        <Button label={storyLabel} icon="play" busy={planning} onPress={() => void startDay()} />
       )}
+      {today.data && today.data.goals.length > 0 && <ExamLine today={today.data} pack={focus.city?.pack ?? null} />}
 
-      <View style={{ gap: space(1.5), marginTop: space(1) }}>
-        <Title>{t("city.choose")}</Title>
-        {cities.data && cities.data.length > 1 && (
-          <Segmented
-            options={cities.data.map((c) => ({ value: c.language, label: c.name }))}
-            value={cityLanguage}
-            onChange={focus.choose}
-          />
-        )}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: space(1), marginTop: space(1.5) }}>
+        <View style={{ flex: 1 }}>
+          <Title>{world.data?.name ?? t("city.choose")}</Title>
+        </View>
+        <FocusSwitch show="city" />
       </View>
       {world.loading && !world.data && <Loading />}
-      <ErrorText message={cities.error ?? world.error} onRetry={world.reload} />
+      <ErrorText message={world.error} onRetry={world.reload} />
       {world.data && (
         <View style={[{ borderRadius: radius.lg, overflow: "hidden", backgroundColor: colors.card }, shadow(2)]}>
           <Suspense fallback={<View style={{ height: mapSize.height }} />}>
@@ -203,36 +216,27 @@ export default function City() {
       )}
       {selected && placeKind && <KeyPointStrip key={selected.key} id={`place.${placeKind}`} eyebrow={t("journey.usefulHere")} points={useful.data} />}
       {world.data && places.length > 0 && (
-        <Section title={t("city.places")}>
-          {places.map((location) => {
-            const people = npcsAt(world.data!, location.key);
-            return (
-              <ListRow
-                key={location.key}
-                icon={placeIcon(location)}
-                title={location.name}
-                subtitle={people.map((n) => n.name).join(", ") || t("city.nobodyHere")}
-                selected={selected?.key === location.key}
-                trailing={people.length ? <Faces names={people.map((n) => n.name)} /> : undefined}
-                onPress={() => setSelected(location)}
-              />
-            );
-          })}
-        </Section>
+        // The map already shows every place: the list is there for whoever wants it, folded.
+        <Disclosure title={t("city.places")} hint={String(places.length)}>
+          <Section>
+            {places.map((location) => {
+              const people = npcsAt(world.data!, location.key);
+              return (
+                <ListRow
+                  key={location.key}
+                  icon={placeIcon(location)}
+                  title={location.name}
+                  subtitle={people.map((n) => n.name).join(", ") || t("city.nobodyHere")}
+                  selected={selected?.key === location.key}
+                  trailing={people.length ? <Faces names={people.map((n) => n.name)} /> : undefined}
+                  onPress={() => setSelected(location)}
+                />
+              );
+            })}
+          </Section>
+        </Disclosure>
       )}
-      {locked.length > 0 && (
-        <Section title={t("city.lockedTitle")}>
-          {locked.map((d, i) => (
-            <ListRow
-              key={d.key}
-              icon="lock-closed"
-              title={t("city.chapter", { number: (world.data?.districts.length ?? 0) - locked.length + i + 1, name: d.name })}
-              subtitle={t("city.locked", { band: d.min_band })}
-              disabled
-            />
-          ))}
-        </Section>
-      )}
+      {nextChapter && <Caption>{t("city.nextChapter", { name: nextChapter.name, band: nextChapter.min_band })}</Caption>}
     </Screen>
   );
 }

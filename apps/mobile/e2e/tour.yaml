@@ -2,6 +2,12 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
+- takeScreenshot: 01a-path
+- scrollUntilVisible:
+    element: "Places"
+    direction: DOWN
+    centerElement: true
+- tapOn: "Places"  # the list is folded under the map
 - scrollUntilVisible:
     element: "Café du Quai.*"
     direction: DOWN
@@ -13,40 +19,45 @@ appId: app.lingard
     element: "Useful here"
     direction: DOWN
 - takeScreenshot: 02b-useful-here
-- tapOn: "Review, tab.*"
+- tapOn: "Practice, tab.*"
+- tapOn: "Review"
 - takeScreenshot: 03-phone
-- tapOn: "School, tab.*"
+- tapOn: "Back"
+- tapOn: "Practice, tab.*"
+- tapOn: "Lessons"
 - takeScreenshot: 04-school
+- tapOn: "Back"
 - tapOn: "Exam Hall, tab.*"
 - assertVisible: "Start a full mock"
 - takeScreenshot: 05-exam
 - scrollUntilVisible:
-    element: "Quick placement.*"
+    element: "Check my level again.*"
     direction: DOWN
 - takeScreenshot: 05b-exam-placement
-- tapOn: "Passport, tab.*"
+- tapOn: "Progress, tab.*"
 - takeScreenshot: 06-passport
-- scrollUntilVisible:
-    element: "Accent studio"
-    direction: DOWN
-- tapOn: "Accent studio"
+- tapOn: "Practice, tab.*"
+- tapOn: "Sounds"
 - assertVisible: "Back"
 - takeScreenshot: 07-studio
 - tapOn: "Back"
+- tapOn: "Progress, tab.*"
 - scrollUntilVisible:
     element: "My goal and exam date"
     direction: DOWN
+    centerElement: true  # clear of the tab bar
 - tapOn: "My goal and exam date"
 - assertVisible: "Back"
 - takeScreenshot: 08-goal
 - tapOn: "Back"
-- tapOn: "Settings, tab.*"
+- tapOn: "Settings"
 - takeScreenshot: 09-settings
 - scrollUntilVisible:
     element: "Sign out"
     direction: DOWN
 - takeScreenshot: 10-settings-bottom
-- tapOn: "City, tab.*"
+- tapOn: "Back"
+- tapOn: "Today, tab.*"
 - scrollUntilVisible:
-    element: "Where to today?"
+    element: "Today's path|TODAY'S PATH"
     direction: UP

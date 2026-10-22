@@ -5,12 +5,12 @@ appId: app.lingard
 - runFlow: sign-in.yaml
 - openLink: lingard://studio
 - extendedWaitUntil:
-    visible: "Today's workout"
+    visible: "Today's workout.*"
     timeout: 20000
 - takeScreenshot: 30-studio
 - tapOn: "Start"
 - extendedWaitUntil:
-    visible: "Playback speed|Learn how the sound is made.*|Now inside phrases.*|Say each word.*|Say both words.*|The whole sentence.*|Say each one.*"
+    visible: "Playback speed.*|Learn how the sound is made.*|Now inside phrases.*|Say each word.*|Say both words.*|The whole sentence.*|Say each one.*"
     timeout: 20000
 - takeScreenshot: 31-drill
 - runFlow:

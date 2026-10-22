@@ -8,13 +8,14 @@ import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
-import type { KeyPoint, LessonRow } from "@/api/types";
+import type { KeyPoint, LessonRow, Today } from "@/api/types";
+import { stopWhy } from "@/home/stops";
 import { KIND_ICONS, openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
-import { useCities } from "@/state/cities";
 import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title } from "@/ui/kit";
+import { Body, Button, Card, Chip, Disclosure, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
+import { FocusSwitch } from "@/ui/FocusSwitch";
 import { colors, space, type } from "@/ui/theme";
 
 type Language = "fr" | "en";
@@ -25,7 +26,6 @@ const KINDS: KeyPoint["kind"][] = ["grammar", "lexset", "function"];
 export default function School() {
   const { t } = useTranslation();
   const api = useApi();
-  const cities = useCities();
   const [opening, setOpening] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,12 +34,15 @@ export default function School() {
 
   const path = useResource(() => (language ? api.get<KeyPoint[]>(`/v1/key-points?language=${language}&every_level=true`) : Promise.resolve(null)), [api, language]);
   const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"), [api]);
+  const today = useResource(() => api.get<Today>("/v1/today"), [api]);
   const { reload: reloadPath } = path;
   const { reload: reloadLessons } = lessons;
+  const { reload: reloadToday } = today;
   const reload = useCallback(() => {
     reloadPath();
     reloadLessons();
-  }, [reloadPath, reloadLessons]);
+    reloadToday();
+  }, [reloadPath, reloadLessons, reloadToday]);
   useFocusEffect(reload);
 
   const open = async (point: KeyPoint) => {
@@ -59,7 +62,13 @@ export default function School() {
   const basics = steps.filter((k) => !k.core && !k.preview);
   const ahead = steps.filter((k) => k.preview);
   // The rules of the level come first (Today asks for them before the story); then its words and phrases.
-  const next = KINDS.map((kind) => core.find((k) => k.kind === kind && k.status !== "done")).find(Boolean) ?? null;
+  // Next up is the coach's pick for today (a mistake to mend, else the rule it chose), with its reason; without one,
+  // the first not learned in the curriculum's order.
+  const coached = today.data?.path.find((s) => (s.kind === "fix" || s.kind === "learn") && !s.done && s.node_key);
+  const next =
+    (coached && steps.find((k) => k.node_key === coached.node_key)) ??
+    KINDS.map((kind) => core.find((k) => k.kind === kind && k.status !== "done")).find(Boolean) ??
+    null;
   const learned = core.filter((k) => k.status === "done").length;
   const remedial = (lessons.data ?? [])
     .filter((l) => l.content.kind !== "key_points" && (!language || l.node_key.startsWith(`${language}.`)))
@@ -82,15 +91,7 @@ export default function School() {
   );
 
   return (
-    <Screen title={t("school.title")} onRefresh={reload}>
-      <Body muted>{t("school.keyPointsIntro")}</Body>
-      {(cities.data?.length ?? 0) > 1 && (
-        <Segmented
-          options={(cities.data ?? []).map((c) => ({ value: c.language, label: c.pack_name }))}
-          value={language}
-          onChange={focus.choose}
-        />
-      )}
+    <Screen back title={t("school.title")} accessory={<FocusSwitch />} onRefresh={reload}>
       <ErrorText message={error ?? path.error ?? lessons.error} onRetry={error ? undefined : reload} />
       {!path.data && <Loading />}
 
@@ -98,6 +99,7 @@ export default function School() {
         <Card tone="accent">
           <Overline>{t("today.nextUp")}</Overline>
           <Title>{next.title}</Title>
+          {coached?.node_key === next.node_key && <Body>{stopWhy(t, coached)}</Body>}
           <View style={{ flexDirection: "row", gap: space(0.75) }}>
             <Chip label={t(`school.kinds.${next.kind}`)} icon={KIND_ICONS[next.kind][1]} />
             <Chip label={t("units.minutes", { count: 5 })} icon="time-outline" />
@@ -113,30 +115,33 @@ export default function School() {
             <Text style={type.caption}>{t("school.learned", { done: learned, total: core.length })}</Text>
           </View>
           <ProgressBar value={learned / core.length} tone="success" />
+          {/* Each kind folded to one line, the one holding next up open: the library is all there, never a wall. */}
           {KINDS.map((kind) => {
             const group = core.filter((k) => k.kind === kind);
             if (group.length === 0) return null;
             const done = group.filter((k) => k.status === "done").length;
             return (
-              <Section key={kind} title={`${t(`school.kinds.${kind}`)} · ${done}/${group.length}`}>
-                {group.map(row)}
-              </Section>
+              <Disclosure key={kind} title={`${t(`school.kinds.${kind}`)} · ${done}/${group.length}`} initiallyOpen={next?.kind === kind}>
+                <Section>{group.map(row)}</Section>
+              </Disclosure>
             );
           })}
         </View>
       )}
 
-      <Section title={t("school.fromMistakes")} footer={remedial.length === 0 ? t("school.noMistakesYet") : undefined}>
-        {remedial.map((lesson) => (
-          <ListRow
-            key={lesson.id}
-            title={lesson.content.title}
-            subtitle={lesson.status === "done" ? t("school.done") : t("units.minutes", { count: lesson.content.minutes })}
-            leading={<IconBubble name={lesson.status === "done" ? "checkmark" : "construct"} tone={lesson.status === "done" ? "success" : "sunset"} />}
-            onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: lesson.id } })}
-          />
-        ))}
-      </Section>
+      {remedial.length > 0 && (
+        <Section title={t("school.fromMistakes")}>
+          {remedial.map((lesson) => (
+            <ListRow
+              key={lesson.id}
+              title={lesson.content.title}
+              subtitle={lesson.status === "done" ? t("school.done") : t("units.minutes", { count: lesson.content.minutes })}
+              leading={<IconBubble name={lesson.status === "done" ? "checkmark" : "construct"} tone={lesson.status === "done" ? "success" : "sunset"} />}
+              onPress={() => router.push({ pathname: "/lesson/[id]", params: { id: lesson.id } })}
+            />
+          ))}
+        </Section>
+      )}
 
       {[...new Set(ahead.map((k) => k.band))].map((band) => (
         <LevelGroup key={band} band={band} points={ahead.filter((k) => k.band === band)} row={row} />

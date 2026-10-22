@@ -2,7 +2,8 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "School, tab.*"
+- tapOn: "Practice, tab.*"
+- tapOn: "Lessons"
 - extendedWaitUntil:
     visible: "Rules · .*|Règles · .*"
     timeout: 10000
@@ -32,6 +33,7 @@ appId: app.lingard
 - scrollUntilVisible:
     element: "Words · .*"
     direction: DOWN
+- tapOn: "Words · .*"  # each kind is folded to one line until opened
 - tapOn:
     below: "Words · .*"
     text: ".+"

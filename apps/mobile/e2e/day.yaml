@@ -25,4 +25,4 @@ appId: app.lingard
 - assertNotVisible: ${maestro.copiedText}
 - takeScreenshot: 23-scene-2
 - tapOn: "Back"
-- assertVisible: "Where to today?"
+- assertVisible: "Today's path|TODAY'S PATH"

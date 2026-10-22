@@ -2,8 +2,13 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "School, tab.*"
-- tapOn: "IELTS General Training"
+- tapOn: "Practice, tab.*"
+- tapOn: "Lessons"
+- runFlow:
+    when:
+      visible: "Switch to IELTS General Training"
+    commands:
+      - tapOn: "Switch to IELTS General Training"
 - extendedWaitUntil:
     visible: "Rules · .*"
     timeout: 10000

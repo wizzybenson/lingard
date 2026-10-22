@@ -160,7 +160,7 @@ async def submit_writing(body: WritingBody, principal: Principal, state: State) 
             "text": body.text,
         },
     )
-    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
+    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date(), "writing")
     return {"status": "scoring", "job_id": job_id}
 
 
@@ -300,7 +300,7 @@ async def complete_lesson(
         row.status = "done"
         row.content = {**row.content, "result": body.model_dump()}
         await db.commit()
-    await store.mark_active(principal.user_id, datetime.now(UTC).date())
+    await store.mark_active(principal.user_id, datetime.now(UTC).date(), "lesson")
     return {"status": row.status, "passed": passed}
 
 

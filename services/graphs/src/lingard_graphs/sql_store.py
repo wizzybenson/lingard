@@ -586,13 +586,18 @@ class SqlStore:
             practised = {date.fromisoformat(d) for d in (profile.settings.get("practice_days", []) if profile else [])}
             return sorted(sessions | practised)
 
-    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
+    async def mark_active(self, user_id: uuid.UUID, day: date, kind: str | None = None) -> None:
         async with self._sessions() as db, db.begin():
             profile = (
                 await db.execute(select(m.LearnerProfile).where(m.LearnerProfile.user_id == user_id))
             ).scalar_one()
             days = sorted({*profile.settings.get("practice_days", []), day.isoformat()})[-PRACTICE_DAYS_KEPT:]
-            profile.settings = {**profile.settings, "practice_days": days}
+            done = profile.settings.get("done_today", {})
+            kinds = set(done.get("kinds", [])) if done.get("date") == day.isoformat() else set()
+            if kind:
+                kinds.add(kind)
+            today = {"date": day.isoformat(), "kinds": sorted(kinds)}
+            profile.settings = {**profile.settings, "practice_days": days, "done_today": today}
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID:
         async with self._sessions() as db, db.begin():

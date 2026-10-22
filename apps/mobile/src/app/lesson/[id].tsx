@@ -17,11 +17,12 @@ import { PlayButton } from "@/live/PlayButton";
 import { SpeakButton } from "@/live/SpeakButton";
 import { RichText } from "@/school/RichText";
 import { Teach } from "@/school/Teach";
+import { UpNext } from "@/home/UpNext";
 import { VerbContext, openVerb, useVerbIndex } from "@/school/verbs";
 import { languageOf } from "@/school/verbText";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, Choice, ErrorText, Field, goBack, Loading, Overline, Screen } from "@/ui/kit";
+import { Body, Button, Card, Chip, Choice, ErrorText, Field, Loading, Overline, Screen } from "@/ui/kit";
 import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 /** Sentence race: tap the words in order; tap a placed word to send it back. */
@@ -261,6 +262,8 @@ export default function LessonScreen() {
   const [error, setError] = useState<string | null>(null);
   // Practice opens once the learner has been taught: by their tap, or straight away when they had already started.
   const [practising, setPractising] = useState(false);
+  // The rest of the teaching (models, words, mistakes to avoid) follows once the steps are through.
+  const [taught, setTaught] = useState(false);
   const scroller = useRef<ScrollView>(null);
   const gamesAt = useRef(0);
   const nodeKey = lesson.data?.node_key ?? "";
@@ -306,12 +309,11 @@ export default function LessonScreen() {
     setTimeout(() => scroller.current?.scrollTo({ y: Math.max(0, gamesAt.current - space(1)), animated: true }), 120);
   };
   // Lessons open from the journey (a scene, the map, the School): finishing returns the learner to where they were.
+  // A finished lesson hands the learner the next stop of today's path rather than ending (decision 0029).
   const footer = finished ? (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: space(1.5) }}>
+    <View style={{ gap: space(1) }}>
       <Chip label={finished} tone="success" icon="trophy" />
-      <View style={{ flex: 1 }}>
-        <Button label={t("app.continue")} icon="arrow-forward" onPress={goBack} />
-      </View>
+      <UpNext after={keyPoints ? "learn" : "fix"} />
     </View>
   ) : done ? (
     <Chip label={t("school.done")} tone="success" icon="checkmark-done" />
@@ -350,11 +352,18 @@ export default function LessonScreen() {
         {teach.length > 0 && (
           <Card style={{ gap: space(2) }}>
             <Overline>{t("school.stepByStep")}</Overline>
-            <Teach api={api} language={language ?? ""} steps={teach} sayPath={(n) => `/v1/lessons/${id}/say?part=teach&index=${n}`} />
+            <Teach
+              api={api}
+              language={language ?? ""}
+              steps={teach}
+              sayPath={(n) => `/v1/lessons/${id}/say?part=teach&index=${n}`}
+              paced={!started}
+              onAllShown={() => setTaught(true)}
+            />
           </Card>
         )}
 
-        {(content.models?.length ?? 0) > 0 && (
+        {(taught || started || teach.length <= 1) && (content.models?.length ?? 0) > 0 && (
           <Card style={{ gap: space(1.25) }}>
             <Overline>{t("school.models")}</Overline>
             {content.models!.map((m, i) => (
@@ -367,7 +376,7 @@ export default function LessonScreen() {
           </Card>
         )}
 
-        {(content.words?.length ?? 0) > 0 && (
+        {(taught || started || teach.length <= 1) && (content.words?.length ?? 0) > 0 && (
           <Card style={{ gap: space(1.25) }}>
             <Overline>{t("school.wordsToHear")}</Overline>
             <View style={styles.words}>
@@ -381,23 +390,25 @@ export default function LessonScreen() {
           </Card>
         )}
 
-        <Card style={{ gap: space(1.5) }}>
-          <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
-          {content.examples.map((e, i) => (
-            <View key={e.learner_said} style={styles.pair}>
-              <View style={styles.line}>
-                <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
-                <Text style={[type.body, styles.wrong]}>{e.learner_said}</Text>
+        {(taught || started || teach.length <= 1) && (
+          <Card style={{ gap: space(1.5) }}>
+            <Overline>{keyPoints ? t("school.watchOut") : t("school.yourExamples")}</Overline>
+            {content.examples.map((e, i) => (
+              <View key={e.learner_said} style={styles.pair}>
+                <View style={styles.line}>
+                  <Ionicons name="close-circle" size={18} color={colors.danger} style={{ marginTop: 3 }} />
+                  <Text style={[type.body, styles.wrong]}>{e.learner_said}</Text>
+                </View>
+                <View style={styles.line}>
+                  <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
+                  <RichText text={e.better} style={[type.body, { flex: 1, fontFamily: fonts.medium }]} />
+                  <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
+                </View>
+                {e.note ? <Body muted>{e.note}</Body> : null}
               </View>
-              <View style={styles.line}>
-                <Ionicons name="checkmark-circle" size={18} color={colors.success} style={{ marginTop: 3 }} />
-                <RichText text={e.better} style={[type.body, { flex: 1, fontFamily: fonts.medium }]} />
-                <SpeakButton api={api} path={`/v1/lessons/${id}/say?part=better&index=${i}`} label={`${t("studio.listen")}: ${e.better}`} />
-              </View>
-              {e.note ? <Body muted>{e.note}</Body> : null}
-            </View>
-          ))}
-        </Card>
+            ))}
+          </Card>
+        )}
 
         <View
           onLayout={(e) => {

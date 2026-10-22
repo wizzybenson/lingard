@@ -70,7 +70,7 @@ export default function Settings() {
 
   if (!profile.data) {
     return (
-      <Screen title={t("settings.title")}>
+      <Screen back title={t("settings.title")}>
         <Loading />
       </Screen>
     );
@@ -85,7 +85,7 @@ export default function Settings() {
   );
 
   return (
-    <Screen title={t("settings.title")}>
+    <Screen back title={t("settings.title")}>
       <ErrorText message={error} />
       <Section>
         <ListRow icon="flag" title={t("settings.goal")} onPress={() => router.push("/goal")} />

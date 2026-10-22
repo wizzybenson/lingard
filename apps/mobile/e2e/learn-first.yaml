@@ -4,13 +4,14 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "City, tab.*"
+- tapOn: "Today, tab.*"
 - extendedWaitUntil:
     visible: "Begin day .*|Continue day .*|Start your day.*"
     timeout: 15000
 - assertNotVisible: "Learn first.*"
 - takeScreenshot: learn-01-home-day-first
-- tapOn: "School, tab.*"
+- tapOn: "Practice, tab.*"
+- tapOn: "Lessons"
 - extendedWaitUntil:
     visible: "Rules · .*"
     timeout: 10000
@@ -32,6 +33,14 @@ appId: app.lingard
     timeout: 15000
 - assertVisible: "Learn"
 - takeScreenshot: learn-03-lesson-learn
+- repeat:  # the steps come one at a time
+    while:
+      visible: "Got it · next.*"
+    commands:
+      - scrollUntilVisible:
+          element: "Got it · next.*"
+          direction: DOWN
+      - tapOn: "Got it · next.*"
 - scrollUntilVisible:
     element: "All tenses"
     direction: DOWN

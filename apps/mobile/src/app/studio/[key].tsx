@@ -7,8 +7,10 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 
 import { PlayButton } from "@/live/PlayButton";
+import { UpNext } from "@/home/UpNext";
 import { MouthMap } from "@/studio/MouthMap";
 import { Practice, SpeedPicker, type Speed } from "@/studio/Practice";
 import { STAGE, STAGE_NAMES, type Attempt, type DrillView, type GymText, type SoundGuide } from "@/studio/types";
@@ -20,32 +22,37 @@ import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 const QUIZ_ROUNDS = 8;
 
-function Ladder({ drill, at, onPick }: { drill: DrillView; at: number; onPick: (s: number) => void }) {
+/** Where the learner is on the drill's climb: a slim bar of steps and the current one by name, not a row of numbered
+ * circles. Steps already reached can be tapped to go back to them. */
+function Ladder({ drill, at, onPick, speed, onSpeed }: { drill: DrillView; at: number; onPick: (s: number) => void; speed: Speed; onSpeed: (s: Speed) => void }) {
   const { t } = useTranslation();
+  const position = drill.stages.indexOf(at);
   return (
-    <View style={styles.ladder}>
-      {drill.stages.map((s) => {
-        const done = drill.mastered || s < drill.stage;
-        const reachable = done || s === drill.stage;
-        return (
-          <Pressable
-            key={s}
-            disabled={!reachable}
-            onPress={() => onPick(s)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: s === at, disabled: !reachable }}
-            accessibilityLabel={t(`gym.stage.${STAGE_NAMES[s]}`)}
-            style={styles.rung}
-          >
-            <View style={[styles.rungDot, done && styles.rungDone, s === at && styles.rungAt]}>
-              {done ? <Ionicons name="checkmark" size={14} color={colors.accentInk} /> : <Text style={styles.rungNum}>{s + 1}</Text>}
-            </View>
-            <Text style={[styles.rungText, !reachable && { color: colors.muted }]} numberOfLines={1}>
-              {t(`gym.stage.${STAGE_NAMES[s]}`)}
-            </Text>
-          </Pressable>
-        );
-      })}
+    <View style={{ gap: space(0.75) }}>
+      <View style={styles.ladder}>
+        {drill.stages.map((s) => {
+          const done = drill.mastered || s < drill.stage;
+          const reachable = done || s === drill.stage;
+          return (
+            <Pressable
+              key={s}
+              disabled={!reachable}
+              onPress={() => onPick(s)}
+              hitSlop={{ top: 12, bottom: 12 }}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: s === at, disabled: !reachable }}
+              accessibilityLabel={t(`gym.stage.${STAGE_NAMES[s]}`)}
+              style={[styles.rung, done && styles.rungDone, s === at && styles.rungAt]}
+            />
+          );
+        })}
+      </View>
+      <View style={styles.ladderLine}>
+        <Text style={[type.caption, { flex: 1 }]}>
+          {t("gym.stepOf", { name: t(`gym.stage.${STAGE_NAMES[at]}`), n: position + 1, total: drill.stages.length })}
+        </Text>
+        <SpeedPicker value={speed} onChange={onSpeed} />
+      </View>
     </View>
   );
 }
@@ -231,7 +238,7 @@ export default function Drill() {
 
   return (
     <Screen back title={view.title}>
-      <Ladder drill={view} at={stage} onPick={(s) => { setPicked(s); setIndex(0); }} />
+      <Ladder drill={view} at={stage} onPick={(s) => { setPicked(s); setIndex(0); }} speed={speed} onSpeed={setSpeed} />
       {reviewing && (
         <Card tone="accent">
           <Text style={type.headline}>{t("gym.reviewTitle")}</Text>
@@ -244,86 +251,88 @@ export default function Drill() {
           <Body>{t("gym.masteredBody", { date: view.due ? new Date(view.due).toLocaleDateString() : "" })}</Body>
         </Card>
       )}
-      <SpeedPicker value={speed} onChange={setSpeed} />
+      {view.mastered && !reviewing && <UpNext after="sounds" />}
       <ErrorText message={error} />
 
-      {stage === STAGE.learn && !reviewing && (
-        <>
-          <Body muted>{t("gym.learnIntro")}</Body>
-          {view.guides.map((g) => (
-            <Guide key={g.phoneme} guide={g} drill={view} speed={speed} language={language} />
-          ))}
-          {view.stage === STAGE.learn && <Button label={t("gym.gotIt")} icon="arrow-forward" onPress={() => void step({ stage: STAGE.learn })} />}
-        </>
-      )}
+      {/* Each step of the climb slides in as the learner moves up (or back to) it. */}
+      <Animated.View key={`${stage}-${reviewing}`} entering={FadeInRight.duration(280)} exiting={FadeOutLeft.duration(160)} style={styles.stage}>
+        {stage === STAGE.learn && !reviewing && (
+          <>
+            <Body muted>{t("gym.learnIntro")}</Body>
+            {view.guides.map((g) => (
+              <Guide key={g.phoneme} guide={g} drill={view} speed={speed} language={language} />
+            ))}
+            {view.stage === STAGE.learn && <Button label={t("gym.gotIt")} icon="arrow-forward" onPress={() => void step({ stage: STAGE.learn })} />}
+          </>
+        )}
 
-      {stage === STAGE.hear && !reviewing && (
-        <>
-          <Body muted>{t("gym.hearIntro")}</Body>
-          {quizResult === null ? (
-            <Quiz
-              drill={view}
-              speed={speed}
-              language={language}
-              onDone={(score) => {
-                setQuizResult(score);
-                if (view.stage === STAGE.hear) void step({ stage: STAGE.hear, score });
-              }}
-            />
-          ) : (
-            <Card style={{ gap: space(1) }}>
-              <Title>{t("gym.quizScore", { right: Math.round(quizResult * QUIZ_ROUNDS), total: QUIZ_ROUNDS })}</Title>
-              <Body>{t(quizResult >= 0.8 ? "gym.quizPassed" : "gym.quizAgain")}</Body>
-              <Button label={t("gym.listenAgain")} kind="secondary" icon="refresh" onPress={() => setQuizResult(null)} />
-            </Card>
-          )}
-        </>
-      )}
-
-      {(stage >= STAGE.words || reviewing) && item && (
-        <>
-          <View style={styles.progressRow}>
-            <Body muted>{t(reviewing ? "gym.reviewIntro" : `gym.intro.${STAGE_NAMES[stage]}`)}</Body>
-            {!reviewing && stage === view.stage && (
-              <Text style={styles.count}>{t("gym.saidWell", { n: view.passed_items.length, total: view.needed })}</Text>
+        {stage === STAGE.hear && !reviewing && (
+          <>
+            <Body muted>{t("gym.hearIntro")}</Body>
+            {quizResult === null ? (
+              <Quiz
+                drill={view}
+                speed={speed}
+                language={language}
+                onDone={(score) => {
+                  setQuizResult(score);
+                  if (view.stage === STAGE.hear) void step({ stage: STAGE.hear, score });
+                }}
+              />
+            ) : (
+              <Card style={{ gap: space(1) }}>
+                <Title>{t("gym.quizScore", { right: Math.round(quizResult * QUIZ_ROUNDS), total: QUIZ_ROUNDS })}</Title>
+                <Body>{t(quizResult >= 0.8 ? "gym.quizPassed" : "gym.quizAgain")}</Body>
+                <Button label={t("gym.listenAgain")} kind="secondary" icon="refresh" onPress={() => setQuizResult(null)} />
+              </Card>
             )}
-          </View>
-          <Practice
-            key={`${view.key}-${stage}-${item.text}`}
-            api={api}
-            language={language}
-            drill={view.key}
-            stage={reviewing ? STAGE.mastered : stage}
-            text={item}
-            speed={speed}
-            focus={view.focus}
-            all={view.features}
-            onAttempt={attempted}
-          />
-          {items.length > 1 && (
-            <View style={styles.pager}>
-              <Button label={t("gym.previous")} kind="ghost" icon="arrow-back" onPress={() => setIndex((index - 1 + items.length) % items.length)} />
-              <Text style={type.caption}>
-                {`${(index % items.length) + 1} / ${items.length}`}
-                {said.has(item.text) ? " ✓" : ""}
-              </Text>
-              <Button label={t("gym.next")} kind="ghost" icon="arrow-forward" onPress={() => setIndex(index + 1)} />
+          </>
+        )}
+
+        {(stage >= STAGE.words || reviewing) && item && (
+          <>
+            <View style={styles.progressRow}>
+              <Body muted>{t(reviewing ? "gym.reviewIntro" : `gym.intro.${STAGE_NAMES[stage]}`)}</Body>
+              {!reviewing && stage === view.stage && (
+                <Text style={styles.count}>{t("gym.saidWell", { n: view.passed_items.length, total: view.needed })}</Text>
+              )}
             </View>
-          )}
-        </>
-      )}
+            <Practice
+              key={`${view.key}-${stage}-${item.text}`}
+              api={api}
+              language={language}
+              drill={view.key}
+              stage={reviewing ? STAGE.mastered : stage}
+              text={item}
+              speed={speed}
+              focus={view.focus}
+              all={view.features}
+              onAttempt={attempted}
+            />
+            {items.length > 1 && (
+              <View style={styles.pager}>
+                <Button label={t("gym.previous")} kind="ghost" icon="arrow-back" onPress={() => setIndex((index - 1 + items.length) % items.length)} />
+                <Text style={type.caption}>
+                  {`${(index % items.length) + 1} / ${items.length}`}
+                  {said.has(item.text) ? " ✓" : ""}
+                </Text>
+                <Button label={t("gym.next")} kind="ghost" icon="arrow-forward" onPress={() => setIndex(index + 1)} />
+              </View>
+            )}
+          </>
+        )}
+      </Animated.View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  ladder: { flexDirection: "row", justifyContent: "space-between", gap: 2 },
-  rung: { flex: 1, alignItems: "center", gap: 4 },
-  rungDot: { width: 28, height: 28, borderRadius: 14, backgroundColor: colors.paperDeep, alignItems: "center", justifyContent: "center" },
+  stage: { gap: space(2) },
+  ladder: { flexDirection: "row", gap: 4 },
+  rung: { flex: 1, height: 6, borderRadius: radius.pill, backgroundColor: colors.paperDeep },
   rungDone: { backgroundColor: colors.success },
-  rungAt: { borderWidth: 2, borderColor: colors.accent },
-  rungNum: { fontFamily: fonts.semibold, fontSize: 13, color: colors.inkSoft },
-  rungText: { fontFamily: fonts.medium, fontSize: 10, color: colors.inkSoft },
+  rungAt: { backgroundColor: colors.accent },
+  ladderLine: { flexDirection: "row", alignItems: "center", gap: space(1) },
   guideHead: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
   symbol: { fontFamily: fonts.displayBold, fontSize: 34, color: colors.accentDeep },
   row: { flexDirection: "row", gap: space(1), alignItems: "flex-start" },

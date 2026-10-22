@@ -4,10 +4,15 @@ appId: app.lingard
 ---
 - runFlow: sign-in.yaml
 - tapOn: "Exam Hall, tab.*"
-- scrollUntilVisible:
-    element: "Desk.*"
-    direction: DOWN
-- tapOn: "Start a full mock"  # at the bottom of the hall only the IELTS card's button is on screen
+- runFlow:  # the hall shows the exam in focus; the pill by the title switches to the other
+    when:
+      visible: "Switch to IELTS General Training"
+    commands:
+      - tapOn: "Switch to IELTS General Training"
+- extendedWaitUntil:
+    visible: "IELTS General Training"
+    timeout: 10000
+- tapOn: "Start a full mock"
 - extendedWaitUntil:
     visible: "Listening.*"
     timeout: 20000

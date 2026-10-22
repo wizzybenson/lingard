@@ -143,7 +143,7 @@ async def answer(
     if match is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Quest expired; refresh the queue")
     quest, key = match
-    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
+    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date(), "review")
     if "item" in key:
         item = item_bank(state.settings.content_root).get(key["item"])
         right = served_answer(item, user)

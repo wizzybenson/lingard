@@ -1,17 +1,13 @@
-/** Home hero: the one thing to do next and the streak, kept short; under it a slim strip of exam countdowns and the
- * gap to the goal per skill. While the learner is new, a short checklist above it shows where they are in getting
- * started. */
+/** Home pieces around today's path: while the learner is new, a short checklist and the one step to take (goal, then
+ * placement), since the path only starts once the level is known; the streak and coins as two quiet pills by the
+ * greeting; and one line for the exam being prepared (decision 0029). */
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, I18nManager, Pressable, StyleSheet, Text, View } from "react-native";
+import { I18nManager, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { SkillStatus, Today } from "@/api/types";
-import { levelProgress, levelRange } from "@/home/levels";
-import { openKeyPoint } from "@/school/keyPoints";
-import { useApi } from "@/state/auth";
 import { Card, ProgressBar } from "@/ui/kit";
 import { colors, fonts, gradients, radius, shadow, space, type } from "@/ui/theme";
 
@@ -76,216 +72,85 @@ function Onboarding({ today }: { today: Today }) {
   );
 }
 
-/** ``day``: the story day to play next in the chosen city (progress, not the calendar); null while loading.
- * ``continuing``: a scene of that day has been played, so the day is continued rather than begun. */
-export function TodayCard({
-  today,
-  day,
-  continuing = false,
-  onStartStory,
-  busy = false,
-}: {
-  today: Today;
-  day: number | null;
-  continuing?: boolean;
-  onStartStory: () => void;
-  busy?: boolean;
-}) {
+/** Before the path: the getting-started checklist and the one step it asks for now (set a goal, find a level). */
+export function TodayCard({ today }: { today: Today }) {
   const { t } = useTranslation();
-  const api = useApi();
-  const [opening, setOpening] = useState(false);
-  const go = () => {
-    switch (today.next_step) {
-      case "set_goal":
-        return router.push("/goal");
-      case "placement":
-        return router.push("/(tabs)/exam");
-      default:
-        return onStartStory();
-    }
-  };
-  // The next rule is offered beside the day, never in its way: the missions teach it too, where it's needed.
-  const learnRule = () => {
-    if (!today.next_key_point) return;
-    setOpening(true);
-    void openKeyPoint(api, today.next_key_point.node_key)
-      .catch(() => router.push("/(tabs)/school"))
-      .finally(() => setOpening(false));
-  };
-  const action = busy
-    ? t("city.planning")
-    : today.next_step === "story"
-      ? day
-        ? t(continuing ? "today.next.continue" : "today.next.story", { day })
-        : t("city.startDay")
-      : t(`today.next.${today.next_step}`);
-  const rule = today.next_step === "story" ? today.next_key_point : null;
+  const go = () => (today.next_step === "set_goal" ? router.push("/goal") : router.push("/(tabs)/exam"));
+  const action = t(`today.next.${today.next_step}`);
   return (
     <View style={{ gap: space(1.5) }}>
       <Onboarding today={today} />
       <LinearGradient colors={gradients.dusk} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[styles.hero, shadow(3)]}>
-        <View style={styles.rowBetween}>
-          <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
-          <View style={{ flexDirection: "row", gap: space(0.75), flexShrink: 1 }}>
-            <View style={styles.streak} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
-              <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={16} color="#FFB37D" />
-              <Text style={styles.streakText} numberOfLines={1}>
-                {today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}
-              </Text>
-              {today.freezes > 0 && (
-                <View
-                  style={styles.freezes}
-                  accessible
-                  accessibilityLabel={t("shop.freezesHeld", {
-                    count: today.freezes,
-                  })}
-                >
-                  <Ionicons name="snow" size={13} color="#BFE3FF" />
-                  <Text style={styles.streakText}>{today.freezes}</Text>
-                </View>
-              )}
-            </View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("wallet.coinsCount", {
-                count: today.coins,
-              })}
-              onPress={() => router.push("/shop")}
-              style={styles.streak}
-            >
-              <Ionicons name="cash" size={16} color="#FFD38A" />
-              <Text style={styles.streakText}>{today.coins}</Text>
-            </Pressable>
-          </View>
-        </View>
+        <Text style={styles.heroOverline}>{t("today.nextUp")}</Text>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
-          accessibilityState={{ busy, disabled: busy }}
-          disabled={busy}
           onPress={go}
-          style={({ pressed }) => [
-            styles.heroButton,
-            {
-              transform: [{ scale: pressed ? 0.98 : 1 }],
-              opacity: pressed ? 0.92 : 1,
-            },
-          ]}
+          style={({ pressed }) => [styles.heroButton, { transform: [{ scale: pressed ? 0.98 : 1 }], opacity: pressed ? 0.92 : 1 }]}
         >
-          {busy ? <ActivityIndicator color={colors.accent} /> : <Ionicons name="play" size={18} color={colors.accent} />}
+          <Ionicons name="play" size={18} color={colors.accent} />
           <Text style={styles.heroButtonText} numberOfLines={2}>
             {action}
           </Text>
         </Pressable>
-        {busy && <Text style={[styles.heroNote, { textAlign: "center" }]}>{t("city.planningHint")}</Text>}
-        {(today.reviews_due > 0 || today.lessons_waiting > 0 || rule) && (
-          // A rule to learn, reviews and waiting lessons sit beside the story and never stand in its way.
-          <View style={styles.extras}>
-            {rule && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("today.nextRule", { title: rule.title })}
-                accessibilityState={{ busy: opening }}
-                disabled={opening}
-                onPress={learnRule}
-                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
-              >
-                {opening ? <ActivityIndicator size="small" color="#fff" /> : <Ionicons name="book" size={14} color="#fff" />}
-                <Text style={styles.extraText} numberOfLines={1}>
-                  {t("today.nextRule", { title: rule.title })}
-                </Text>
-              </Pressable>
-            )}
-            {today.reviews_due > 0 && (
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => router.push("/(tabs)/phone")}
-                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
-              >
-                <Ionicons name="flash" size={14} color="#fff" />
-                <Text style={styles.extraText} numberOfLines={1}>
-                  {t("today.reviewsAction", { count: today.reviews_due })}
-                </Text>
-              </Pressable>
-            )}
-            {today.lessons_waiting > 0 && (
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => router.push("/(tabs)/school")}
-                style={({ pressed }) => [styles.extra, pressed && { opacity: 0.7 }]}
-              >
-                <Ionicons name="school" size={14} color="#fff" />
-                <Text style={styles.extraText} numberOfLines={1}>
-                  {t("today.lessonsWaiting", { count: today.lessons_waiting })}
-                </Text>
-              </Pressable>
-            )}
-          </View>
-        )}
       </LinearGradient>
-      {today.goals.length > 0 && <ExamProgress today={today} />}
     </View>
   );
 }
 
-/** One slim line per exam: the countdown and a small bar per skill, coloured by how close it is to the goal.
- * The full picture (levels, targets, what the scale means) is one tap away in the Passport. */
-function ExamProgress({ today }: { today: Today }) {
+/** The streak and the coins, small, beside the greeting: felt on every visit without taking the stage. */
+export function Stats({ today }: { today: Today }) {
   const { t } = useTranslation();
+  return (
+    <View style={{ flexDirection: "row", gap: space(0.75) }}>
+      <View style={styles.stat} accessible accessibilityLabel={today.streak > 0 ? t("today.streak", { count: today.streak }) : t("today.noStreak")}>
+        <Ionicons name={today.streak > 0 ? "flame" : "flame-outline"} size={15} color={colors.sunset} />
+        <Text style={styles.statText}>{today.streak}</Text>
+        {today.freezes > 0 && <Ionicons name="snow" size={12} color={colors.accent} accessibilityLabel={t("shop.freezesHeld", { count: today.freezes })} />}
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("wallet.coinsCount", { count: today.coins })}
+        onPress={() => router.push("/shop")}
+        style={({ pressed }) => [styles.stat, pressed && { opacity: 0.7 }]}
+      >
+        <Ionicons name="cash" size={15} color={colors.warning} />
+        <Text style={styles.statText}>{today.coins}</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+/** One line for the exam in focus: the countdown and the skill furthest from the goal. Levels, targets and what the
+ * scale means are one tap away in the Passport. */
+export function ExamLine({ today, pack }: { today: Today; pack: string | null }) {
+  const { t } = useTranslation();
+  const goal = today.goals.find((g) => g.pack === pack) ?? today.goals[0];
+  if (!goal) return null;
+  const order = { behind: 0, close: 1, unknown: 2, met: 3 } as const;
+  const weakest = [...goal.skills].sort((a, b) => order[a.status] - order[b.status])[0];
+  const when = goal.days_left === null ? t("today.noDateShort") : goal.days_left < 0 ? t("today.pastShort") : t("today.daysLeft", { count: goal.days_left });
+  const focusLine =
+    !weakest || weakest.status === "unknown"
+      ? t("today.examNotMeasured")
+      : weakest.status === "met"
+        ? t("today.examAllMet")
+        : t("today.examWeakest", { skill: t(`skills.${weakest.skill}`) });
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityHint={t("today.examDetails")}
       onPress={() => router.push("/(tabs)/passport")}
-      style={({ pressed }) => [styles.exams, shadow(1), pressed && { opacity: 0.85 }]}
+      style={({ pressed }) => [styles.exam, shadow(1), pressed && { opacity: 0.85 }]}
     >
-      {today.goals.map((goal, i) => (
-        <View key={goal.pack} style={[{ gap: space(1) }, i > 0 && styles.examDivider]}>
-          <View style={styles.rowBetween}>
-            <Text style={[type.headline, { flexShrink: 1 }]} numberOfLines={1}>
-              {goal.pack_name}
-            </Text>
-            <Text style={type.caption}>
-              {goal.days_left === null ? t("today.noDateShort") : goal.days_left < 0 ? t("today.pastShort") : t("today.daysLeft", { count: goal.days_left })}
-            </Text>
-          </View>
-          <View style={styles.skills}>
-            {goal.skills.map((s) => (
-              <View
-                key={s.skill}
-                style={styles.skill}
-                accessible
-                accessibilityLabel={`${t(`skills.${s.skill}`)}: ${levelRange(s.level_low, s.level_high)} / ${s.target}, ${t(`today.status.${s.status}`)}`}
-              >
-                <Text style={styles.skillName} numberOfLines={1}>
-                  {t(`skills.${s.skill}`)}
-                </Text>
-                <View style={styles.skillTrack}>
-                  <View
-                    style={[
-                      styles.skillFill,
-                      {
-                        width: `${Math.max(levelProgress(s.level_low, s.level_high, s.target), 0.04) * 100}%`,
-                        backgroundColor: STATUS_COLOR[s.status],
-                      },
-                    ]}
-                  />
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-      ))}
-      <View style={styles.legend}>
-        {(["met", "close", "behind"] as const).map((status) => (
-          <View key={status} style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: STATUS_COLOR[status] }]} />
-            <Text style={type.caption}>{t(`today.status.${status}`)}</Text>
-          </View>
-        ))}
-        <View style={{ flex: 1 }} />
-        <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={16} color={colors.muted} />
+      <View style={[styles.dot, { backgroundColor: STATUS_COLOR[weakest?.status ?? "unknown"] }]} />
+      <View style={{ flex: 1 }}>
+        <Text style={type.headline} numberOfLines={1}>{`${goal.pack_name} · ${when}`}</Text>
+        <Text style={type.caption} numberOfLines={1}>
+          {focusLine}
+        </Text>
       </View>
+      <Ionicons name={I18nManager.isRTL ? "chevron-back" : "chevron-forward"} size={16} color={colors.muted} />
     </Pressable>
   );
 }
@@ -313,48 +178,6 @@ const styles = StyleSheet.create({
   },
   hero: { borderRadius: radius.xl, padding: space(2.25), gap: space(1.5) },
   heroOverline: { ...type.overline, color: "rgba(255,255,255,0.72)" },
-  streak: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    backgroundColor: "rgba(255,255,255,0.14)",
-    borderRadius: radius.pill,
-    paddingHorizontal: space(1.25),
-    paddingVertical: 4,
-  },
-  freezes: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-    marginStart: space(0.5),
-  },
-  streakText: { fontFamily: fonts.semibold, fontSize: 13, color: "#fff" },
-  heroNote: {
-    fontFamily: fonts.medium,
-    fontSize: 13,
-    color: "rgba(255,255,255,0.8)",
-  },
-  extras: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: space(1),
-  },
-  extra: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    minHeight: 36,
-    paddingHorizontal: space(1.25),
-    borderRadius: radius.pill,
-    backgroundColor: "rgba(255,255,255,0.14)",
-  },
-  extraText: {
-    fontFamily: fonts.semibold,
-    fontSize: 13,
-    color: "#fff",
-    flexShrink: 1,
-  },
   heroButton: {
     minHeight: 54,
     borderRadius: radius.md,
@@ -365,34 +188,26 @@ const styles = StyleSheet.create({
     gap: space(1),
     paddingHorizontal: space(2),
   },
-  heroButtonText: {
-    fontFamily: fonts.semibold,
-    fontSize: 16,
-    color: colors.accentDeep,
-    flexShrink: 1,
+  heroButtonText: { fontFamily: fonts.semibold, fontSize: 16, color: colors.accentDeep, flexShrink: 1 },
+  stat: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    minHeight: 30,
+    backgroundColor: colors.card,
+    borderRadius: radius.pill,
+    paddingHorizontal: space(1.25),
+    ...shadow(1),
   },
-  exams: {
+  statText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.ink },
+  exam: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space(1.5),
     backgroundColor: colors.card,
     borderRadius: radius.lg,
-    padding: space(2),
-    gap: space(1.5),
+    paddingHorizontal: space(2),
+    paddingVertical: space(1.5),
   },
-  examDivider: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.border,
-    paddingTop: space(1.5),
-  },
-  skills: { flexDirection: "row", gap: space(1) },
-  skill: { flex: 1, gap: 5, minWidth: 0 },
-  skillName: { fontFamily: fonts.medium, fontSize: 12, color: colors.inkSoft },
-  skillTrack: {
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.paper,
-    overflow: "hidden",
-  },
-  skillFill: { height: "100%", borderRadius: 3 },
-  legend: { flexDirection: "row", alignItems: "center", gap: space(1.5) },
-  legendItem: { flexDirection: "row", alignItems: "center", gap: 5 },
-  legendDot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 10, height: 10, borderRadius: 5 },
 });

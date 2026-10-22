@@ -15,12 +15,10 @@ import { colors, fonts, shadow } from "@/ui/theme";
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const ICONS: Record<string, [IconName, IconName]> = {
-  city: ["map-outline", "map"],
-  phone: ["refresh-circle-outline", "refresh-circle"],
-  school: ["school-outline", "school"],
+  city: ["sunny-outline", "sunny"],
+  practice: ["barbell-outline", "barbell"],
   exam: ["document-text-outline", "document-text"],
   passport: ["ribbon-outline", "ribbon"],
-  settings: ["settings-outline", "settings"],
 };
 
 export default function TabsLayout() {
@@ -51,6 +49,7 @@ export default function TabsLayout() {
       screenListeners={{ tabPress: () => void Haptics.selectionAsync() }}
       screenOptions={({ route }) => ({
         headerShown: false,
+        animation: "shift", // tabs glide into place rather than cut
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.muted,
         tabBarLabelStyle: { fontFamily: fonts.medium, fontSize: 11 },
@@ -61,12 +60,11 @@ export default function TabsLayout() {
         ),
       })}
     >
-      <Tabs.Screen name="city" options={{ title: t("tabs.city") }} />
-      <Tabs.Screen name="phone" options={{ title: t("tabs.phone") }} />
-      <Tabs.Screen name="school" options={{ title: t("tabs.school") }} />
+      {/* Four places to go (decision 0029). Review and the School open from Practice, Settings from the Passport. */}
+      <Tabs.Screen name="city" options={{ title: t("tabs.today") }} />
+      <Tabs.Screen name="practice" options={{ title: t("tabs.practice") }} />
       <Tabs.Screen name="exam" options={{ title: t("tabs.exam") }} />
       <Tabs.Screen name="passport" options={{ title: t("tabs.passport") }} />
-      <Tabs.Screen name="settings" options={{ title: t("tabs.settings") }} />
     </Tabs>
   );
 }

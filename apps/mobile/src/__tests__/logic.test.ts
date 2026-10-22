@@ -3,7 +3,7 @@ import { pinStillFresh } from "@/auth/store";
 import { appendCaption, captionOpacity, parseCaption } from "@/live/captions";
 import type { Game } from "@/contracts/generated";
 import { choices, isCorrect, score } from "@/games/engine";
-import { levelProgress, levelRange, levelWords } from "@/home/levels";
+import { levelProgress, levelWords } from "@/home/levels";
 import { clock, remaining, wordCount } from "@/games/exam";
 import ar from "@/i18n/ar.json";
 import en from "@/i18n/en.json";
@@ -123,12 +123,6 @@ test("exam helpers", () => {
   expect(wordCount("Je m'appelle Sam et j'habite à Rivemont.")).toBe(7);
   expect(remaining(0, 1, 30_000)).toBe(30);
   expect(clock(65)).toBe("1:05");
-});
-
-test("goal chips show CLB/NCLC ranges, with <4 below the conversion tables", () => {
-  expect(levelRange(null, null)).toBe("–");
-  expect(levelRange(7, 7)).toBe("7");
-  expect(levelRange(3, 6)).toBe("<4–6");
 });
 
 test("skyline is a closed SVG path spanning the whole world, the same every time", () => {

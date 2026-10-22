@@ -2,7 +2,8 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "Review, tab.*"
+- tapOn: "Practice, tab.*"
+- tapOn: "Review"
 - extendedWaitUntil:
     visible: ".* of 8"
     timeout: 10000

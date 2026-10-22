@@ -67,9 +67,11 @@ interface ScreenProps {
   followContent?: boolean;
   /** For a screen that scrolls itself to a part of its content (a lesson's games once practice starts). */
   scroller?: RefObject<ScrollView | null>;
+  /** Small controls on the eyebrow's line, at the end (streak and coins, the language switch). */
+  accessory?: ReactNode;
 }
 
-export function Screen({ children, scroll = true, title, eyebrow, back = false, onBack, onRefresh, footer, followContent = false, scroller: given }: ScreenProps) {
+export function Screen({ children, scroll = true, title, eyebrow, back = false, onBack, onRefresh, footer, followContent = false, scroller: given, accessory }: ScreenProps) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const own = useRef<ScrollView>(null);
@@ -85,7 +87,14 @@ export function Screen({ children, scroll = true, title, eyebrow, back = false, 
     <View style={styles.body}>
       {(title || eyebrow) && (
         <View style={styles.header}>
-          {eyebrow ? <Text style={type.overline}>{eyebrow}</Text> : null}
+          {(eyebrow || accessory) && (
+            <View style={styles.eyebrow}>
+              <Text style={[type.overline, { flex: 1 }]} numberOfLines={1}>
+                {eyebrow ?? ""}
+              </Text>
+              {accessory}
+            </View>
+          )}
           {title ? (
             <Text accessibilityRole="header" style={type.largeTitle}>
               {title}
@@ -474,6 +483,8 @@ export function Loading({ inline = false }: { inline?: boolean }) {
 }
 
 const styles = StyleSheet.create({
+  disclosure: { flexDirection: "row", alignItems: "center", gap: space(1), marginHorizontal: space(1), minHeight: 40 },
+  eyebrow: { flexDirection: "row", alignItems: "center", gap: space(1), minHeight: 30 },
   skeleton: { backgroundColor: colors.card, borderRadius: radius.lg, padding: space(2.5), gap: space(1.25) },
   skeletonLine: { height: 12, borderRadius: 6, backgroundColor: colors.paperDeep },
   screen: { flex: 1, backgroundColor: colors.paper },
@@ -535,3 +546,24 @@ const styles = StyleSheet.create({
   },
   inputFocused: { borderColor: colors.accent },
 });
+
+/** A line that opens to show more: the rest of a list, or detail most visits don't need, folded until asked for. */
+export function Disclosure({ title, hint, children, initiallyOpen = false }: { title: string; hint?: string; children: ReactNode; initiallyOpen?: boolean }) {
+  const [open, setOpen] = useState(initiallyOpen);
+  return (
+    <View style={{ gap: space(1) }}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen((v) => !v)}
+        style={({ pressed }) => [styles.disclosure, pressed && { opacity: 0.7 }]}
+      >
+        <Text style={[type.overline, { flex: 1 }]}>{title}</Text>
+        {hint ? <Text style={type.caption}>{hint}</Text> : null}
+        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={colors.muted} />
+      </Pressable>
+      {open && children}
+    </View>
+  );
+}

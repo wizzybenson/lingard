@@ -9,12 +9,14 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from sqlalchemy import func, select
 
+from lingard_api.coach import Stop
+from lingard_api.coaching import Source, todays_path
 from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.key_points import key_points
 from lingard_api.routes.learning import learner_bands
-from lingard_api.routes.me import DEFAULT_TARGETS
+from lingard_api.routes.me import DEFAULT_TARGETS, focus_language
 from lingard_contracts.common import LANGUAGE_PACK, Language, PackId
-from lingard_db.models import LearnerProfile, Lesson, Session, Wallet
+from lingard_db.models import LearnerProfile, Lesson, Session, User, Wallet
 from lingard_graphs.pedagogy.review import due_at
 from lingard_graphs.streaks import learner_streak
 
@@ -68,6 +70,11 @@ class Today(BaseModel):
     """The learner's coins, shown beside the streak so every mission's reward is felt on the home screen."""
     freezes: int = 0
     """Spare streak freezes bought in the shop: a missed day won't break the streak."""
+    path: list[Stop] = []
+    """Today's path in the focus language (decision 0029): a few stops, each with why it was chosen."""
+    coach: Source = "rules"
+    """Who chose the path: the learning coach ("ai"), the curriculum's order while the coach works ("thinking"), or the
+    curriculum's order alone ("rules")."""
 
 
 def skill_status(target: int, low: int | None, high: int | None) -> Literal["met", "close", "behind", "unknown"]:
@@ -144,6 +151,22 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     else:
         step = "story"
     coins = (await db.execute(select(Wallet.coins).where(Wallet.user_id == principal.user_id))).scalar_one_or_none()
+    path: list[Stop] = []
+    source: Source = "rules"
+    if (focus := focus_language(profile)) is not None:
+        focus_pack = LANGUAGE_PACK[focus]
+        goal = next((g for g in goals if g.pack == focus_pack), None)
+        path, source = await todays_path(
+            state,
+            db,
+            await db.get_one(User, principal.user_id),
+            profile,
+            focus,
+            story_ready=step == "story",
+            reviews_due=reviews_due,
+            skills={s.skill: s.status for s in goal.skills} if goal else {},
+            exam_name=state.packs.pack(focus_pack).name,
+        )
     return Today(
         streak=current,
         practised_today=practised_today,
@@ -155,4 +178,6 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
         coins=coins or 0,
         freezes=freezes,
+        path=path,
+        coach=source,
     )

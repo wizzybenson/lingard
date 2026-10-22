@@ -11,7 +11,8 @@ import type { GymOverview, DrillSummary } from "@/studio/types";
 import { useApi } from "@/state/auth";
 import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, Chip, ErrorText, IconBubble, Loading, Overline, ProgressBar, Screen, Section, Segmented } from "@/ui/kit";
+import { Body, Button, Card, Chip, Disclosure, ErrorText, IconBubble, Loading, Overline, ProgressBar, Screen, Section } from "@/ui/kit";
+import { FocusSwitch } from "@/ui/FocusSwitch";
 import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 const open = (key: string) => router.push({ pathname: "/studio/[key]", params: { key } });
@@ -66,53 +67,59 @@ export default function Studio() {
   const music = drills.filter((d) => d.sounds.length === 0);
 
   return (
-    <Screen back title={t("studio.title")} onRefresh={reload}>
-      <Body muted>{t("gym.intro.studio")}</Body>
-      {focus.cities.length > 1 && (
-        <Segmented options={focus.cities.map((c) => ({ value: c.language, label: c.pack_name }))} value={language} onChange={focus.choose} />
-      )}
-      {voice.data?.status === "active" ? (
-        <Chip label={t("studio.inYourVoice")} tone="success" icon="person-circle" />
-      ) : voice.data ? (
-        <Card tone="accent" style={{ gap: space(1.5) }}>
-          <View style={styles.row}>
-            <IconBubble name="mic-circle" tone="accent" />
-            <View style={{ flex: 1, gap: 2 }}>
-              <Text style={type.headline}>{t("studio.voiceTitle")}</Text>
-              <Text style={type.caption}>{t("studio.voiceHint")}</Text>
-            </View>
-          </View>
-          <Button label={t("studio.voiceAction")} kind="secondary" icon="arrow-forward" onPress={() => router.push("/voice")} />
-        </Card>
-      ) : null}
+    <Screen back title={t("studio.title")} accessory={<FocusSwitch />} onRefresh={reload}>
       <ErrorText message={gym.error} onRetry={reload} />
       {!gym.data && !gym.error && <Loading />}
 
       {gym.data && (
         <>
-          <Card style={{ gap: space(1.5) }}>
-            <Overline>{t("gym.workout")}</Overline>
-            <Body>{t("gym.workoutBody")}</Body>
-            {workout.map((d) => (
-              <Text key={d.key} style={[type.callout, { color: colors.ink }]}>{`•  ${d.title}`}</Text>
+          {/* One short workout picked for today; the full gym is folded below for whoever wants to choose. */}
+          <Card tone="accent" style={{ gap: space(1.5) }}>
+            <Overline>{t("gym.workoutShort")}</Overline>
+            {workout.map((d, i) => (
+              <View key={d.key} style={styles.row}>
+                <View style={styles.number}>
+                  <Text style={styles.numberText}>{i + 1}</Text>
+                </View>
+                <Text style={[type.headline, { flex: 1 }]} numberOfLines={1}>
+                  {d.title}
+                </Text>
+              </View>
             ))}
             {workout[0] && <Button label={t("gym.startWorkout")} icon="play" onPress={() => workout[0] && open(workout[0].key)} />}
-            <View style={{ gap: 4 }}>
-              <Text style={type.caption}>{t("gym.mastered", { n: mastered, total: drills.length })}</Text>
-              <ProgressBar value={drills.length ? mastered / drills.length : 0} tone="success" />
-            </View>
+            {workout.length === 0 && <Body>{t("gym.allClimbed")}</Body>}
           </Card>
-          <Section title={t("gym.sounds")}>
-            {sounds.map((d) => (
-              <DrillRow key={d.key} drill={d} />
-            ))}
-          </Section>
-          {music.length > 0 && (
-            <Section title={t("gym.music")}>
-              {music.map((d) => (
+          {voice.data?.status === "active" ? (
+            <Chip label={t("studio.inYourVoice")} tone="success" icon="person-circle" />
+          ) : voice.data ? (
+            <Pressable accessibilityRole="button" onPress={() => router.push("/voice")} style={({ pressed }) => [styles.voice, pressed && { opacity: 0.7 }]}>
+              <IconBubble name="mic-circle" tone="sunset" size={36} />
+              <View style={{ flex: 1 }}>
+                <Text style={type.callout}>{t("studio.voiceTitle")}</Text>
+                <Text style={type.caption}>{t("studio.voiceAction")}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={16} color={colors.muted} />
+            </Pressable>
+          ) : null}
+          <View style={{ gap: 4, marginHorizontal: space(1) }}>
+            <Text style={type.caption}>{t("gym.mastered", { n: mastered, total: drills.length })}</Text>
+            <ProgressBar value={drills.length ? mastered / drills.length : 0} tone="success" />
+          </View>
+          <Disclosure title={t("gym.sounds")} hint={String(sounds.length)}>
+            <Section>
+              {sounds.map((d) => (
                 <DrillRow key={d.key} drill={d} />
               ))}
             </Section>
+          </Disclosure>
+          {music.length > 0 && (
+            <Disclosure title={t("gym.music")} hint={String(music.length)}>
+              <Section>
+                {music.map((d) => (
+                  <DrillRow key={d.key} drill={d} />
+                ))}
+              </Section>
+            </Disclosure>
           )}
         </>
       )}
@@ -128,5 +135,8 @@ const styles = StyleSheet.create({
   rung: { width: 18, height: 5, borderRadius: radius.pill, backgroundColor: colors.paperDeep },
   rungDone: { backgroundColor: colors.success },
   rungNow: { backgroundColor: colors.accent },
+  number: { width: 24, height: 24, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: colors.card },
+  numberText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.accentDeep },
+  voice: { flexDirection: "row", alignItems: "center", gap: space(1.25), paddingHorizontal: space(1), minHeight: 52 },
   score: { marginLeft: space(0.5), fontFamily: fonts.semibold, fontSize: 12, color: colors.inkSoft },
 });

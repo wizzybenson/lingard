@@ -1,16 +1,17 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useFocusEffect } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Passport, Profile, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useResource } from "@/state/resource";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { levelProgress, levelWords } from "@/home/levels";
-import { Body, Button, Caption, Card, Chip, ErrorText, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
+import { Body, Button, Caption, Card, Chip, Disclosure, ErrorText, ListRow, Loading, Overline, ProgressBar, Screen, Section, Title } from "@/ui/kit";
+import { useFocus } from "@/state/focus";
 import { colors, fonts, space, type } from "@/ui/theme";
 
 interface DrawView {
@@ -33,6 +34,7 @@ export default function PassportScreen() {
   const profile = useResource(() => api.get<Profile>("/v1/me"));
   const draw = useResource(() => api.get<DrawView>("/v1/draws/latest"));
   const cities = useCities();
+  const focus = useFocus();
   const packOf = (pack: string) => cities.data?.find((c) => c.pack === pack);
   const { reload: reloadPassport } = passport;
   const { reload: reloadWallet } = wallet;
@@ -46,7 +48,15 @@ export default function PassportScreen() {
   }, [reloadPassport, reloadWallet, reloadProfile, reloadDraw]);
   useFocusEffect(reloadAll);
   return (
-    <Screen title={t("passport.title")} onRefresh={reloadAll}>
+    <Screen
+      title={t("passport.title")}
+      onRefresh={reloadAll}
+      accessory={
+        <Pressable accessibilityRole="button" accessibilityLabel={t("tabs.settings")} hitSlop={10} onPress={() => router.push("/settings")}>
+          <Ionicons name="settings-outline" size={24} color={colors.inkSoft} />
+        </Pressable>
+      }
+    >
       {passport.loading && !passport.data && <Loading />}
       <ErrorText message={passport.error} onRetry={reloadAll} />
       {passport.data && (
@@ -119,63 +129,79 @@ export default function PassportScreen() {
         </Card>
       )}
       {passport.data &&
-        [...new Set(passport.data.bands.map((b) => b.pack))].map((pack) => (
-          <View key={pack} style={{ gap: space(1.5) }}>
-            <Title>{packOf(pack)?.pack_name ?? pack}</Title>
-            {packOf(pack)?.level_scale && <Caption>{t("today.levelsHint", { scale: packOf(pack)!.level_scale })}</Caption>}
-            <Card style={{ gap: 0, paddingVertical: space(0.5) }}>
-              {passport
-                .data!.bands.filter((b) => b.pack === pack)
-                .map((band, i) => {
-                  const target = profile.data?.target_bands[band.pack]?.[band.skill];
-                  const reach = target ? levelProgress(band.clb_nclc_low, band.clb_nclc_high, target) : 0;
-                  return (
-                    <View
-                      key={`${band.pack}-${band.skill}`}
-                      style={[
-                        { gap: space(0.75), paddingVertical: space(1.5) },
-                        i > 0 && {
-                          borderTopWidth: StyleSheet.hairlineWidth,
-                          borderTopColor: colors.border,
-                        },
-                      ]}
-                    >
+        // The exam in focus in full; any other folded to its name, so one exam's levels fill the page, not two.
+        [...new Set(passport.data.bands.map((b) => b.pack))]
+          .sort((x, y) => Number(y === focus.city?.pack) - Number(x === focus.city?.pack))
+          .map((pack, index) => (
+            <Fold key={pack} open={index === 0} title={packOf(pack)?.pack_name ?? pack}>
+              {index === 0 && packOf(pack)?.level_scale && <Caption>{t("today.levelsHint", { scale: packOf(pack)!.level_scale })}</Caption>}
+              <Card style={{ gap: 0, paddingVertical: space(0.5) }}>
+                {passport
+                  .data!.bands.filter((b) => b.pack === pack)
+                  .map((band, i) => {
+                    const target = profile.data?.target_bands[band.pack]?.[band.skill];
+                    const reach = target ? levelProgress(band.clb_nclc_low, band.clb_nclc_high, target) : 0;
+                    return (
                       <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: space(1),
-                          flexWrap: "wrap",
-                        }}
+                        key={`${band.pack}-${band.skill}`}
+                        style={[
+                          { gap: space(0.75), paddingVertical: space(1.5) },
+                          i > 0 && {
+                            borderTopWidth: StyleSheet.hairlineWidth,
+                            borderTopColor: colors.border,
+                          },
+                        ]}
                       >
-                        <Text style={type.headline}>{t(`skills.${band.skill}`)}</Text>
-                        {target !== undefined && <Chip label={t("today.goalLevel", { level: target })} tone="accent" icon="flag" />}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: space(1),
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <Text style={type.headline}>{t(`skills.${band.skill}`)}</Text>
+                          {target !== undefined && <Chip label={t("today.goalLevel", { level: target })} tone="accent" icon="flag" />}
+                        </View>
+                        <ProgressBar value={reach} tone={reach >= 1 ? "success" : reach >= 0.8 ? "warning" : "accent"} />
+                        <Text style={type.callout}>
+                          {t("passport.levelEstimate", {
+                            range: levelWords(t, band.clb_nclc_low, band.clb_nclc_high),
+                          })}
+                        </Text>
+                        <Caption>
+                          {t("passport.scoreEstimate", {
+                            mean: band.mean,
+                            low: band.low80,
+                            high: band.high80,
+                          })}
+                        </Caption>
                       </View>
-                      <ProgressBar value={reach} tone={reach >= 1 ? "success" : reach >= 0.8 ? "warning" : "accent"} />
-                      <Text style={type.callout}>
-                        {t("passport.levelEstimate", {
-                          range: levelWords(t, band.clb_nclc_low, band.clb_nclc_high),
-                        })}
-                      </Text>
-                      <Caption>
-                        {t("passport.scoreEstimate", {
-                          mean: band.mean,
-                          low: band.low80,
-                          high: band.high80,
-                        })}
-                      </Caption>
-                    </View>
-                  );
-                })}
-            </Card>
-          </View>
-        ))}
+                    );
+                  })}
+              </Card>
+            </Fold>
+          ))}
       <Section>
         <ListRow icon="flag" title={t("settings.goal")} onPress={() => router.push("/goal")} />
-        <ListRow icon="mic" title={t("studio.title")} onPress={() => router.push("/studio")} />
+        <ListRow icon="settings" title={t("tabs.settings")} onPress={() => router.push("/settings")} />
       </Section>
     </Screen>
+  );
+}
+
+/** The exam in focus under its title; another exam folded to a line that opens. */
+function Fold({ open, title, children }: { open: boolean; title: string; children: ReactNode }) {
+  return open ? (
+    <View style={{ gap: space(1.5) }}>
+      <Title>{title}</Title>
+      {children}
+    </View>
+  ) : (
+    <Disclosure title={title}>
+      <View style={{ gap: space(1.5) }}>{children}</View>
+    </Disclosure>
   );
 }
 

@@ -149,8 +149,9 @@ class LearnerStore(Protocol):
         """Story days finished in ``city``: progress through the story, independent of the calendar."""
         ...
 
-    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
-        """Any practice (reviews, a lesson, writing, the Accent Studio) keeps the streak, not only live scenes."""
+    async def mark_active(self, user_id: uuid.UUID, day: date, kind: str | None = None) -> None:
+        """Any practice (reviews, a lesson, writing, the Accent Studio) keeps the streak, not only live scenes.
+        ``kind`` ("review", "lesson", "sounds", "writing") ticks that stop of today's path."""
         ...
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID: ...
@@ -334,7 +335,7 @@ class MemoryStore:
     async def days_lived(self, user_id: uuid.UUID, city: str) -> int:
         return self.lived.get((user_id, city), 0)
 
-    async def mark_active(self, user_id: uuid.UUID, day: date) -> None:
+    async def mark_active(self, user_id: uuid.UUID, day: date, kind: str | None = None) -> None:
         self.days[user_id].add(day)
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID:

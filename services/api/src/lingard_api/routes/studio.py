@@ -258,7 +258,7 @@ async def shadow(
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, response.json().get("detail", "scoring failed"))
     result: dict[str, Any] = _expected_melody(response.json(), line, chosen)
 
-    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
+    await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date(), "sounds")
     user, profile = await _learner(db, principal.user_id)
     _remember_sounds(profile, language, result.get("words", []))
     tips = _tips(gym, result.get("words", []), user.ui_locale, chosen.sounds if chosen else ())
@@ -493,6 +493,11 @@ def _progress_view(drill: Drill, progress: Progress) -> dict[str, Any]:
 @router.get("/gym", response_model=GymView)
 async def gym_overview(principal: Principal, state: State, db: Db, language: Language) -> GymView:
     _, profile = await _learner(db, principal.user_id)
+    return await overview(state, profile, language)
+
+
+async def overview(state: AppState, profile: LearnerProfile, language: Language) -> GymView:
+    """Every drill with where the learner stands on it, and today's workout (also the sounds stop of today's path)."""
     gym = _gym(state, language)
     entries = _all_progress(profile, language)
     sounds = dict(profile.settings.get("gym_sounds", {}).get(language, {}))

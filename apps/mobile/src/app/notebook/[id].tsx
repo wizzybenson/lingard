@@ -9,6 +9,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import type { SessionView } from "@/api/types";
 import { openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
+import { UpNext } from "@/home/UpNext";
 import { useResource } from "@/state/resource";
 import { Button, Card, ErrorText, IconBubble, Overline, Screen } from "@/ui/kit";
 import { colors, fonts, space, type } from "@/ui/theme";
@@ -29,7 +30,7 @@ export default function NotebookScreen() {
     return api.get<SessionView>(`/v1/sessions/${id}`);
   }, [id]);
   const notebook = session.data?.notebook;
-  const footer = <Button label={t("notebook.backToCity")} kind="secondary" icon="map" onPress={() => router.replace("/(tabs)/city")} />;
+  const footer = <UpNext after="story" />;
 
   if (!notebook) {
     return (
@@ -59,7 +60,7 @@ export default function NotebookScreen() {
     try {
       await openKeyPoint(api, nodeKey);
     } catch {
-      router.push("/(tabs)/school"); // not a grammar rule with key points: the School has the lessons
+      router.push("/school"); // not a grammar rule with key points: the School has the lessons
     } finally {
       setOpening(null);
     }
@@ -116,7 +117,7 @@ export default function NotebookScreen() {
             <IconBubble name="albums" tone="accent" />
             <Text style={[type.headline, { flex: 1 }]}>{t("notebook.reviewCount", { count: notebook.review_items.length })}</Text>
           </View>
-          <Button label={t("notebook.reviewNow")} icon="chatbubbles" onPress={() => router.replace("/(tabs)/phone")} />
+          <Button label={t("notebook.reviewNow")} icon="chatbubbles" onPress={() => router.replace("/phone")} />
         </Card>
       )}
     </Screen>

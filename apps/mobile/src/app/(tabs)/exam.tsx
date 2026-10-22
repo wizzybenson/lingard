@@ -9,7 +9,8 @@ import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
 import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, IconBubble, ListRow, Overline, Screen, Section, Title, type IconName, Segmented } from "@/ui/kit";
+import { Body, Button, Card, Disclosure, ErrorText, IconBubble, ListRow, Overline, Screen, Section, Title, type IconName } from "@/ui/kit";
+import { FocusSwitch } from "@/ui/FocusSwitch";
 import { space, type } from "@/ui/theme";
 
 const SKILL_ICONS: Record<ExamFormat["sections"][number]["skill"], IconName> = {
@@ -59,7 +60,7 @@ export default function ExamHall() {
         : t("exam.partsN", { count: s.tasks });
 
   return (
-    <Screen title={t("exam.title")} onRefresh={formats.reload}>
+    <Screen title={t("exam.title")} accessory={placing ? undefined : <FocusSwitch />} onRefresh={formats.reload}>
       {placing ? (
         <Card tone="accent" style={{ gap: space(1.5) }}>
           <Overline>{t("onboarding.stepOf", { step: 2, total: 3 })}</Overline>
@@ -87,12 +88,7 @@ export default function ExamHall() {
             ))}
           <Button label={t("onboarding.backHome")} kind="ghost" icon="home" onPress={() => router.navigate("/(tabs)/city")} />
         </Card>
-      ) : (
-        <Body muted>{t("exam.intro")}</Body>
-      )}
-      {!placing && focus.cities.length > 1 && (
-        <Segmented options={focus.cities.map((c) => ({ value: c.language, label: c.pack_name }))} value={focus.language} onChange={focus.choose} />
-      )}
+      ) : null}
       <ErrorText message={cities.error ?? formats.error ?? error} />
       {cities.data?.filter((c) => c.language === focus.language).map(({ language, pack, pack_name }) => {
         const format = formats.data?.find((f) => f.pack === pack);
@@ -107,8 +103,8 @@ export default function ExamHall() {
                 </View>
               </View>
               {format && (
-                <View style={{ gap: space(1) }}>
-                  <Overline>{t("exam.officialOrder")}</Overline>
+                // The parts in their official order and timing, folded: the mock runs them for the learner anyway.
+                <Disclosure title={t("exam.officialOrder")} hint={t("exam.partsN", { count: format.sections.length })}>
                   {format.sections.map((s, i) => (
                     <View key={s.id} style={{ flexDirection: "row", alignItems: "center", gap: space(1.25) }}>
                       <Text style={[type.caption, { width: 16 }]}>{i + 1}</Text>
@@ -119,19 +115,18 @@ export default function ExamHall() {
                       </Text>
                     </View>
                   ))}
-                </View>
+                </Disclosure>
               )}
               <Button label={t("exam.start")} icon="timer-outline" busy={starting === `${pack}:mock`} onPress={() => void begin(`${pack}:mock`, "/v1/exams", { pack }, language)} />
             </Card>
-            <Section title={t("exam.placementTitle")}>
+            <Section>
               <ListRow
                 icon="speedometer"
-                title={t("exam.quick")}
+                title={t("exam.recheck")}
                 subtitle={t("exam.placement")}
                 disabled={starting !== null}
                 onPress={() => void begin(`${pack}:quick`, "/v1/placement", { language, path: "quick" }, language)}
               />
-              <ListRow icon="play-skip-forward" title={t("exam.skip")} disabled={starting !== null} onPress={() => void begin(`${pack}:skip`, "/v1/placement", { language, path: "skip" }, language)} />
             </Section>
           </View>
         );

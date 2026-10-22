@@ -275,6 +275,28 @@ export interface Today {
   /** The first rule at the learner's level not yet learned, offered beside the day. */
   next_key_point: { node_key: string; title: string } | null;
   onboarding: { goal: boolean; placement: boolean; first_story: boolean };
+  /** Today's path in the focus language (decision 0029): a few stops in the order that teaches best, each with why it
+   * was chosen. Empty until the goal and level are known. */
+  path: PathStop[];
+  /** Who chose the path: the learning coach reading the learner's progress ("ai"), the curriculum's order while the
+   * coach works ("thinking"; ask again shortly), or the curriculum's order alone ("rules"). */
+  coach: "ai" | "thinking" | "rules";
+}
+
+export interface PathStop {
+  kind: "warmup" | "fix" | "story" | "sounds" | "learn";
+  done: boolean;
+  minutes: number;
+  /** The coach's reason, in the interface language; null until its plan is ready (the app words one itself). */
+  why: string | null;
+  count: number | null;
+  node_key: string | null;
+  title: string | null;
+  /** Fix: the learner's own words from their last scene. */
+  said: string | null;
+  better: string | null;
+  drill: string | null;
+  example: string | null;
 }
 
 export interface WritingTask {

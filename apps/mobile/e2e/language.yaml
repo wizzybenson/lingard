@@ -4,9 +4,10 @@ appId: app.lingard
 - launchApp
 - runFlow:
     when:
-      visible: "Settings, tab.*"
+      visible: "Progress, tab.*"
     commands:
-      - tapOn: "Settings, tab.*"
+      - tapOn: "Progress, tab.*"
+      - tapOn: "Settings"
       - scrollUntilVisible:
           element: "Sign out"
           direction: DOWN
@@ -26,13 +27,14 @@ appId: app.lingard
 - eraseText
 - inputText: ${MAESTRO_LINGARD_TEST_PIN}
 - extendedWaitUntil:
-    visible: "On va où aujourd.hui.*"
+    visible: "Le parcours du jour|LE PARCOURS DU JOUR"
     timeout: 30000
 - takeScreenshot: 33-city-fr
 - scrollUntilVisible:
     element: "Lieux"
     direction: DOWN
 - takeScreenshot: 34-city-fr-places
-- tapOn: "Réglages, tab.*"
+- tapOn: "Progrès, tab.*"
+- tapOn: "Réglages"
 - tapOn: "English"
 - assertVisible: "Settings"

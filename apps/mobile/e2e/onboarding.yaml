@@ -16,9 +16,10 @@ appId: app.lingard
       - tapOn: "Sign out"
 - runFlow:
     when:
-      visible: "Settings, tab.*"
+      visible: "Progress, tab.*"
     commands:
-      - tapOn: "Settings, tab.*"
+      - tapOn: "Progress, tab.*"
+      - tapOn: "Settings"
       - scrollUntilVisible:
           element: "Sign out"
       - tapOn: "Sign out"
@@ -42,7 +43,7 @@ appId: app.lingard
 - inputText: ${MAESTRO_ONBOARD_NEW_PIN}
 - tapOn: "Save"
 - extendedWaitUntil:
-    visible: "Settings, tab.*"           # into the app, not back to the PIN screen
+    visible: "Progress, tab.*"           # into the app, not back to the PIN screen
     timeout: 15000
 - assertNotVisible: "Choose a new PIN"
 - takeScreenshot: onboard-02-home
@@ -64,16 +65,7 @@ appId: app.lingard
 - takeScreenshot: onboard-04-placement
 - tapOn: "Skip placement.*"
 - extendedWaitUntil:
-    visible: "Learn first.*"              # back at Home, with the next step waiting
+    visible: "Today's path|TODAY'S PATH"   # back at Home: the level is known, so the day is a guided path
     timeout: 20000
-- takeScreenshot: onboard-05-back-home
-- tapOn: "Learn first.*"
-- extendedWaitUntil:
-    visible: "The rule"
-    timeout: 15000
-- takeScreenshot: onboard-06-first-rule
-- tapOn: "Back"
-- extendedWaitUntil:
-    visible: "Learn first.*|Begin day.*|Continue day.*"
-    timeout: 15000
-- takeScreenshot: onboard-07-home-again
+- assertVisible: "Begin day.*"
+- takeScreenshot: onboard-05-path

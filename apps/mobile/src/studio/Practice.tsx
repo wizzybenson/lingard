@@ -20,24 +20,21 @@ import { GOOD, type Attempt, type Features, type GymText, type MusicPart, type S
 export const SPEEDS = [0.5, 0.75, 1] as const;
 export type Speed = (typeof SPEEDS)[number];
 
+/** Playback speed as one small chip: each tap goes to the next speed (0.5×, 0.75×, 1×). */
 export function SpeedPicker({ value, onChange }: { value: Speed; onChange: (s: Speed) => void }) {
   const { t } = useTranslation();
+  const next = SPEEDS[(SPEEDS.indexOf(value) + 1) % SPEEDS.length] ?? 1;
   return (
-    <View style={styles.speeds} accessibilityRole="radiogroup" accessibilityLabel={t("gym.speed")}>
-      <Ionicons name="speedometer-outline" size={16} color={colors.inkSoft} />
-      {SPEEDS.map((s) => (
-        <Pressable
-          key={s}
-          accessibilityRole="radio"
-          accessibilityState={{ checked: s === value }}
-          accessibilityLabel={`${s}×`}
-          onPress={() => onChange(s)}
-          style={[styles.speed, s === value && styles.speedOn]}
-        >
-          <Text style={[styles.speedText, s === value && { color: colors.accentInk }]}>{`${s}×`}</Text>
-        </Pressable>
-      ))}
-    </View>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${t("gym.speed")}: ${value}×`}
+      onPress={() => onChange(next)}
+      hitSlop={8}
+      style={({ pressed }) => [styles.speed, pressed && { opacity: 0.7 }]}
+    >
+      <Ionicons name="speedometer-outline" size={14} color={colors.accentDeep} />
+      <Text style={styles.speedText}>{`${value}×`}</Text>
+    </Pressable>
   );
 }
 
@@ -215,10 +212,8 @@ export function Practice({
 }
 
 const styles = StyleSheet.create({
-  speeds: { flexDirection: "row", alignItems: "center", gap: space(0.75), alignSelf: "flex-start" },
-  speed: { borderRadius: radius.pill, paddingHorizontal: space(1.25), paddingVertical: 6, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
-  speedOn: { backgroundColor: colors.accent, borderColor: colors.accent },
-  speedText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.inkSoft },
+  speed: { flexDirection: "row", alignItems: "center", gap: 4, borderRadius: radius.pill, paddingHorizontal: space(1.25), minHeight: 30, backgroundColor: colors.accentSoft },
+  speedText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.accentDeep },
   words: { flexDirection: "row", flexWrap: "wrap", gap: space(1), rowGap: space(1) },
   word: { alignItems: "center" },
   wordText: { fontFamily: fonts.displayBold, fontSize: 24, lineHeight: 30, color: colors.ink },

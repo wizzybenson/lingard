@@ -8,6 +8,7 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
 import type { Quest } from "@/api/types";
 import { useApi } from "@/state/auth";
+import { UpNext } from "@/home/UpNext";
 import { useFocus } from "@/state/focus";
 import { answeredQuests, cacheQueue, cachedQueue, queueAnswer, rememberAnswer, sync, type Answered } from "@/state/offline";
 import { Body, Button, Card, Chip, Choice, IconBubble, Loading, ProgressBar, Screen, Title, type ChoiceState } from "@/ui/kit";
@@ -83,8 +84,7 @@ export default function Phone() {
   const shownPick = verdict ?? (checkingIndex === undefined ? undefined : { choice: checkingIndex, correct: null, answer: null });
 
   return (
-    <Screen title={t("phone.title")} onRefresh={refresh} footer={verdict ? <Verdict key={shown?.id} picked={verdict} onNext={next} /> : undefined}>
-      <Body muted>{t("phone.intro")}</Body>
+    <Screen back title={t("phone.title")} onRefresh={refresh} footer={verdict ? <Verdict key={shown?.id} picked={verdict} onNext={next} /> : undefined}>
       {offline && <Chip label={t("phone.offline")} tone="warning" icon="cloud-offline" />}
       {quests === null && <Loading />}
       {quests !== null && list.length === 0 && (
@@ -109,6 +109,9 @@ export default function Phone() {
             <Body>{t("phone.doneScore", { right: rightCount, total: list.length })}</Body>
             <Body muted>{t("phone.doneBody")}</Body>
           </Card>
+          <View style={{ marginTop: space(2) }}>
+            <UpNext after="warmup" />
+          </View>
         </Animated.View>
       )}
       {shown && (

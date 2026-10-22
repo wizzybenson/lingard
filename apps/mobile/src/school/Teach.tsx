@@ -1,6 +1,8 @@
 /** A rule taught a step at a time before anything is asked of the learner: each step one idea, made concrete by a
  * verb's table (endings in colour), a pattern table or examples to hear. Verbs anywhere in it open their full tables. */
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Haptics from "expo-haptics";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -64,13 +66,36 @@ function StepVerb({ api, language, verb, tense }: { api: ApiClient; language: st
   );
 }
 
-/** ``sayPath(n)``: where the n-th example of the whole teaching is heard (a lesson's own lines); none in a rule card. */
-export function Teach({ api, language, steps, sayPath }: { api: ApiClient; language: string; steps: TeachStep[]; sayPath?: (n: number) => string }) {
+/** ``sayPath(n)``: where the n-th example of the whole teaching is heard (a lesson's own lines); none in a rule card.
+ * ``paced``: one step at a time, the next on "Got it", so a rule arrives as a few small ideas rather than a page
+ * (decision 0029); ``onAllShown`` fires once the last step is out. */
+export function Teach({
+  api,
+  language,
+  steps,
+  sayPath,
+  paced = false,
+  onAllShown,
+}: {
+  api: ApiClient;
+  language: string;
+  steps: TeachStep[];
+  sayPath?: (n: number) => string;
+  paced?: boolean;
+  onAllShown?: () => void;
+}) {
   const { t } = useTranslation();
+  const [shown, setShown] = useState(paced ? 1 : steps.length);
+  const more = shown < steps.length;
+  const next = () => {
+    void Haptics.selectionAsync();
+    setShown(shown + 1);
+    if (shown + 1 >= steps.length) onAllShown?.();
+  };
   let example = 0;
   return (
     <View style={{ gap: space(2) }}>
-      {steps.map((step, i) => (
+      {steps.slice(0, shown).map((step, i) => (
         <Animated.View key={i} entering={FadeInDown.delay(Math.min(i, 4) * 70).duration(240)} style={styles.step}>
           <View style={styles.stepHead}>
             <View style={styles.number}>
@@ -92,12 +117,33 @@ export function Teach({ api, language, steps, sayPath }: { api: ApiClient; langu
           })}
         </Animated.View>
       ))}
+      {more && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("school.gotItNext", { n: shown + 1, total: steps.length })}
+          onPress={next}
+          style={({ pressed }) => [styles.next, pressed && { opacity: 0.8 }]}
+        >
+          <Text style={styles.nextText}>{t("school.gotItNext", { n: shown + 1, total: steps.length })}</Text>
+          <Ionicons name="arrow-down" size={16} color={colors.accentDeep} />
+        </Pressable>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   step: { gap: space(1.5) },
+  next: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: space(0.75),
+    minHeight: 46,
+    borderRadius: radius.md,
+    backgroundColor: colors.accentSoft,
+  },
+  nextText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.accentDeep },
   stepHead: { flexDirection: "row", alignItems: "flex-start", gap: space(1.25) },
   number: { width: 26, height: 26, borderRadius: 13, backgroundColor: colors.accent, alignItems: "center", justifyContent: "center", marginTop: 1 },
   numberText: { fontFamily: fonts.bold, fontSize: 13, color: colors.accentInk },
