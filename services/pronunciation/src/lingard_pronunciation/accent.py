@@ -33,6 +33,20 @@ FINAL_MOVE = 1.5
 """Semitones of final pitch movement that count as a rise or a fall."""
 
 
+OCTAVE_SLIP = 9.0
+"""Semitones from the speaker's median past which a pitch frame is taken for an octave error."""
+
+
+def fold_octaves(semitones: np.ndarray) -> np.ndarray:
+    """The pitch tracker sometimes jumps an octave (a native "café" read 13 semitones below the voice); speech within
+    one phrase stays well inside 9 semitones of the speaker's median, so a frame further out is folded back by its
+    octaves."""
+    out = semitones.astype(np.float64)
+    wild = np.abs(out) > OCTAVE_SLIP
+    out[wild] -= 12 * np.round(out[wild] / 12)
+    return out
+
+
 @dataclass
 class Nucleus:
     """One syllable, measured over its whole stretch of audio."""
@@ -89,7 +103,9 @@ def measure(
 
     def semitones(track: np.ndarray) -> float | None:
         track = track[track > 0]
-        return float(12 * np.log2(np.median(track) / register)) if track.size and register else None
+        if not track.size or not register:
+            return None
+        return float(np.median(fold_octaves(12 * np.log2(track / register))))
 
     nuclei: list[Nucleus] = []
     at = 0
@@ -201,6 +217,7 @@ def _rhythm(you: list[Nucleus], ref: list[Nucleus]) -> dict[str, Any] | None:
         "score": round(100 * max(0.0, 1 - gap / 0.6), 1),
         "pace": round(pace, 2),
         "stretch": ref[longest].syllable,  # the syllable the model holds longest compared with the learner
+        "stretch_word": ref[longest].word,
         "model": [round(float(x), 3) for x in np.exp(theirs)],
         "you": [round(float(x), 3) for x in np.exp(mine)],
     }
@@ -261,6 +278,7 @@ def analyse(
             {
                 "word": r.word,
                 "text": r.syllable,
+                "spelling": words[r.word][0],  # learners read the word, not its sounds
                 "model": {"length": round(r.duration, 3), "weight": round(r.prominence, 2), "pitch": r.pitch},
                 "you": {"length": round(y.duration, 3), "weight": round(y.prominence, 2), "pitch": y.pitch},
             }

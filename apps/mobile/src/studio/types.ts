@@ -81,7 +81,10 @@ export type Movement = "rise" | "fall" | "level";
 
 export interface Syllable {
   word: number;
+  /** The syllable's sounds (IPA): for the machine, not shown to learners. */
   text: string;
+  /** The written word it belongs to, which is what learners read. */
+  spelling?: string;
   model: { length: number; weight: number; pitch: number | null };
   you: { length: number; weight: number; pitch: number | null };
 }
@@ -90,7 +93,7 @@ export interface Music {
   syllables: Syllable[];
   stress: { score: number; words: { word: string; syllables: string[]; expected: number; yours: number }[] } | null;
   emphasis: { score: number; expected: string; yours: string } | null;
-  rhythm: { score: number; pace: number; stretch: string } | null;
+  rhythm: { score: number; pace: number; stretch: string; stretch_word?: number } | null;
   intonation: { score: number; final: { expected: Movement | null; yours: Movement | null } } | null;
 }
 

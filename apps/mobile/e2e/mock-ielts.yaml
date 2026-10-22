@@ -21,8 +21,13 @@ appId: app.lingard
     visible: "Listening.*"
     timeout: 20000
 - takeScreenshot: mock-ielts-01-first-set
-- tapOn:
-    id: "choice-1"
+- runFlow:  # each mock is assembled afresh: the first set may be multiple choice or notes to complete
+    when:
+      visible:
+        id: "choice-1"
+    commands:
+      - tapOn:
+          id: "choice-1"
 - tapOn: "Next.*"
 - extendedWaitUntil:
     visible: "Next · 0/.*"

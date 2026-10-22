@@ -1,0 +1,12 @@
+# Settings from the Progress tab, by the row at the bottom (on the Simulator the dev build's menu button covers the
+# gear at the top right).
+appId: app.lingard
+---
+- tapOn: "(Progress|Progrès), tab.*"
+- scrollUntilVisible:
+    element:
+      id: "settings-row"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: "settings-row"

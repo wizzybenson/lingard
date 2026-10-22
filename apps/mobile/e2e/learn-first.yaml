@@ -4,6 +4,7 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
+- runFlow: focus-fr.yaml
 - tapOn: "Today, tab.*"
 - extendedWaitUntil:
     visible: "Begin day .*|Continue day .*|Start your day.*"
@@ -22,12 +23,13 @@ appId: app.lingard
     timeout: 60000
 - tapOn: "(Level|LEVEL) \\d+.*"
 - takeScreenshot: learn-02-school-every-level
-- scrollUntilVisible:
-    element: "Start lesson"
+- scrollUntilVisible:  # a grammar rule with verb tables (next up is the coach's pick, which may be a word set)
+    element: "Passé composé avec avoir, .*"
     direction: UP
     timeout: 60000
+    centerElement: true
 - waitForAnimationToEnd
-- tapOn: "Start lesson"
+- tapOn: "Passé composé avec avoir, .*"
 - extendedWaitUntil:
     visible: "Step by step|STEP BY STEP"
     timeout: 15000

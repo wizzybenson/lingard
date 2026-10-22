@@ -2,6 +2,7 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
+- runFlow: focus-fr.yaml
 - takeScreenshot: 01a-path
 - scrollUntilVisible:
     element: "Places"
@@ -50,7 +51,7 @@ appId: app.lingard
 - assertVisible: "Back"
 - takeScreenshot: 08-goal
 - tapOn: "Back"
-- tapOn: "Settings"
+- runFlow: open-settings.yaml
 - takeScreenshot: 09-settings
 - scrollUntilVisible:
     element: "Sign out"

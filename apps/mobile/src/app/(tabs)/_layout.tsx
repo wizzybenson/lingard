@@ -49,7 +49,6 @@ export default function TabsLayout() {
       screenListeners={{ tabPress: () => void Haptics.selectionAsync() }}
       screenOptions={({ route }) => ({
         headerShown: false,
-        animation: "shift", // tabs glide into place rather than cut
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.muted,
         tabBarLabelStyle: { fontFamily: fonts.medium, fontSize: 11 },

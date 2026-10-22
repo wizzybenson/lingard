@@ -18,8 +18,7 @@ appId: app.lingard
     when:
       visible: "Progress, tab.*"
     commands:
-      - tapOn: "Progress, tab.*"
-      - tapOn: "Settings"
+      - runFlow: open-settings.yaml
       - scrollUntilVisible:
           element: "Sign out"
       - tapOn: "Sign out"

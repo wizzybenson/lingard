@@ -4,14 +4,13 @@ appId: app.lingard
 - launchApp
 - runFlow:
     when:
-      visible: "Progress, tab.*"
+      visible: "(Progress|Progrès), tab.*"  # signed in, in either language
     commands:
-      - tapOn: "Progress, tab.*"
-      - tapOn: "Settings"
+      - runFlow: open-settings.yaml
       - scrollUntilVisible:
-          element: "Sign out"
+          element: "Sign out|Se déconnecter"
           direction: DOWN
-      - tapOn: "Sign out"
+      - tapOn: "Sign out|Se déconnecter"
 - extendedWaitUntil:
     visible: "(Welcome to Lingard|Bienvenue dans Lingard)"
     timeout: 15000
@@ -34,7 +33,6 @@ appId: app.lingard
     element: "Lieux"
     direction: DOWN
 - takeScreenshot: 34-city-fr-places
-- tapOn: "Progrès, tab.*"
-- tapOn: "Réglages"
+- runFlow: open-settings.yaml
 - tapOn: "English"
 - assertVisible: "Settings"

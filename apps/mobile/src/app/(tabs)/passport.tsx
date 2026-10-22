@@ -185,7 +185,7 @@ export default function PassportScreen() {
           ))}
       <Section>
         <ListRow icon="flag" title={t("settings.goal")} onPress={() => router.push("/goal")} />
-        <ListRow icon="settings" title={t("tabs.settings")} onPress={() => router.push("/settings")} />
+        <ListRow icon="settings" title={t("tabs.settings")} testID="settings-row" onPress={() => router.push("/settings")} />
       </Section>
     </Screen>
   );

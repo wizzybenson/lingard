@@ -96,7 +96,6 @@ way home.
 
 **Motion:**
 
-- Tabs shift rather than cut.
 - Path stops and Practice tiles enter in a stagger. Stops spring into place as they are ticked.
 - A drill's steps slide in and out.
 - "Up next" rises in after a finish.
@@ -125,3 +124,29 @@ way home.
   "I'm ready" step.
 - **Language switch in flows.** Maestro now switches language with the city pill on Today. On the Simulator, the dev
   build's menu button sits over the pill by the title.
+
+## Found when checking again (2026-10-22, evening)
+
+- **Blank screen.** Once, the Progress tab stayed blank for 20 s after returning from a pushed screen and switching
+  tabs. The tab "shift" animation was removed; the tour then passed twice.
+- **Rhythm section of the Accent Studio** (the founder saw it display wrongly):
+  - The syllable strip labelled syllables in IPA ("œ̃", "ɡʁɑ̃", "tʃeɪs"), and the rhythm tip said "Hold maɪs longer". The
+    service now sends each syllable's written word (`spelling`) and the word to hold (`stretch_word`), and the app
+    shows the words.
+  - The melody line was drawn as if dots were always 40 px apart, so segments pointed the wrong way and didn't join.
+    It is now drawn from the panel's measured width, and pitch beyond ±8 semitones is drawn at the edge.
+  - The pitch tracker's octave slips: a native "un café" read −13 semitones on its last syllable and scored 11 on
+    intonation. Frames more than 9 semitones from the speaker's median are folded back by an octave
+    (`accent.fold_octaves`). The same take now reads −1.1 and scores 70.
+  - Checked by rendering real results for "un grand café", "un café" and "the cats chase mice" on the Simulator
+    through a throwaway screen, since the Simulator can't record.
+- **Flows.**
+  - Settings is opened by a test id on its row, because the dev menu button covers the gear.
+  - French flows first put French in focus (`focus-fr.yaml`), since the English flows leave English in focus.
+  - learn-first opens a named grammar lesson, since School's next-up is now the coach's pick.
+  - mock-ielts handles a first set without choices, since mocks are assembled afresh.
+  - All free flows pass: tour (twice), review, school, school-en, learn-first, studio, voice, language, mock and
+    mock-ielts.
+- **Not run.** Onboarding needs a fresh account. A live scene ("day") is paid. Nothing has been tried on the phone
+  itself since this redesign.
+

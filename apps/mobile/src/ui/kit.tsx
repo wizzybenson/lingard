@@ -291,9 +291,12 @@ export function ListRow({
   selected = false,
   trailing,
   disabled = false,
+  testID,
 }: {
   title: string;
   subtitle?: string;
+  /** For UI tests, where the title alone is ambiguous. */
+  testID?: string;
   icon?: IconName;
   leading?: ReactNode;
   onPress?: () => void;
@@ -316,6 +319,7 @@ export function ListRow({
   if (!onPress) return <View style={[styles.row, disabled && { opacity: 0.6 }]}>{content}</View>;
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
       accessibilityState={{ selected, disabled }}

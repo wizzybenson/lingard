@@ -3,6 +3,7 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
+- runFlow: focus-fr.yaml
 - openLink: lingard://studio
 - extendedWaitUntil:
     visible: "Today's workout.*"

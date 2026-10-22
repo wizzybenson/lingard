@@ -2,8 +2,8 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "Progress, tab.*"
-- tapOn: "Settings"
+- runFlow: focus-fr.yaml
+- runFlow: open-settings.yaml
 - scrollUntilVisible:
     element: "Your voice.*"
 - tapOn: "Your voice.*"

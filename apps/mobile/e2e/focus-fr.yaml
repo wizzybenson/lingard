@@ -1,0 +1,16 @@
+# French in focus (Rivemont, TEF), whatever an earlier flow left: the city pill on Today switches it.
+appId: app.lingard
+---
+- tapOn: "Today, tab.*"
+- scrollUntilVisible:
+    element: "Switch to (Ashford|Rivemont)"
+    direction: DOWN
+    centerElement: true
+- runFlow:
+    when:
+      visible: "Switch to Rivemont"
+    commands:
+      - tapOn: "Switch to Rivemont"
+- scrollUntilVisible:
+    element: "Hello, .*"
+    direction: UP

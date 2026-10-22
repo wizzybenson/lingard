@@ -73,3 +73,12 @@ def test_a_contrast_separated_nine_times_in_ten_both_ways_decides_alone(tmp_path
     cal = load_calibration(tmp_path, "en", "m")
     assert cal is not None and cal.strong("æ", "ʌ") and not cal.strong("e", "ɛ")
     assert not cal.strong("j", "∅"), "four takes a side can't make a contrast decide alone"
+
+
+def test_an_octave_slip_of_the_pitch_tracker_is_folded_back() -> None:
+    import numpy as np
+
+    from lingard_pronunciation.accent import fold_octaves
+
+    folded = fold_octaves(np.array([0.5, -2.0, -13.1, 12.4, 7.0]))
+    assert np.allclose(folded, [0.5, -2.0, -1.1, 0.4, 7.0]), "a jump of an octave is a tracking error; 7 is a real rise"

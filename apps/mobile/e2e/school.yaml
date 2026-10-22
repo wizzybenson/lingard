@@ -2,6 +2,7 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
+- runFlow: focus-fr.yaml
 - tapOn: "Practice, tab.*"
 - tapOn: "Lessons"
 - extendedWaitUntil:
