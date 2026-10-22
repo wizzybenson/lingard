@@ -5,10 +5,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, Text, View } from "react-native";
 
-import type { CityEntry, Profile } from "@/api/types";
+import type { Profile } from "@/api/types";
 import { Recorder } from "@/live/Recorder";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, IconBubble, ListRow, Loading, Overline, Screen, Section, Segmented, Title } from "@/ui/kit";
 import { colors, space, type } from "@/ui/theme";
@@ -32,8 +33,8 @@ export default function Voice() {
   const voice = useResource(() => api.get<VoiceView>("/v1/voice"), [api]);
   const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);
   const languages = cities.data?.map((c) => c.language) ?? [];
-  const [chosen, setChosen] = useState<CityEntry["language"] | null>(null);
-  const language = chosen ?? languages[0] ?? null;
+  const focus = useFocus();
+  const language = focus.language;
   const passage = useResource(() => (language ? api.get<Passage>(`/v1/voice/passage?language=${language}`) : Promise.resolve(null)), [api, language]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -106,7 +107,7 @@ export default function Voice() {
         />
       </Section>
       {languages.length > 1 && language && (
-        <Segmented options={languages.map((value) => ({ value, label: value.toUpperCase() }))} value={language} onChange={setChosen} />
+        <Segmented options={languages.map((value) => ({ value, label: value.toUpperCase() }))} value={language} onChange={focus.choose} />
       )}
       <Card style={{ gap: space(1.5) }}>
         <Overline>{t("voice.passageTitle")}</Overline>

@@ -8,6 +8,7 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
 import type { Quest } from "@/api/types";
 import { useApi } from "@/state/auth";
+import { useFocus } from "@/state/focus";
 import { answeredQuests, cacheQueue, cachedQueue, queueAnswer, rememberAnswer, sync, type Answered } from "@/state/offline";
 import { Body, Button, Card, Chip, Choice, IconBubble, Loading, ProgressBar, Screen, Title, type ChoiceState } from "@/ui/kit";
 import { colors, radius, space, type } from "@/ui/theme";
@@ -22,6 +23,7 @@ function choiceState(index: number, picked: Answered | undefined): ChoiceState {
 export default function Phone() {
   const { t } = useTranslation();
   const api = useApi();
+  const { language } = useFocus();
   const [quests, setQuests] = useState<Quest[] | null>(null);
   const [answered, setAnswered] = useState<Record<string, Answered>>({});
   const [checking, setChecking] = useState<Record<string, number>>({});
@@ -31,7 +33,7 @@ export default function Phone() {
   const refresh = useCallback(async () => {
     try {
       await sync((a) => api.post(`/v1/glance/answer?language=${a.language}`, a).then(() => undefined));
-      const fresh = await api.get<Quest[]>("/v1/glance");
+      const fresh = await api.get<Quest[]>(language ? `/v1/glance?language=${language}` : "/v1/glance");
       await cacheQueue(fresh);
       setQuests(fresh);
       setOffline(false);
@@ -39,7 +41,7 @@ export default function Phone() {
       setQuests((q) => q ?? []);
       setOffline(true);
     }
-  }, [api]);
+  }, [api, language]);
 
   useEffect(() => {
     void (async () => {

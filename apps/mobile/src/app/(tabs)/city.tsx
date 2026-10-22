@@ -3,12 +3,13 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { useTranslation } from "react-i18next";
 import { Text, useWindowDimensions, View } from "react-native";
 
-import type { CityEntry, KeyPoint, Profile, SessionView, Today, WorldView } from "@/api/types";
+import type { KeyPoint, Profile, SessionView, Today, WorldView } from "@/api/types";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { TodayCard } from "@/home/TodayCard";
 import { refreshReminderText, reminderText } from "@/state/reminders";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
 import { Avatar, Body, Button, Card, ErrorText, IconBubble, ListRow, Loading, Screen, Section, Segmented, Title } from "@/ui/kit";
 import { colors, MAX_WIDTH, radius, shadow, space, type } from "@/ui/theme";
@@ -40,9 +41,9 @@ export default function City() {
   const api = useApi();
   const { width } = useWindowDimensions();
   const cities = useCities();
-  const [chosen, setCity] = useState<CityEntry["city"] | null>(null);
-  const city = chosen ?? cities.data?.[0]?.city ?? null;
-  const cityLanguage = cities.data?.find((c) => c.city === city)?.language ?? null;
+  const focus = useFocus();
+  const city = focus.city?.city ?? null;
+  const cityLanguage = focus.language;
   const [selected, setSelected] = useState<Location | null>(null);
   const placeKind = selected?.kind ?? null;
   const useful = useResource(
@@ -152,7 +153,11 @@ export default function City() {
       <View style={{ gap: space(1.5), marginTop: space(1) }}>
         <Title>{t("city.choose")}</Title>
         {cities.data && cities.data.length > 1 && (
-          <Segmented options={cities.data.map((c) => ({ value: c.city, label: c.name }))} value={city} onChange={setCity} />
+          <Segmented
+            options={cities.data.map((c) => ({ value: c.language, label: c.name }))}
+            value={cityLanguage}
+            onChange={focus.choose}
+          />
         )}
       </View>
       {world.loading && !world.data && <Loading />}

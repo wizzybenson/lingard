@@ -8,10 +8,11 @@ import { useCallback, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
-import type { KeyPoint, LessonRow, Profile } from "@/api/types";
+import type { KeyPoint, LessonRow } from "@/api/types";
 import { KIND_ICONS, openKeyPoint } from "@/school/keyPoints";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, Chip, ErrorText, IconBubble, ListRow, Loading, Overline, ProgressBar, Screen, Section, Segmented, Title } from "@/ui/kit";
 import { colors, space, type } from "@/ui/theme";
@@ -25,14 +26,11 @@ export default function School() {
   const { t } = useTranslation();
   const api = useApi();
   const cities = useCities();
-  const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);
-  const [picked, setLanguage] = useState<Language | null>(null);
   const [opening, setOpening] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // The learner's pick, else the language whose exam they are preparing for, else the first city.
-  const studying = profile.data ? cities.data?.find((c) => c.pack in (profile.data?.exam_dates ?? {})) ?? cities.data?.[0] : undefined;
-  const language: Language | null = picked ?? studying?.language ?? null;
+  const focus = useFocus();
+  const language: Language | null = focus.language;
 
   const path = useResource(() => (language ? api.get<KeyPoint[]>(`/v1/key-points?language=${language}&every_level=true`) : Promise.resolve(null)), [api, language]);
   const lessons = useResource(() => api.get<LessonRow[]>("/v1/lessons"), [api]);
@@ -90,7 +88,7 @@ export default function School() {
         <Segmented
           options={(cities.data ?? []).map((c) => ({ value: c.language, label: c.pack_name }))}
           value={language}
-          onChange={setLanguage}
+          onChange={focus.choose}
         />
       )}
       <ErrorText message={error ?? path.error ?? lessons.error} onRetry={error ? undefined : reload} />

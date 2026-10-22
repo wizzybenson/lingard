@@ -41,6 +41,13 @@ async def test_today_guides_a_new_learner_then_counts_any_practice(api) -> None:
     goal = {"exam_dates": {"tef_canada": "2027-03-01"}, "target_bands": {"tef_canada": {"speaking": 9}}}
     profile = (await api.client.patch("/v1/me", json=goal, headers=api.bearer(token))).json()
     assert profile["exam_dates"] == {"tef_canada": "2027-03-01"}
+    assert profile["focus_language"] == "fr", "before any choice, the language of the exam being prepared"
+    both = {"exam_dates": {"ielts_gt": ""}, "focus_language": "en"}
+    profile = (await api.client.patch("/v1/me", json=both, headers=api.bearer(token))).json()
+    assert profile["focus_language"] == "en", "a chosen focus wins"
+    profile = (await api.client.patch("/v1/me", json={"focus_language": "fr"}, headers=api.bearer(token))).json()
+    assert profile["focus_language"] == "fr"
+    await api.client.patch("/v1/me", json={"exam_dates": {"ielts_gt": None}}, headers=api.bearer(token))
     assert profile["target_bands"]["tef_canada"] == {"listening": 7, "reading": 7, "writing": 7, "speaking": 9}
     bad = await api.client.patch(
         "/v1/me", json={"target_bands": {"tef_canada": {"speaking": 12}}}, headers=api.bearer(token)

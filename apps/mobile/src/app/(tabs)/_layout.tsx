@@ -8,6 +8,7 @@ import { applyLocale, currentLocale, takeSignInLocale } from "@/i18n";
 import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/state/auth";
+import { adoptFocus } from "@/state/focus";
 import { Loading, Screen } from "@/ui/kit";
 import { colors, fonts, shadow } from "@/ui/theme";
 
@@ -36,7 +37,10 @@ export default function TabsLayout() {
     }
     void api
       .get<Profile>("/v1/me")
-      .then((p) => (p.ui_locale ? applyLocale(p.ui_locale) : api.patch("/v1/me", { ui_locale: currentLocale() })))
+      .then((p) => {
+        adoptFocus(p);
+        return p.ui_locale ? applyLocale(p.ui_locale) : api.patch("/v1/me", { ui_locale: currentLocale() });
+      })
       .catch(() => undefined);
   }, [status, api]);
   if (status === "booting") return <Screen><Loading inline /></Screen>; // the web is still trading its cookie for a token

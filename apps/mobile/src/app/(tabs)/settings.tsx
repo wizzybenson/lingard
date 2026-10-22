@@ -9,11 +9,13 @@ import type { Profile, Today } from "@/api/types";
 import { applyLocale, currentLocale, UI_LOCALES } from "@/i18n";
 import { currentReminder, REMINDER_TIMES, reminderText, remindersSupported, setReminder, type ReminderTime } from "@/state/reminders";
 import { useAuth } from "@/state/auth";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
 import { Body, Button, Card, ErrorText, Field, ListRow, Loading, Screen, Section, Segmented } from "@/ui/kit";
 import { colors, space } from "@/ui/theme";
 
 export default function Settings() {
+  const focus = useFocus();
   const { t } = useTranslation();
   const { api, signOut } = useAuth();
   const profile = useResource(() => api.get<Profile>("/v1/me"));
@@ -90,6 +92,18 @@ export default function Settings() {
       </Section>
 
       <Section title={t("settings.preferences")}>
+        {focus.cities.length > 1 && (
+          <View>
+            <ListRow icon="book" title={t("settings.learning")} />
+            <View style={pad}>
+              <Segmented
+                options={focus.cities.map((c) => ({ value: c.language, label: t(`settings.learningName.${c.language}`) }))}
+                value={focus.language}
+                onChange={focus.choose}
+              />
+            </View>
+          </View>
+        )}
         <View>
           <ListRow icon="language" title={t("settings.uiLanguage")} />
           <View style={pad}>

@@ -7,8 +7,9 @@ import { Text, View } from "react-native";
 import type { CityEntry, ExamFormat, StepView, Today } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
-import { Body, Button, Card, ErrorText, IconBubble, ListRow, Overline, Screen, Section, Title, type IconName } from "@/ui/kit";
+import { Body, Button, Card, ErrorText, IconBubble, ListRow, Overline, Screen, Section, Title, type IconName, Segmented } from "@/ui/kit";
 import { space, type } from "@/ui/theme";
 
 const SKILL_ICONS: Record<ExamFormat["sections"][number]["skill"], IconName> = {
@@ -22,6 +23,7 @@ export default function ExamHall() {
   const { t } = useTranslation();
   const api = useApi();
   const cities = useCities();
+  const focus = useFocus();
   const formats = useResource(() => api.get<ExamFormat[]>("/v1/exams/formats"), [api]);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
   const { reload: reloadToday } = today;
@@ -88,8 +90,11 @@ export default function ExamHall() {
       ) : (
         <Body muted>{t("exam.intro")}</Body>
       )}
+      {!placing && focus.cities.length > 1 && (
+        <Segmented options={focus.cities.map((c) => ({ value: c.language, label: c.pack_name }))} value={focus.language} onChange={focus.choose} />
+      )}
       <ErrorText message={cities.error ?? formats.error ?? error} />
-      {cities.data?.map(({ language, pack, pack_name }) => {
+      {cities.data?.filter((c) => c.language === focus.language).map(({ language, pack, pack_name }) => {
         const format = formats.data?.find((f) => f.pack === pack);
         return (
           <View key={language} style={{ gap: space(1.5) }}>

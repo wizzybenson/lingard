@@ -240,6 +240,8 @@ export interface Profile {
   intensity_cap: "calm" | "tense" | "heated";
   l1: string;
   language_bands: Record<string, number>;
+  /** The language being worked on now; every screen follows it. */
+  focus_language: "fr" | "en" | null;
   /** The exams being prepared for; null when the date isn't known yet. */
   exam_dates: Record<string, string | null>;
 }

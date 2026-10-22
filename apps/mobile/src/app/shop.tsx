@@ -6,9 +6,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, View } from "react-native";
 
-import type { CityEntry, Friend, ShopItem, Wallet } from "@/api/types";
+import type { Friend, ShopItem, Wallet } from "@/api/types";
 import { useApi } from "@/state/auth";
 import { useCities } from "@/state/cities";
+import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
 import { Avatar, Button, Card, ErrorText, IconBubble, type IconName, ListRow, Loading, Screen, Section, Segmented } from "@/ui/kit";
 import { colors, radius, space, type } from "@/ui/theme";
@@ -24,8 +25,8 @@ export default function Shop() {
   const { t } = useTranslation();
   const api = useApi();
   const cities = useCities();
-  const [chosen, setChosen] = useState<CityEntry["city"] | null>(null);
-  const city = chosen ?? cities.data?.[0]?.city ?? null;
+  const focus = useFocus();
+  const city = focus.city?.city ?? null;
   const wallet = useResource(() => api.get<Wallet>("/v1/wallet"), [api]);
   const friends = useResource(() => (city ? api.get<Friend[]>(`/v1/shop/friends?city=${city}`) : Promise.resolve(null)), [api, city]);
   const [busy, setBusy] = useState<string | null>(null);
@@ -88,11 +89,11 @@ export default function Shop() {
       {(cities.data?.length ?? 0) > 1 && city && (
         <Segmented
           options={(cities.data ?? []).map((c) => ({
-            value: c.city,
+            value: c.language,
             label: c.name,
           }))}
-          value={city}
-          onChange={setChosen}
+          value={focus.language}
+          onChange={focus.choose}
         />
       )}
       {wallet.data.items.map((item) => (

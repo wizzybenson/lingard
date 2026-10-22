@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 
 from lingard_api.deps import Db, Principal, State
+from lingard_api.routes.me import focus_language
 from lingard_api.routes.speech import item_bank
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, Language, Skill
 from lingard_db.models import FsrsItem, LearnerProfile, Session
@@ -106,8 +107,8 @@ async def _queue(state: State, db: Db, user_id: str, language: Language) -> list
 
 @router.get("", response_model=list[Quest])
 async def queue(principal: Principal, state: State, db: Db, language: Language | None = None) -> list[Quest]:
-    """One language's messages, or, by default, the language of the city the learner last played in (the phone is
-    the one they carry in that city), else every language they are preparing an exam in, taken in turn."""
+    """One language's messages; by default the learner's focus language, else that of the city they last played in,
+    else every language they are preparing an exam in, taken in turn."""
     if language is not None:
         return [q for q, _ in await _queue(state, db, str(principal.user_id), language)]
     last_city = (
@@ -126,6 +127,8 @@ async def queue(principal: Principal, state: State, db: Db, language: Language |
     studying = studying or [lang for lang in languages if bands.get(lang)] or languages[:1]
     if last_city in CITY_LANGUAGE:
         studying = [CITY_LANGUAGE[last_city]]
+    if focus := focus_language(profile):
+        studying = [focus]  # the language the learner chose to work on wins over where they last played
     user = str(principal.user_id)
     queues = [[q for q, _ in await _queue(state, db, user, lang)] for lang in studying]
     return [q for turn in zip_longest(*queues) for q in turn if q is not None]

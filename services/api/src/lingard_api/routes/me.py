@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
@@ -11,7 +11,7 @@ from sqlalchemy import select
 
 from lingard_api import audit
 from lingard_api.deps import Db, Principal
-from lingard_contracts.common import PackId, Skill
+from lingard_contracts.common import LANGUAGE_PACK, Language, PackId, Skill
 from lingard_db.models import LearnerProfile, User
 
 router = APIRouter(prefix="/v1/me", tags=["me"])
@@ -43,6 +43,8 @@ class ProfileView(BaseModel):
     language_bands: dict[str, int] = {}
     exam_dates: dict[str, date | None] = {}
     """The exams the learner is preparing for, each with its date when known."""
+    focus_language: Language | None = None
+    """The language the learner is working on now: every screen, the city, the phone and the studio follow it."""
 
 
 class ProfileUpdate(BaseModel):
@@ -56,6 +58,7 @@ class ProfileUpdate(BaseModel):
     consents: Consents | None = None
     intensity_cap: Literal["calm", "tense", "heated"] | None = None
     l1: str | None = Field(default=None, max_length=8)
+    focus_language: Language | None = None
 
 
 async def _load(db: Db, principal: Principal) -> tuple[User, LearnerProfile]:
@@ -77,7 +80,17 @@ def _view(user: User, profile: LearnerProfile) -> ProfileView:
         l1=profile.l1,
         language_bands=dict(profile.settings.get("language_bands", {})),
         exam_dates={k: date.fromisoformat(v) if v else None for k, v in profile.settings.get("exam_dates", {}).items()},
+        focus_language=focus_language(profile),
     )
+
+
+def focus_language(profile: LearnerProfile) -> Language | None:
+    """The language chosen as the focus; before any choice, the first one with an exam being prepared."""
+    chosen = profile.settings.get("focus_language")
+    if chosen in LANGUAGE_PACK:
+        return cast(Language, chosen)
+    exams = profile.settings.get("exam_dates", {})
+    return next((cast(Language, lang) for lang, pack in LANGUAGE_PACK.items() if pack in exams), None)
 
 
 @router.get("", response_model=ProfileView)
@@ -103,6 +116,8 @@ async def update_profile(body: ProfileUpdate, principal: Principal, db: Db) -> P
             else:
                 dates[pack_id] = day.isoformat() if day else ""  # preparing, date not known yet
         profile.settings = {**profile.settings, "exam_dates": dates}
+    if body.focus_language is not None:
+        profile.settings = {**profile.settings, "focus_language": body.focus_language}
     if body.crs_inputs is not None:
         profile.crs_inputs = body.crs_inputs
     if body.model_accent is not None:
