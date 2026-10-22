@@ -1191,8 +1191,8 @@ drills:
     focus: emphasis
   - key: en.pron.intonation
     sounds: []
-    phrases: ["Are you coming?", "Is it far?", "Really?", "You're coming.", "It's far."]
-    sentence: "Are you coming tonight?"
+    phrases: ["Are you coming?", "Is it ready?", "Really?", "You're coming.", "It's ready."]
+    sentence: "Can you help me with my bags?"
     focus: intonation
   - key: en.gym.rhythm
     sounds: []

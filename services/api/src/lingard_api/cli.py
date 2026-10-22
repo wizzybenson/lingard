@@ -1,4 +1,4 @@
-"""Operator commands: ``python -m lingard_api.cli {migrate,seed,bootstrap-admin,reset-pin}``."""
+"""Operator commands: ``python -m lingard_api.cli {migrate,seed,warm-studio,bootstrap-admin,reset-pin}``."""
 
 from __future__ import annotations
 
@@ -33,6 +33,24 @@ async def seed(settings: Settings) -> dict[str, int]:
             counts[language] = await seed_graph(state.curriculum, load_seed(settings.content_root, language))
         counts["draws"] = await seed_draws(state, settings.content_root / "crs" / "draws.yaml")
         return counts
+    finally:
+        await state.close()
+
+
+async def warm_studio(settings: Settings) -> dict[str, list[str]]:
+    """Renders and verifies every melody-drill model ahead of time (a learner's first take would otherwise wait for up
+    to three renders, 10 s on 2026-10-22), and reports texts no render carried the melody for. Needs the pronunciation
+    service and an OpenAI key; paid only for texts not rendered before."""
+    from lingard_api.routes.studio import _gym, _melody_model
+
+    state = AppState.build(settings)
+    try:
+        failed: dict[str, list[str]] = {}
+        for language in ("fr", "en"):
+            for text in sorted(_gym(state, language).melody_texts()):
+                if await _melody_model(state, text, language) is None:
+                    failed.setdefault(language, []).append(text)
+        return failed
     finally:
         await state.close()
 
@@ -72,6 +90,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("migrate")
     sub.add_parser("seed")
+    sub.add_parser("warm-studio", help="render and verify the melody-drill models (needs the pronunciation service)")
     boot = sub.add_parser("bootstrap-admin")
     boot.add_argument("--name", required=True)
     reset = sub.add_parser("reset-pin", help="set a user's PIN (prompted, never echoed) and sign out their devices")
@@ -82,6 +101,9 @@ def main() -> None:
         migrate(settings)
     elif args.command == "seed":
         print(asyncio.run(seed(settings)))
+    elif args.command == "warm-studio":
+        failed = asyncio.run(warm_studio(settings))
+        print("melody models: all verified" if not failed else f"no verified melody for: {failed}")
     elif args.command == "reset-pin":
         pin = getpass.getpass("New PIN (6 digits): ")
         if getpass.getpass("Repeat it: ") != pin:

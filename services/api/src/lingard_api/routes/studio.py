@@ -136,7 +136,7 @@ async def _reference(
     return base64.b64decode(response.json()["pcm_b64"]) if response.status_code == 200 else native
 
 
-MELODY_TRIES = 3
+MELODY_TRIES = 5
 
 
 async def _melody_model(state: AppState, text: str, language: Language) -> bytes | None:
@@ -172,6 +172,18 @@ async def _melody_model(state: AppState, text: str, language: Language) -> bytes
             await state.objects.put(AUDIO_BUCKET, key, pcm, "audio/L16")
             return pcm
     return None
+
+
+async def _with_melody(state: AppState, drill: Drill, texts: tuple[str, ...], language: Language) -> list[str]:
+    """A melody drill's texts that have a verified model: one whose rise or fall could not be rendered is left out
+    rather than taught with a flat model (``cli warm-studio`` renders them ahead of time)."""
+    if drill.focus != "intonation" or state.pronunciation is None:
+        return list(texts)
+    kept = []
+    for text in texts:
+        if ending(text) is None or await _melody_model(state, text, language) is not None:
+            kept.append(text)
+    return kept or list(texts)
 
 
 def _expected_melody(result: dict[str, Any], text: str, drill: Drill | None) -> dict[str, Any]:
@@ -543,7 +555,7 @@ async def gym_drill(key: str, principal: Principal, state: State, db: Db, langua
         pair_texts=[_marked(drill, f"{a} / {b}", language, state) for a, b in drill.pairs],
         features=gym.features,
         words=[_marked(drill, w, language, state) for w in drill.words],
-        phrases=[_marked(drill, p, language, state) for p in drill.phrases],
+        phrases=[_marked(drill, p, language, state) for p in await _with_melody(state, drill, drill.phrases, language)],
         sentence=_marked(drill, drill.sentence, language, state),
         focus=drill.focus,
         passed_items=progress.passed_items,

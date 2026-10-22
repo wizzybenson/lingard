@@ -24,6 +24,8 @@ class Contrast:
     """Separated at least 90% of the time both ways: then this test alone decides."""
 
 
+STRONG = 0.9
+"""A contrast separated at least this often both ways is decided by the two-way test alone."""
 STRESS_AGREEMENT = 1.0
 """A word's stress is judged only where the detector finds its dictionary stress in every native recording: a word it
 got wrong for a native speaker could be marked wrong for a learner who said it right."""
@@ -79,7 +81,10 @@ def load_calibration(content_root: Path, language: str, model: str) -> Calibrati
     scale = {p: (float(v["p10"]), float(v["p50"])) for p, v in data["scale"].items()}
     contrasts: dict[tuple[str, str], Contrast] = {
         (pair.split(" ")[0], pair.split(" ")[1]): Contrast(
-            float(v["threshold"]), float(v["width"]), bool(v["reliable"])
+            float(v["threshold"]),
+            float(v["width"]),
+            bool(v["reliable"]),
+            float(v.get("native_pass", 0)) >= STRONG and float(v.get("caught", 0)) >= STRONG,
         )
         for pair, v in (data.get("contrasts") or {}).items()
     }

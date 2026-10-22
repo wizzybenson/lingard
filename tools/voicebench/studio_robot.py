@@ -36,6 +36,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE = Path.home() / ".cache" / "lingard" / "calibration"
 LEARNER_VOICES = ("nova", "alloy", "onyx")
 SLOW_S = 8.0
+PRONUNCIATION = "http://127.0.0.1:58100"
 
 
 @dataclass
@@ -77,13 +78,26 @@ async def melody_take(language: str, text: str, voice: str) -> bytes | None:
     style = gym["melody_model"]["question" if want == "rise" else "statement"]
     body = {"model": "gpt-4o-mini-tts", "voice": voice, "input": text, "instructions": style, "response_format": "pcm"}
     headers = {"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"}
+    # TTS doesn't always follow the instruction: keep a take only once its ending is measured to move the right way
+    # (the same check the model goes through), as a learner who got it right would sound.
     async with httpx.AsyncClient(timeout=60, headers=headers) as client:
-        response = await client.post("https://api.openai.com/v1/audio/speech", json=body)
-    response.raise_for_status()
-    pcm = resample(response.content, 24_000)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(pcm)
-    return pcm
+        for _ in range(4):
+            response = await client.post("https://api.openai.com/v1/audio/speech", json=body)
+            response.raise_for_status()
+            pcm = resample(response.content, 24_000)
+            check = {
+                "text": text,
+                "language": language,
+                "learner_pcm_b64": base64.b64encode(pcm).decode(),
+                "reference_pcm_b64": base64.b64encode(pcm).decode(),
+            }
+            async with httpx.AsyncClient(timeout=120) as scorer:
+                measured = (await scorer.post(f"{PRONUNCIATION}/shadow", json=check)).json()
+            if ((measured.get("prosody") or {}).get("intonation") or {}).get("final", {}).get("yours") == want:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(pcm)
+                return pcm
+    return None
 
 
 def take(language: str, text: str, voice: str) -> bytes | None:

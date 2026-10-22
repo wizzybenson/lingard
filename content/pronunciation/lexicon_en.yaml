@@ -36,7 +36,6 @@ and: æ n d
 apple: æ p ə l
 are: ɑː
 are you coming: ɑː | j uː | k ʌ m ɪ ŋ
-are you coming tonight: ɑː | j uː | k ʌ m ɪ ŋ | t ə n aɪ t
 asked: æ s k t
 at: æ t
 at home: æ t | h əʊ m
@@ -47,6 +46,7 @@ back: b æ k
 back pack: b æ k | p æ k
 bad: b æ d
 bag: b æ ɡ
+bags: b æ ɡ z
 banana: b ə n ɑː n ə
 bath: b æ θ
 bay: b eɪ
@@ -82,6 +82,7 @@ called: k ɔː l d
 came: k eɪ m
 can: k æ n
 can you get the big cake: k æ n | j uː | ɡ ɛ t | ð ə | b ɪ ɡ | k eɪ k
+can you help me with my bags: k æ n | j uː | h ɛ l p | m iː | w ɪ ð | m aɪ | b æ ɡ z
 canada: k æ n ə d ə
 cap: k æ p
 car: k ɑː
@@ -122,7 +123,6 @@ ear: iə
 eat: iː t
 evening: iː v n ɪ ŋ
 fan: f æ n
-far: f ɑː
 father: f ɑː ð ə
 feel: f iː l
 ferry: f ɛ ɹ i
@@ -195,10 +195,10 @@ important: ɪ m p ɔː t ə n t
 information: ɪ n f ə m eɪ ʃ ə n
 interesting: ɪ n t ɹ ɛ s t ɪ ŋ
 is: ɪ z
-is it far: ɪ z | ɪ t | f ɑː
+is it ready: ɪ z | ɪ t | ɹ ɛ d i
 it: ɪ t
 it's: ɪ t s
-it's far: ɪ t s | f ɑː
+it's ready: ɪ t s | ɹ ɛ d i
 it's ten to two today: ɪ t s | t ɛ n | t ə | t uː | t ə d eɪ
 jeep: dʒ iː p
 jet: dʒ ɛ t
@@ -219,6 +219,7 @@ looked: l ʊ k t
 lorry: l ɒ ɹ i
 man: m æ n
 match: m æ tʃ
+me: m iː
 measure: m ɛ ʒ ə
 men: m ɛ n
 mice: m aɪ s
@@ -286,6 +287,7 @@ pull: p ʊ l
 rain: ɹ eɪ n
 ran: ɹ æ n
 rang: ɹ æ ŋ
+ready: ɹ ɛ d i
 really: ɹ iə l ɪ
 record: ɹ ɛ k ɔː d
 red: ɹ ɛ d
@@ -369,7 +371,6 @@ time: t aɪ m
 tin: t ɪ n
 to: t uː
 today: t ə d eɪ
-tonight: t ə n aɪ t
 took: t ʊ k
 tree: t ɹ iː
 turn: t ɜː n

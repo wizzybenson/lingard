@@ -45,3 +45,22 @@ def test_pairs_set_each_trained_sound_against_its_partner_and_unchecked_sounds_g
     assert target_score(drill, words) == (20.0, False)
     unchecked = [{"phonemes": [{"phoneme": "ʁ", "score": 90.0}, {"phoneme": "y", "score": 20.0, "checked": False}]}]
     assert target_score(drill, unchecked) == (90.0, True), "an unreliable contrast is compared by ear, not failed"
+
+
+def test_a_contrast_separated_nine_times_in_ten_both_ways_decides_alone(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    import yaml
+
+    from lingard_pronunciation.calibration import load_calibration
+
+    (tmp_path / "pronunciation").mkdir()
+    data = {
+        "model": "m",
+        "scale": {},
+        "contrasts": {
+            "æ ʌ": {"threshold": -1.0, "width": 0.5, "native_pass": 1.0, "caught": 1.0, "reliable": True},
+            "e ɛ": {"threshold": 0.0, "width": 0.5, "native_pass": 0.68, "caught": 0.48, "reliable": False},
+        },
+    }
+    (tmp_path / "pronunciation" / "calibration_en.yaml").write_text(yaml.safe_dump(data, allow_unicode=True))
+    cal = load_calibration(tmp_path, "en", "m")
+    assert cal is not None and cal.strong("æ", "ʌ") and not cal.strong("e", "ɛ")

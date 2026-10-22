@@ -36,6 +36,9 @@ SENTENCE_GOOD = 75.0
 PROSODY_GOOD = 60.0
 """A drill on the music of speech (stress, emphasis, rhythm, intonation) needs this much of its own part."""
 FOCUSES = ("stress", "emphasis", "rhythm", "intonation")
+GATED = ("stress", "rhythm", "intonation")
+"""The parts that must match to climb. Emphasis is shown but never blocks: native speakers put the weight of "what do
+you want" on different words, all natural (three native voices, three answers, 2026-10-22)."""
 HEAR_GOOD = 0.8
 """Share of minimal-pair questions answered right to pass the listening stage."""
 NEEDED = {Stage.WORDS: 5, Stage.PAIRS: 3, Stage.PHRASES: 3, Stage.SENTENCE: 1}
@@ -227,7 +230,7 @@ def record_attempt(
     if drill.focus:
         threshold = PROSODY_GOOD  # the sounds only need to be clear; the music is what is trained
     good = score is not None and score >= threshold
-    part = (prosody or {}).get(drill.focus) if drill.focus else None
+    part = (prosody or {}).get(drill.focus) if drill.focus in GATED else None
     if part is not None:
         good = good and float(part["score"]) >= PROSODY_GOOD
     if good and stage == progress.stage and item not in progress.passed_items:

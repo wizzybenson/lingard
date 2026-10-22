@@ -56,6 +56,10 @@ for _ in $(seq 1 30); do
   sleep 1
 done
 curl -sf -o /dev/null "http://$ip:58000/openapi.json" || { echo "The API did not start: see $logs/api.log" >&2; exit 1; }
+# Melody-drill models are rendered and checked before anyone needs them (a first take otherwise waits for them).
+if [[ -e /opt/homebrew/lib/libespeak-ng.dylib ]]; then
+  run nohup uv run python -m lingard_api.cli warm-studio >"$logs/warm-studio.log" 2>&1 &
+fi
 echo "› API on http://$ip:58000, LiveKit on ws://$ip:57880, logs in $logs"
 echo "› Open the Lingard app on the phone (same Wi-Fi). It finds this Mac through Metro below."
 cd apps/mobile
