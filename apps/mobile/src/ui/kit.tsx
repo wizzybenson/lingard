@@ -23,7 +23,7 @@ import {
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useOnline } from "@/api/connection";
+import { clearError, errorId, raiseError } from "@/state/errors";
 import { colors, fonts, MAX_WIDTH, radius, shadow, space, type } from "./theme";
 
 export type IconName = ComponentProps<typeof Ionicons>["name"];
@@ -431,23 +431,22 @@ export function Field(props: TextInputProps & { label: string; ref?: Ref<TextInp
 }
 
 /** An error, with a way out when one exists: never leave the learner staring at a dead end. */
-/** An error where it happened. While the server can't be reached the connection banner speaks for every screen, so
- * error boxes stay quiet rather than each saying it again. */
+/** Raises an error in the one place errors are shown, the status banner at the top (``StatusBanner``); renders
+ * nothing where it is used. The error goes when ``message`` clears or the screen closes. While the server can't be
+ * reached the banner says only that, so errors raised meanwhile wait until it is back. */
 export function ErrorText({ message, onRetry }: { message: string | null | undefined; onRetry?: () => void }) {
-  const { t } = useTranslation();
-  const online = useOnline();
-  if (!message || !online) return null;
-  return (
-    <View style={styles.errorBox}>
-      <View style={{ flexDirection: "row", gap: space(1), alignItems: "flex-start" }}>
-        <Ionicons name="alert-circle" size={20} color={colors.danger} />
-        <Text accessibilityRole="alert" style={[type.callout, { color: colors.danger, flex: 1 }]}>
-          {message}
-        </Text>
-      </View>
-      {onRetry && <Button label={t("app.retry")} kind="secondary" icon="refresh" onPress={onRetry} />}
-    </View>
-  );
+  const [id] = useState(errorId);
+  const retry = useRef(onRetry);
+  useEffect(() => {
+    retry.current = onRetry; // the latest retry, without raising the error again on every render
+  });
+  const retryable = onRetry !== undefined;
+  useEffect(() => {
+    if (message) raiseError(id, message, retryable ? () => retry.current?.() : undefined);
+    else clearError(id);
+  }, [id, message, retryable]);
+  useEffect(() => () => clearError(id), [id]);
+  return null;
 }
 
 /** While a screen loads: soft placeholder cards that breathe, in the shape of what is coming, instead of a lone
@@ -535,5 +534,4 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   inputFocused: { borderColor: colors.accent },
-  errorBox: { backgroundColor: colors.dangerSoft, borderRadius: radius.md, padding: space(2), gap: space(1.5) },
 });

@@ -120,7 +120,9 @@ export default function City() {
           today={today.data}
           day={day}
           busy={planning} onStartStory={() => void startDay()} />}
+      {/* Errors sit where they happened: the day's at the top with its card, the map's beside the map. */}
       <ErrorText message={error} onRetry={() => void startDay()} />
+      <ErrorText message={today.error} onRetry={today.reload} />
       {/* The Today card carries the start button; this is only for when it couldn't load. */}
       {!today.data && !today.loading && (
         <Button label={planning ? t("city.planning") : t("city.startDay")} icon="play" busy={planning} onPress={() => void startDay()} />
@@ -133,7 +135,7 @@ export default function City() {
         )}
       </View>
       {world.loading && !world.data && <Loading />}
-      <ErrorText message={cities.error ?? world.error ?? today.error} onRetry={() => (today.error ? today.reload() : world.reload())} />
+      <ErrorText message={cities.error ?? world.error} onRetry={world.reload} />
       {world.data && (
         <View style={[{ borderRadius: radius.lg, overflow: "hidden", backgroundColor: colors.card }, shadow(2)]}>
           <Suspense fallback={<View style={{ height: mapSize.height }} />}>

@@ -1,0 +1,21 @@
+# Every error shows in one place: the status banner below the back bar, with Try again when there is one; a close or
+# a swipe up dismisses it. Free.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- openLink: "lingard://lesson/00000000-0000-0000-0000-000000000000"
+- extendedWaitUntil:
+    visible: "No such lesson"
+    timeout: 15000
+- assertVisible: "Try again"
+- assertVisible: "Back"  # the banner never covers navigation
+- takeScreenshot: errors-01-one-place
+- tapOn: "Try again"
+- assertVisible: "No such lesson"
+- swipe:  # a swipe up dismisses it (a close button does too)
+    from:
+      id: "status-error"
+    direction: UP
+- assertNotVisible: "No such lesson"
+- assertVisible: "Back"
+- takeScreenshot: errors-02-closed

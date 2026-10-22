@@ -10,7 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AuthProvider, useAuth } from "@/state/auth";
-import { ConnectionBanner } from "@/ui/ConnectionBanner";
+import { StatusBanner } from "@/ui/StatusBanner";
 import { colors } from "@/ui/theme";
 
 const PUBLIC = new Set(["sign-in", "index"]);
@@ -70,7 +70,7 @@ export default function RootLayout() {
               }}
             />
           </Stack>
-          <ConnectionBanner />
+          <StatusBanner />
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
