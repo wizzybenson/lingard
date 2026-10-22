@@ -71,9 +71,10 @@ export function useLiveScene(): LiveScene {
     }
   }, []);
 
+  /** A conversation that took place is over; leaving one that never began leaves nothing to judge. */
   const leave = useCallback(async () => {
     await close();
-    setStatus("ended");
+    setStatus((s) => (s === "live" || s === "connecting" ? "ended" : s));
   }, [close]);
 
   useEffect(() => () => void close(), [close]);

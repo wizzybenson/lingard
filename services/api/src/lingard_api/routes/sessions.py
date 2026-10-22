@@ -44,6 +44,10 @@ class SessionView(BaseModel):
     scene_ids: list[uuid.UUID]
     complete: bool = False
     """Every scene of the day is compiled. A ready day may start before this: later scenes keep arriving."""
+    next_scene_id: uuid.UUID | None = None
+    """The first scene of the day not played yet: where Begin (or Continue) day goes."""
+    played: int = 0
+    """Scenes of the day already played: once one is, the day is continued rather than begun."""
     error: str | None = None
     notebook: dict[str, Any] | None = None
 
@@ -128,8 +132,9 @@ async def _owned_session(db: Db, principal: Principal, session_id: uuid.UUID) ->
 
 
 async def _reusable_day(db: Db, user_id: uuid.UUID, city: str, kind: str, state: State) -> Session | None:
-    """The newest unended day for this city that is still planning, or planned and not played yet. A planned day
-    waits for the learner however long they take: the story follows progress, not the calendar."""
+    """The newest unended day for this city that is still planning, or has scenes left to play. A day waits for the
+    learner however long they take, and one left halfway is continued, never replaced: the story follows progress,
+    not the calendar (2026-10-22: every Begin day after a played scene planned a new day, so the day never moved)."""
     latest = (
         await db.execute(
             select(Session)
@@ -150,10 +155,10 @@ async def _reusable_day(db: Db, user_id: uuid.UUID, city: str, kind: str, state:
         # A plan that has been "planning" this long was lost (worker restart); plan afresh.
         fresh = latest.started_at > datetime.now(UTC) - timedelta(minutes=state.settings.plan_reuse_minutes)
         return latest if fresh else None
-    played = (
-        await db.execute(select(Scene.id).where(Scene.session_id == latest.id, Scene.status != "planned").limit(1))
+    unplayed = (
+        await db.execute(select(Scene.id).where(Scene.session_id == latest.id, Scene.status == "planned").limit(1))
     ).scalar_one_or_none()
-    return None if played else latest
+    return latest if unplayed is not None or not latest.plan.get("complete", True) else None
 
 
 async def _plan_day(db: Db, state: State, tenant_id: uuid.UUID, user_id: uuid.UUID, city: str, kind: str) -> Session:
@@ -187,14 +192,18 @@ async def start_session(body: StartSessionBody, principal: Principal, state: Sta
 @router.get("/sessions/{session_id}", response_model=SessionView)
 async def get_session(session_id: uuid.UUID, principal: Principal, db: Db) -> SessionView:
     row = await _owned_session(db, principal, session_id)
-    scenes = (await db.execute(select(Scene.id).where(Scene.session_id == row.id).order_by(Scene.created_at))).scalars()
+    scenes = (
+        await db.execute(select(Scene.id, Scene.status).where(Scene.session_id == row.id).order_by(Scene.created_at))
+    ).all()
     plan_status = "ended" if row.ended_at else str(row.plan.get("status", "planning"))
     return SessionView(
         id=row.id,
         city=row.city,
         kind=row.kind,
         status=plan_status,
-        scene_ids=list(scenes),
+        scene_ids=[scene_id for scene_id, _ in scenes],
+        next_scene_id=next((scene_id for scene_id, status in scenes if status == "planned"), None),
+        played=sum(status != "planned" for _, status in scenes),
         # Plans saved before incremental planning have no flag and were always whole.
         complete=plan_status in ("ended", "failed") or bool(row.plan.get("complete", plan_status == "ready")),
         notebook=row.plan.get("notebook"),
@@ -369,12 +378,13 @@ async def scene_debrief(scene_id: uuid.UUID, principal: Principal, state: State,
         turns = await deps.store.turns(scene_id)
     city = load_city(state.settings.content_root, contract.city)
     npc = city.npc(contract.cast[0].npc_key).name if contract.cast else ""
+    if not any(t.speaker == "learner" for t in turns):
+        # Nothing said (yet): nothing to judge, pay or keep. A scene opened and left unplayed must still be judged
+        # when it is played (2026-10-22: such an empty verdict was kept and shown after a 14-turn conversation).
+        objectives = [ObjectiveView(text=c.description, met=False) for c in contract.success_conditions]
+        return DebriefView(result="not_done", objectives=objectives, ending=None, coins=0)
     judged = await debrief(contract, turns, npc, deps.router, deps.prompts)
-    entries = []
-    if any(t.speaker == "learner" for t in turns):
-        entries.append(
-            LedgerEntry("coins", COINS["quest_complete"], "quest_complete", str(scene_id), f"quest:{scene_id}")
-        )
+    entries = [LedgerEntry("coins", COINS["quest_complete"], "quest_complete", str(scene_id), f"quest:{scene_id}")]
     if judged.result != "not_done":
         reason = "mission_accomplished" if judged.result == "accomplished" else "mission_partial"
         entries.append(LedgerEntry("coins", COINS[reason], reason, str(scene_id), f"{reason}:{scene_id}"))

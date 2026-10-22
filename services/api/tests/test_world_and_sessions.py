@@ -97,6 +97,12 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
         )
     ).json()
     assert useful and len(useful) <= 3 and all("home" in k["places"] for k in useful)
+    # Opened and left before a word was said: nothing is judged, paid or kept (the real debrief below still runs).
+    import lingard_api.routes.sessions as sessions_routes
+
+    monkeypatch.setattr(sessions_routes, "DEBRIEF_WAIT_TRIES", 0)
+    empty = (await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))).json()
+    assert empty["result"] == "not_done" and empty["coins"] == 0
     async with api.state.sessions() as db:
         for index, (key, confidence, agrees) in enumerate(
             [("fr.grammar.si_imparfait", 0.93, True), ("fr.grammar.negation", 0.6, None)]
@@ -166,8 +172,18 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     stream, payload = jobs.jobs[-1]
     assert stream == LIVE_JOBS and payload["contract"]["targets"]["grammar"] == ["fr.grammar.si_imparfait"]
     played = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
+    assert played.json()["id"] == session_id, "a day left halfway is continued, never replaced"
+    assert played.json()["played"] == 1 and played.json()["next_scene_id"] is None, "its later scenes still arrive"
+    async with api.state.sessions() as db:  # the planner hands over the rest: every scene of the day is played
+        await db.execute(
+            update(Session)
+            .where(Session.id == uuid.UUID(session_id))
+            .values(plan={"status": "ready", "complete": True})
+        )
+        await db.commit()
+    played = await api.client.post("/v1/sessions", json={"city": "rivemont"}, headers=api.bearer(token))
     next_day = played.json()["id"]
-    assert next_day != session_id, "once a scene of the day is played, starting plans a new day"
+    assert next_day != session_id, "once every scene of the day is played, the next day is planned"
 
     planned = len(jobs.jobs)
     ended = await api.client.post(f"/v1/sessions/{session_id}/end", headers=api.bearer(token))

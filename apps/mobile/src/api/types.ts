@@ -13,6 +13,10 @@ export interface SessionView {
   scene_ids: string[];
   /** Every scene of the day is compiled; a ready day can start before that. */
   complete: boolean;
+  /** The first scene of the day not played yet: where Begin (or Continue) day goes. */
+  next_scene_id: string | null;
+  /** Scenes of the day already played: once one is, the day is continued rather than begun. */
+  played: number;
   notebook: Notebook | null;
 }
 

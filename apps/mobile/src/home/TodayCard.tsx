@@ -76,8 +76,21 @@ function Onboarding({ today }: { today: Today }) {
   );
 }
 
-/** ``day``: the story day to play next in the chosen city (progress, not the calendar); null while loading. */
-export function TodayCard({ today, day, onStartStory, busy = false }: { today: Today; day: number | null; onStartStory: () => void; busy?: boolean }) {
+/** ``day``: the story day to play next in the chosen city (progress, not the calendar); null while loading.
+ * ``continuing``: a scene of that day has been played, so the day is continued rather than begun. */
+export function TodayCard({
+  today,
+  day,
+  continuing = false,
+  onStartStory,
+  busy = false,
+}: {
+  today: Today;
+  day: number | null;
+  continuing?: boolean;
+  onStartStory: () => void;
+  busy?: boolean;
+}) {
   const { t } = useTranslation();
   const api = useApi();
   const [opening, setOpening] = useState(false);
@@ -103,7 +116,7 @@ export function TodayCard({ today, day, onStartStory, busy = false }: { today: T
     ? t("city.planning")
     : today.next_step === "story"
       ? day
-        ? t("today.next.story", { day })
+        ? t(continuing ? "today.next.continue" : "today.next.story", { day })
         : t("city.startDay")
       : t(`today.next.${today.next_step}`);
   const rule = today.next_step === "story" ? today.next_key_point : null;

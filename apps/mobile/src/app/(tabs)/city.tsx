@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, useWindowDimensions, View } from "react-native";
 
@@ -50,6 +50,7 @@ export default function City() {
     [api, placeKind, cityLanguage],
   );
   const [planning, setPlanning] = useState(false);
+  const [ahead, setAhead] = useState<SessionView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
   const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);
@@ -63,6 +64,12 @@ export default function City() {
   const world = useResource(() => (city ? api.get<WorldView>(`/v1/world/${city}`) : Promise.resolve(null)), [city]);
   // Coming back from a finished day must show the next day's number.
   useFocusEffect(world.reload);
+  const aheadId = ahead?.id;
+  useFocusEffect(
+    useCallback(() => {
+      if (aheadId) void api.get<SessionView>(`/v1/sessions/${aheadId}`).then(setAhead).catch(() => undefined);
+    }, [api, aheadId]),
+  );
   const day = world.data && world.data.city === city ? (world.data.days_lived ?? 0) + 1 : null;
   // Plan the next story day ahead, so "Begin" opens it at once. The server reuses a day that is still planning or
   // not played yet, so this never plans twice. It follows progress (the day number), never the calendar.
@@ -71,7 +78,10 @@ export default function City() {
     const key = `${city}:${day}`;
     if (!city || !day || today.data?.next_step !== "story" || plannedAhead.current === key) return;
     plannedAhead.current = key;
-    void api.post<SessionView>("/v1/sessions", { city }).catch(() => (plannedAhead.current = null));
+    void api
+      .post<SessionView>("/v1/sessions", { city })
+      .then(setAhead)
+      .catch(() => (plannedAhead.current = null));
   }, [api, city, day, today.data?.next_step]);
   // The content column is at most MAX_WIDTH wide with space(2.5) padding on each side.
   const column = Math.min(width, MAX_WIDTH) - space(5);
@@ -93,8 +103,18 @@ export default function City() {
         session = await api.get<SessionView>(`/v1/sessions/${session.id}`);
       }
       if (session.status === "failed") throw new Error(t("city.planningFailed", { reason: session.error ?? "" }));
-      const first = session.scene_ids[0];
-      if (first) router.push({ pathname: "/scene/[id]", params: { id: first, session: session.id } });
+      // A day left halfway goes on where it stopped; its later scenes may still be on their way.
+      while (!session.next_scene_id && !session.complete) {
+        if (Date.now() > deadline) throw new Error(t("city.planningTimeout"));
+        await new Promise((r) => setTimeout(r, POLL_MS));
+        session = await api.get<SessionView>(`/v1/sessions/${session.id}`);
+      }
+      setAhead(session);
+      if (session.next_scene_id) router.push({ pathname: "/scene/[id]", params: { id: session.next_scene_id, session: session.id } });
+      else {
+        await api.post(`/v1/sessions/${session.id}/end`); // every scene played: the night's notebook closes the day
+        router.push({ pathname: "/notebook/[id]", params: { id: session.id } });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -119,6 +139,7 @@ export default function City() {
       {today.data && <TodayCard
           today={today.data}
           day={day}
+          continuing={ahead?.city === city && ahead.played > 0}
           busy={planning} onStartStory={() => void startDay()} />}
       {/* Errors sit where they happened: the day's at the top with its card, the map's beside the map. */}
       <ErrorText message={error} onRetry={() => void startDay()} />

@@ -18,7 +18,7 @@ from sqlalchemy import select
 from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.speech import item_bank
 from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_PACK, Language, Skill
-from lingard_db.models import FsrsItem, LearnerProfile
+from lingard_db.models import FsrsItem, LearnerProfile, Session
 from lingard_exam_packs.serving import serve, served_answer
 from lingard_graphs.pedagogy.review import new_card, review
 from lingard_live.languages import load_language
@@ -106,15 +106,26 @@ async def _queue(state: State, db: Db, user_id: str, language: Language) -> list
 
 @router.get("", response_model=list[Quest])
 async def queue(principal: Principal, state: State, db: Db, language: Language | None = None) -> list[Quest]:
-    """One language's messages, or, by default, every language the learner is preparing an exam in, taken in turn."""
+    """One language's messages, or, by default, the language of the city the learner last played in (the phone is
+    the one they carry in that city), else every language they are preparing an exam in, taken in turn."""
     if language is not None:
         return [q for q, _ in await _queue(state, db, str(principal.user_id), language)]
+    last_city = (
+        await db.execute(
+            select(Session.city)
+            .where(Session.user_id == principal.user_id, Session.kind == "live", Session.city.is_not(None))
+            .order_by(Session.started_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
     profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == principal.user_id))).scalar_one()
     exams = set(profile.settings.get("exam_dates", {}))
     bands = profile.settings.get("language_bands", {})
     languages = list(CITY_LANGUAGE.values())
     studying = [lang for lang in languages if LANGUAGE_PACK[lang] in exams]
     studying = studying or [lang for lang in languages if bands.get(lang)] or languages[:1]
+    if last_city in CITY_LANGUAGE:
+        studying = [CITY_LANGUAGE[last_city]]
     user = str(principal.user_id)
     queues = [[q for q, _ in await _queue(state, db, user, lang)] for lang in studying]
     return [q for turn in zip_longest(*queues) for q in turn if q is not None]
