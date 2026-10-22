@@ -60,4 +60,8 @@ echo "› API on http://$ip:58000, LiveKit on ws://$ip:57880, logs in $logs"
 echo "› Open the Lingard app on the phone (same Wi-Fi). It finds this Mac through Metro below."
 cd apps/mobile
 if [[ -d /Applications/Xcode.app ]]; then export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"; fi
+# The phone must reach this Mac over Wi-Fi. A phone on the USB cable would otherwise find Metro over the cable's
+# private 169.254.x link, then send every API call there too, and that link drops whenever it likes (2026-10-22: "could
+# not connect to the server" after Begin day). Pinning the address keeps Metro, the API and LiveKit on the Wi-Fi.
+export REACT_NATIVE_PACKAGER_HOSTNAME="$ip"
 exec npx expo start --dev-client

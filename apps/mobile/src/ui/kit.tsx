@@ -23,6 +23,7 @@ import {
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useOnline } from "@/api/connection";
 import { colors, fonts, MAX_WIDTH, radius, shadow, space, type } from "./theme";
 
 export type IconName = ComponentProps<typeof Ionicons>["name"];
@@ -430,9 +431,12 @@ export function Field(props: TextInputProps & { label: string; ref?: Ref<TextInp
 }
 
 /** An error, with a way out when one exists: never leave the learner staring at a dead end. */
+/** An error where it happened. While the server can't be reached the connection banner speaks for every screen, so
+ * error boxes stay quiet rather than each saying it again. */
 export function ErrorText({ message, onRetry }: { message: string | null | undefined; onRetry?: () => void }) {
   const { t } = useTranslation();
-  if (!message) return null;
+  const online = useOnline();
+  if (!message || !online) return null;
   return (
     <View style={styles.errorBox}>
       <View style={{ flexDirection: "row", gap: space(1), alignItems: "flex-start" }}>

@@ -1,4 +1,5 @@
-import { ApiClient, ApiError, PIN_CHANGE_REQUIRED, type TokenStore, type Tokens } from "@/api/client";
+import { isOnline } from "@/api/connection";
+import { ApiClient, ApiError, PIN_CHANGE_REQUIRED, UNREACHABLE, type TokenStore, type Tokens } from "@/api/client";
 
 function memoryStore(initial: Tokens | null): TokenStore & { value: Tokens | null } {
   return {
@@ -133,4 +134,18 @@ test("renew trades the refresh token for an access token that no longer asks for
   const tokens = await new ApiClient("http://x", store, fake).renew();
   expect(tokens?.pinChangeRequired).toBe(false);
   expect(store.value?.accessToken).toBe("free");
+});
+
+test("a request that never reaches the server says so once, for the whole app, and recovers", async () => {
+  let down = true;
+  const fake = (async () => {
+    if (down) throw new TypeError("Network request failed");
+    return json(200, { ok: true });
+  }) as typeof fetch;
+  const api = new ApiClient("http://api", memoryStore(null), fake);
+  await expect(api.get("/v1/today")).rejects.toMatchObject({ status: 0, message: UNREACHABLE });
+  expect(isOnline()).toBe(false);
+  down = false;
+  await expect(api.get("/v1/today")).resolves.toEqual({ ok: true });
+  expect(isOnline()).toBe(true);
 });

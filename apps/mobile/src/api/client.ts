@@ -2,6 +2,7 @@
  *
  * On the web the refresh token never reaches JavaScript: the API keeps it in an HttpOnly cookie scoped to /v1/auth
  * (decision 0008), and the access token lives only in memory, so a reload calls `resume()` to get a new one. */
+import { reportReachable } from "@/api/connection";
 
 export interface Tokens {
   accessToken: string;
@@ -41,6 +42,9 @@ export function tokensFrom(body: TokenResponse): Tokens {
   };
 }
 
+/** What a request that never reached the server fails with (no network, server down, address unreachable). */
+export const UNREACHABLE = "Can't reach Lingard";
+
 /** The server's answer to any request made before a one-time PIN is replaced (``lingard_api.deps``). */
 export const PIN_CHANGE_REQUIRED = "PIN change required";
 
@@ -56,7 +60,20 @@ export class ApiClient {
     private readonly onPinChangeRequired: () => void = () => {},
   ) {}
 
+  /** A request that tells the app whether the server could be reached at all. */
   private async raw(path: string, init: RequestInit, token?: string): Promise<Response> {
+    try {
+      const response = await this.send(path, init, token);
+      reportReachable(true);
+      return response;
+    } catch (e) {
+      if ((e as { name?: string } | null)?.name === "AbortError") throw e; // cancelled on purpose, not unreachable
+      reportReachable(false);
+      throw new ApiError(0, UNREACHABLE);
+    }
+  }
+
+  private async send(path: string, init: RequestInit, token?: string): Promise<Response> {
     const headers = new Headers(init.headers);
     if (token) headers.set("Authorization", `Bearer ${token}`);
     if (init.body && !(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
