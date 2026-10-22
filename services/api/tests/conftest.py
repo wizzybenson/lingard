@@ -47,8 +47,10 @@ async def api(pg_schema_factory) -> AsyncIterator[Api]:  # type: ignore[no-untyp
             redis_url=None,
             # Never the developer's running services, even when another test has loaded .env into the environment.
             pronunciation_url=None,
+            object_store_url=None,
             voicebox_url=None,
             elevenlabs_api_key=None,
+            openai_api_key=None,
             argon2_time_cost=1,
             argon2_memory_kib=8,
             argon2_parallelism=1,

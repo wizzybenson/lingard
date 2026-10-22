@@ -19,6 +19,9 @@ from lingard_curriculum.seed import load_seed, seed_graph
 from lingard_db.migrate import migrate as run_migrations
 from lingard_db.models import Draw
 from lingard_economy.events import load_draws
+from lingard_pronunciation.gym import Stage
+
+SPOKEN = (Stage.WORDS, Stage.PAIRS, Stage.PHRASES, Stage.SENTENCE)
 
 
 def migrate(settings: Settings, revision: str = "head") -> None:
@@ -38,17 +41,25 @@ async def seed(settings: Settings) -> dict[str, int]:
 
 
 async def warm_studio(settings: Settings) -> dict[str, list[str]]:
-    """Renders and verifies every melody-drill model ahead of time (a learner's first take would otherwise wait for up
-    to three renders, 10 s on 2026-10-22), and reports texts no render carried the melody for. Needs the pronunciation
-    service and an OpenAI key; paid only for texts not rendered before."""
-    from lingard_api.routes.studio import _gym, _melody_model
+    """Renders and verifies every drill model ahead of time and reports the texts left without one:
+    - melody models must carry their rise or fall (a learner's first take would otherwise wait for up to three
+      renders, 10 s on 2026-10-22);
+    - every other model must pass the scorer the way a learner's take would, since learners imitate it (4% of
+      narrator renders didn't on 2026-10-22); another native render replaces one that doesn't.
+    Needs the pronunciation service and an OpenAI key; paid only for texts not checked before."""
+    from lingard_api.routes.studio import _gym, _melody_model, check_model
 
     state = AppState.build(settings)
     try:
         failed: dict[str, list[str]] = {}
         for language in ("fr", "en"):
-            for text in sorted(_gym(state, language).melody_texts()):
+            gym = _gym(state, language)
+            for text in sorted(gym.melody_texts()):
                 if await _melody_model(state, text, language) is None:
+                    failed.setdefault(language, []).append(text)
+            spoken = {t for d in gym.drills for stage in SPOKEN for t in d.items(stage)} - gym.melody_texts()
+            for text in sorted(spoken):
+                if await check_model(state, text, language) == "none":
                     failed.setdefault(language, []).append(text)
         return failed
     finally:
@@ -103,7 +114,7 @@ def main() -> None:
         print(asyncio.run(seed(settings)))
     elif args.command == "warm-studio":
         failed = asyncio.run(warm_studio(settings))
-        print("melody models: all verified" if not failed else f"no verified melody for: {failed}")
+        print("drill models: all verified" if not failed else f"left out (no verified model): {failed}")
     elif args.command == "reset-pin":
         pin = getpass.getpass("New PIN (6 digits): ")
         if getpass.getpass("Repeat it: ") != pin:

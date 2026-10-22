@@ -219,3 +219,22 @@ async def test_a_drill_is_climbed_stage_by_stage_and_reviewed(api) -> None:  # t
     review = {"language": "fr", "held": False}
     slipped = (await api.client.post(f"/v1/studio/gym/{key}/review", json=review, headers=api.bearer(token))).json()
     assert slipped["stage"] == 2, "a sound that slipped is rebuilt from its words"
+
+
+async def test_a_model_the_scorer_would_fail_is_left_out_of_its_drill(api) -> None:  # type: ignore[no-untyped-def]
+    from lingard_api.routes.studio import CHECKED, check_model
+
+    token = await api.admin_token("Founder", PIN)
+    api.state.tts = ScriptedTts()
+    g2p = LexiconG2P(api.settings.content_root)
+    _attach(api, LexiconRecognizer(g2p, "roue", "fr"))
+    assert await check_model(api.state, "roue", "fr") == "narrator", "a model the scorer passes is the narrator's"
+    _attach(api, LexiconRecognizer(g2p, "rue", "fr", swap={"y": "u"}))
+    assert await check_model(api.state, "rue", "fr") == "none", "heard as roue, and no other native voice to try here"
+    CHECKED.clear()  # read back from the object store, as a fresh process would
+    view = (
+        await api.client.get("/v1/studio/gym/fr.pron.u_vs_ou", params={"language": "fr"}, headers=api.bearer(token))
+    ).json()
+    words = [w["text"] for w in view["words"]]
+    assert "rue" not in words and "roue" in words, "never taught with a model that would teach the mistake"
+    CHECKED.clear()

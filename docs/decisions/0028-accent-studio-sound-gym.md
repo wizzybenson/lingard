@@ -116,4 +116,27 @@ and errors all pass.
 - A recogniser trained on learner speech would sharpen the vowel contrasts; slplab's L2-English model has no
   licence.
 - Commercial pronunciation-assessment APIs (Azure, Speechace) need a key and a spending decision.
-- The ElevenLabs narrator's single-word renders should be audited the same way the robot audited the learner side.
+
+## Model recordings audited (2026-10-22, later)
+
+`tools/voicebench/model_audit.py` sends each drill text's model, the recording a learner imitates, back through
+scoring as if a learner had said it (`--texts` limits it to a few texts, since every new text costs a narrator render).
+
+- French: 15 of 345 narrator models were judged wrong. English: 15 of 410. The scorer itself is deterministic: the
+  same recording scored three times got the same verdict each time.
+- Fix: every drill model is now checked before it is relied on (`check_model` in the studio routes).
+  - The narrator's render is kept if the scorer passes it.
+  - Otherwise up to three other native renders (OpenAI, the narrator voice) are tried, and the first that passes is
+    kept and served instead.
+  - If none passes, the text is left out of its drill. A melody text without a verified model was already left out.
+- When checks run:
+  - each text is checked in the background the first time it is heard, when its narrator render already exists, so
+    checking adds no narration cost;
+  - `cli warm-studio` checks everything up front.
+- Result: on a re-run of every text that failed, both languages had 0 wrong. French "bain / banc" and "table" found
+  no passing model and are left out.
+- Found on the way: `OBJECT_STORE_URL` was empty in the local `.env`. The API kept every render in memory, lost it on
+  each restart (and paid to render it again), and `warm-studio`'s work vanished when it exited. The local `.env` now
+  points at the SeaweedFS in compose. The API tests now set `object_store_url=None` and `openai_api_key=None`, because
+  importing the API loads `.env`.
+

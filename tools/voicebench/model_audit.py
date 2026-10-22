@@ -24,7 +24,7 @@ def pcm_of(wav_bytes: bytes) -> bytes:
         return bytes(w.readframes(w.getnframes()))
 
 
-async def audit(api: Api, language: str, key: str, report: Report) -> int:
+async def audit(api: Api, language: str, key: str, report: Report, only: set[str] | None = None) -> int:
     view = await api.call("drill", "GET", f"/v1/studio/gym/{key}", params={"language": language})
     if view is None:
         return 0
@@ -33,6 +33,8 @@ async def audit(api: Api, language: str, key: str, report: Report) -> int:
     for stage, items in rungs.items():
         for item in items:
             text = item["text"]
+            if only is not None and text not in only:
+                continue
             model = await api.call(
                 f"model {text!r}", "GET", "/v1/studio/reference", params={"language": language, "line": text}
             )
@@ -53,6 +55,7 @@ async def main() -> None:
     parser.add_argument("--api", default="http://127.0.0.1:58000")
     parser.add_argument("--language", choices=["fr", "en"], default="fr")
     parser.add_argument("--drills", nargs="*", help="default: every drill")
+    parser.add_argument("--texts", nargs="*", help="only these texts (each new text costs a narrator render)")
     args = parser.parse_args()
     report = Report()
     api = Api(args.api, report)
@@ -62,7 +65,7 @@ async def main() -> None:
     checked = 0
     try:
         for key in keys:
-            checked += await audit(api, args.language, key, report)
+            checked += await audit(api, args.language, key, report, set(args.texts) if args.texts else None)
     finally:
         await reset(api.user_id, args.language, keys)
     print(f"\n{checked} models checked, {len(report.hiccups)} judged wrong")

@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import contextlib
 import hashlib
+import logging
 import uuid
 from datetime import UTC, datetime, timedelta
 from functools import cache
@@ -22,6 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.speech import (
     MAX_UPLOAD_BYTES,
+    NARRATION_EDITION,
     _live_settings,
     decode_audio,
     narrate,
@@ -50,6 +53,7 @@ from lingard_pronunciation.gym import NEEDED as GYM_NEEDED
 from lingard_pronunciation.studio import MAX_ATTEMPTS, PASS_SCORE
 from lingard_storage import AUDIO_BUCKET
 
+log = logging.getLogger(__name__)
 router = APIRouter(prefix="/v1/studio", tags=["studio"])
 NEEDED_STAGES = set(GYM_NEEDED)
 GOLDEN_PROVIDER = "elevenlabs"
@@ -115,8 +119,9 @@ async def _reference(
     the native narrator render. ``None`` when no TTS is available.
     """
     try:
-        melody = await _melody_model(state, line, language)
-        native = melody if melody is not None else await narrate(state, line, language)
+        model = await _melody_model(state, line, language) or await _checked_model(state, line, language)
+        native = model if model is not None else await narrate(state, line, language)
+        _check_soon(state, line, language)
     except (RuntimeError, httpx.HTTPError):
         return None
     profile_id = await _golden_profile(db, user_id)
@@ -184,6 +189,123 @@ async def _with_melody(state: AppState, drill: Drill, texts: tuple[str, ...], la
         if ending(text) is None or await _melody_model(state, text, language) is not None:
             kept.append(text)
     return kept or list(texts)
+
+
+MODEL_TRIES = 3
+"""Native renders tried for a drill text whose narrator model the scorer doesn't pass."""
+CHECKED: dict[str, str] = {}
+"""Verdicts on model recordings already read from the object store: "narrator", "other" or "none"."""
+
+
+def _check_key(language: str, text: str) -> str:
+    return f"cache/model-check/{hashlib.sha256(f'{NARRATION_EDITION}|{language}|{text}'.encode()).hexdigest()}"
+
+
+def _first_stage(gym: Gym, text: str) -> tuple[Drill, Stage] | None:
+    """The drill and spoken stage a text is first said at, for judging its model the way a learner's take is judged."""
+    for drill in gym.drills:
+        for stage in (Stage.WORDS, Stage.PAIRS, Stage.PHRASES, Stage.SENTENCE):
+            if text in drill.items(stage):
+                return drill, stage
+    return None
+
+
+async def _passes(state: AppState, gym: Gym, text: str, language: Language, pcm: bytes) -> bool:
+    """Whether the scorer passes a recording of a drill text as it would pass a learner saying it (a contrast that is
+    compared by ear passes: the machine doesn't judge it)."""
+    found = _first_stage(gym, text)
+    if state.pronunciation is None:
+        raise RuntimeError("model checks need the pronunciation service")
+    if found is None:
+        return True
+    drill, stage = found
+    g2p = _g2p(state.settings.content_root)
+    payload = {
+        "text": text,
+        "language": language,
+        "learner_pcm_b64": base64.b64encode(pcm).decode(),
+        "reference_pcm_b64": base64.b64encode(pcm).decode(),
+        "partners": partners(drill, lambda t: g2p.phonemes(t, language)),
+    }
+    result = _expected_melody((await state.pronunciation.post("/shadow", json=payload)).json(), text, drill)
+    words = result.get("words", [])
+    _, by_ear = target_score(drill, words)
+    return by_ear or record_attempt(Progress(stage), drill, stage, text, words, result.get("prosody"))
+
+
+async def check_model(state: AppState, text: str, language: Language) -> str:
+    """Verifies a drill text's model ahead of time (``cli warm-studio``), since a learner imitates it and is scored
+    against it: the narrator's render if the scorer passes it, else the first of a few other native renders that
+    passes (kept), else "none", and the text is left out of its drill rather than taught with a doubtful model."""
+    key = _check_key(language, text)
+    with contextlib.suppress(Exception):  # checked before
+        return (await state.objects.get(AUDIO_BUCKET, f"{key}.verdict")).decode()
+    gym = _gym(state, language)
+    verdict = "narrator" if await _passes(state, gym, text, language, await narrate(state, text, language)) else "none"
+    live = _live_settings(state)
+    if verdict == "none" and live.openai_api_key:
+        tts = OpenAITts(live.openai_api_key.get_secret_value(), model=live.openai_tts_model)
+        narrator = load_language(state.settings.content_root, language).narrator_voice
+        for _ in range(MODEL_TRIES):
+            style = gym.melody_model.get("question" if ending(text) == "rise" else "statement", "")
+            spec = VoiceSpec(voice_id=narrator, language=language, style=style)
+            pcm = b"".join([chunk.pcm async for chunk in tts.stream(text, spec)])
+            if await _passes(state, gym, text, language, pcm):
+                await state.objects.put(AUDIO_BUCKET, f"{key}.pcm", pcm, "audio/L16")
+                verdict = "other"
+                break
+    await state.objects.put(AUDIO_BUCKET, f"{key}.verdict", verdict.encode(), "text/plain")
+    CHECKED[key] = verdict
+    return verdict
+
+
+CHECKING: set[asyncio.Task[None]] = set()
+"""Model checks running in the background, kept so they finish."""
+
+
+async def _check_quietly(state: AppState, text: str, language: Language) -> None:
+    try:
+        await check_model(state, text, language)
+    except Exception:  # unchecked models are served as before; the next hearing tries again
+        log.warning("model check failed for %r", text, exc_info=True)
+
+
+def _check_soon(state: AppState, text: str, language: Language) -> None:
+    """Checks a drill text's model in the background the first time it is heard, when its narrator render already
+    exists, so checking costs no extra narration; the drill leaves the text out from then on if no model passes."""
+    key = _check_key(language, text)
+    gym = _gym(state, language)
+    if key in CHECKED or text in gym.melody_texts() or _first_stage(gym, text) is None or state.pronunciation is None:
+        return
+    if any(task.get_name() == key for task in CHECKING):
+        return
+    task = asyncio.create_task(_check_quietly(state, text, language), name=key)
+    CHECKING.add(task)
+    task.add_done_callback(CHECKING.discard)
+
+
+async def _verdict(state: AppState, text: str, language: Language) -> str | None:
+    """A text's checked verdict, ``None`` when not checked yet (it is then served as before)."""
+    key = _check_key(language, text)
+    if key not in CHECKED:
+        try:
+            CHECKED[key] = (await state.objects.get(AUDIO_BUCKET, f"{key}.verdict")).decode()
+        except Exception:
+            return None
+    return CHECKED[key]
+
+
+async def _checked_model(state: AppState, text: str, language: Language) -> bytes | None:
+    """The other native render kept for a text whose narrator model didn't pass, if any."""
+    if await _verdict(state, text, language) != "other":
+        return None
+    return await state.objects.get(AUDIO_BUCKET, f"{_check_key(language, text)}.pcm")
+
+
+async def _with_models(state: AppState, texts: list[str], language: Language) -> list[str]:
+    """A drill's texts without those no checked model could be found for (all of them if that would empty it)."""
+    kept = [text for text in texts if await _verdict(state, text, language) != "none"]
+    return kept or texts
 
 
 def _expected_melody(result: dict[str, Any], text: str, drill: Drill | None) -> dict[str, Any]:
@@ -557,10 +679,16 @@ async def gym_drill(key: str, principal: Principal, state: State, db: Db, langua
         **_summary_fields(drill, gym, entry, sounds),
         guides=guides,
         pairs=list(drill.pairs),
-        pair_texts=[_marked(drill, f"{a} / {b}", language, state) for a, b in drill.pairs],
+        pair_texts=[
+            _marked(drill, text, language, state)
+            for text in await _with_models(state, [f"{a} / {b}" for a, b in drill.pairs], language)
+        ],
         features=gym.features,
-        words=[_marked(drill, w, language, state) for w in drill.words],
-        phrases=[_marked(drill, p, language, state) for p in await _with_melody(state, drill, drill.phrases, language)],
+        words=[_marked(drill, w, language, state) for w in await _with_models(state, list(drill.words), language)],
+        phrases=[
+            _marked(drill, p, language, state)
+            for p in await _with_models(state, await _with_melody(state, drill, drill.phrases, language), language)
+        ],
         sentence=_marked(drill, drill.sentence, language, state),
         focus=drill.focus,
         passed_items=progress.passed_items,
