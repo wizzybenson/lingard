@@ -168,3 +168,53 @@ way home.
 - **School flow.** The school flow opens a named grammar lesson, as learn-first does, since next-up is the coach's
   pick.
 
+## The coach gets a memory (2026-10-22, late; prompt learning_coach@v3)
+
+The founder asked for a coach with good memory and understanding of the learner's progression and next steps.
+
+**What it now reads:**
+- **Where the learner stands.** Each exam skill as level against goal ("5-7 of goal 9 (behind)"), plus streak, story
+  days lived, rules learned and sound drills climbed.
+- **Mistakes over 30 days.** Up to the last 12 scenes, by rule: the latest words, in how many scenes, and how long ago.
+  A mistake made again after the rule's lesson was finished is a **relapse**: it is offered first, and a learned rule
+  can come back to be fixed. Only confirmed mistakes count (≥ 0.85 and a second check).
+- **Its own journal.** `settings.coach_journal` keeps 14 days per language: what it chose, under which titles, the
+  sound's score at the time, and the focus. The last week is read back with what came of each pick:
+  - for a fix: made again, not made since, or lesson done;
+  - for a new rule: learned, started, or not started;
+  - for a sound: its score then and now;
+  - what the learner did that day (from `done_days`, now kept per day for 21 days, plus the story).
+
+**What it now says.** The prompt asks it to:
+- mend before adding;
+- build on a fix that held;
+- offer a skipped suggestion once more, said differently, then move on;
+- prefer a rule the learner half-uses;
+- write a **focus**: what the coming days are about and the next milestone. It is shown at the top of Today's path.
+
+**Robustness:**
+- A hard 60 s timeout on the call.
+- A plan that failed or timed out isn't asked for again for 10 minutes; old entries are pruned.
+- Only candidates' keys are kept; text is cut to length.
+- Plans are cached under a digest that includes the prompt's text, so an edited prompt replans.
+- The coach's write and `mark_active` lock the profile row, so a tick made at the same moment isn't lost.
+- API tests blank the model keys, because importing the API loads `.env` and the coach could otherwise have planned
+  for real during a test.
+
+**Tests:**
+- `test_coach_memory`, against the database:
+  - a mistake made after the lesson is a relapse and is fixed first, in the learner's words;
+  - a mistake is counted once per scene, and unconfirmed tags never count;
+  - the journal keeps 14 days, one plan per day, and reads back what came of each pick.
+- `test_learning_coach`: memory, relapse, standing and focus all reach the prompt, and the focus is cut to length.
+- `test_coaching`: an outage costs one call.
+
+**Live (a few `mid` calls):**
+- **Relapse, fix skipped yesterday:** it went straight to "You said 'j'ai allé à la banque' again yesterday". The
+  milestone was "a full account of a past event without mixing être and avoir".
+- **Fix held:** it moved on to the next mistake rather than repeating the fix.
+- **New learner:** the banking words for the bank scene.
+- **The test learner:** the 30-day window found "les virements internationales", which the 3-scene window had
+  missed. It said "23 reviews waiting" while the warm-up shows 8; the prompt now forbids counts, and the reasons that
+  came back had none.
+

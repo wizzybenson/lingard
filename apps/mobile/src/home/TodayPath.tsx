@@ -28,8 +28,11 @@ export function TodayPath({
   storyBusy,
   onStory,
   coach,
+  focus,
 }: {
   stops: PathStop[];
+  /** The coach's word on the coming days, once it has planned. */
+  focus?: string | null;
   /** The learning coach's state: "thinking" while it tailors the day, "ai" once it has. */
   coach: "ai" | "thinking" | "rules";
   /** "Begin day 7" or "Continue day 7": the story stop's button. */
@@ -75,7 +78,9 @@ export function TodayPath({
       {coach !== "rules" && (
         <Animated.View key={coach} entering={FadeIn.duration(400)} style={styles.coach}>
           {coach === "thinking" ? <ActivityIndicator size="small" color={colors.sunset} /> : <Ionicons name="sparkles" size={14} color={colors.sunset} />}
-          <Text style={[type.caption, { color: colors.inkSoft }]}>{t(coach === "thinking" ? "path.coachThinking" : "path.coachReady")}</Text>
+          <Text style={[type.caption, { color: colors.inkSoft, flex: 1 }]}>
+            {coach === "thinking" ? t("path.coachThinking") : (focus ?? t("path.coachReady"))}
+          </Text>
         </Animated.View>
       )}
       {finished && (
@@ -157,7 +162,7 @@ export function TodayPath({
 
 const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: space(1), marginHorizontal: space(0.5) },
-  coach: { flexDirection: "row", alignItems: "center", gap: 6, marginHorizontal: space(0.5), marginTop: -space(0.5) },
+  coach: { flexDirection: "row", alignItems: "flex-start", gap: 6, marginHorizontal: space(0.5), marginTop: -space(0.5) },
   stop: { flexDirection: "row", gap: space(1.25) },
   rail: { width: RAIL, alignItems: "center" },
   line: { position: "absolute", top: 0, bottom: 0, width: 2, backgroundColor: colors.border },

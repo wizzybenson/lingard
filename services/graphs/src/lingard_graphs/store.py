@@ -151,7 +151,8 @@ class LearnerStore(Protocol):
 
     async def mark_active(self, user_id: uuid.UUID, day: date, kind: str | None = None) -> None:
         """Any practice (reviews, a lesson, writing, the Accent Studio) keeps the streak, not only live scenes.
-        ``kind`` ("review", "lesson", "sounds", "writing") ticks that stop of today's path."""
+        ``kind`` ("review", "lesson", "sounds", "writing") is recorded for that day: it ticks that stop of today's path
+        and tells the learning coach what the learner followed."""
         ...
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID: ...

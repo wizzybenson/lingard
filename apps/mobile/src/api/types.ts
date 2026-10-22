@@ -281,6 +281,8 @@ export interface Today {
   /** Who chose the path: the learning coach reading the learner's progress ("ai"), the curriculum's order while the
    * coach works ("thinking"; ask again shortly), or the curriculum's order alone ("rules"). */
   coach: "ai" | "thinking" | "rules";
+  /** The coach's word on the coming days: what they are about and the next milestone. */
+  coach_focus: string | null;
 }
 
 export interface PathStop {

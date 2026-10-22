@@ -1,9 +1,17 @@
-"""The learning coach (decision 0029): reads what the learner has shown (rules learned and used, mistakes confirmed in
-recent scenes, sound scores, exam skills) and chooses today's mistake to fix, new rule and sound, each with one
-sentence of why in the learner's interface language.
+"""The learning coach (decision 0029): reads what the learner has shown and chooses today's mistake to fix, new rule
+and sound, each with one sentence of why in the learner's interface language, plus the focus of their coming week.
+
+What it reads:
+- where they stand: level per exam skill against their goal, streak, how far into the story;
+- what they know: rules learned (by lesson or by using them well), and how surely they use the rest (BKT);
+- what trips them: mistakes confirmed in their scenes over the last weeks, how often and how lately, and relapses
+  (a mistake again on a rule they had learned);
+- its own memory: what it suggested on recent days and what came of it (followed or not, the mistake gone or back,
+  the sound score since);
+- today: the scene to play, reviews waiting, what is done.
 
 It may only choose among the candidates it is given, by key; anything else is dropped and the rule-based choice
-stands. Reasons are cut to length. The caller caches the plan, so the home screen never waits for it.
+stands. Text is cut to length. The caller caches the plan and keeps the journal, so the home screen never waits.
 """
 
 from __future__ import annotations
@@ -15,6 +23,8 @@ from lingard_llm import LLMRouter, PromptRegistry
 
 REASON_CHARS = 160
 """A reason is one sentence on a home-screen card; the prompt asks for 140 and anything past this is cut."""
+FOCUS_CHARS = 240
+"""The week's focus is two short sentences at most."""
 
 
 class SlipCandidate(BaseModel):
@@ -24,6 +34,10 @@ class SlipCandidate(BaseModel):
     better: str | None = None
     times: int = 1
     """How many recent scenes it was confirmed in."""
+    days_ago: int = 0
+    """Since it was last made."""
+    relapse: bool = False
+    """Made again after the rule was learned: the lesson didn't hold."""
 
 
 class RuleCandidate(BaseModel):
@@ -47,11 +61,15 @@ class CoachBrief(BaseModel):
     exam_name: str
     explain_language: str
     skills: dict[str, str] = {}
-    """Exam skill → met / close / behind / unknown."""
+    """Exam skill → its level against the goal, e.g. "5-7 of goal 9 (behind)"."""
+    progress: str = ""
+    """Streak, story days lived, lessons and sounds done: how far along the learner is."""
     learned: list[str] = []
     slips: list[SlipCandidate] = []
     rules: list[RuleCandidate] = []
     sounds: list[SoundCandidate] = []
+    history: list[str] = []
+    """The coach's own memory: one line per recent day, what it suggested and what came of it (newest first)."""
     done_today: list[str] = []
     reviews_due: int = 0
     story: str = ""
@@ -74,6 +92,8 @@ class CoachPlan(BaseModel):
     sound: str | None = None
     """Drill key, from the sounds."""
     why: Reasons = Field(default_factory=Reasons)
+    focus: str | None = None
+    """What the coming days are about and the next milestone, for the learner to read on the home screen."""
 
 
 async def coach(brief: CoachBrief, *, router: LLMRouter, prompts: PromptRegistry) -> CoachPlan:
@@ -85,17 +105,13 @@ async def coach(brief: CoachBrief, *, router: LLMRouter, prompts: PromptRegistry
         scale_name=LANGUAGE_SCALE[brief.language],
         band=brief.band,
         skills=", ".join(f"{k} {v}" for k, v in brief.skills.items()) or "not measured yet",
+        progress=brief.progress or "just starting",
         done_today=", ".join(brief.done_today) or "nothing yet",
         reviews=brief.reviews_due,
         story=brief.story or "not planned yet",
+        history="\n".join(f"- {line}" for line in brief.history) or "(no earlier days yet)",
         learned="\n".join(f"- {title}" for title in brief.learned) or "(nothing yet)",
-        slips="\n".join(
-            f"- {s.node_key}: {s.title}. Said “{s.said}”"
-            + (f", better “{s.better}”" if s.better else "")
-            + (f" ({s.times} scenes)" if s.times > 1 else "")
-            for s in brief.slips
-        )
-        or "(none)",
+        slips="\n".join(_slip_line(s) for s in brief.slips) or "(none)",
         rules="\n".join(f"- {r.node_key}: {r.title} ({r.kind}, level {r.band}, {r.in_use:.2f})" for r in brief.rules)
         or "(none)",
         sounds="\n".join(
@@ -107,24 +123,31 @@ async def coach(brief: CoachBrief, *, router: LLMRouter, prompts: PromptRegistry
     return _within(plan, brief)
 
 
+def _slip_line(s: SlipCandidate) -> str:
+    when = "today" if s.days_ago == 0 else "yesterday" if s.days_ago == 1 else f"{s.days_ago} days ago"
+    line = f"- {s.node_key}: {s.title}. Said “{s.said}”" + (f", better “{s.better}”" if s.better else "")
+    line += f" ({s.times} scene{'s' if s.times > 1 else ''}, last {when})"
+    return line + (" RELAPSE: made again after the rule was learned" if s.relapse else "")
+
+
+def _cut(text: str | None, limit: int, keep: bool = True) -> str | None:
+    text = " ".join((text or "").split())
+    if not keep or not text:
+        return None
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+
+
 def _within(plan: CoachPlan, brief: CoachBrief) -> CoachPlan:
     """Only candidates' keys survive, and only reasons for what survives (a reason for a dropped choice would describe
     something else)."""
     fix = plan.fix if plan.fix in {s.node_key for s in brief.slips} else None
     learn = plan.learn if plan.learn in {r.node_key for r in brief.rules} else None
     sound = plan.sound if plan.sound in {s.drill for s in brief.sounds} else None
-
-    def cut(text: str | None, keep: bool = True) -> str | None:
-        text = (text or "").strip()
-        if not keep or not text:
-            return None
-        return text if len(text) <= REASON_CHARS else text[: REASON_CHARS - 1].rstrip() + "…"
-
     why = Reasons(
-        warmup=cut(plan.why.warmup),
-        fix=cut(plan.why.fix, fix is not None),
-        story=cut(plan.why.story),
-        sounds=cut(plan.why.sounds, sound is not None),
-        learn=cut(plan.why.learn, learn is not None),
+        warmup=_cut(plan.why.warmup, REASON_CHARS),
+        fix=_cut(plan.why.fix, REASON_CHARS, fix is not None),
+        story=_cut(plan.why.story, REASON_CHARS),
+        sounds=_cut(plan.why.sounds, REASON_CHARS, sound is not None),
+        learn=_cut(plan.why.learn, REASON_CHARS, learn is not None),
     )
-    return CoachPlan(fix=fix, learn=learn, sound=sound, why=why)
+    return CoachPlan(fix=fix, learn=learn, sound=sound, why=why, focus=_cut(plan.focus, FOCUS_CHARS))

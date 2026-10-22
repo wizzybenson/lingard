@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 
 from lingard_api.coach import Stop
-from lingard_api.coaching import Source, todays_path
+from lingard_api.coaching import CoachView, Source, todays_path
 from lingard_api.deps import Db, Principal, State
 from lingard_api.routes.key_points import key_points
 from lingard_api.routes.learning import learner_bands
@@ -75,6 +75,8 @@ class Today(BaseModel):
     coach: Source = "rules"
     """Who chose the path: the learning coach ("ai"), the curriculum's order while the coach works ("thinking"), or the
     curriculum's order alone ("rules")."""
+    coach_focus: str | None = None
+    """The coach's word on the coming days: what they are about and the next milestone."""
 
 
 def skill_status(target: int, low: int | None, high: int | None) -> Literal["met", "close", "behind", "unknown"]:
@@ -151,12 +153,11 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
     else:
         step = "story"
     coins = (await db.execute(select(Wallet.coins).where(Wallet.user_id == principal.user_id))).scalar_one_or_none()
-    path: list[Stop] = []
-    source: Source = "rules"
+    view = CoachView([], "rules")
     if (focus := focus_language(profile)) is not None:
         focus_pack = LANGUAGE_PACK[focus]
         goal = next((g for g in goals if g.pack == focus_pack), None)
-        path, source = await todays_path(
+        view = await todays_path(
             state,
             db,
             await db.get_one(User, principal.user_id),
@@ -164,8 +165,9 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
             focus,
             story_ready=step == "story",
             reviews_due=reviews_due,
-            skills={s.skill: s.status for s in goal.skills} if goal else {},
+            skills={s.skill: _against_goal(s) for s in goal.skills} if goal else {},
             exam_name=state.packs.pack(focus_pack).name,
+            streak=current,
         )
     return Today(
         streak=current,
@@ -178,6 +180,15 @@ async def today(principal: Principal, state: State, db: Db) -> Today:
         onboarding=Onboarding(goal=bool(exam_dates), placement=bool(bands), first_story=stories > 0),
         coins=coins or 0,
         freezes=freezes,
-        path=path,
-        coach=source,
+        path=view.stops,
+        coach=view.source,
+        coach_focus=view.focus,
     )
+
+
+def _against_goal(skill: SkillGoal) -> str:
+    """A skill's level against its goal, as the coach reads it: "5-7 of goal 9 (behind)"."""
+    if skill.level_low is None or skill.level_high is None:
+        return f"not measured yet (goal {skill.target})"
+    level = str(skill.level_low) if skill.level_low == skill.level_high else f"{skill.level_low}-{skill.level_high}"
+    return f"{level} of goal {skill.target} ({skill.status})"

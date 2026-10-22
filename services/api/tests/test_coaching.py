@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import Any
 
@@ -27,28 +28,28 @@ async def test_a_failing_coach_is_not_asked_again_on_every_look(monkeypatch: pyt
         calls += 1
         raise RuntimeError("provider down")
 
-    async def signals(*_: Any) -> Signals:
-        return SIGNALS
+    async def gather(*_: Any) -> Any:
+        return SimpleNamespace(signals=SIGNALS, today=datetime.now(UTC).date())
 
     async def brief(*_: Any) -> CoachBrief:
         return BRIEF
 
-    monkeypatch.setattr(coaching, "_signals", signals)
+    monkeypatch.setattr(coaching, "_gather", gather)
     monkeypatch.setattr(coaching, "_brief", brief)
     monkeypatch.setattr(coaching, "ask_coach", failing)
     monkeypatch.setattr(coaching, "any_llm_configured", lambda: True)
-    prompts = SimpleNamespace(get=lambda _: SimpleNamespace(ref="learning_coach@v2"))
+    prompts = SimpleNamespace(get=lambda _: SimpleNamespace(ref="learning_coach@v3", template="…"))
     state: Any = SimpleNamespace(graph_deps=SimpleNamespace(prompts=prompts, router=None))
     user: Any = SimpleNamespace(id=uuid.uuid4())
     profile: Any = SimpleNamespace(settings={})
     db: Any = None
 
     async def look() -> str:
-        _, source = await coaching.todays_path(
+        view = await coaching.todays_path(
             state, db, user, profile, "fr", story_ready=True, reviews_due=0, skills={}, exam_name="TEF Canada"
         )
         await asyncio.sleep(0)  # let the background ask run
-        return source
+        return view.source
 
     assert await look() == "thinking"
     assert [await look() for _ in range(5)] == ["rules"] * 5, "after a failure the path stands without asking"

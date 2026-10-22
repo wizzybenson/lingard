@@ -161,7 +161,14 @@ export default function City() {
     >
       {/* One guided path once the level is known; before that, the getting-started steps (decision 0029). */}
       {today.data && path.length > 0 && (
-        <TodayPath stops={path} coach={today.data.coach} storyLabel={storyLabel} storyBusy={planning} onStory={() => void startDay()} />
+        <TodayPath
+          stops={path}
+          coach={today.data.coach}
+          focus={today.data.coach_focus}
+          storyLabel={storyLabel}
+          storyBusy={planning}
+          onStory={() => void startDay()}
+        />
       )}
       {today.data && path.length === 0 && today.data.next_step !== "story" && <TodayCard today={today.data} />}
       {/* Errors sit where they happened: the day's at the top with its path, the map's beside the map. */}

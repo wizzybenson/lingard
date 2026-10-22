@@ -37,6 +37,8 @@ def _ticket(row: m.WeaknessTicket) -> Ticket:
 
 
 PRACTICE_DAYS_KEPT = 120
+DONE_DAYS_KEPT = 21
+"""Days of "what was done" kept: the coach looks back two weeks."""
 """Enough history for streaks and the weekly freeze; older practice days are dropped."""
 
 
@@ -588,16 +590,15 @@ class SqlStore:
 
     async def mark_active(self, user_id: uuid.UUID, day: date, kind: str | None = None) -> None:
         async with self._sessions() as db, db.begin():
-            profile = (
-                await db.execute(select(m.LearnerProfile).where(m.LearnerProfile.user_id == user_id))
-            ).scalar_one()
+            mine = select(m.LearnerProfile).where(m.LearnerProfile.user_id == user_id).with_for_update()
+            profile = (await db.execute(mine)).scalar_one()
             days = sorted({*profile.settings.get("practice_days", []), day.isoformat()})[-PRACTICE_DAYS_KEPT:]
-            done = profile.settings.get("done_today", {})
-            kinds = set(done.get("kinds", [])) if done.get("date") == day.isoformat() else set()
+            # What was done each recent day, for today's path and the coach's memory of what the learner followed.
+            done: dict[str, list[str]] = dict(profile.settings.get("done_days", {}))
             if kind:
-                kinds.add(kind)
-            today = {"date": day.isoformat(), "kinds": sorted(kinds)}
-            profile.settings = {**profile.settings, "practice_days": days, "done_today": today}
+                done[day.isoformat()] = sorted({*done.get(day.isoformat(), []), kind})
+            kept = dict(sorted(done.items())[-DONE_DAYS_KEPT:])
+            profile.settings = {**profile.settings, "practice_days": days, "done_days": kept}
 
     async def save_mock(self, user_id: uuid.UUID, record: dict[str, Any]) -> uuid.UUID:
         async with self._sessions() as db, db.begin():

@@ -37,7 +37,11 @@ class Api:
 
 
 @pytest.fixture
-async def api(pg_schema_factory) -> AsyncIterator[Api]:  # type: ignore[no-untyped-def]
+async def api(pg_schema_factory, monkeypatch) -> AsyncIterator[Api]:  # type: ignore[no-untyped-def]
+    # Importing the API loads .env: tests never reach a real language model (the learning coach would otherwise plan
+    # in the background whenever a test opens Today).
+    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY"):
+        monkeypatch.setenv(key, "")
     async with pg_schema_factory() as (url, schema):
         settings = Settings(
             _env_file=None,

@@ -50,13 +50,19 @@ class Stop(BaseModel):
 
 @dataclass(frozen=True)
 class Slip:
-    """A confirmed mistake (≥ 0.85 and a second check) from a recent scene, on a rule not yet learned."""
+    """A confirmed mistake (≥ 0.85 and a second check) from a recent scene: on a rule not learned yet, or on one learned
+    and made wrong again since (a relapse)."""
 
     node_key: str
     title: str
     said: str
     better: str | None
     times: int = 1
+    """Recent scenes it was made in."""
+    days_ago: int = 0
+    """Since it was last made."""
+    relapse: bool = False
+    """Made again after the rule's lesson was finished."""
 
 
 @dataclass(frozen=True)
@@ -75,7 +81,7 @@ class Signals:
     done: frozenset[str] = field(default_factory=frozenset)
     """What was done today: "review", "lesson", "story", "sounds"."""
     slips: tuple[Slip, ...] = ()
-    """Most frequent first."""
+    """Relapses first, then the most frequent, then the most recent."""
     rules: tuple[tuple[str, str], ...] = ()
     """Rules at the learner's level not yet learned, in the curriculum's order: (node key, title)."""
     sounds: tuple[Sound, ...] = ()
