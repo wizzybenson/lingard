@@ -8,6 +8,7 @@ the words. Content comes from ``content/pronunciation/sounds_<lang>.yaml`` and t
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import IntEnum
 from functools import cache
@@ -30,7 +31,9 @@ class Stage(IntEnum):
 GOOD = 70.0
 """A target sound scoring this well counts as said right."""
 SENTENCE_GOOD = 75.0
-MELODY_GOOD = 60.0
+PROSODY_GOOD = 60.0
+"""A drill on the music of speech (stress, emphasis, rhythm, intonation) needs this much of its own part."""
+FOCUSES = ("stress", "emphasis", "rhythm", "intonation")
 HEAR_GOOD = 0.8
 """Share of minimal-pair questions answered right to pass the listening stage."""
 NEEDED = {Stage.WORDS: 5, Stage.PAIRS: 3, Stage.PHRASES: 3, Stage.SENTENCE: 1}
@@ -45,7 +48,8 @@ class Drill:
     pairs: tuple[tuple[str, str], ...]
     phrases: tuple[str, ...]
     sentence: str
-    melody: bool = False
+    focus: str | None = None
+    """For a drill on the music of speech: which part it trains (``FOCUSES``)."""
 
     def items(self, stage: Stage) -> tuple[str, ...]:
         """What is said at a spoken stage (a pair is said as its two words)."""
@@ -111,7 +115,7 @@ def load_gym(content_root: Path, language: str) -> Gym:
                 pairs=tuple(dict.fromkeys((str(a), str(b)) for a, b in pairs)),
                 phrases=tuple(str(p) for p in raw.get("phrases", [])),
                 sentence=str(raw["sentence"]),
-                melody=bool(raw.get("melody", False)),
+                focus=raw.get("focus"),
             )
         )
     return Gym(language, data["phonemes"], data["features"], tuple(drills))
@@ -146,25 +150,54 @@ class Progress:
             self.advance(drill)
 
 
-def target_score(drill: Drill, words: list[dict[str, Any]]) -> float | None:
-    """How well the drill's own sounds were said in one attempt (every sound, for a drill without targets)."""
+def partners(drill: Drill, phonemes: Callable[[str], list[str]]) -> dict[str, list[str]]:
+    """For each trained sound, the sounds its minimal pairs set it against ("rue / roue": y against u)."""
+    out: dict[str, list[str]] = {}
+    for a, b in drill.pairs:
+        pa, pb = phonemes(a), phonemes(b)
+        diff = [i for i, (x, y) in enumerate(zip(pa, pb, strict=True)) if x != y] if len(pa) == len(pb) else []
+        if len(diff) != 1:
+            continue
+        x, y = pa[diff[0]], pb[diff[0]]
+        for want, other in ((x, y), (y, x)):
+            if want in drill.sounds and other not in out.get(want, []):
+                out.setdefault(want, []).append(other)
+    return out
+
+
+def target_score(drill: Drill, words: list[dict[str, Any]]) -> tuple[float | None, bool]:
+    """How well the drill's own sounds were said in one attempt, and whether that was by ear: when none of them can be
+    checked reliably (French é/è), the rest of the take is what is scored and the trained sound is compared by ear."""
     sounds = [p for w in words for p in w["phonemes"]]
-    wanted = [p["score"] for p in sounds if not drill.sounds or p["phoneme"] in drill.sounds]
-    return sum(wanted) / len(wanted) if wanted else None
+    trained = [p for p in sounds if not drill.sounds or p["phoneme"] in drill.sounds]
+    checked = [p["score"] for p in trained if p.get("checked", True)]
+    if checked:
+        return sum(checked) / len(checked), False
+    rest = [p["score"] for p in sounds if p.get("checked", True)]
+    return (sum(rest) / len(rest) if rest else None), bool(trained)
 
 
 def record_attempt(
-    progress: Progress, drill: Drill, stage: Stage, item: str, words: list[dict[str, Any]], intonation: float | None
+    progress: Progress,
+    drill: Drill,
+    stage: Stage,
+    item: str,
+    words: list[dict[str, Any]],
+    prosody: dict[str, Any] | None,
 ) -> bool:
-    """Counts one spoken attempt toward its stage; returns whether it was good. Climbs when the stage is done."""
+    """Counts one spoken attempt toward its stage; returns whether it was good. Climbs when the stage is done. A drill
+    on the music of speech also needs its own part (stress, emphasis, rhythm or intonation) to match the model."""
     for sound in (p for w in words for p in w["phonemes"]):
         if sound["phoneme"] in drill.sounds:
             progress.best[sound["phoneme"]] = max(progress.best.get(sound["phoneme"], 0.0), float(sound["score"]))
-    score = target_score(drill, words)
+    score, _ = target_score(drill, words)
     threshold = SENTENCE_GOOD if stage is Stage.SENTENCE else GOOD
+    if drill.focus:
+        threshold = PROSODY_GOOD  # the sounds only need to be clear; the music is what is trained
     good = score is not None and score >= threshold
-    if stage is Stage.SENTENCE and drill.melody:
-        good = good and intonation is not None and intonation >= MELODY_GOOD
+    part = (prosody or {}).get(drill.focus) if drill.focus else None
+    if part is not None:
+        good = good and float(part["score"]) >= PROSODY_GOOD
     if good and stage == progress.stage and item not in progress.passed_items:
         progress.passed_items.append(item)
         if len(progress.passed_items) >= min(NEEDED[stage], len(drill.items(stage))):

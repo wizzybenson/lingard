@@ -65,6 +65,33 @@ def by_word(words: list[tuple[str, list[str]]], heatmap: list[dict[str, Any]]) -
     return out
 
 
+def calibrated_music(raw: dict[str, Any], parts: list[str], calibration: Calibration | None) -> dict[str, Any]:
+    """The language's own parts of the music, scored against how much native speakers differ from each other: a word's
+    stress only where natives agree on it, and an intonation whose ending moves the wrong way never passes."""
+    music: dict[str, Any] = {"syllables": raw["syllables"]}
+    for part in ("stress", "emphasis", "rhythm", "intonation"):
+        found = raw.get(part) if part in parts else None
+        if found is None:
+            music[part] = None
+            continue
+        found = dict(found)
+        if part == "stress" and calibration is not None:
+            words = [w for w in found["words"] if calibration.stress_judged(w["word"])]
+            if not words:
+                music[part] = None
+                continue
+            found["words"] = words
+            found["score"] = round(100 * sum(w["expected"] == w["yours"] for w in words) / len(words), 1)
+        elif calibration is not None:
+            found["score"] = round(calibration.music_score(part, float(found["score"])), 1)
+        if part == "intonation":
+            final = found.get("final") or {}
+            if final.get("expected") in ("rise", "fall") and final.get("yours") != final.get("expected"):
+                found["score"] = min(float(found["score"]), 50.0)
+        music[part] = found
+    return music
+
+
 def judged(
     scores: list[PhonemeScore], partners: dict[str, list[str]], calibration: Calibration | None
 ) -> list[PhonemeScore]:
@@ -139,9 +166,9 @@ def create_app(engines: Engines) -> FastAPI:
         music = None
         if reference_pcm is not None:
             try:
-                music = analyse(
-                    learner, scores, reference_pcm, scored(reference_pcm), words, engines.g2p.vowels(body.language)
-                )
+                vowels = engines.g2p.vowels(body.language)
+                raw = analyse(learner, scores, reference_pcm, scored(reference_pcm), words, vowels)
+                music = calibrated_music(raw, engines.g2p.music(body.language), calibration)
             except ValueError:  # a reference too short to align: the sounds are still scored
                 music = None
         learner_f0 = yin_f0(to_float(learner))

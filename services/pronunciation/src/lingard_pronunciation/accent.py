@@ -35,53 +35,83 @@ FINAL_MOVE = 1.5
 
 @dataclass
 class Nucleus:
+    """One syllable, measured over its whole stretch of audio."""
+
     word: int
     syllable: str
     duration: float
     energy: float
     pitch: float | None
+    """Median pitch, in semitones from the speaker's own median."""
+    pitch_end: float | None = None
+    """Pitch over the syllable's last third: where a question rises or a statement falls."""
     prominence: float = 0.0
 
 
-def _syllables(phonemes: list[str], vowels: set[str]) -> list[str]:
-    """A word's sounds grouped around its vowels: consonants before a vowel open its syllable, the last ones close the
-    last syllable. Only for display: "fo·to·ɡʁaf"."""
-    groups: list[str] = []
-    pending = ""
-    for p in phonemes:
-        pending += p
+def _syllables(phonemes: list[str], vowels: set[str]) -> list[list[int]]:
+    """A word's sounds grouped around its vowels (indices): consonants before a vowel open its syllable, the last ones
+    close the last syllable."""
+    groups: list[list[int]] = []
+    pending: list[int] = []
+    for i, p in enumerate(phonemes):
+        pending.append(i)
         if p in vowels:
             groups.append(pending)
-            pending = ""
+            pending = []
     if groups and pending:
         groups[-1] += pending
-    return groups or ["".join(phonemes)]
+    return groups
 
 
-def _measure(
+def _boundaries(spans: list[PhonemeScore]) -> list[tuple[float, float]]:
+    """Each sound's stretch of audio in seconds. A CTC recogniser marks a sound with a brief spike, not its length, so
+    a sound is given the time from halfway after the previous spike to halfway before the next one."""
+    peaks = [(max(s.start_frame - PAD_FRAMES, 0), max(s.end_frame - PAD_FRAMES, 0)) for s in spans]
+    out = []
+    for k, (start, end) in enumerate(peaks):
+        left = (peaks[k - 1][1] + start) / 2 if k else max(start - 2, 0)
+        right = (end + peaks[k + 1][0]) / 2 if k + 1 < len(peaks) else end + 3
+        out.append((left * FRAME_S, max(right, left + 1) * FRAME_S))
+    return out
+
+
+def measure(
     pcm: bytes, spans: list[PhonemeScore], words: list[tuple[str, list[str]]], vowels: set[str]
 ) -> list[Nucleus]:
     signal = to_float(pcm)
     f0 = yin_f0(signal)
     voiced = f0[f0 > 0]
     register = float(np.median(voiced)) if voiced.size else 0.0
+    hop_rms = np.array(
+        [float(np.sqrt(np.mean(signal[i : i + HOP] ** 2))) for i in range(0, max(len(signal) - HOP, 1), HOP)]
+    )
+    regions = _boundaries(spans)
+
+    def semitones(track: np.ndarray) -> float | None:
+        track = track[track > 0]
+        return float(12 * np.log2(np.median(track) / register)) if track.size and register else None
+
     nuclei: list[Nucleus] = []
     at = 0
     for w, (_text, phonemes) in enumerate(words):
-        labels = iter(_syllables(phonemes, vowels))
-        for p in phonemes:
-            span = spans[at]
-            at += 1
-            if p not in vowels:
-                continue
-            start = max(span.start_frame - PAD_FRAMES, 0) * FRAME_S
-            end = max(span.end_frame + 1 - PAD_FRAMES, 1) * FRAME_S
-            chunk = signal[int(start * SAMPLE_RATE) : max(int(end * SAMPLE_RATE), int(start * SAMPLE_RATE) + 1)]
-            energy = 20 * math.log10(float(np.sqrt(np.mean(chunk**2))) + 1e-6)
-            track = f0[int(start * SAMPLE_RATE / HOP) : int(end * SAMPLE_RATE / HOP) + 1]
-            track = track[track > 0]
-            pitch = float(12 * np.log2(np.median(track) / register)) if track.size and register else None
-            nuclei.append(Nucleus(w, next(labels, p), max(end - start, FRAME_S), energy, pitch))
+        for group in _syllables(phonemes, vowels):
+            start, end = regions[at + group[0]][0], regions[at + group[-1]][1]
+            a, b = int(start * SAMPLE_RATE / HOP), max(int(end * SAMPLE_RATE / HOP), int(start * SAMPLE_RATE / HOP) + 1)
+            loud = hop_rms[a:b]
+            energy = 20 * math.log10(float(np.percentile(loud, 90)) + 1e-6) if loud.size else -120.0
+            track = f0[a:b]
+            last_third = track[len(track) * 2 // 3 :] if track.size >= 3 else track
+            nuclei.append(
+                Nucleus(
+                    w,
+                    "".join(phonemes[i] for i in group),
+                    end - start,
+                    energy,
+                    semitones(track),
+                    semitones(last_third),
+                )
+            )
+        at += len(phonemes)
     _prominence(nuclei)
     return nuclei
 
@@ -92,17 +122,28 @@ def _z(values: list[float]) -> list[float]:
     return [float(x) for x in (arr - arr.mean()) / spread]
 
 
+WEIGHTS = {"length": 0.5, "loudness": 0.5, "pitch": 2.0}
+"""How much each cue counts toward a syllable standing out. Fitted 2026-10-22 on 185 native renders of 47 English
+words against their dictionary stress (79% right; equal weights got 72%): pitch carries English stress most."""
+FINAL_LENGTHENING = 2.0
+"""The last syllable before a pause is drawn out whatever its stress; its length counts for half."""
+
+
 def _prominence(nuclei: list[Nucleus]) -> None:
-    """Longer, louder and higher than this speaker's own average, in equal parts."""
+    """How much each syllable stands out from this speaker's own average: longer, louder, and above all higher."""
     if not nuclei:
         return
-    durations = _z([math.log(n.duration) for n in nuclei])
+    lengths = [
+        math.log(n.duration) - (math.log(FINAL_LENGTHENING) if i == len(nuclei) - 1 else 0.0)
+        for i, n in enumerate(nuclei)
+    ]
+    durations = _z(lengths)
     energies = _z([n.energy for n in nuclei])
     pitched = [n.pitch for n in nuclei if n.pitch is not None]
     mean, spread = (float(np.mean(pitched)), float(np.std(pitched)) or 1.0) if pitched else (0.0, 1.0)
     for n, d, e in zip(nuclei, durations, energies, strict=True):
         p = (n.pitch - mean) / spread if n.pitch is not None else 0.0
-        n.prominence = d + e + p
+        n.prominence = WEIGHTS["length"] * d + WEIGHTS["loudness"] * e + WEIGHTS["pitch"] * p
 
 
 def _word_stress(you: list[Nucleus], ref: list[Nucleus], words: list[tuple[str, list[str]]]) -> dict[str, Any] | None:
@@ -166,19 +207,27 @@ def _rhythm(you: list[Nucleus], ref: list[Nucleus]) -> dict[str, Any] | None:
 
 
 def _movement(nuclei: list[Nucleus]) -> str | None:
-    pitched = [n.pitch for n in nuclei if n.pitch is not None]
-    if len(pitched) < 2:
+    """Where the voice goes at the end: the close of the last syllable against the syllables before it (a question in
+    French often rises inside its very last syllable)."""
+    if len(nuclei) < 2 or nuclei[-1].pitch_end is None:
         return None
-    before = float(np.mean(pitched[-3:-1])) if len(pitched) >= 3 else pitched[-2]
-    move = pitched[-1] - before
+    before = [n.pitch for n in nuclei[-3:-1] if n.pitch is not None]
+    if not before:
+        return None
+    move = nuclei[-1].pitch_end - float(np.mean(before))
     return "rise" if move > FINAL_MOVE else "fall" if move < -FINAL_MOVE else "level"
 
 
 def _intonation(you: list[Nucleus], ref: list[Nucleus]) -> dict[str, Any] | None:
-    if len(ref) < 3 or len(you) != len(ref):
+    if len(ref) < 2 or len(you) != len(ref):
         return None
     pairs = [(a.pitch, b.pitch) for a, b in zip(you, ref, strict=True) if a.pitch is not None and b.pitch is not None]
-    if len(pairs) < 3:
+    pairs += (
+        [(you[-1].pitch_end, ref[-1].pitch_end)]
+        if you[-1].pitch_end is not None and ref[-1].pitch_end is not None
+        else []
+    )
+    if len(pairs) < 2:
         return None
     mine = np.array([a for a, _ in pairs])
     theirs = np.array([b for _, b in pairs])
@@ -205,8 +254,8 @@ def analyse(
 ) -> dict[str, Any]:
     """Stress, emphasis, rhythm and intonation of a take against the native reference; a part that doesn't apply (no
     word of two syllables, a single word) is ``None``."""
-    you = _measure(learner_pcm, learner, words, vowels)
-    ref = _measure(reference_pcm, reference, words, vowels)
+    you = measure(learner_pcm, learner, words, vowels)
+    ref = measure(reference_pcm, reference, words, vowels)
     return {
         "syllables": [
             {

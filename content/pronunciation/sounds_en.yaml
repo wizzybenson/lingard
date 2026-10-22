@@ -5,6 +5,7 @@
 source_url: https://www.internationalphoneticassociation.org/content/full-ipa-chart
 as_of: "2026-10-22"
 language: en
+music: [stress, emphasis, rhythm, intonation]  # the parts of the music judged (every word of two or more syllables has its stressed syllable)
 
 phonemes:
   θ:
@@ -1015,6 +1016,8 @@ features:
   ɔɪ: {kind: diphthong, from: ɔ, to: ɪ}
   aʊ: {kind: diphthong, from: a, to: ʊ}
   əʊ: {kind: diphthong, from: ə, to: ʊ}
+  iə: {kind: diphthong, from: ɪ, to: ə}
+  eə: {kind: diphthong, from: ɛ, to: ə}
   p: {kind: consonant, place: bilabial, manner: stop, voiced: false}
   b: {kind: consonant, place: bilabial, manner: stop, voiced: true}
   m: {kind: consonant, place: bilabial, manner: nasal, voiced: true}
@@ -1172,15 +1175,21 @@ drills:
   - key: en.pron.word_stress
     sounds: []
     words: [photograph, photographer, important, information, comfortable, interesting, hotel, today, record, present]
+    phrases: [a photograph, a photographer, photographic, an important day, a comfortable hotel]
     sentence: "The photographer took an important photograph."
-    melody: true
+    focus: stress
   - key: en.pron.sentence_stress
     sounds: []
     phrases: [I want to go, what do you want, I'd like a coffee]
     sentence: "I'd like a large coffee, please."
-    melody: true
+    focus: emphasis
   - key: en.pron.intonation
     sounds: []
     phrases: [are you coming, where are you going, really]
     sentence: "Are you coming tonight?"
-    melody: true
+    focus: intonation
+  - key: en.gym.rhythm
+    sounds: []
+    phrases: [cats chase mice, the cats chase mice, the cats will chase the mice, the cats have been chasing the mice]
+    sentence: "The cats have been chasing the mice."
+    focus: rhythm

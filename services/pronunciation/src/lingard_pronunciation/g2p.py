@@ -25,6 +25,8 @@ class G2P(Protocol):
 
     def vowels(self, language: str) -> set[str]: ...
 
+    def music(self, language: str) -> list[str]: ...
+
 
 WORD = re.compile(r"[\w'’-]+", flags=re.UNICODE)
 
@@ -73,6 +75,13 @@ class LexiconG2P:
 
     def phonemes(self, text: str, language: str) -> list[str]:
         return [p for _, phonemes in self.words(text, language) for p in phonemes]
+
+    def music(self, language: str) -> list[str]:
+        """The parts of the music of speech judged in this language (``music`` in the sound gym)."""
+        path = self._root / "pronunciation" / f"sounds_{language}.yaml"
+        if not path.is_file():
+            return ["stress", "emphasis", "rhythm", "intonation"]
+        return [str(p) for p in yaml.safe_load(path.read_text()).get("music", [])]
 
     def vowels(self, language: str) -> set[str]:
         """The language's vowels (syllable nuclei), from the sound gym's features."""

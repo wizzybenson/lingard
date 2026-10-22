@@ -9,36 +9,36 @@ voices:
 - openai gpt-4o-mini-tts onyx
 - elevenlabs narrator (words)
 as_of: '2026-10-22'
-texts: 295
+texts: 302
 scale:
   a:
     p10: 0.0
     p50: 0.0
-    n: 520
+    n: 529
   b:
     p10: 0.0
     p50: 0.0
-    n: 111
+    n: 114
   d:
     p10: 0.0
     p50: 0.0
     n: 218
   e:
-    p10: -0.576
+    p10: -0.551
     p50: 0.0
-    n: 213
+    n: 216
   f:
     p10: 0.0
     p50: 0.0
-    n: 105
+    n: 117
   i:
     p10: 0.0
     p50: 0.0
-    n: 250
+    n: 268
   j:
     p10: 0.0
     p50: 0.0
-    n: 60
+    n: 66
   k:
     p10: 0.0
     p50: 0.0
@@ -46,7 +46,7 @@ scale:
   l:
     p10: 0.0
     p50: 0.0
-    n: 323
+    n: 329
   m:
     p10: 0.0
     p50: 0.0
@@ -54,7 +54,7 @@ scale:
   n:
     p10: 0.0
     p50: 0.0
-    n: 122
+    n: 131
   o:
     p10: -2.214
     p50: 0.0
@@ -66,31 +66,31 @@ scale:
   s:
     p10: 0.0
     p50: 0.0
-    n: 207
+    n: 213
   t:
     p10: 0.0
     p50: 0.0
-    n: 205
+    n: 211
   u:
-    p10: -8.35
+    p10: -8.258
     p50: 0.0
-    n: 133
+    n: 136
   v:
     p10: 0.0
     p50: 0.0
-    n: 201
+    n: 213
   w:
     p10: 0.0
     p50: 0.0
     n: 89
   y:
-    p10: -4.752
+    p10: -4.236
     p50: 0.0
-    n: 136
+    n: 145
   z:
     p10: 0.0
     p50: 0.0
-    n: 71
+    n: 77
   ø:
     p10: -4.134
     p50: 0.0
@@ -104,9 +104,9 @@ scale:
     p50: 0.0
     n: 60
   ɑ̃:
-    p10: -3.538
+    p10: -3.328
     p50: 0.0
-    n: 116
+    n: 119
   ɔ:
     p10: -2.798
     p50: 0.0
@@ -122,11 +122,11 @@ scale:
   ɛ:
     p10: 0.0
     p50: 0.0
-    n: 252
+    n: 258
   ɛ̃:
-    p10: -5.528
+    p10: -3.813
     p50: 0.0
-    n: 72
+    n: 84
   ɡ:
     p10: 0.0
     p50: 0.0
@@ -138,11 +138,11 @@ scale:
   ʁ:
     p10: 0.0
     p50: 0.0
-    n: 406
+    n: 409
   ʃ:
     p10: 0.0
     p50: 0.0
-    n: 80
+    n: 83
   ʒ:
     p10: 0.0
     p50: 0.0
@@ -152,13 +152,13 @@ native_pass_rate:
   b: 0.97
   d: 0.99
   e: 0.9
-  f: 0.95
+  f: 0.96
   i: 0.92
-  j: 0.93
+  j: 0.94
   k: 0.98
   l: 0.96
   m: 0.96
-  n: 1.0
+  n: 0.99
   o: 0.9
   p: 0.97
   s: 0.95
@@ -166,7 +166,7 @@ native_pass_rate:
   u: 0.91
   v: 0.98
   w: 0.92
-  y: 0.91
+  y: 0.9
   z: 0.99
   ø: 0.91
   œ: 0.93
@@ -176,11 +176,11 @@ native_pass_rate:
   ɔ̃: 0.92
   ə: 0.9
   ɛ: 0.93
-  ɛ̃: 0.92
+  ɛ̃: 0.9
   ɡ: 0.91
   ɲ: 0.89
   ʁ: 0.97
-  ʃ: 0.97
+  ʃ: 0.98
   ʒ: 0.99
 contrasts:
   b p:
@@ -471,6 +471,104 @@ contrasts:
     n:
     - 12
     - 12
+prosody:
+  stress:
+    p10: 0.0
+    p50: 100.0
+    n: 696
+  emphasis:
+    p10: 12.5
+    p50: 90.0
+    n: 396
+  rhythm:
+    p10: 52.7
+    p50: 79.0
+    n: 588
+  intonation:
+    p10: 33.5
+    p50: 68.1
+    n: 924
+stress_words:
+  allait: 1.0
+  aller: 1.0
+  allez: 0.33
+  allons: 0.67
+  ami: 0.67
+  amie: 0.33
+  amis: 1.0
+  arrive: 0.78
+  au-dessus: 0.0
+  aussi: 1.0
+  avance: 1.0
+  avec: 0.47
+  avez: 0.78
+  avoir: 1.0
+  bonjour: 0.33
+  c'était: 0.33
+  café: 0.71
+  cafés: 1.0
+  campagne: 1.0
+  canada: 1.0
+  champignon: 1.0
+  chapeau: 1.0
+  chercher: 0.33
+  cheval: 1.0
+  cheveux: 1.0
+  demain: 1.0
+  dessert: 1.0
+  desserts: 1.0
+  dessous: 1.0
+  dessus: 1.0
+  dupont: 1.0
+  désert: 1.0
+  encore: 1.0
+  enfant: 1.0
+  espagne: 0.78
+  fini: 1.0
+  fruits: 1.0
+  gagner: 0.67
+  garçon: 0.67
+  gâteau: 1.0
+  habite: 0.67
+  idée: 0.56
+  intéressant: 1.0
+  jardin: 1.0
+  jeudi: 1.0
+  joli: 1.0
+  l'école: 1.0
+  lundi: 1.0
+  madame: 0.78
+  maison: 1.0
+  manger: 0.78
+  mardi: 1.0
+  merci: 1.0
+  moment: 1.0
+  montagne: 0.78
+  papa: 1.0
+  paris: 0.78
+  payer: 1.0
+  petit: 0.67
+  poignet: 1.0
+  poignée: 1.0
+  poison: 1.0
+  poisson: 0.67
+  premier: 1.0
+  regarde: 1.0
+  regarder: 1.0
+  soleil: 1.0
+  suite: 0.67
+  travail: 1.0
+  travaille: 0.33
+  venez: 1.0
+  voilà: 1.0
+  voiture: 1.0
+  voudrais: 0.33
+  voulez: 0.33
+  vélo: 1.0
+  zéro: 1.0
+  école: 0.67
+  était: 1.0
+  été: 0.67
 unreliable:
 - e ɛ
 - o ɔ

@@ -9,13 +9,16 @@ a black cat: ə | b l æ k | k æ t
 a cheap chair: ə | tʃ iː p | tʃ eə
 a cheap ship: ə | tʃ iː p | ʃ ɪ p
 a cold glass: ə | k əʊ l d | ɡ l æ s
+a comfortable hotel: ə | k ʌ m f t ə b ə l | h əʊ t ɛ l
 a cup of tea: ə | k ʌ p | ɒ v | t iː
 a full pool: ə | f ʊ l | p uː l
 a good day: ə | ɡ ʊ d | d eɪ
 a hot coffee: ə | h ɒ t | k ɒ f i
 a long road: ə | l ɒ ŋ | ɹ əʊ d
 a long walk: ə | l ɒ ŋ | w ɔː k
-a new year: ə | n j uː | j i ə
+a new year: ə | n j uː | j iə
+a photograph: ə | f əʊ t ə ɡ ɹ æ f
+a photographer: ə | f ə t ɒ ɡ ɹ ə f ə
 a red light: ə | ɹ ɛ d | l aɪ t
 a ship not a sheep: ə | ʃ ɪ p | n ɒ t | ə | ʃ iː p
 a strong street: ə | s t ɹ ɒ ŋ | s t ɹ iː t
@@ -28,6 +31,7 @@ all: ɔː l
 an: æ n
 an apple: ə n | æ p ə l
 an hour ago: ə n | aʊ ə ɹ | ə ɡ əʊ
+an important day: ə n | ɪ m p ɔː t ə n t | d eɪ
 and: æ n d
 apple: æ p ə l
 are: ɑː
@@ -83,7 +87,9 @@ cap: k æ p
 car: k ɑː
 cat: k æ t
 cats: k æ t s
+cats chase mice: k æ t s | tʃ eɪ s | m aɪ s
 chair: tʃ eə
+chase: tʃ eɪ s
 cheap: tʃ iː p
 chip: tʃ ɪ p
 chips: tʃ ɪ p s
@@ -112,7 +118,7 @@ don't stop go home: d əʊ n t | s t ɒ p | ɡ əʊ | h əʊ m
 door: d ɔː
 doze: d əʊ z
 drank: d ɹ æ ŋ k
-ear: i ə
+ear: iə
 eat: iː t
 evening: iː v n ɪ ŋ
 fan: f æ n
@@ -213,6 +219,7 @@ man: m æ n
 match: m æ tʃ
 measure: m ɛ ʒ ə
 men: m ɛ n
+mice: m aɪ s
 months: m ʌ n θ s
 more: m ɔː
 morning: m ɔː n ɪ ŋ
@@ -257,6 +264,7 @@ pen not ben: p ɛ n | n ɒ t | b ɛ n
 phone: f əʊ n
 photograph: f əʊ t ə ɡ ɹ æ f
 photographer: f ə t ɒ ɡ ɹ ə f ə
+photographic: f əʊ t ə ɡ ɹ æ f ɪ k
 pick: p ɪ k
 pick it up: p ɪ k | ɪ t | ʌ p
 pick it up and turn it off: p ɪ k | ɪ t | ʌ p | æ n d | t ɜː n | ɪ t | ɒ f
@@ -276,7 +284,7 @@ pull: p ʊ l
 rain: ɹ eɪ n
 ran: ɹ æ n
 rang: ɹ æ ŋ
-really: ɹ i ə l ɪ
+really: ɹ iə l ɪ
 record: ɹ ɛ k ɔː d
 red: ɹ ɛ d
 rice: ɹ aɪ s
@@ -333,6 +341,9 @@ thanked: θ æ ŋ k t
 that: ð æ t
 that cat drank from my cup: ð æ t | k æ t | d ɹ æ ŋ k | f ɹ ɒ m | m aɪ | k ʌ p
 the: ð ə
+the cats chase mice: ð ə | k æ t s | tʃ eɪ s | m aɪ s
+the cats have been chasing the mice: ð ə | k æ t s | h ə v | b ɪ n | tʃ eɪ s ɪ ŋ | ð ə | m aɪ s
+the cats will chase the mice: ð ə | k æ t s | w ɪ l | tʃ eɪ s | ð ə | m aɪ s
 the first bird: ð ə | f ɜː s t | b ɜː d
 the other three: ð ɪ | ʌ ð ə | θ ɹ iː
 the photographer took an important photograph: ð ə | f ə t ɒ ɡ ɹ ə f ə | t ʊ k | ə n | ɪ m p ɔː t ə n t | f əʊ t ə ɡ ɹ æ f
@@ -403,13 +414,14 @@ where: w eə
 where are you going: w eə ɹ | ɑː | j uː | ɡ əʊ ɪ ŋ
 white: w aɪ t
 white wine: w aɪ t | w aɪ n
+will: w ɪ l
 wine: w aɪ n
 with: w ɪ ð
 with them: w ɪ ð | ð ɛ m
 won't: w əʊ n t
 work: w ɜː k
 wrong: ɹ ɒ ŋ
-year: j i ə
+year: j iə
 yellow: j ɛ l əʊ
 'yes': j ɛ s
 yes you can: j ɛ s | j uː | k æ n

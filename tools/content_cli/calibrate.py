@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import itertools
 import os
 import sys
 from collections import defaultdict
@@ -32,11 +33,12 @@ import yaml
 from dotenv import load_dotenv
 
 from lingard_live.audio import resample
+from lingard_pronunciation.accent import analyse, measure
 from lingard_pronunciation.g2p import LexiconG2P
 from lingard_pronunciation.gop import calibrated_score, score_phonemes
-from lingard_pronunciation.gym import load_gym
+from lingard_pronunciation.gym import FOCUSES, load_gym
 from lingard_pronunciation.recognizer import load_recognizers
-from tools.content_cli.lexicon import texts
+from tools.content_cli.lexicon import espeak, texts
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = Path.home() / ".cache" / "lingard" / "calibration"
@@ -67,6 +69,22 @@ async def render(client: httpx.AsyncClient, text: str, voice: str, language: str
 def differing(a: list[str], b: list[str]) -> list[int]:
     """Positions where two same-length transcriptions differ (a minimal pair differs in one or two)."""
     return [i for i, (x, y) in enumerate(zip(a, b, strict=True)) if x != y] if len(a) == len(b) else []
+
+
+def dictionary_stress(word: str, language: str, phonemes: list[str], vowels: set[str]) -> int | None:
+    """Which syllable espeak-ng marks with primary stress (ˈ), counted in the lexicon's own syllables."""
+    rules = yaml.safe_load((ROOT / "content" / "pronunciation" / f"g2p_{language}.yaml").read_text())
+    ipa = " ".join(espeak(word, rules["voice"])).replace("\u200d", "")
+    syllables = sum(p in vowels for p in phonemes)
+    if syllables < 2 or "ˈ" not in ipa:
+        return None
+    before = ipa.split("ˈ")[0]
+    vowel_letters = set("aeiouæɑɒɔəɛɜɪʊʌøœy")
+    count, previous = 0, False
+    for ch in before:
+        count += ch in vowel_letters and not previous
+        previous = ch in vowel_letters
+    return min(count, syllables - 1)
 
 
 def cached(language: str, source: str, text: str) -> bytes | None:
@@ -143,6 +161,54 @@ async def calibrate(language: str) -> dict[str, object]:
             "reliable": bool(passed >= DETECTED and caught >= DETECTED),
             "n": [len(right), len(wrong)],
         }
+    # The music of speech: two native voices saying the same text differ too; that spread is what a learner is held to.
+    music: dict[str, list[float]] = defaultdict(list)
+    stress_agree: dict[str, list[bool]] = defaultdict(list)
+    vowels = g2p.vowels(language)
+    for text in all_texts:
+        words = g2p.words(text, language)
+        voiced = [v for v in VOICES if (text, v) in audio]
+        for ref_voice, my_voice in itertools.permutations(voiced, 2):
+            try:
+                result = analyse(
+                    audio[(text, my_voice)],
+                    scores(text, my_voice, text),
+                    audio[(text, ref_voice)],
+                    scores(text, ref_voice, text),
+                    words,
+                    vowels,
+                )
+            except ValueError:
+                continue
+            for part in FOCUSES:
+                if result[part] is not None:
+                    music[part].append(float(result[part]["score"]))
+
+    prosody = {
+        part: {
+            "p10": round(float(np.percentile(values, 10)), 1),
+            "p50": round(float(np.percentile(values, 50)), 1),
+            "n": len(values),
+        }
+        for part, values in music.items()
+        if len(values) >= 10
+    }
+    # Word stress is judged only where the detector finds the dictionary's stress (espeak's primary stress mark) in
+    # native speech: a word it gets wrong for natives would be marked wrong for learners too.
+    for text in all_texts:
+        written = g2p.words(text, language)
+        if len(written) != 1:
+            continue
+        stressed = dictionary_stress(text, language, written[0][1], vowels)
+        if stressed is None:
+            continue
+        for source in sources:
+            if (text, source) not in audio:
+                continue
+            nuclei = measure(audio[(text, source)], scores(text, source, text), written, vowels)
+            if len(nuclei) >= 2:
+                found = int(np.argmax([n.prominence for n in nuclei]))
+                stress_agree[text.casefold()].append(found == stressed)
     native_ok = {
         p: round(sum(calibrated_score(v, scale[p]["p10"], scale[p]["p50"]) >= 70 for v in values) / len(values), 2)
         for p, values in native.items()
@@ -155,6 +221,8 @@ async def calibrate(language: str) -> dict[str, object]:
         "scale": scale,
         "native_pass_rate": dict(sorted(native_ok.items())),
         "contrasts": contrasts,
+        "prosody": prosody,
+        "stress_words": {w: round(float(np.mean(v)), 2) for w, v in sorted(stress_agree.items()) if len(v) >= 4},
         "unreliable": sorted(k for k, c in contrasts.items() if not c["reliable"]),
     }
 

@@ -6,6 +6,7 @@
 source_url: https://www.internationalphoneticassociation.org/content/full-ipa-chart
 as_of: "2026-10-22"
 language: fr
+music: [emphasis, rhythm, intonation]  # the parts of the music judged (French has no word stress of its own: the last syllable of each group is lengthened (rhythm, emphasis))
 
 phonemes:
   y:
@@ -996,9 +997,14 @@ drills:
     sounds: []
     phrases: [un café, un grand café, un grand café chaud]
     sentence: "Je voudrais un grand café chaud, s'il vous plaît."
-    melody: true
+    focus: rhythm
   - key: fr.pron.question_intonation
     sounds: []
     phrases: [vous venez, vous venez ce soir, c'est loin]
     sentence: "Vous venez ce soir ?"
-    melody: true
+    focus: intonation
+  - key: fr.gym.statement_question
+    sounds: []
+    phrases: ["Il vient.", "Il vient ?", "C'est fini.", "C'est fini ?", "Tu as faim.", "Tu as faim ?"]
+    sentence: "Vous avez une chambre ?"
+    focus: intonation

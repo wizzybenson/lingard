@@ -24,7 +24,7 @@ from lingard_contracts.common import CITY_LOCALE, LANGUAGE_CITY, Language
 from lingard_db.models import LearnerProfile, User, VoiceProfile
 from lingard_graphs.pedagogy.review import new_card, review
 from lingard_pronunciation.g2p import LexiconG2P
-from lingard_pronunciation.gym import HEAR_GOOD, Drill, Gym, Progress, Stage, load_gym, record_attempt
+from lingard_pronunciation.gym import HEAR_GOOD, Drill, Gym, Progress, Stage, load_gym, partners, record_attempt
 from lingard_pronunciation.gym import NEEDED as GYM_NEEDED
 from lingard_pronunciation.studio import MAX_ATTEMPTS, PASS_SCORE
 
@@ -151,7 +151,15 @@ async def shadow(
         pcm = decode_audio(data)
     except ValueError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
-    payload = {"text": line, "language": language, "learner_pcm_b64": base64.b64encode(pcm).decode()}
+    gym = _gym(state, language)
+    try:
+        chosen = gym.drill(drill) if drill is not None else None
+    except KeyError as exc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "no such drill") from exc
+    payload: dict[str, Any] = {"text": line, "language": language, "learner_pcm_b64": base64.b64encode(pcm).decode()}
+    if chosen is not None:  # the trained sounds get the two-way test against their pair partners
+        g2p = _g2p(state.settings.content_root)
+        payload["partners"] = partners(chosen, lambda text: g2p.phonemes(text, language))
     if (reference_pcm := await _reference(state, db, principal.user_id, line, language)) is not None:
         payload["reference_pcm_b64"] = base64.b64encode(reference_pcm).decode()
     try:
@@ -164,12 +172,7 @@ async def shadow(
 
     await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
     user, profile = await _learner(db, principal.user_id)
-    gym = _gym(state, language)
     _remember_sounds(profile, language, result.get("words", []))
-    try:
-        chosen = gym.drill(drill) if drill is not None else None
-    except KeyError as exc:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "no such drill") from exc
     tips = _tips(gym, result.get("words", []), user.ui_locale, chosen.sounds if chosen else ())
     if chosen is not None and stage is not None:
         progress = _progress(profile, language, chosen)
@@ -240,7 +243,7 @@ def _tips(
         for sound in word["phonemes"]:
             phoneme, heard = sound["phoneme"], sound.get("heard_as")
             guide = gym.phonemes.get(phoneme)
-            if guide is None or sound["score"] >= 70 or (phoneme, heard) in seen:
+            if guide is None or sound["score"] >= 70 or (phoneme, heard) in seen or not sound.get("checked", True):
                 continue
             if targets and phoneme not in targets and sound["score"] >= 50:
                 continue  # in a drill, other sounds are only mentioned when clearly off
@@ -283,10 +286,10 @@ def _save_progress(profile: LearnerProfile, language: str, drill: Drill, progres
 def _attempt(progress: Progress, drill: Drill, stage: Stage, text: str, result: dict[str, Any]) -> bool:
     """A climbing attempt, or (on a mastered drill) a review: holding up moves the next review further out; slipping
     sends the drill back to its words."""
-    words, intonation = result.get("words", []), result.get("intonation")
+    words, music = result.get("words", []), result.get("prosody")
     if stage is not Stage.MASTERED:
-        return record_attempt(progress, drill, stage, text, words, intonation)
-    return record_attempt(Progress(Stage.SENTENCE), drill, Stage.SENTENCE, text, words, intonation)
+        return record_attempt(progress, drill, stage, text, words, music)
+    return record_attempt(Progress(Stage.SENTENCE), drill, Stage.SENTENCE, text, words, music)
 
 
 def _review(profile: LearnerProfile, language: str, drill: Drill, held: bool) -> None:
@@ -336,10 +339,15 @@ class DrillSummary(BaseModel):
 class DrillView(DrillSummary):
     guides: list[SoundGuide]
     pairs: list[tuple[str, str]]
+    pair_texts: list[GymText]
+    """Each pair as said in the pairs stage ("rue / roue"), its sounds marked."""
+    features: dict[str, dict[str, Any]]
+    """Where every sound of the language (and every sound learners substitute) is made, for the mouth map."""
     words: list[GymText]
     phrases: list[GymText]
     sentence: GymText
-    melody: bool
+    focus: str | None
+    """For a drill on the music of speech: stress, emphasis, rhythm or intonation."""
     passed_items: list[str]
     needed: int
 
@@ -447,10 +455,12 @@ async def gym_drill(key: str, principal: Principal, state: State, db: Db, langua
         **_summary_fields(drill, gym, entry, sounds),
         guides=guides,
         pairs=list(drill.pairs),
+        pair_texts=[_marked(drill, f"{a} / {b}", language, state) for a, b in drill.pairs],
+        features=gym.features,
         words=[_marked(drill, w, language, state) for w in drill.words],
         phrases=[_marked(drill, p, language, state) for p in drill.phrases],
         sentence=_marked(drill, drill.sentence, language, state),
-        melody=drill.melody,
+        focus=drill.focus,
         passed_items=progress.passed_items,
         needed=min(GYM_NEEDED.get(stage, 1), max(len(drill.items(stage)), 1)),
     )
