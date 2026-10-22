@@ -108,7 +108,7 @@ def measure(
                     end - start,
                     energy,
                     semitones(track),
-                    semitones(last_third),
+                    semitones(last_third) if semitones(last_third) is not None else semitones(track),
                 )
             )
         at += len(phonemes)

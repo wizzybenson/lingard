@@ -1,0 +1,22 @@
+# Accent Studio (free: nothing is played or scored): the sound gym, a drill's first step (how the sounds are made, the
+# mouth map), and the ladder. Opens the studio by deep link.
+appId: app.lingard
+---
+- runFlow: sign-in.yaml
+- openLink: lingard://studio
+- extendedWaitUntil:
+    visible: "Today's workout"
+    timeout: 20000
+- takeScreenshot: 30-studio
+- tapOn: "Start"
+- extendedWaitUntil:
+    visible: "Learn how the sound is made.*"
+    timeout: 20000
+- takeScreenshot: 31-drill-learn
+- scrollUntilVisible:
+    element: "Do this"
+    direction: DOWN
+- scrollUntilVisible:
+    element: "I can make it.*"
+    direction: DOWN
+- takeScreenshot: 32-drill-steps

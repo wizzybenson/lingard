@@ -7,6 +7,12 @@ as_of: "2026-10-22"
 language: en
 music: [stress, emphasis, rhythm, intonation]  # the parts of the music judged (every word of two or more syllables has its stressed syllable)
 
+# The model for melody drills (focus: intonation) is rendered with these instructions and kept only once its ending is
+# measured to rise (a question) or fall (a statement): the everyday narrator read some questions flat (2026-10-22).
+melody_model:  # melody drills use yes/no questions, which rise in both languages; wh-questions are left out
+  question: "Speak standard Southern British English (RP), clearly, at a natural pace. This is a yes/no question: your voice rises clearly at the end."
+  statement: "Speak standard Southern British English (RP), clearly, at a natural pace. This is a statement: your voice falls at the end."
+
 phonemes:
   θ:
     example: "think"
@@ -1053,7 +1059,7 @@ features:
 drills:
   - key: en.pron.th_sounds
     sounds: [θ, ð]
-    words: [think, three, thank, bath, mouth, they, this, the, mother, brother]
+    words: [think, three, thin, bath, mouth, they, this, the, mother, brother]  # not "thank": native takes of it alone were heard with a t
     pairs: [[thick, sick], [thing, sing], [mouth, mouse], [path, pass], [thin, tin], [thank, tank], [both, boat], [then, den], [those, doze], [breathe, breed]]
     phrases: [thank you, this one, the other three, with them]
     sentence: "I think they thanked their mother."
@@ -1185,7 +1191,7 @@ drills:
     focus: emphasis
   - key: en.pron.intonation
     sounds: []
-    phrases: [are you coming, where are you going, really]
+    phrases: ["Are you coming?", "Is it far?", "Really?", "You're coming.", "It's far."]
     sentence: "Are you coming tonight?"
     focus: intonation
   - key: en.gym.rhythm

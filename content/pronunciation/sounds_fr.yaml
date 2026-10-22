@@ -8,6 +8,12 @@ as_of: "2026-10-22"
 language: fr
 music: [emphasis, rhythm, intonation]  # the parts of the music judged (French has no word stress of its own: the last syllable of each group is lengthened (rhythm, emphasis))
 
+# The model for melody drills (focus: intonation) is rendered with these instructions and kept only once its ending is
+# measured to rise (a question) or fall (a statement): the everyday narrator read some questions flat (2026-10-22).
+melody_model:  # melody drills use yes/no questions, which rise in both languages; wh-questions are left out
+  question: "Speak standard Metropolitan French, clearly, at a natural pace. This is a yes/no question: your voice rises clearly on the very last syllable."
+  statement: "Speak standard Metropolitan French, clearly, at a natural pace. This is a statement: your voice falls at the end."
+
 phonemes:
   y:
     example: "rue"
@@ -939,7 +945,7 @@ drills:
     sentence: "Madame, voilà la gare du Canada."
   - key: fr.gym.e_muet
     sounds: [ə]
-    words: [le, de, ce, je, me, petit, demain, premier, regarder, cheval]
+    words: [le, de, ce, je, te, petit, demain, premier, regarder, cheval]  # not "me": TTS read it as English "me"
     pairs: [[le, les], [de, des], [ce, ces]]
     phrases: [je le regarde, ce petit cheval, de demain]
     sentence: "Je te le dis demain."
@@ -967,8 +973,8 @@ drills:
     sentence: "Vous voulez du vin ou des fruits ?"
   - key: fr.pron.s_vs_z
     sounds: [s, z]
-    words: [poisson, poison, dessert, désert, zéro, rose, six, maison, sel, douze]
-    phrases: [ils sont, ils ont, la maison rose, douze desserts]
+    words: [poisson, poison, coussin, cousin, zéro, rose, six, maison, sel, douze]  # no English look-alikes said alone: TTS read "dessert" the English way
+    phrases: [ils sont, ils ont, la maison rose, douze cousins]
     sentence: "Ce poisson n'est pas un poison."
   - key: fr.pron.ch_vs_j
     sounds: [ʃ, ʒ]
@@ -1000,7 +1006,7 @@ drills:
     focus: rhythm
   - key: fr.pron.question_intonation
     sounds: []
-    phrases: [vous venez, vous venez ce soir, c'est loin]
+    phrases: ["Vous venez ?", "Vous venez ce soir ?", "C'est loin ?", "Vous venez.", "C'est loin."]
     sentence: "Vous venez ce soir ?"
     focus: intonation
   - key: fr.gym.statement_question

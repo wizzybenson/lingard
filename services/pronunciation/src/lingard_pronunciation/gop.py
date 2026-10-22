@@ -14,6 +14,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 BLANK = 0
+MISSING = "∅"
+"""A partner meaning "the sound was left out" ("at" for "hat"): judged against silence, the CTC blank."""
 
 
 @dataclass(frozen=True)
@@ -72,15 +74,19 @@ def align(log_probs: NDArray[np.float64], targets: list[int]) -> list[tuple[int,
 
 
 def calibrated_score(gop: float, p10: float, p50: float) -> float:
-    """0–100 against native speech (decision 0028): a sound as good as a typical native one (the median) scores about
-    98, one at the edge of native range (10th percentile) about 75, and clearly worse falls fast."""
+    """0–100 against native speech (decision 0028): a sound as good as a typical native one (the median) scores 98,
+    one at the edge of native range (10th percentile) about 75, and clearly worse falls fast."""
     z = (gop - p10) / max(p50 - p10, 0.5)
-    return 100 / (1 + math.exp(-(3 * z + 1.1)))
+    score = 100 / (1 + math.exp(-(3 * z + 1.1)))
+    # Most native takes of some sounds sit exactly at the median (GOP 0, nothing heard better): that is native.
+    return max(score, 98.0) if gop >= p50 else score
 
 
 def tokens_of(phoneme: str, index: dict[str, int]) -> list[int]:
     """A sound as the recogniser writes it: one symbol, or (for models that write a nasal vowel as vowel + tilde) a
     few. Raises ``KeyError`` when the recogniser can't write it."""
+    if phoneme == MISSING:
+        return [BLANK]
     if phoneme in index:
         return [index[phoneme]]
     return [index[ch] for ch in phoneme]

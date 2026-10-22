@@ -48,6 +48,8 @@ STREAM_FINISH_TIMEOUT_S = 1.5
 SECOND_EAR_TIMEOUT_S = 10.0
 """The second hearing only delays the turn's assessment, never the reply; past this it is skipped."""
 """Longer than a streamed commit ever takes (≈0.3 s), shorter than giving up on batch would cost."""
+SHORT_REACTION_WORDS = 3
+"""A sentence this short ("Ah, d'accord.") is a reaction, not one of the reply's sentences."""
 WRAP_UP_HINT = "The scene is nearly over: bring the conversation to a natural close in the next reply."
 
 
@@ -155,6 +157,7 @@ class LiveLoop:
         gate: GatePolicy | None = None,
         filler_after_ms: float | None = None,
         stall_filler_after_ms: float | None = None,
+        max_reply_sentences: int = 3,
         streaming_stt: StreamingStt | None = None,
         second_ear: SttProvider | None = None,
     ) -> None:
@@ -176,6 +179,7 @@ class LiveLoop:
         self.gate = gate or GatePolicy()
         self.filler_after_ms = filler_after_ms
         self.stall_filler_after_ms = stall_filler_after_ms
+        self.max_reply_sentences = max_reply_sentences
         self.streaming_stt = streaming_stt
         self.second_ear = second_ear or stt
         self._stream: tuple[int, SttStream] | None = None
@@ -380,6 +384,7 @@ class LiveLoop:
                 yield token
 
         async def split() -> None:
+            said = 0
             try:
                 async for sentence in split_stream(timed(), SentenceSplitter(self.language.abbreviations)):
                     if timing.first_sentence_ms is None:
@@ -393,6 +398,10 @@ class LiveLoop:
                         tasks.append(prefetch)
                     tasks.append(confirm)
                     await pending.put((screened, confirm, prefetch))
+                    if len(words(sentence)) > SHORT_REACTION_WORDS:
+                        said += 1
+                    if said >= self.max_reply_sentences:
+                        break  # a learner needs room to answer: the rest of a long reply is never spoken
             except Exception as exc:  # every model failed: the fallback line covers it, the scene goes on
                 prepared.failed = True
                 logger.warning("no model produced the reply: %s", exc)

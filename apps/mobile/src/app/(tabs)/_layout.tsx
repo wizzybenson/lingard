@@ -16,7 +16,7 @@ type IconName = ComponentProps<typeof Ionicons>["name"];
 
 const ICONS: Record<string, [IconName, IconName]> = {
   city: ["map-outline", "map"],
-  phone: ["chatbubbles-outline", "chatbubbles"],
+  phone: ["refresh-circle-outline", "refresh-circle"],
   school: ["school-outline", "school"],
   exam: ["document-text-outline", "document-text"],
   passport: ["ribbon-outline", "ribbon"],

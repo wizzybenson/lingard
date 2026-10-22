@@ -76,7 +76,11 @@ def calibrated_music(raw: dict[str, Any], parts: list[str], calibration: Calibra
             continue
         found = dict(found)
         if part == "stress" and calibration is not None:
-            words = [w for w in found["words"] if calibration.stress_judged(w["word"])]
+            words = [
+                {**w, "expected": calibration.stress_syllable.get(w["word"].casefold(), w["expected"])}
+                for w in found["words"]
+                if calibration.stress_judged(w["word"])
+            ]
             if not words:
                 music[part] = None
                 continue
@@ -95,9 +99,11 @@ def calibrated_music(raw: dict[str, Any], parts: list[str], calibration: Calibra
 def judged(
     scores: list[PhonemeScore], partners: dict[str, list[str]], calibration: Calibration | None
 ) -> list[PhonemeScore]:
-    """A trained sound is judged by the two-way test against its partners where that test is calibrated: it asks the
-    drill's own question (was this "u" or "ou"?). A contrast this recogniser can't separate reliably is marked
-    unchecked, to be compared by ear rather than scored as wrong."""
+    """A trained sound is also put to the two-way test against its partners (was this "u" or "ou"?), and is marked
+    wrong only when that test and its native-calibrated score both say so. Measured on native French (255 takes each
+    way): either test alone passes 82% of native speech; requiring both to fail passes 90% and still catches 88% of
+    partner substitutions, so a learner who said it right is rarely told otherwise. A contrast this recogniser can't
+    separate reliably is marked unchecked, to be compared by ear rather than scored as wrong."""
     out = []
     for s in scores:
         verdicts = [
@@ -110,9 +116,22 @@ def judged(
         if not verdicts:
             out.append(s)
             continue
-        (score, reliable), partner = min(verdicts, key=lambda x: x[0][0])
+        # The partner it sounded like: the one the recogniser heard if it is a partner, else the one it was closest to.
+        named = [v for v in verdicts if v[1] == s.likely_substitute]
+        (contrast, reliable), partner = named[0] if named else min(verdicts, key=lambda x: x[0][0])
+        # A contrast this test separates 90%+ of the time both ways decides alone; otherwise either test may pass it.
+        score = (
+            contrast if calibration is not None and calibration.strong(s.phoneme, partner) else max(contrast, s.score)
+        )
         heard = partner if score < 70 else None
-        out.append(replace(s, score=score, likely_substitute=heard or s.likely_substitute, checked=reliable))
+        out.append(
+            replace(
+                s,
+                score=score,
+                likely_substitute=heard or (s.likely_substitute if score < 70 else None),
+                checked=reliable,
+            )
+        )
     return out
 
 

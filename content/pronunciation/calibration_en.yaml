@@ -9,7 +9,7 @@ voices:
 - openai gpt-4o-mini-tts onyx
 - elevenlabs narrator (words)
 as_of: '2026-10-22'
-texts: 355
+texts: 357
 scale:
   aɪ:
     p10: 0.0
@@ -32,9 +32,9 @@ scale:
     p50: 0.0
     n: 28
   eə:
-    p10: -10.138
-    p50: -8.647
-    n: 20
+    p10: -10.252
+    p50: -8.587
+    n: 17
   eɪ:
     p10: 0.0
     p50: 0.0
@@ -42,7 +42,7 @@ scale:
   f:
     p10: 0.0
     p50: 0.0
-    n: 184
+    n: 190
   h:
     p10: 0.0
     p50: 0.0
@@ -53,7 +53,7 @@ scale:
     n: 66
   iə:
     p10: -6.314
-    p50: -4.407
+    p50: -4.427
     n: 14
   iː:
     p10: -0.19
@@ -66,7 +66,7 @@ scale:
   k:
     p10: 0.0
     p50: 0.0
-    n: 305
+    n: 308
   l:
     p10: 0.0
     p50: 0.0
@@ -74,7 +74,7 @@ scale:
   m:
     p10: 0.0
     p50: 0.0
-    n: 165
+    n: 168
   n:
     p10: 0.0
     p50: 0.0
@@ -86,19 +86,19 @@ scale:
   s:
     p10: 0.0
     p50: 0.0
-    n: 336
+    n: 339
   t:
     p10: 0.0
     p50: 0.0
-    n: 592
+    n: 598
   tʃ:
     p10: 0.0
     p50: 0.0
     n: 71
   uː:
-    p10: -0.299
+    p10: -0.314
     p50: 0.0
-    n: 103
+    n: 100
   v:
     p10: 0.0
     p50: 0.0
@@ -106,11 +106,11 @@ scale:
   w:
     p10: 0.0
     p50: 0.0
-    n: 136
+    n: 133
   z:
     p10: 0.0
     p50: 0.0
-    n: 86
+    n: 89
   æ:
     p10: -5.411
     p50: 0.0
@@ -124,9 +124,9 @@ scale:
     p50: 0.0
     n: 132
   ɑː:
-    p10: -1.067
-    p50: -0.015
-    n: 51
+    p10: -1.052
+    p50: 0.0
+    n: 54
   ɒ:
     p10: -9.915
     p50: -7.927
@@ -136,17 +136,17 @@ scale:
     p50: 0.0
     n: 11
   ɔː:
-    p10: -3.479
-    p50: -0.073
-    n: 80
+    p10: -3.398
+    p50: 0.0
+    n: 83
   ə:
     p10: -3.403
     p50: 0.0
     n: 391
   əʊ:
-    p10: -7.242
-    p50: -5.638
-    n: 157
+    p10: -7.255
+    p50: -5.648
+    n: 154
   ɛ:
     p10: 0.0
     p50: 0.0
@@ -158,15 +158,15 @@ scale:
   ɡ:
     p10: 0.0
     p50: 0.0
-    n: 108
+    n: 105
   ɪ:
     p10: 0.0
     p50: 0.0
-    n: 303
+    n: 312
   ɹ:
     p10: 0.0
     p50: 0.0
-    n: 242
+    n: 239
   ʃ:
     p10: 0.0
     p50: 0.0
@@ -176,9 +176,9 @@ scale:
     p50: -1.007
     n: 24
   ʌ:
-    p10: -4.021
+    p10: -3.985
     p50: 0.0
-    n: 97
+    n: 100
   ʒ:
     p10: -0.551
     p50: 0.0
@@ -193,16 +193,16 @@ native_pass_rate:
   b: 0.94
   d: 0.98
   dʒ: 1.0
-  eə: 0.9
+  eə: 0.88
   eɪ: 0.94
-  f: 0.92
+  f: 0.93
   h: 0.95
   i: 0.89
   iə: 0.86
   iː: 0.9
   j: 0.91
   k: 0.98
-  l: 0.94
+  l: 0.93
   m: 0.98
   n: 0.96
   p: 0.95
@@ -216,16 +216,16 @@ native_pass_rate:
   æ: 0.91
   ð: 0.9
   ŋ: 0.92
-  ɑː: 0.9
+  ɑː: 0.91
   ɒ: 0.9
   ɔɪ: 0.91
-  ɔː: 0.91
+  ɔː: 0.92
   ə: 0.92
   əʊ: 0.92
   ɛ: 0.92
   ɜː: 0.93
   ɡ: 0.95
-  ɪ: 0.9
+  ɪ: 0.91
   ɹ: 0.96
   ʃ: 0.97
   ʊ: 0.92
@@ -296,6 +296,15 @@ contrasts:
     n:
     - 8
     - 8
+  h ∅:
+    threshold: -4.049
+    width: 0.5
+    native_pass: 0.83
+    caught: 0.67
+    reliable: false
+    n:
+    - 12
+    - 12
   iː aɪ:
     threshold: 4.598
     width: 0.5
@@ -317,6 +326,15 @@ contrasts:
   j dʒ:
     threshold: -0.043
     width: 5.845
+    native_pass: 1.0
+    caught: 1.0
+    reliable: true
+    n:
+    - 4
+    - 4
+  j ∅:
+    threshold: 0.328
+    width: 2.184
     native_pass: 1.0
     caught: 1.0
     reliable: true
@@ -613,67 +631,154 @@ contrasts:
     - 13
 prosody:
   intonation:
-    p10: 27.4
-    p50: 67.5
-    n: 844
+    p10: 23.5
+    p50: 64.7
+    n: 858
   emphasis:
-    p10: 36.1
-    p50: 90.0
+    p10: 37.1
+    p50: 88.4
     n: 474
   rhythm:
-    p10: 50.5
-    p50: 81.4
-    n: 594
+    p10: 50.2
+    p50: 81.2
+    n: 600
   stress:
     p10: 0.0
     p50: 100.0
     n: 492
 stress_words:
-  about: 0.75
-  again: 0.75
-  baby: 1.0
-  banana: 0.5
-  beautiful: 0.75
-  behind: 0.5
-  brother: 1.0
-  canada: 0.75
-  coffee: 1.0
-  collect: 0.25
-  comfortable: 0.75
-  doctor: 1.0
-  evening: 1.0
-  father: 1.0
-  ferry: 1.0
-  happy: 0.75
-  hello: 0.0
-  hotel: 0.25
-  hungry: 1.0
-  important: 0.75
-  information: 0.0
-  interesting: 0.5
-  lorry: 1.0
-  morning: 1.0
-  mother: 1.0
-  music: 0.75
-  needed: 1.0
-  paper: 0.75
-  photograph: 0.75
-  photographer: 0.75
-  present: 1.0
-  problem: 1.0
-  record: 1.0
-  singer: 1.0
-  sofa: 1.0
-  sorry: 1.0
-  started: 1.0
-  support: 0.75
-  today: 0.5
-  very: 1.0
-  wanted: 0.75
-  water: 0.75
-  yellow: 0.75
+  about:
+    agreement: 0.75
+    syllable: 0
+  again:
+    agreement: 0.75
+    syllable: 0
+  baby:
+    agreement: 1.0
+    syllable: 0
+  banana:
+    agreement: 0.5
+    syllable: 0
+  beautiful:
+    agreement: 0.75
+    syllable: 0
+  behind:
+    agreement: 0.5
+    syllable: 1
+  brother:
+    agreement: 1.0
+    syllable: 0
+  canada:
+    agreement: 0.75
+    syllable: 0
+  coffee:
+    agreement: 1.0
+    syllable: 0
+  collect:
+    agreement: 0.25
+    syllable: 1
+  comfortable:
+    agreement: 0.75
+    syllable: 0
+  doctor:
+    agreement: 1.0
+    syllable: 0
+  evening:
+    agreement: 1.0
+    syllable: 0
+  father:
+    agreement: 1.0
+    syllable: 0
+  ferry:
+    agreement: 1.0
+    syllable: 0
+  happy:
+    agreement: 0.75
+    syllable: 0
+  hello:
+    agreement: 0.0
+    syllable: 1
+  hotel:
+    agreement: 0.25
+    syllable: 1
+  hungry:
+    agreement: 1.0
+    syllable: 0
+  important:
+    agreement: 0.75
+    syllable: 1
+  information:
+    agreement: 0.0
+    syllable: 2
+  interesting:
+    agreement: 0.5
+    syllable: 0
+  lorry:
+    agreement: 1.0
+    syllable: 0
+  morning:
+    agreement: 1.0
+    syllable: 0
+  mother:
+    agreement: 1.0
+    syllable: 0
+  music:
+    agreement: 0.75
+    syllable: 0
+  needed:
+    agreement: 1.0
+    syllable: 0
+  paper:
+    agreement: 0.75
+    syllable: 0
+  photograph:
+    agreement: 0.75
+    syllable: 0
+  photographer:
+    agreement: 0.75
+    syllable: 1
+  present:
+    agreement: 1.0
+    syllable: 0
+  problem:
+    agreement: 1.0
+    syllable: 0
+  record:
+    agreement: 1.0
+    syllable: 0
+  singer:
+    agreement: 1.0
+    syllable: 0
+  sofa:
+    agreement: 1.0
+    syllable: 0
+  sorry:
+    agreement: 1.0
+    syllable: 0
+  started:
+    agreement: 1.0
+    syllable: 0
+  support:
+    agreement: 0.75
+    syllable: 1
+  today:
+    agreement: 0.5
+    syllable: 1
+  very:
+    agreement: 1.0
+    syllable: 0
+  wanted:
+    agreement: 0.75
+    syllable: 0
+  water:
+    agreement: 0.75
+    syllable: 0
+  yellow:
+    agreement: 0.75
+    syllable: 0
 unreliable:
 - aɪ iː
+- h ∅
 - iː aɪ
 - ɒ əʊ
 - əʊ ɒ

@@ -9,12 +9,12 @@ voices:
 - openai gpt-4o-mini-tts onyx
 - elevenlabs narrator (words)
 as_of: '2026-10-22'
-texts: 302
+texts: 303
 scale:
   a:
     p10: 0.0
     p50: 0.0
-    n: 529
+    n: 526
   b:
     p10: 0.0
     p50: 0.0
@@ -22,11 +22,11 @@ scale:
   d:
     p10: 0.0
     p50: 0.0
-    n: 218
+    n: 207
   e:
-    p10: -0.551
+    p10: -0.584
     p50: 0.0
-    n: 216
+    n: 212
   f:
     p10: 0.0
     p50: 0.0
@@ -42,15 +42,15 @@ scale:
   k:
     p10: 0.0
     p50: 0.0
-    n: 130
+    n: 139
   l:
     p10: 0.0
     p50: 0.0
-    n: 329
+    n: 332
   m:
     p10: 0.0
     p50: 0.0
-    n: 191
+    n: 187
   n:
     p10: 0.0
     p50: 0.0
@@ -66,15 +66,15 @@ scale:
   s:
     p10: 0.0
     p50: 0.0
-    n: 213
+    n: 206
   t:
     p10: 0.0
     p50: 0.0
-    n: 211
+    n: 214
   u:
-    p10: -8.258
+    p10: -7.822
     p50: 0.0
-    n: 136
+    n: 145
   v:
     p10: 0.0
     p50: 0.0
@@ -90,7 +90,7 @@ scale:
   z:
     p10: 0.0
     p50: 0.0
-    n: 77
+    n: 79
   ø:
     p10: -4.134
     p50: 0.0
@@ -116,17 +116,17 @@ scale:
     p50: 0.0
     n: 112
   ə:
-    p10: -3.51
+    p10: 0.0
     p50: 0.0
-    n: 157
+    n: 153
   ɛ:
     p10: 0.0
     p50: 0.0
-    n: 258
+    n: 243
   ɛ̃:
-    p10: -3.813
+    p10: -3.783
     p50: 0.0
-    n: 84
+    n: 96
   ɡ:
     p10: 0.0
     p50: 0.0
@@ -138,7 +138,7 @@ scale:
   ʁ:
     p10: 0.0
     p50: 0.0
-    n: 409
+    n: 395
   ʃ:
     p10: 0.0
     p50: 0.0
@@ -161,13 +161,13 @@ native_pass_rate:
   n: 0.99
   o: 0.9
   p: 0.97
-  s: 0.95
+  s: 0.96
   t: 0.98
   u: 0.91
   v: 0.98
   w: 0.92
   y: 0.9
-  z: 0.99
+  z: 0.97
   ø: 0.91
   œ: 0.93
   œ̃: 0.97
@@ -175,8 +175,8 @@ native_pass_rate:
   ɔ: 0.9
   ɔ̃: 0.92
   ə: 0.9
-  ɛ: 0.93
-  ɛ̃: 0.9
+  ɛ: 0.95
+  ɛ̃: 0.91
   ɡ: 0.91
   ɲ: 0.89
   ʁ: 0.97
@@ -283,14 +283,14 @@ contrasts:
     - 8
     - 8
   s z:
-    threshold: 1.536
-    width: 2.467
+    threshold: 1.759
+    width: 0.639
     native_pass: 1.0
-    caught: 0.88
+    caught: 0.91
     reliable: true
     n:
-    - 8
-    - 8
+    - 11
+    - 11
   t d:
     threshold: -1.088
     width: 7.161
@@ -337,14 +337,14 @@ contrasts:
     - 12
     - 12
   z s:
-    threshold: -0.235
-    width: 3.768
-    native_pass: 1.0
+    threshold: 0.314
+    width: 2.712
+    native_pass: 0.91
     caught: 1.0
     reliable: true
     n:
-    - 8
-    - 8
+    - 11
+    - 11
   ø e:
     threshold: -3.077
     width: 9.597
@@ -473,102 +473,157 @@ contrasts:
     - 12
 prosody:
   stress:
-    p10: 0.0
+    p10: 50.0
     p50: 100.0
     n: 696
   emphasis:
-    p10: 12.5
-    p50: 90.0
-    n: 396
+    p10: 22.5
+    p50: 91.1
+    n: 390
   rhythm:
-    p10: 52.7
-    p50: 79.0
+    p10: 53.8
+    p50: 79.2
     n: 588
   intonation:
-    p10: 33.5
-    p50: 68.1
-    n: 924
+    p10: 29.3
+    p50: 66.6
+    n: 926
 stress_words:
-  allait: 1.0
-  aller: 1.0
-  allez: 0.33
-  allons: 0.67
-  ami: 0.67
-  amie: 0.33
-  amis: 1.0
-  arrive: 0.78
-  au-dessus: 0.0
-  aussi: 1.0
-  avance: 1.0
-  avec: 0.47
-  avez: 0.78
-  avoir: 1.0
-  bonjour: 0.33
-  c'était: 0.33
-  café: 0.71
-  cafés: 1.0
-  campagne: 1.0
-  canada: 1.0
-  champignon: 1.0
-  chapeau: 1.0
-  chercher: 0.33
-  cheval: 1.0
-  cheveux: 1.0
-  demain: 1.0
-  dessert: 1.0
-  desserts: 1.0
-  dessous: 1.0
-  dessus: 1.0
-  dupont: 1.0
-  désert: 1.0
-  encore: 1.0
-  enfant: 1.0
-  espagne: 0.78
-  fini: 1.0
-  fruits: 1.0
-  gagner: 0.67
-  garçon: 0.67
-  gâteau: 1.0
-  habite: 0.67
-  idée: 0.56
-  intéressant: 1.0
-  jardin: 1.0
-  jeudi: 1.0
-  joli: 1.0
-  l'école: 1.0
-  lundi: 1.0
-  madame: 0.78
-  maison: 1.0
-  manger: 0.78
-  mardi: 1.0
-  merci: 1.0
-  moment: 1.0
-  montagne: 0.78
-  papa: 1.0
-  paris: 0.78
-  payer: 1.0
-  petit: 0.67
-  poignet: 1.0
-  poignée: 1.0
-  poison: 1.0
-  poisson: 0.67
-  premier: 1.0
-  regarde: 1.0
-  regarder: 1.0
-  soleil: 1.0
-  suite: 0.67
-  travail: 1.0
-  travaille: 0.33
-  venez: 1.0
-  voilà: 1.0
-  voiture: 1.0
-  voudrais: 0.33
-  voulez: 0.33
-  vélo: 1.0
-  zéro: 1.0
-  école: 0.67
-  était: 1.0
-  été: 0.67
+  aller:
+    agreement: 0.0
+    syllable: 1
+  ami:
+    agreement: 0.0
+    syllable: 1
+  avec:
+    agreement: 0.25
+    syllable: 1
+  avoir:
+    agreement: 0.25
+    syllable: 1
+  bonjour:
+    agreement: 0.25
+    syllable: 1
+  café:
+    agreement: 0.0
+    syllable: 1
+  campagne:
+    agreement: 0.0
+    syllable: 1
+  canada:
+    agreement: 0.0
+    syllable: 2
+  champignon:
+    agreement: 0.0
+    syllable: 2
+  chercher:
+    agreement: 0.0
+    syllable: 1
+  cheval:
+    agreement: 0.0
+    syllable: 1
+  cheveux:
+    agreement: 0.25
+    syllable: 1
+  demain:
+    agreement: 0.25
+    syllable: 1
+  dessous:
+    agreement: 0.0
+    syllable: 1
+  dessus:
+    agreement: 0.25
+    syllable: 1
+  encore:
+    agreement: 0.25
+    syllable: 1
+  enfant:
+    agreement: 0.25
+    syllable: 1
+  espagne:
+    agreement: 0.25
+    syllable: 1
+  gagner:
+    agreement: 0.25
+    syllable: 1
+  garçon:
+    agreement: 0.0
+    syllable: 1
+  idée:
+    agreement: 0.0
+    syllable: 1
+  jardin:
+    agreement: 0.0
+    syllable: 1
+  jeudi:
+    agreement: 0.0
+    syllable: 1
+  madame:
+    agreement: 0.0
+    syllable: 1
+  maison:
+    agreement: 0.25
+    syllable: 1
+  manger:
+    agreement: 0.0
+    syllable: 1
+  merci:
+    agreement: 0.0
+    syllable: 1
+  montagne:
+    agreement: 0.0
+    syllable: 1
+  papa:
+    agreement: 0.25
+    syllable: 1
+  paris:
+    agreement: 0.0
+    syllable: 1
+  payer:
+    agreement: 0.0
+    syllable: 1
+  petit:
+    agreement: 0.0
+    syllable: 1
+  poison:
+    agreement: 0.0
+    syllable: 1
+  poisson:
+    agreement: 0.25
+    syllable: 1
+  premier:
+    agreement: 0.25
+    syllable: 1
+  regarder:
+    agreement: 0.0
+    syllable: 2
+  soleil:
+    agreement: 0.0
+    syllable: 1
+  travail:
+    agreement: 0.0
+    syllable: 1
+  voilà:
+    agreement: 0.0
+    syllable: 1
+  voiture:
+    agreement: 0.0
+    syllable: 1
+  vélo:
+    agreement: 0.0
+    syllable: 1
+  zéro:
+    agreement: 0.0
+    syllable: 1
+  école:
+    agreement: 0.0
+    syllable: 1
+  était:
+    agreement: 0.25
+    syllable: 1
+  été:
+    agreement: 0.0
+    syllable: 1
 unreliable:
 - e ɛ
 - o ɔ

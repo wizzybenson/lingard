@@ -7,3 +7,5 @@
 # The multilingual recogniser labels much native French /y/ as central [ʉ]; a learner's back [u] or spread [i] is
 # still caught as the mistake it is.
 y: [ʉ]
+# The e caduc ("le", "me") is commonly said [ø] or [œ] in France: both are native, not mistakes.
+ə: [ø, œ]

@@ -17,6 +17,8 @@ from typing import Any
 
 import yaml
 
+from lingard_pronunciation.gop import MISSING
+
 
 class Stage(IntEnum):
     LEARN = 0
@@ -76,12 +78,32 @@ class Drill:
         return [stage for stage, present in have.items() if present]
 
 
+def ending(text: str) -> str | None:
+    """How a melody-drill text must end: a question (yes/no, in these drills) rises, a statement falls."""
+    stripped = text.strip()
+    if stripped.endswith("?"):
+        return "rise"
+    return "fall" if stripped.endswith((".", "!")) else None
+
+
 @dataclass(frozen=True)
 class Gym:
     language: str
     phonemes: dict[str, dict[str, Any]]
     features: dict[str, dict[str, Any]]
     drills: tuple[Drill, ...]
+    melody_model: dict[str, str] = field(default_factory=dict)
+    """Instructions for rendering the model of a melody drill (``question``, ``statement``)."""
+
+    def melody_texts(self) -> set[str]:
+        """The texts of melody drills whose ending is fixed by their punctuation."""
+        return {
+            text
+            for d in self.drills
+            if d.focus == "intonation"
+            for text in (*d.phrases, d.sentence)
+            if ending(text) is not None
+        }
 
     def drill(self, key: str) -> Drill:
         for drill in self.drills:
@@ -118,7 +140,7 @@ def load_gym(content_root: Path, language: str) -> Gym:
                 focus=raw.get("focus"),
             )
         )
-    return Gym(language, data["phonemes"], data["features"], tuple(drills))
+    return Gym(language, data["phonemes"], data["features"], tuple(drills), dict(data.get("melody_model") or {}))
 
 
 @dataclass
@@ -154,15 +176,25 @@ def partners(drill: Drill, phonemes: Callable[[str], list[str]]) -> dict[str, li
     """For each trained sound, the sounds its minimal pairs set it against ("rue / roue": y against u)."""
     out: dict[str, list[str]] = {}
     for a, b in drill.pairs:
-        pa, pb = phonemes(a), phonemes(b)
-        diff = [i for i, (x, y) in enumerate(zip(pa, pb, strict=True)) if x != y] if len(pa) == len(pb) else []
-        if len(diff) != 1:
-            continue
-        x, y = pa[diff[0]], pb[diff[0]]
-        for want, other in ((x, y), (y, x)):
+        for want, other in contrasted(phonemes(a), phonemes(b)):
             if want in drill.sounds and other not in out.get(want, []):
                 out.setdefault(want, []).append(other)
     return out
+
+
+def contrasted(pa: list[str], pb: list[str]) -> list[tuple[str, str]]:
+    """What a minimal pair sets against what: one sound for another ("rue"/"roue": y and u, both ways), or one sound
+    against leaving it out ("hat"/"at": h against nothing)."""
+    if len(pa) == len(pb):
+        diff = [i for i, (x, y) in enumerate(zip(pa, pb, strict=True)) if x != y]
+        return [(pa[diff[0]], pb[diff[0]]), (pb[diff[0]], pa[diff[0]])] if len(diff) == 1 else []
+    longer, shorter = (pa, pb) if len(pa) > len(pb) else (pb, pa)
+    if len(longer) != len(shorter) + 1:
+        return []
+    for i in range(len(longer)):
+        if longer[:i] + longer[i + 1 :] == shorter:
+            return [(longer[i], MISSING)]
+    return []
 
 
 def target_score(drill: Drill, words: list[dict[str, Any]]) -> tuple[float | None, bool]:

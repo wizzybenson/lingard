@@ -325,6 +325,19 @@ async def test_when_no_model_answers_the_npc_never_says_it_did_not_understand(ru
     assert not any(line in npc for line in runtime.language.clarify)
 
 
+async def test_a_long_reply_stops_after_its_sentences_so_the_learner_can_answer(runtime: SceneRuntime) -> None:
+    long = (
+        "Ah, d'accord. Le plombier passera demain matin. Le plombier passera avant midi. "
+        "Le plombier passera avec un collègue. Vous serez là demain matin ?"
+    )
+    loop, session, _bus, _model, _tts = await build(runtime, lambda m: long, ["Bonjour, c'est combien ?"])
+    loop.max_reply_sentences = 2
+    await loop.handle_turn(turn())
+    npc = " ".join(text for speaker, text in session.captions if speaker == "npc")
+    expected = "Ah, d'accord. Le plombier passera demain matin. Le plombier passera avant midi."
+    assert npc == expected, "a short reaction doesn't count; the rest of the reply is never spoken"
+
+
 async def test_the_opening_line_starts_without_a_hesitation(runtime: SceneRuntime) -> None:
     """Nobody is waiting on an answer when the scene opens: "So… Hiya" sounded wrong live."""
     claims = ScriptedClaimChecker(delay_ms=400)

@@ -1,12 +1,17 @@
-/** Record a spoken answer, upload it (by default for transcription), hand back the server's answer and the local file uri. */
+/** Record a spoken answer, upload it (by default for transcription), hand back the server's answer and the local file uri.
+ * Every take is saved on the device before it is sent: if sending fails it waits there, survives the app closing, and
+ * is sent again with one tap. */
 import { AudioModule, RecordingPresets, setAudioModeAsync, useAudioRecorder, useAudioRecorderState } from "expo-audio";
 import * as Haptics from "expo-haptics";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Platform } from "react-native";
+import { Platform, Text, View } from "react-native";
 
 import type { ApiClient } from "@/api/client";
 import { Button, ErrorText } from "@/ui/kit";
+import { colors, space, type } from "@/ui/theme";
+
+import { keep, saved, sent } from "./savedRecordings";
 
 export interface Recording {
   text: string;
@@ -35,6 +40,8 @@ interface RecorderProps<T> {
   /** Multipart field the recording goes in. */
   fileField?: string;
   disabled?: boolean;
+  /** Where the take waits if it can't be sent: one per thing recorded. Defaults to the endpoint and its fields. */
+  saveKey?: string;
 }
 
 export function Recorder<T = Omit<Recording, "uri">>({
@@ -45,12 +52,42 @@ export function Recorder<T = Omit<Recording, "uri">>({
   fields = {},
   fileField = "audio",
   disabled = false,
+  saveKey,
 }: RecorderProps<T>) {
   const { t } = useTranslation();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const state = useAudioRecorderState(recorder);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [waiting, setWaiting] = useState<string | null>(null);
+  const key = saveKey ?? `${path}:${JSON.stringify(fields)}`;
+
+  useEffect(() => {
+    let live = true;
+    void saved(key).then((uri) => live && setWaiting(uri));
+    return () => {
+      live = false;
+    };
+  }, [key]);
+
+  const send = async (uri: string) => {
+    setBusy(true);
+    setError(null);
+    try {
+      const form = await formFor(uri, fileField);
+      form.append("language", language);
+      for (const [name, value] of Object.entries(fields)) form.append(name, value);
+      const result = await api.postForm<T>(path, form);
+      await sent(key);
+      setWaiting(null);
+      onDone({ ...result, uri });
+    } catch (e) {
+      setWaiting(uri);
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const start = async () => {
     setError(null);
@@ -67,18 +104,13 @@ export function Recorder<T = Omit<Recording, "uri">>({
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const uri = recorder.uri;
     if (!uri) return setError(t("mic.nothing"));
-    setBusy(true);
+    let kept = uri;
     try {
-      const form = await formFor(uri, fileField);
-      form.append("language", language);
-      for (const [key, value] of Object.entries(fields)) form.append(key, value);
-      const result = await api.postForm<T>(path, form);
-      onDone({ ...result, uri });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusy(false);
+      kept = await keep(key, uri);
+    } catch {
+      // the take is still in the recorder's own file; it just won't survive the app closing
     }
+    await send(kept);
   };
 
   return (
@@ -88,7 +120,13 @@ export function Recorder<T = Omit<Recording, "uri">>({
       ) : (
         <Button label={t("exam.record")} icon="mic" busy={busy} disabled={disabled} onPress={() => void start()} />
       )}
-      <ErrorText message={error} />
+      {waiting && !busy && !state.isRecording && (
+        <View style={{ gap: space(0.75) }}>
+          <Text style={[type.caption, { color: colors.inkSoft }]}>{t("mic.savedOnPhone")}</Text>
+          <Button label={t("mic.sendAgain")} icon="cloud-upload-outline" kind="secondary" onPress={() => void send(waiting)} />
+        </View>
+      )}
+      <ErrorText message={error} onRetry={waiting ? () => void send(waiting) : undefined} />
     </>
   );
 }

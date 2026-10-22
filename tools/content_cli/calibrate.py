@@ -35,8 +35,8 @@ from dotenv import load_dotenv
 from lingard_live.audio import resample
 from lingard_pronunciation.accent import analyse, measure
 from lingard_pronunciation.g2p import LexiconG2P
-from lingard_pronunciation.gop import calibrated_score, score_phonemes
-from lingard_pronunciation.gym import FOCUSES, load_gym
+from lingard_pronunciation.gop import MISSING, calibrated_score, score_phonemes
+from lingard_pronunciation.gym import FOCUSES, contrasted, load_gym
 from lingard_pronunciation.recognizer import load_recognizers
 from tools.content_cli.lexicon import espeak, texts
 
@@ -130,20 +130,23 @@ async def calibrate(language: str) -> dict[str, object]:
         for a, b in drill.pairs:
             for target, partner in ((a, b), (b, a)):
                 expected, other = g2p.phonemes(target, language), g2p.phonemes(partner, language)
-                diff = differing(expected, other)
-                if len(diff) != 1:
+                found = contrasted(expected, other)
+                if not found or found[0][0] not in expected:
                     continue
-                i = diff[0]
-                pair = {expected[i]: [other[i]]}
+                want, got = found[0]
+                if got != MISSING and len(expected) != len(other):
+                    continue
+                i = expected.index(want) if got == MISSING else differing(expected, other)[0]
+                pair = {want: [got]}
                 for source in sources:
                     if (target, source) in audio:
                         value = scores(target, source, target, pair)[i].contrast
                         if value is not None:
-                            said_right[(expected[i], other[i])].append(value)
+                            said_right[(want, got)].append(value)
                     if (partner, source) in audio:
                         value = scores(partner, source, target, pair)[i].contrast
                         if value is not None:
-                            said_wrong[(expected[i], other[i])].append(value)
+                            said_wrong[(want, got)].append(value)
     contrasts = {}
     for (want, got), right in sorted(said_right.items()):
         wrong = said_wrong.get((want, got), [])
@@ -164,6 +167,7 @@ async def calibrate(language: str) -> dict[str, object]:
     # The music of speech: two native voices saying the same text differ too; that spread is what a learner is held to.
     music: dict[str, list[float]] = defaultdict(list)
     stress_agree: dict[str, list[bool]] = defaultdict(list)
+    stress_index: dict[str, int] = {}
     vowels = g2p.vowels(language)
     for text in all_texts:
         words = g2p.words(text, language)
@@ -207,8 +211,9 @@ async def calibrate(language: str) -> dict[str, object]:
                 continue
             nuclei = measure(audio[(text, source)], scores(text, source, text), written, vowels)
             if len(nuclei) >= 2:
-                found = int(np.argmax([n.prominence for n in nuclei]))
-                stress_agree[text.casefold()].append(found == stressed)
+                detected = int(np.argmax([n.prominence for n in nuclei]))
+                stress_agree[text.casefold()].append(detected == stressed)
+                stress_index[text.casefold()] = stressed
     native_ok = {
         p: round(sum(calibrated_score(v, scale[p]["p10"], scale[p]["p50"]) >= 70 for v in values) / len(values), 2)
         for p, values in native.items()
@@ -222,7 +227,11 @@ async def calibrate(language: str) -> dict[str, object]:
         "native_pass_rate": dict(sorted(native_ok.items())),
         "contrasts": contrasts,
         "prosody": prosody,
-        "stress_words": {w: round(float(np.mean(v)), 2) for w, v in sorted(stress_agree.items()) if len(v) >= 4},
+        "stress_words": {
+            w: {"agreement": round(float(np.mean(v)), 2), "syllable": stress_index[w]}
+            for w, v in sorted(stress_agree.items())
+            if len(v) >= 4
+        },
         "unreliable": sorted(k for k, c in contrasts.items() if not c["reliable"]),
     }
 

@@ -103,6 +103,11 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
         hints=bus,
         filler_after_ms=settings.filler_after_ms,
         stall_filler_after_ms=settings.stall_filler_after_ms,
+        max_reply_sentences=(
+            settings.reply_sentences_beginner
+            if job.learner_band <= settings.beginner_band
+            else settings.reply_sentences
+        ),
         streaming_stt=build_streaming_stt(settings),
         second_ear=build_second_ear(settings),
     )

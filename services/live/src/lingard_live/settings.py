@@ -66,6 +66,12 @@ class LiveSettings(BaseSettings):
     """Sentences up to this many words (or questions) made only of grounded words skip the check."""
     filler_after_ms: float | None = 150
     """Say a hesitation if the first sentence is still being checked this long after it is ready; empty = never."""
+    reply_sentences: int = 3
+    """Most sentences an NPC says in one reply (a short reaction doesn't count); the prompt asks for one to three, and
+    the model didn't always listen (2026-10-22: five-sentence answers full of figures)."""
+    reply_sentences_beginner: int = 2
+    beginner_band: int = 5
+    """At or below this band the learner gets the shorter replies."""
     stall_filler_after_ms: float | None = 1800
     """Say a hesitation if a reply has no first sentence this long after preparation began (normally ≈1.3 s); empty =
     never. Preparation starts inside the end-of-turn wait, so this rarely adds to what the learner hears."""

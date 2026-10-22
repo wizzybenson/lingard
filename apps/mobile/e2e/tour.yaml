@@ -13,7 +13,7 @@ appId: app.lingard
     element: "Useful here"
     direction: DOWN
 - takeScreenshot: 02b-useful-here
-- tapOn: "Phone, tab.*"
+- tapOn: "Review, tab.*"
 - takeScreenshot: 03-phone
 - tapOn: "School, tab.*"
 - takeScreenshot: 04-school

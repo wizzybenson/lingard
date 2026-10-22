@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import base64
+import contextlib
+import hashlib
 import uuid
 from datetime import UTC, datetime, timedelta
 from functools import cache
@@ -18,15 +20,35 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from lingard_api.deps import Db, Principal, State
-from lingard_api.routes.speech import MAX_UPLOAD_BYTES, decode_audio, narrate, wav_response
+from lingard_api.routes.speech import (
+    MAX_UPLOAD_BYTES,
+    _live_settings,
+    decode_audio,
+    narrate,
+    wav_response,
+)
 from lingard_api.state import AppState
 from lingard_contracts.common import CITY_LOCALE, LANGUAGE_CITY, Language
 from lingard_db.models import LearnerProfile, User, VoiceProfile
 from lingard_graphs.pedagogy.review import new_card, review
+from lingard_live.languages import load_language
+from lingard_live.tts import OpenAITts, VoiceSpec
 from lingard_pronunciation.g2p import LexiconG2P
-from lingard_pronunciation.gym import HEAR_GOOD, Drill, Gym, Progress, Stage, load_gym, partners, record_attempt
+from lingard_pronunciation.gym import (
+    HEAR_GOOD,
+    Drill,
+    Gym,
+    Progress,
+    Stage,
+    ending,
+    load_gym,
+    partners,
+    record_attempt,
+    target_score,
+)
 from lingard_pronunciation.gym import NEEDED as GYM_NEEDED
 from lingard_pronunciation.studio import MAX_ATTEMPTS, PASS_SCORE
+from lingard_storage import AUDIO_BUCKET
 
 router = APIRouter(prefix="/v1/studio", tags=["studio"])
 NEEDED_STAGES = set(GYM_NEEDED)
@@ -93,7 +115,8 @@ async def _reference(
     the native narrator render. ``None`` when no TTS is available.
     """
     try:
-        native = await narrate(state, line, language)
+        melody = await _melody_model(state, line, language)
+        native = melody if melody is not None else await narrate(state, line, language)
     except (RuntimeError, httpx.HTTPError):
         return None
     profile_id = await _golden_profile(db, user_id)
@@ -111,6 +134,59 @@ async def _reference(
     except httpx.HTTPError:
         return native
     return base64.b64decode(response.json()["pcm_b64"]) if response.status_code == 200 else native
+
+
+MELODY_TRIES = 3
+
+
+async def _melody_model(state: AppState, text: str, language: Language) -> bytes | None:
+    """The model of a melody-drill text: rendered with instructions to rise (a question) or fall (a statement), and
+    kept only once the pronunciation service measures that ending in it; ``None`` for other texts, or when no render
+    carried the melody (the everyday narrator is used then)."""
+    gym = _gym(state, language)
+    want = ending(text)
+    if text not in gym.melody_texts() or want is None or state.pronunciation is None:
+        return None
+    key = f"cache/melody/{hashlib.sha256(f'{language}|{text}'.encode()).hexdigest()}.pcm"
+    with contextlib.suppress(Exception):  # not rendered yet
+        return await state.objects.get(AUDIO_BUCKET, key)
+    live = _live_settings(state)
+    api_key = live.openai_api_key.get_secret_value() if live.openai_api_key else None
+    if not api_key:
+        return None
+    narrator = load_language(state.settings.content_root, language).narrator_voice
+    instructions = gym.melody_model.get("question" if want == "rise" else "statement", "")
+    tts = OpenAITts(api_key, model=live.openai_tts_model)
+    for _ in range(MELODY_TRIES):
+        voice = VoiceSpec(voice_id=narrator, language=language, style=instructions)
+        pcm = b"".join([chunk.pcm async for chunk in tts.stream(text, voice)])
+        payload = {
+            "text": text,
+            "language": language,
+            "learner_pcm_b64": base64.b64encode(pcm).decode(),
+            "reference_pcm_b64": base64.b64encode(pcm).decode(),
+        }
+        measured = (await state.pronunciation.post("/shadow", json=payload)).json()
+        found = ((measured.get("prosody") or {}).get("intonation") or {}).get("final", {}).get("yours")
+        if found == want:
+            await state.objects.put(AUDIO_BUCKET, key, pcm, "audio/L16")
+            return pcm
+    return None
+
+
+def _expected_melody(result: dict[str, Any], text: str, drill: Drill | None) -> dict[str, Any]:
+    """In a melody drill the ending is fixed by the text, not by however a model happened to read it: rising where a
+    question must rise passes that part, and moving the wrong way never does."""
+    music = result.get("prosody")
+    want = ending(text)
+    if drill is None or drill.focus != "intonation" or want is None or not music or not music.get("intonation"):
+        return result
+    intonation = dict(music["intonation"])
+    final = {**(intonation.get("final") or {}), "expected": want}
+    score = float(intonation["score"])
+    intonation["score"] = round(max(score, 75.0) if final.get("yours") == want else min(score, 50.0), 1)
+    intonation["final"] = final
+    return {**result, "prosody": {**music, "intonation": intonation}}
 
 
 @router.get("/reference")
@@ -168,7 +244,7 @@ async def shadow(
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "pronunciation service unreachable") from exc
     if response.status_code != 200:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, response.json().get("detail", "scoring failed"))
-    result: dict[str, Any] = response.json()
+    result: dict[str, Any] = _expected_melody(response.json(), line, chosen)
 
     await state.graph_deps.store.mark_active(principal.user_id, datetime.now(UTC).date())
     user, profile = await _learner(db, principal.user_id)
@@ -179,7 +255,14 @@ async def shadow(
         good = _attempt(progress, chosen, Stage(stage), line, result)
         _save_progress(profile, language, chosen, progress)
         await db.commit()
-        return {**result, "tips": tips, "good": good, "progress": _progress_view(chosen, progress)}
+        _, by_ear = target_score(chosen, result.get("words", []))
+        return {
+            **result,
+            "tips": tips,
+            "good": good,
+            "by_ear": by_ear,  # the trained sound is judged by ear, not by machine
+            "progress": _progress_view(chosen, progress),
+        }
     await db.commit()
     if line not in known:
         return {
@@ -259,7 +342,8 @@ def _tips(
                     "steps": [] if fix else guide[lang]["steps"],
                 }
             )
-    return tips
+    # The trained sound first: in "poisson" said as "poison", the s/z fix leads, not a note about another sound.
+    return sorted(tips, key=lambda tip: tip["phoneme"] not in targets)
 
 
 def _all_progress(profile: LearnerProfile, language: str) -> dict[str, Any]:
@@ -405,11 +489,12 @@ async def gym_overview(principal: Principal, state: State, db: Db, language: Lan
         for d in gym.drills
     ]
     due = [d.key for d in drills if d.review_due]
+    # Being climbed means begun: a drill without sounds starts on a later rung, but is still new until touched.
     climbing = sorted(
-        (d for d in drills if not d.mastered and d.stage > Stage.LEARN),
+        (d for d in drills if not d.mastered and d.key in entries),
         key=lambda d: d.score if d.score is not None else 100,
     )
-    fresh = [d.key for d in drills if not d.mastered and d.stage <= Stage.LEARN]
+    fresh = [d.key for d in drills if not d.mastered and d.key not in entries]
     workout = [*due, *(d.key for d in climbing), *fresh][:3]
     return GymView(drills=drills, workout=workout, sounds=sounds)
 
