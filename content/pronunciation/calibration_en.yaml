@@ -9,7 +9,7 @@ voices:
 - openai gpt-4o-mini-tts onyx
 - elevenlabs narrator (words)
 as_of: '2026-10-22'
-texts: 357
+texts: 378
 scale:
   aɪ:
     p10: 0.0
@@ -22,15 +22,15 @@ scale:
   b:
     p10: 0.0
     p50: 0.0
-    n: 186
+    n: 195
   d:
     p10: 0.0
     p50: 0.0
-    n: 235
+    n: 247
   dʒ:
     p10: 0.0
     p50: 0.0
-    n: 28
+    n: 46
   eə:
     p10: -10.252
     p50: -8.587
@@ -38,67 +38,67 @@ scale:
   eɪ:
     p10: 0.0
     p50: 0.0
-    n: 129
+    n: 138
   f:
     p10: 0.0
     p50: 0.0
-    n: 190
+    n: 193
   h:
     p10: 0.0
     p50: 0.0
-    n: 145
+    n: 148
   i:
-    p10: -0.409
+    p10: -1.136
     p50: 0.0
-    n: 66
+    n: 75
   iə:
-    p10: -6.314
-    p50: -4.427
+    p10: -8.157
+    p50: -4.629
     n: 14
   iː:
-    p10: -0.19
+    p10: -0.335
     p50: 0.0
-    n: 141
+    n: 147
   j:
-    p10: -0.535
+    p10: -1.126
     p50: 0.0
-    n: 96
+    n: 106
   k:
     p10: 0.0
     p50: 0.0
-    n: 308
+    n: 317
   l:
     p10: 0.0
     p50: 0.0
-    n: 257
+    n: 272
   m:
     p10: 0.0
     p50: 0.0
-    n: 168
+    n: 183
   n:
     p10: 0.0
     p50: 0.0
-    n: 359
+    n: 364
   p:
     p10: 0.0
     p50: 0.0
-    n: 261
+    n: 270
   s:
     p10: 0.0
     p50: 0.0
-    n: 339
+    n: 347
   t:
-    p10: 0.0
+    p10: -0.053
     p50: 0.0
-    n: 598
+    n: 607
   tʃ:
     p10: 0.0
     p50: 0.0
-    n: 71
+    n: 83
   uː:
-    p10: -0.314
+    p10: -0.606
     p50: 0.0
-    n: 100
+    n: 98
   v:
     p10: 0.0
     p50: 0.0
@@ -106,19 +106,19 @@ scale:
   w:
     p10: 0.0
     p50: 0.0
-    n: 133
+    n: 136
   z:
     p10: 0.0
     p50: 0.0
-    n: 89
+    n: 92
   æ:
-    p10: -5.411
+    p10: -5.414
     p50: 0.0
-    n: 243
+    n: 255
   ð:
-    p10: -1.07
+    p10: -0.979
     p50: 0.0
-    n: 132
+    n: 135
   ŋ:
     p10: 0.0
     p50: 0.0
@@ -140,33 +140,33 @@ scale:
     p50: 0.0
     n: 83
   ə:
-    p10: -3.403
+    p10: -3.404
     p50: 0.0
-    n: 391
+    n: 397
   əʊ:
-    p10: -7.255
-    p50: -5.648
-    n: 154
+    p10: -7.372
+    p50: -5.675
+    n: 163
   ɛ:
     p10: 0.0
     p50: 0.0
-    n: 248
+    n: 269
   ɜː:
     p10: 0.0
     p50: 0.0
-    n: 55
+    n: 61
   ɡ:
     p10: 0.0
     p50: 0.0
-    n: 105
+    n: 108
   ɪ:
-    p10: 0.0
+    p10: -0.044
     p50: 0.0
-    n: 312
+    n: 324
   ɹ:
     p10: 0.0
     p50: 0.0
-    n: 239
+    n: 254
   ʃ:
     p10: 0.0
     p50: 0.0
@@ -184,31 +184,31 @@ scale:
     p50: 0.0
     n: 3
   θ:
-    p10: -5.305
+    p10: -5.533
     p50: 0.0
-    n: 66
+    n: 69
 native_pass_rate:
   aɪ: 0.94
   aʊ: 0.97
-  b: 0.94
+  b: 0.93
   d: 0.98
-  dʒ: 1.0
+  dʒ: 0.98
   eə: 0.88
   eɪ: 0.94
-  f: 0.93
+  f: 0.92
   h: 0.95
   i: 0.89
   iə: 0.86
   iː: 0.9
-  j: 0.91
+  j: 0.9
   k: 0.98
   l: 0.93
-  m: 0.98
-  n: 0.96
+  m: 0.97
+  n: 0.95
   p: 0.95
-  s: 0.97
+  s: 0.98
   t: 0.9
-  tʃ: 0.92
+  tʃ: 0.93
   uː: 0.9
   v: 0.93
   w: 0.98
@@ -221,17 +221,17 @@ native_pass_rate:
   ɔɪ: 0.91
   ɔː: 0.92
   ə: 0.92
-  əʊ: 0.92
-  ɛ: 0.92
-  ɜː: 0.93
+  əʊ: 0.91
+  ɛ: 0.91
+  ɜː: 0.92
   ɡ: 0.95
-  ɪ: 0.91
+  ɪ: 0.9
   ɹ: 0.96
   ʃ: 0.97
   ʊ: 0.92
   ʌ: 0.91
   ʒ: 0.67
-  θ: 0.91
+  θ: 0.9
 contrasts:
   aɪ iː:
     threshold: -4.598
@@ -270,23 +270,23 @@ contrasts:
     - 14
     - 13
   dʒ j:
-    threshold: 0.043
-    width: 5.845
+    threshold: 2.578
+    width: 2.651
     native_pass: 1.0
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 13
+    - 13
   dʒ tʃ:
-    threshold: -0.303
-    width: 2.759
-    native_pass: 1.0
+    threshold: -0.109
+    width: 2.709
+    native_pass: 0.94
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 16
+    - 16
   f v:
     threshold: 4.379
     width: 0.5
@@ -324,20 +324,20 @@ contrasts:
     - 12
     - 12
   j dʒ:
-    threshold: -0.043
-    width: 5.845
-    native_pass: 1.0
+    threshold: -1.401
+    width: 3.829
+    native_pass: 0.92
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 13
+    - 13
   j ∅:
     threshold: 0.328
     width: 2.184
     native_pass: 1.0
     caught: 1.0
-    reliable: true
+    reliable: false
     n:
     - 4
     - 4
@@ -405,14 +405,14 @@ contrasts:
     - 13
     - 15
   tʃ dʒ:
-    threshold: 0.303
-    width: 2.759
+    threshold: 0.109
+    width: 2.709
     native_pass: 1.0
-    caught: 1.0
+    caught: 0.94
     reliable: true
     n:
-    - 4
-    - 4
+    - 16
+    - 16
   tʃ ʃ:
     threshold: -3.291
     width: 1.944
@@ -495,14 +495,14 @@ contrasts:
     - 12
     - 12
   ɑː ɜː:
-    threshold: -1.025
-    width: 2.957
+    threshold: -0.223
+    width: 2.046
     native_pass: 1.0
-    caught: 1.0
+    caught: 0.93
     reliable: true
     n:
-    - 4
-    - 4
+    - 13
+    - 14
   ɒ əʊ:
     threshold: 0.957
     width: 0.5
@@ -540,14 +540,14 @@ contrasts:
     - 16
     - 16
   ɜː ɑː:
-    threshold: 1.025
-    width: 2.957
-    native_pass: 1.0
+    threshold: 0.223
+    width: 2.046
+    native_pass: 0.93
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 14
+    - 13
   ɜː ɔː:
     threshold: 0.23
     width: 1.174
@@ -631,21 +631,21 @@ contrasts:
     - 13
 prosody:
   intonation:
-    p10: 23.5
-    p50: 64.7
-    n: 858
+    p10: 23.4
+    p50: 65.3
+    n: 866
   emphasis:
-    p10: 37.1
-    p50: 88.4
+    p10: 37.5
+    p50: 90.0
     n: 474
   rhythm:
-    p10: 50.2
-    p50: 81.2
-    n: 600
+    p10: 50.0
+    p50: 81.6
+    n: 618
   stress:
     p10: 0.0
     p50: 100.0
-    n: 492
+    n: 516
 stress_words:
   about:
     agreement: 0.75
@@ -780,5 +780,6 @@ unreliable:
 - aɪ iː
 - h ∅
 - iː aɪ
+- j ∅
 - ɒ əʊ
 - əʊ ɒ

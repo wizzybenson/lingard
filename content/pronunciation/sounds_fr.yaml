@@ -913,6 +913,7 @@ drills:
   - key: fr.pron.front_rounded_eu
     sounds: [ø, œ]
     words: [deux, peu, bleu, jeudi, heure, peur, sœur, fleur, cheveux, neuf]
+    pairs: [[feu, fée], [ceux, ces], [sœur, serre], [heure, air], [jeune, gêne]]
     phrases: [deux heures, un peu de bleu, ma sœur a peur, à neuf heures]
     sentence: "Ma sœur a deux fleurs bleues."
   - key: fr.pron.uvular_r

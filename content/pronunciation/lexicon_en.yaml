@@ -3,6 +3,7 @@
 # edit lexicon_overrides_<lang>.yaml, not this.
 a: ə
 a bad bed: ə | b æ d | b ɛ d
+a beautiful year: ə | b j uː t i f ə l | j iə
 a big cake: ə | b ɪ ɡ | k eɪ k
 a big pen: ə | b ɪ ɡ | p ɛ n
 a black cat: ə | b l æ k | k æ t
@@ -16,7 +17,6 @@ a good day: ə | ɡ ʊ d | d eɪ
 a hot coffee: ə | h ɒ t | k ɒ f i
 a long road: ə | l ɒ ŋ | ɹ əʊ d
 a long walk: ə | l ɒ ŋ | w ɔː k
-a new year: ə | n j uː | j iə
 a photograph: ə | f əʊ t ə ɡ ɹ æ f
 a photographer: ə | f ə t ɒ ɡ ɹ ə f ə
 a red light: ə | ɹ ɛ d | l aɪ t
@@ -48,6 +48,7 @@ bad: b æ d
 bag: b æ ɡ
 bags: b æ ɡ z
 banana: b ə n ɑː n ə
+bard: b ɑː d
 bath: b æ θ
 bay: b eɪ
 beautiful: b j uː t i f ə l
@@ -89,11 +90,14 @@ car: k ɑː
 cat: k æ t
 cats: k æ t s
 cats chase mice: k æ t s | tʃ eɪ s | m aɪ s
+chain: tʃ eɪ n
 chair: tʃ eə
 chase: tʃ eɪ s
 cheap: tʃ iː p
+chin: tʃ ɪ n
 chip: tʃ ɪ p
 chips: tʃ ɪ p s
+choke: tʃ əʊ k
 choose: tʃ uː z
 chose: tʃ əʊ z
 coast: k əʊ s t
@@ -121,14 +125,17 @@ doze: d əʊ z
 drank: d ɹ æ ŋ k
 ear: iə
 eat: iː t
+ess: ɛ s
 evening: iː v n ɪ ŋ
 fan: f æ n
+farm: f ɑː m
 father: f ɑː ð ə
 feel: f iː l
 ferry: f ɛ ɹ i
 few: f j uː
 fill: f ɪ l
 fine: f aɪ n
+firm: f ɜː m
 first: f ɜː s t
 fish: f ɪ ʃ
 fish and chips: f ɪ ʃ | æ n d | tʃ ɪ p s
@@ -147,6 +154,7 @@ gap: ɡ æ p
 get: ɡ ɛ t
 get a cab: ɡ ɛ t | ə | k æ b
 get out of it: ɡ ɛ t | aʊ t | ə v | ɪ t
+gin: dʒ ɪ n
 glass: ɡ l æ s
 go: ɡ əʊ
 go home: ɡ əʊ | h əʊ m
@@ -200,9 +208,13 @@ it: ɪ t
 it's: ɪ t s
 it's ready: ɪ t s | ɹ ɛ d i
 it's ten to two today: ɪ t s | t ɛ n | t ə | t uː | t ə d eɪ
+jam: dʒ æ m
+jane: dʒ eɪ n
 jeep: dʒ iː p
+jell: dʒ ɛ l
 jet: dʒ ɛ t
 job: dʒ ɒ b
+joke: dʒ əʊ k
 juice: dʒ uː s
 large: l ɑː dʒ
 late: l eɪ t
@@ -236,7 +248,6 @@ my: m aɪ
 my head: m aɪ | h ɛ d
 my house: m aɪ | h aʊ s
 needed: n iː d ɪ d
-new: n j uː
 nice: n aɪ s
 nice day: n aɪ s | d eɪ
 'no': n əʊ
@@ -264,6 +275,7 @@ pay the bill: p eɪ | ð ə | b ɪ l
 peas: p iː z
 pen: p ɛ n
 pen not ben: p ɛ n | n ɒ t | b ɛ n
+people: p iː p ə l
 phone: f əʊ n
 photograph: f əʊ t ə ɡ ɹ æ f
 photographer: f ə t ɒ ɡ ɹ ə f ə
@@ -292,6 +304,8 @@ really: ɹ iə l ɪ
 record: ɹ ɛ k ɔː d
 red: ɹ ɛ d
 rice: ɹ aɪ s
+rich: ɹ ɪ tʃ
+ridge: ɹ ɪ dʒ
 right: ɹ aɪ t
 right now: ɹ aɪ t | n aʊ
 ring: ɹ ɪ ŋ
@@ -324,9 +338,11 @@ sofa: s əʊ f ə
 sorry: s ɒ ɹ i
 splash: s p l æ ʃ
 spring: s p ɹ ɪ ŋ
+star: s t ɑː
 started: s t ɑː t ɪ d
 station: s t eɪ ʃ ə n
 stay: s t eɪ
+stir: s t ɜː
 stop: s t ɒ p
 stopped: s t ɒ p t
 street: s t ɹ iː t
@@ -373,6 +389,7 @@ to: t uː
 today: t ə d eɪ
 took: t ʊ k
 tree: t ɹ iː
+'true': t ɹ uː
 turn: t ɜː n
 turn it off: t ɜː n | ɪ t | ɒ f
 turn right: t ɜː n | ɹ aɪ t
@@ -422,13 +439,19 @@ with them: w ɪ ð | ð ɛ m
 won't: w əʊ n t
 work: w ɜː k
 wrong: ɹ ɒ ŋ
+yam: j æ m
 year: j iə
+yell: j ɛ l
 yellow: j ɛ l əʊ
 'yes': j ɛ s
 yes you can: j ɛ s | j uː | k æ n
 yes you can use my yellow pen: j ɛ s | j uː | k æ n | j uː z | m aɪ | j ɛ l əʊ | p ɛ n
+yesterday: j ɛ s t ə d eɪ
 yet: j ɛ t
+yolk: j əʊ k
 you: j uː
 you're: j ɔː
 you're coming: j ɔː | k ʌ m ɪ ŋ
 young: j ʌ ŋ
+young people: j ʌ ŋ | p iː p ə l
+youth: j uː θ

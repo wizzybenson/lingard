@@ -3,6 +3,7 @@
 # edit lexicon_overrides_<lang>.yaml, not this.
 a: a
 aide: ɛ d
+air: ɛ ʁ
 allait: a l ɛ
 aller: a l e
 allez: a l e
@@ -60,6 +61,7 @@ cet: s ɛ t
 cet homme a une belle pomme jaune: s ɛ t | ɔ m | a | y n | b ɛ l | p ɔ m | ʒ o n
 cette: s ɛ t
 cette école: s ɛ t | e k ɔ l
+ceux: s ø
 chambre: ʃ ɑ̃ b ʁ
 champignon: ʃ ɑ̃ p i n j ɔ̃
 chapeau: ʃ a p o
@@ -118,6 +120,7 @@ et: e
 faim: f ɛ̃
 faire: f ɛ ʁ
 fait: f ɛ
+feu: f ø
 fille: f i j
 filles: f i j
 fin: f ɛ̃
@@ -138,6 +141,7 @@ grand: ɡ ʁ ɑ̃
 gros: ɡ ʁ o
 guide: ɡ i d
 gâteau: ɡ a t o
+gêne: ʒ ɛ n
 habite: a b i t
 hausse: o s
 heure: œ ʁ
@@ -169,6 +173,7 @@ je te le dis demain: ʒ ə | t ə | l ə | d i | d ə m ɛ̃
 je voudrais un grand café chaud s'il vous plaît: ʒ ə | v u d ʁ ɛ | œ̃ | ɡ ʁ ɑ̃ | k a f e | ʃ o | s i l | v u | p l ɛ
 je voudrais un pain s'il vous plaît: ʒ ə | v u d ʁ ɛ | œ̃ | p ɛ̃ | s i l | v u | p l ɛ
 jeudi: ʒ ø d i
+jeune: ʒ ø n
 joli: ʒ o l i
 joue: ʒ u
 l'école: l e k ɔ l
@@ -277,6 +282,7 @@ rue de paris: ʁ y | d ə | p a ʁ i
 sans: s ɑ̃
 saule: s o l
 sel: s ɛ l
+serre: s ɛ ʁ
 si: s i
 signe: s i ɲ
 six: s i s

@@ -74,6 +74,6 @@ appId: app.lingard
 - takeScreenshot: onboard-06-first-rule
 - tapOn: "Back"
 - extendedWaitUntil:
-    visible: "Learn first.*|Begin day.*"
+    visible: "Learn first.*|Begin day.*|Continue day.*"
     timeout: 15000
 - takeScreenshot: onboard-07-home-again

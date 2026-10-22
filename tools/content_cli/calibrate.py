@@ -48,6 +48,9 @@ STYLE = {
     "fr": "Speak standard Metropolitan French, clearly, at a natural conversational pace.",
     "en": "Speak standard Southern British English (RP), clearly, at a natural conversational pace.",
 }
+MIN_SAMPLES = 8
+"""A contrast measured on fewer takes a side is never trusted (2026-10-22: 4 takes of year/ear made j-against-silence
+look perfect, and it then failed native "you")."""
 DETECTED = 0.8
 """A contrast whose native targets pass, and whose substitutions are caught, at least this often may be judged."""
 
@@ -161,7 +164,7 @@ async def calibrate(language: str) -> dict[str, object]:
             "width": round(max((native_edge - error_edge) / 2, 0.5), 3),
             "native_pass": round(passed, 2),
             "caught": round(caught, 2),
-            "reliable": bool(passed >= DETECTED and caught >= DETECTED),
+            "reliable": bool(passed >= DETECTED and caught >= DETECTED and min(len(right), len(wrong)) >= MIN_SAMPLES),
             "n": [len(right), len(wrong)],
         }
     # The music of speech: two native voices saying the same text differ too; that spread is what a learner is held to.

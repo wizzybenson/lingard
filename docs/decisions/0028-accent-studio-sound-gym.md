@@ -79,17 +79,37 @@ committed).
 
 ## Robot evidence
 
-`tools/voicebench/studio_robot.py` climbs drills through the running API with real speech. At every spoken stage it
-also says the minimal-pair partner, then checks the mistake is caught with a tip that names it, and it checks
-reviews. French: every drill climbs, scoring takes about 1.5 s per take, and the robot found and fixed four
-problems:
+`tools/voicebench/studio_robot.py` climbs drills through the running API with real speech. At each spoken rung it
+also says the classic mistake (the minimal-pair partner) and checks it is caught with a tip that names it. It then
+holds and slips a review.
 
-- TTS read the single words "me" and "dessert" the English way. They were replaced by "te" and "coussin / cousin".
-- The fix for the trained sound must come before tips about other sounds.
-- Question phrases written without "?" had no ending to train.
-- "Said well!" was shown for a contrast that can't be judged.
+**Final pass, 2026-10-22:**
 
-One recording of "su" said for "si" still passes, within that contrast's measured 8% miss rate.
+- French: 23 of 23 drills climbed, and all 12 mistakes were caught with the right fix (é/è by ear, as designed).
+- English: the one drill that had failed now climbs; every drill passes apart from a single near-miss.
+  - 13 mistakes were caught, and h-dropping and not/note are marked "compare by ear".
+  - One "pan" said for "pen" passed. That contrast catches 81% natively, so it is not one that decides alone.
+- Scoring: median 1.4–1.5 s per take, never over 2.2 s once melody models are warmed.
+
+**Bugs the robot found and fixed:**
+
+- Words TTS reads the English way were replaced: "me", "dessert", "use", "new".
+- "thank" was dropped: native takes of it were heard with a t.
+- The fix for the trained sound now comes first, and names the partner actually heard.
+- Contrasts measured on four takes were wrongly trusted. Calibration now needs 8 takes a side to trust a contrast
+  and 12 to let it decide alone, and pairs were added until it had them.
+- The "decides alone" flag was never loaded.
+- Stress was held to one model's reading of "important". It is now held to the dictionary.
+- Emphasis blocked climbs even though native voices differ. It is now shown but never blocks.
+- Melody models were rendered on a learner's first take (10 s). `cli warm-studio` now renders and verifies them
+  ahead of time, and a text without a verified model is left out.
+- "Said well!" was shown for a by-ear contrast.
+
+**Scene robot:** first NPC audio 1.45–1.9 s per turn. NPC replies ran to five sentences, so the live loop now
+stops after three (two at band 5 and below).
+
+**Maestro (free flows on the Simulator):** tour, review (formerly phone), school, mock, language, studio, learn-first
+and errors all pass.
 
 ## Not done here
 

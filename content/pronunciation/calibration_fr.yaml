@@ -9,7 +9,7 @@ voices:
 - openai gpt-4o-mini-tts onyx
 - elevenlabs narrator (words)
 as_of: '2026-10-22'
-texts: 303
+texts: 309
 scale:
   a:
     p10: 0.0
@@ -30,7 +30,7 @@ scale:
   f:
     p10: 0.0
     p50: 0.0
-    n: 117
+    n: 120
   i:
     p10: 0.0
     p50: 0.0
@@ -54,7 +54,7 @@ scale:
   n:
     p10: 0.0
     p50: 0.0
-    n: 131
+    n: 137
   o:
     p10: -2.214
     p50: 0.0
@@ -66,7 +66,7 @@ scale:
   s:
     p10: 0.0
     p50: 0.0
-    n: 206
+    n: 212
   t:
     p10: 0.0
     p50: 0.0
@@ -92,9 +92,9 @@ scale:
     p50: 0.0
     n: 79
   ø:
-    p10: -4.134
+    p10: -9.322
     p50: 0.0
-    n: 45
+    n: 54
   œ:
     p10: 0.0
     p50: 0.0
@@ -122,7 +122,7 @@ scale:
   ɛ:
     p10: 0.0
     p50: 0.0
-    n: 243
+    n: 252
   ɛ̃:
     p10: -3.783
     p50: 0.0
@@ -138,7 +138,7 @@ scale:
   ʁ:
     p10: 0.0
     p50: 0.0
-    n: 395
+    n: 401
   ʃ:
     p10: 0.0
     p50: 0.0
@@ -146,19 +146,19 @@ scale:
   ʒ:
     p10: 0.0
     p50: 0.0
-    n: 81
+    n: 87
 native_pass_rate:
   a: 0.97
   b: 0.97
   d: 0.99
   e: 0.9
-  f: 0.96
+  f: 0.94
   i: 0.92
   j: 0.94
   k: 0.98
   l: 0.96
   m: 0.96
-  n: 0.99
+  n: 0.96
   o: 0.9
   p: 0.97
   s: 0.96
@@ -202,14 +202,14 @@ contrasts:
     - 12
     - 12
   e ø:
-    threshold: 3.077
-    width: 9.597
+    threshold: 3.82
+    width: 1.667
     native_pass: 1.0
-    caught: 1.0
+    caught: 0.9
     reliable: true
     n:
-    - 4
-    - 4
+    - 12
+    - 10
   e ə:
     threshold: 3.886
     width: 0.535
@@ -346,23 +346,32 @@ contrasts:
     - 11
     - 11
   ø e:
-    threshold: -3.077
-    width: 9.597
-    native_pass: 1.0
+    threshold: -3.82
+    width: 1.667
+    native_pass: 0.9
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 10
+    - 12
+  ø ɛ:
+    threshold: -12.787
+    width: 0.5
+    native_pass: 0.67
+    caught: 0.67
+    reliable: false
+    n:
+    - 3
+    - 3
   œ ɛ:
-    threshold: -3.238
-    width: 10.116
-    native_pass: 1.0
+    threshold: -4.918
+    width: 4.897
+    native_pass: 0.92
     caught: 1.0
     reliable: true
     n:
-    - 4
-    - 4
+    - 12
+    - 10
   ɑ̃ ɔ̃:
     threshold: 5.759
     width: 0.5
@@ -417,15 +426,24 @@ contrasts:
     n:
     - 23
     - 25
+  ɛ ø:
+    threshold: 12.787
+    width: 0.5
+    native_pass: 0.67
+    caught: 0.67
+    reliable: false
+    n:
+    - 3
+    - 3
   ɛ œ:
-    threshold: 3.238
-    width: 10.116
+    threshold: 4.918
+    width: 4.897
     native_pass: 1.0
-    caught: 1.0
+    caught: 0.92
     reliable: true
     n:
-    - 4
-    - 4
+    - 10
+    - 12
   ɛ̃ ɑ̃:
     threshold: 4.279
     width: 0.5
@@ -627,7 +645,9 @@ stress_words:
 unreliable:
 - e ɛ
 - o ɔ
+- ø ɛ
 - ɑ̃ ɛ̃
 - ɔ o
 - ɛ e
+- ɛ ø
 - ɛ̃ ɑ̃

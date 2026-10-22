@@ -1,5 +1,5 @@
-# Accent Studio (free: nothing is played or scored): the sound gym, a drill's first step (how the sounds are made, the
-# mouth map), and the ladder. Opens the studio by deep link.
+# Accent Studio (free: nothing is played or scored): the sound gym and a drill's ladder. Works on any account: a fresh
+# one opens on "Learn" (how the sounds are made, the mouth map); a climbed one on a later rung.
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
@@ -10,13 +10,14 @@ appId: app.lingard
 - takeScreenshot: 30-studio
 - tapOn: "Start"
 - extendedWaitUntil:
-    visible: "Learn how the sound is made.*"
+    visible: "Playback speed|Learn how the sound is made.*|Now inside phrases.*|Say each word.*|Say both words.*|The whole sentence.*|Say each one.*"
     timeout: 20000
-- takeScreenshot: 31-drill-learn
-- scrollUntilVisible:
-    element: "Do this"
-    direction: DOWN
-- scrollUntilVisible:
-    element: "I can make it.*"
-    direction: DOWN
-- takeScreenshot: 32-drill-steps
+- takeScreenshot: 31-drill
+- runFlow:
+    when:
+      visible: "Learn how the sound is made.*"
+    commands:
+      - scrollUntilVisible:
+          element: "Do this"
+          direction: DOWN
+      - takeScreenshot: 32-drill-steps

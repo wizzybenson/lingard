@@ -57,10 +57,19 @@ def test_a_contrast_separated_nine_times_in_ten_both_ways_decides_alone(tmp_path
         "model": "m",
         "scale": {},
         "contrasts": {
-            "æ ʌ": {"threshold": -1.0, "width": 0.5, "native_pass": 1.0, "caught": 1.0, "reliable": True},
+            "æ ʌ": {
+                "threshold": -1.0,
+                "width": 0.5,
+                "native_pass": 1.0,
+                "caught": 1.0,
+                "reliable": True,
+                "n": [12, 12],
+            },
+            "j ∅": {"threshold": 0.3, "width": 2.0, "native_pass": 1.0, "caught": 1.0, "reliable": True, "n": [4, 4]},
             "e ɛ": {"threshold": 0.0, "width": 0.5, "native_pass": 0.68, "caught": 0.48, "reliable": False},
         },
     }
     (tmp_path / "pronunciation" / "calibration_en.yaml").write_text(yaml.safe_dump(data, allow_unicode=True))
     cal = load_calibration(tmp_path, "en", "m")
     assert cal is not None and cal.strong("æ", "ʌ") and not cal.strong("e", "ɛ")
+    assert not cal.strong("j", "∅"), "four takes a side can't make a contrast decide alone"

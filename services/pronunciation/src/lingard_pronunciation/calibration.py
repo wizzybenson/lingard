@@ -25,6 +25,8 @@ class Contrast:
 
 
 STRONG = 0.9
+STRONG_SAMPLES = 12
+"""Deciding alone also needs enough takes behind the numbers."""
 """A contrast separated at least this often both ways is decided by the two-way test alone."""
 STRESS_AGREEMENT = 1.0
 """A word's stress is judged only where the detector finds its dictionary stress in every native recording: a word it
@@ -84,7 +86,9 @@ def load_calibration(content_root: Path, language: str, model: str) -> Calibrati
             float(v["threshold"]),
             float(v["width"]),
             bool(v["reliable"]),
-            float(v.get("native_pass", 0)) >= STRONG and float(v.get("caught", 0)) >= STRONG,
+            float(v.get("native_pass", 0)) >= STRONG
+            and float(v.get("caught", 0)) >= STRONG
+            and min(v.get("n", [0])) >= STRONG_SAMPLES,
         )
         for pair, v in (data.get("contrasts") or {}).items()
     }

@@ -3,9 +3,9 @@ appId: app.lingard
 ---
 - runFlow: sign-in.yaml
 - scrollUntilVisible:
-    element: "(Begin day .*|Continue your story)"
+    element: "(Begin day .*|Continue day .*|Continue your story)"
     direction: UP
-- tapOn: "(Begin day .*|Continue your story)"
+- tapOn: "(Begin day .*|Continue day .*|Continue your story)"
 - extendedWaitUntil:
     visible: "Mission"
     timeout: 180000

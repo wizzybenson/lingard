@@ -1083,7 +1083,7 @@ drills:
   - key: en.gym.long_vowels
     sounds: [ɑː, ɔː, ɜː]
     words: [car, park, father, door, walk, four, bird, work, her, first]
-    pairs: [[hurt, heart], [walk, work], [four, fur], [born, burn]]
+    pairs: [[hurt, heart], [walk, work], [four, fur], [born, burn], [firm, farm], [stir, star], [bird, bard]]
     phrases: [a long walk, the first bird, park the car]
     sentence: "Her first walk in the park was short."
   - key: en.gym.o_vowels
@@ -1137,7 +1137,7 @@ drills:
   - key: en.gym.sh_ch_j
     sounds: [ʃ, tʃ, dʒ]
     words: [ship, chip, share, chair, cheap, jeep, wash, watch, choose, juice]
-    pairs: [[ship, chip], [share, chair], [cheap, jeep], [wash, watch]]
+    pairs: [[ship, chip], [share, chair], [cheap, jeep], [wash, watch], [chin, gin], [choke, joke], [rich, ridge], [chain, Jane]]
     phrases: [fish and chips, a cheap chair, orange juice]
     sentence: "She chose a cheap chair."
   - key: en.gym.ng
@@ -1160,9 +1160,9 @@ drills:
     sentence: "Turn right at the red light."
   - key: en.gym.y
     sounds: [j]
-    words: ["yes", yellow, you, use, young, year, music, new, few, beautiful]
-    pairs: [[year, ear], [yet, jet]]
-    phrases: [yes you can, a yellow car, a new year]
+    words: ["yes", yellow, you, youth, young, year, music, few, beautiful, yesterday]  # not "use" (s or z) or "new" (many drop its y)
+    pairs: [[year, ear], [yet, jet], [yolk, joke], [yam, jam], [yell, jell], [yes, ess]]
+    phrases: [yes you can, a yellow car, young people, a beautiful year]
     sentence: "Yes, you can use my yellow pen."
   - key: en.pron.ed_endings
     sounds: []
