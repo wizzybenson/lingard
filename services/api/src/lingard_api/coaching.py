@@ -14,6 +14,7 @@ import logging
 import uuid
 from collections import Counter
 from datetime import UTC, datetime, time
+from time import monotonic as time_now
 from typing import Literal
 
 from sqlalchemy import select
@@ -43,6 +44,10 @@ LEARNED_SHOWN = 12
 
 ASKING: set[tuple[uuid.UUID, str]] = set()
 """Plans being worked out now, so a burst of home-screen loads asks the coach once."""
+FAILED: dict[tuple[uuid.UUID, str], float] = {}
+"""When the coach last failed on a plan: it isn't asked again for that plan for a while (a provider outage must not
+turn every look at the home screen into another paid call)."""
+RETRY_AFTER_S = 600
 
 
 async def todays_path(
@@ -57,15 +62,17 @@ async def todays_path(
     skills: dict[str, str],
     exam_name: str,
 ) -> tuple[list[Stop], Source]:
-    signals = await _signals(state, db, user.id, profile, language, story_ready, reviews_due)
     if not story_ready:
         return [], "rules"
+    signals = await _signals(state, db, user.id, profile, language, story_ready, reviews_due)
     brief = await _brief(state, db, user, profile, language, signals, skills, exam_name)
     digest = _digest(brief, state.graph_deps.prompts.get("learning_coach").ref)
     saved = profile.settings.get("coach", {})
     if saved.get("digest") == digest and saved.get("date") == datetime.now(UTC).date().isoformat():
         return plan_path(signals, CoachPlan.model_validate(saved["plan"])), "ai"
-    if not any_llm_configured() or not (brief.slips or brief.rules or brief.sounds):
+    failed = FAILED.get((user.id, digest))
+    recently_failed = failed is not None and time_now() - failed < RETRY_AFTER_S
+    if not any_llm_configured() or recently_failed or not (brief.slips or brief.rules or brief.sounds):
         return plan_path(signals), "rules"
     if (user.id, digest) not in ASKING:
         ASKING.add((user.id, digest))
@@ -77,14 +84,14 @@ async def todays_path(
 async def _ask(state: AppState, user_id: uuid.UUID, brief: CoachBrief, digest: str) -> None:
     try:
         plan = await ask_coach(brief, router=state.graph_deps.router, prompts=state.graph_deps.prompts)
-    except Exception:  # the path from the curriculum's order stands; the next look asks again
+        async with state.sessions() as db:
+            profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == user_id))).scalar_one()
+            saved = {"date": datetime.now(UTC).date().isoformat(), "digest": digest, "plan": plan.model_dump()}
+            profile.settings = {**profile.settings, "coach": saved}
+            await db.commit()
+    except Exception:  # the path from the curriculum's order stands; asked again after a while
         log.warning("learning coach failed", exc_info=True)
-        return
-    async with state.sessions() as db:
-        profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == user_id))).scalar_one()
-        saved = {"date": datetime.now(UTC).date().isoformat(), "digest": digest, "plan": plan.model_dump()}
-        profile.settings = {**profile.settings, "coach": saved}
-        await db.commit()
+        FAILED[(user_id, digest)] = time_now()
 
 
 def _digest(brief: CoachBrief, prompt_ref: str) -> str:

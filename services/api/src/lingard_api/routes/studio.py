@@ -299,7 +299,10 @@ async def _checked_model(state: AppState, text: str, language: Language) -> byte
     """The other native render kept for a text whose narrator model didn't pass, if any."""
     if await _verdict(state, text, language) != "other":
         return None
-    return await state.objects.get(AUDIO_BUCKET, f"{_check_key(language, text)}.pcm")
+    try:
+        return await state.objects.get(AUDIO_BUCKET, f"{_check_key(language, text)}.pcm")
+    except Exception:  # its render went missing: the narrator's stands in
+        return None
 
 
 async def _with_models(state: AppState, texts: list[str], language: Language) -> list[str]:

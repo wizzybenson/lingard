@@ -20,6 +20,7 @@ import type { Location } from "@/world/types";
 
 const POLL_MS = 2500;
 const COACH_POLL_MS = 4000;
+const COACH_LOOKS = 8;
 const PLAN_TIMEOUT_MS = 3 * 60 * 1000; // a day plan normally takes well under a minute
 // Loaded on first render, after the root layout has initialised Skia (CanvasKit on the web).
 const CityCanvas = lazy(() => import("@/world/renderer/CityCanvas").then((m) => ({ default: m.CityCanvas })));
@@ -55,12 +56,17 @@ export default function City() {
   const [ahead, setAhead] = useState<SessionView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const today = useResource(() => api.get<Today>("/v1/today"), [api]);
-  // The coach tailors the day in the background: look again shortly, and the path updates in place.
+  // The coach tailors the day in the background: look again shortly, and the path updates in place. A few looks at
+  // most: if it is slow or failing, the path from the curriculum's order simply stays.
   const thinking = today.data?.coach === "thinking";
   const { reload: reloadToday } = today;
+  const coachLooks = useRef(0);
   useEffect(() => {
-    if (!thinking) return;
-    const timer = setTimeout(reloadToday, COACH_POLL_MS);
+    if (!thinking || coachLooks.current >= COACH_LOOKS) return;
+    const timer = setTimeout(() => {
+      coachLooks.current += 1;
+      reloadToday();
+    }, COACH_POLL_MS);
     return () => clearTimeout(timer);
   }, [thinking, reloadToday, today.data]);
   const profile = useResource(() => api.get<Profile>("/v1/me"), [api]);

@@ -85,11 +85,13 @@ export function Teach({
   onAllShown?: () => void;
 }) {
   const { t } = useTranslation();
-  const [shown, setShown] = useState(paced ? 1 : steps.length);
+  const [revealed, setRevealed] = useState(1);
+  // Unpaced (or no longer: the learner moved on to practice) shows every step.
+  const shown = paced ? revealed : steps.length;
   const more = shown < steps.length;
   const next = () => {
     void Haptics.selectionAsync();
-    setShown(shown + 1);
+    setRevealed(shown + 1);
     if (shown + 1 >= steps.length) onAllShown?.();
   };
   let example = 0;

@@ -7,7 +7,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
+import Animated, { FadeInRight } from "react-native-reanimated";
 
 import { PlayButton } from "@/live/PlayButton";
 import { UpNext } from "@/home/UpNext";
@@ -254,8 +254,9 @@ export default function Drill() {
       {view.mastered && !reviewing && <UpNext after="sounds" />}
       <ErrorText message={error} />
 
-      {/* Each step of the climb slides in as the learner moves up (or back to) it. */}
-      <Animated.View key={`${stage}-${reviewing}`} entering={FadeInRight.duration(280)} exiting={FadeOutLeft.duration(160)} style={styles.stage}>
+      {/* Each step of the climb slides in as the learner moves up (or back to) it; the old one goes at once, so the two
+          never stack. */}
+      <Animated.View key={`${stage}-${reviewing}`} entering={FadeInRight.duration(280)} style={styles.stage}>
         {stage === STAGE.learn && !reviewing && (
           <>
             <Body muted>{t("gym.learnIntro")}</Body>

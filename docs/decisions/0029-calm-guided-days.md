@@ -150,3 +150,21 @@ way home.
 - **Not run.** Onboarding needs a fresh account. A live scene ("day") is paid. Nothing has been tried on the phone
   itself since this redesign.
 
+## Review before handing over (2026-10-22, late)
+
+- **Repeated paid calls during an outage.** A failing coach left the home screen "thinking", so the app looked again
+  every 4 s and each look started another paid call. Now a plan that failed isn't asked for again for 10 minutes
+  (`coaching.FAILED`; tested), and the app looks at most 8 times.
+- **How often the coach runs.** It plans again whenever what it reads changes in a way that matters: a new scene to
+  play, a new confirmed mistake, a rule learned, or a sound score moving by about 10. In practice that is a few `mid`
+  calls a day for an active learner, not one.
+- **Wasted work.** The brief is no longer gathered before the learner's level is known, when no path is shown.
+- **Hidden lesson steps.** Steps a learner hadn't revealed stayed hidden after they moved on to practice. Every step
+  now shows once practice starts.
+- **Stacked drill steps.** A drill's old step slid out while the new one slid in, stacking the two for a moment. Only
+  the slide-in is kept.
+- **Missing replacement render.** A replacement model whose render went missing from storage would have failed the
+  request. The narrator's render now stands in.
+- **School flow.** The school flow opens a named grammar lesson, as learn-first does, since next-up is the coach's
+  pick.
+

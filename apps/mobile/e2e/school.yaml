@@ -13,10 +13,11 @@ appId: app.lingard
     element: "Basics to refresh|Coming up next"
     direction: DOWN
 - takeScreenshot: school-02-more
-- scrollUntilVisible:
-    element: "Start lesson"
+- scrollUntilVisible:  # a grammar rule (next up is the coach's pick, which may be a word set)
+    element: "Passé composé avec avoir, .*"
     direction: UP
-- tapOn: "Start lesson"
+    centerElement: true
+- tapOn: "Passé composé avec avoir, .*"
 - extendedWaitUntil:
     visible: "The rule"
     timeout: 10000
