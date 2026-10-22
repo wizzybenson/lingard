@@ -112,5 +112,16 @@ way home.
 - Maestro (Simulator, API without model keys so no paid call was made): tour, studio, school, learn-first and
   review pass with the new navigation.
 - The mock flow needs a provider configured to start, so it was not run here.
-- The coach has not been run against a live model yet: one `mid` call per learner per day, waiting for the founder's
-  go-ahead on spend.
+- **Live coach (the founder said go ahead).** On the test learner, the plan arrived about 15 s after the first look,
+  and the path updated in place.
+  - v1's reasons were generic ("in your speaking practice" three times) and it gave no reason for the story.
+  - v2 gets today's next scene (place, person and goal, never its hidden targets) and must not repeat itself. It then
+    chose "Factures et services" over the curriculum's next rule, because the scene was setting up the internet with
+    Martin. Every reason named the scene, the sound or the words.
+  - v2 also claimed the review cards were about "agreement and disagreement", which it can't know. It is now told it
+    doesn't know the cards.
+  - The plan's cache key includes the prompt version, and counts sound scores only to the nearest 10.
+- **Mock flows.** mock and mock-ielts pass with the keys restored. school-en passes; it was already missing its
+  "I'm ready" step.
+- **Language switch in flows.** Maestro now switches language with the city pill on Today. On the Simulator, the dev
+  build's menu button sits over the pill by the title.

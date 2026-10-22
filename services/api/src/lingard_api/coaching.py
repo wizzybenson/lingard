@@ -29,6 +29,7 @@ from lingard_db.models import Assessment, LearnerProfile, Scene, Session, Turn, 
 from lingard_graphs.agents.learning_coach import CoachBrief, CoachPlan, RuleCandidate, SlipCandidate, SoundCandidate
 from lingard_graphs.agents.learning_coach import coach as ask_coach
 from lingard_llm.config import any_llm_configured
+from lingard_world import load_city
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ async def todays_path(
     if not story_ready:
         return [], "rules"
     brief = await _brief(state, db, user, profile, language, signals, skills, exam_name)
-    digest = _digest(brief)
+    digest = _digest(brief, state.graph_deps.prompts.get("learning_coach").ref)
     saved = profile.settings.get("coach", {})
     if saved.get("digest") == digest and saved.get("date") == datetime.now(UTC).date().isoformat():
         return plan_path(signals, CoachPlan.model_validate(saved["plan"])), "ai"
@@ -86,11 +87,13 @@ async def _ask(state: AppState, user_id: uuid.UUID, brief: CoachBrief, digest: s
         await db.commit()
 
 
-def _digest(brief: CoachBrief) -> str:
-    """What the plan depends on. What was done today and how many reviews wait are left out, so ticking a stop or
-    answering a card doesn't send the coach back to work."""
-    basis = brief.model_copy(update={"done_today": [], "reviews_due": int(brief.reviews_due > 0)})
-    return hashlib.sha256(basis.model_dump_json().encode()).hexdigest()[:24]
+def _digest(brief: CoachBrief, prompt_ref: str) -> str:
+    """What the plan depends on, the coach's prompt version included. What was done today and how many reviews wait
+    are left out, and sound scores count only to the nearest 10, so ticking a stop, answering a card or one more take
+    doesn't send the coach back to work."""
+    sounds = [x.model_copy(update={"score": None if x.score is None else round(x.score, -1)}) for x in brief.sounds]
+    basis = brief.model_copy(update={"done_today": [], "reviews_due": int(brief.reviews_due > 0), "sounds": sounds})
+    return hashlib.sha256(f"{prompt_ref}|{basis.model_dump_json()}".encode()).hexdigest()[:24]
 
 
 async def _signals(
@@ -207,4 +210,34 @@ async def _brief(
         sounds=[SoundCandidate(drill=x.drill, title=x.title, score=x.score) for x in s.sounds],
         done_today=sorted(s.done),
         reviews_due=s.reviews_due,
+        story=await _story(state, db, user.id, language),
     )
+
+
+async def _story(state: AppState, db: AsyncSession, user_id: uuid.UUID, language: Language) -> str:
+    """The next scene of the day still to play, as the learner will see it (place, person, goal; never its hidden
+    targets), so the coach can tie today's choices to it."""
+    city = LANGUAGE_CITY[language]
+    contract = (
+        await db.execute(
+            select(Scene.contract)
+            .join(Session, Session.id == Scene.session_id)
+            .where(
+                Scene.user_id == user_id,
+                Scene.status == "planned",
+                Session.kind == "live",
+                Session.city == city,
+                Session.ended_at.is_(None),
+            )
+            .order_by(Session.started_at.desc(), Scene.created_at)
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if contract is None:
+        return ""
+    content = load_city(state.settings.content_root, city)
+    place = content.location(contract["location_key"]).name
+    cast = contract.get("cast") or []
+    npc = content.npc(cast[0]["npc_key"]) if cast else None
+    who = f" with {npc.name} ({npc.role})" if npc else ""
+    return f"{place}{who}: {contract['learner_goal']}"

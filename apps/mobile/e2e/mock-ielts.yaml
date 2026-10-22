@@ -3,12 +3,16 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "Exam Hall, tab.*"
-- runFlow:  # the hall shows the exam in focus; the pill by the title switches to the other
+- scrollUntilVisible:  # English in focus: the city pill on Today switches it (clear of the dev build's menu button)
+    element: "Switch to (Ashford|Rivemont)"
+    direction: DOWN
+    centerElement: true
+- runFlow:
     when:
-      visible: "Switch to IELTS General Training"
+      visible: "Switch to Ashford"
     commands:
-      - tapOn: "Switch to IELTS General Training"
+      - tapOn: "Switch to Ashford"
+- tapOn: "Exam Hall, tab.*"
 - extendedWaitUntil:
     visible: "IELTS General Training"
     timeout: 10000

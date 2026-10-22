@@ -54,6 +54,8 @@ class CoachBrief(BaseModel):
     sounds: list[SoundCandidate] = []
     done_today: list[str] = []
     reviews_due: int = 0
+    story: str = ""
+    """Today's next scene as the learner sees it: place, person and goal."""
 
 
 class Reasons(BaseModel):
@@ -85,6 +87,7 @@ async def coach(brief: CoachBrief, *, router: LLMRouter, prompts: PromptRegistry
         skills=", ".join(f"{k} {v}" for k, v in brief.skills.items()) or "not measured yet",
         done_today=", ".join(brief.done_today) or "nothing yet",
         reviews=brief.reviews_due,
+        story=brief.story or "not planned yet",
         learned="\n".join(f"- {title}" for title in brief.learned) or "(nothing yet)",
         slips="\n".join(
             f"- {s.node_key}: {s.title}. Said “{s.said}”"

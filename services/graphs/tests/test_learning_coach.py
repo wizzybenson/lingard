@@ -30,6 +30,7 @@ BRIEF = CoachBrief(
         RuleCandidate(node_key="fr.grammar.futur_proche", title="Futur proche", kind="grammar", band=5, in_use=0.7),
     ],
     sounds=[SoundCandidate(drill="fr.pron.u_vs_ou", title="/y/ et /u/", score=41.0)],
+    story="Caisse populaire with Karim Benali (teller): Ouvrez un compte",
 )  # fmt: skip
 
 
@@ -41,6 +42,7 @@ async def test_the_coach_reads_the_learners_progress_and_chooses_among_candidate
         assert "Said “j'ai allé”, better “je suis allé” (2 scenes)" in brief, "the learner's own words reach the coach"
         assert "fr.grammar.imparfait: Imparfait (grammar, level 6, 0.20)" in brief, "and how surely they use each rule"
         assert "speaking behind" in brief and "/y/ et /u/ (41)" in brief
+        assert "Today's story: Caisse populaire with Karim Benali" in brief, "today's scene, to tie choices to it"
         return {
             "fix": "fr.grammar.passe_compose_etre",
             "learn": "fr.grammar.subjonctif",  # not a candidate: dropped

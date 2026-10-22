@@ -2,13 +2,17 @@
 appId: app.lingard
 ---
 - runFlow: sign-in.yaml
-- tapOn: "Practice, tab.*"
-- tapOn: "Lessons"
+- scrollUntilVisible:  # English in focus: the city pill on Today switches it (clear of the dev build's menu button)
+    element: "Switch to (Ashford|Rivemont)"
+    direction: DOWN
+    centerElement: true
 - runFlow:
     when:
-      visible: "Switch to IELTS General Training"
+      visible: "Switch to Ashford"
     commands:
-      - tapOn: "Switch to IELTS General Training"
+      - tapOn: "Switch to Ashford"
+- tapOn: "Practice, tab.*"
+- tapOn: "Lessons"
 - extendedWaitUntil:
     visible: "Rules · .*"
     timeout: 10000
@@ -25,12 +29,18 @@ appId: app.lingard
 - scrollUntilVisible:
     element: "Words · .*"
     direction: DOWN
+- tapOn: "Words · .*"  # each kind is folded to one line until opened
 - tapOn:
     below: "Words · .*"
     text: ".+"
 - extendedWaitUntil:
     visible: "In short"
     timeout: 10000
+- runFlow:  # practice opens once the learner is ready
+    when:
+      visible: "I'm ready: .*"
+    commands:
+      - tapOn: "I'm ready: .*"
 - scrollUntilVisible:
     element: "Fill the gap"
     direction: DOWN
