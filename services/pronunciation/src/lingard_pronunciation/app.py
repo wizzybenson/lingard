@@ -43,6 +43,17 @@ class ShadowRequest(BaseModel):
     """Golden-self (or native) render of the line. Without it, intonation isn't scored and no pitch overlay is drawn."""
 
 
+def by_word(words: list[tuple[str, list[str]]], heatmap: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The heatmap cut back into the written words, each with its mean score, so a line can be coloured word by word."""
+    out, start = [], 0
+    for text, phonemes in words:
+        sounds = heatmap[start : start + len(phonemes)]
+        start += len(phonemes)
+        score = round(sum(s["score"] for s in sounds) / len(sounds), 1) if sounds else None
+        out.append({"text": text, "score": score, "phonemes": sounds})
+    return out
+
+
 def create_app(engines: Engines) -> FastAPI:
     app = FastAPI(title="Lingard pronunciation", version="1")
 
@@ -68,7 +79,8 @@ def create_app(engines: Engines) -> FastAPI:
         if engines.recognizer is None:
             raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "phoneme recogniser is not installed")
         try:
-            expected = engines.g2p.phonemes(body.text, body.language)
+            words = engines.g2p.words(body.text, body.language)
+            expected = [p for _, phonemes in words for p in phonemes]
         except KeyError as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
         learner = base64.b64decode(body.learner_pcm_b64)
@@ -89,6 +101,7 @@ def create_app(engines: Engines) -> FastAPI:
             "node_scores": result.node_scores,
             "critical": result.critical,
             "heatmap": result.heatmap,
+            "words": by_word(words, result.heatmap),
             "pitch": {
                 "learner": semitone_contour(learner_f0).round(2).tolist(),
                 "reference": semitone_contour(reference_f0).round(2).tolist() if reference_f0 is not None else [],

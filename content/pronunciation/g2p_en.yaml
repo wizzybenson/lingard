@@ -1,0 +1,9 @@
+# How tools/content_cli/lexicon.py turns espeak-ng output into recogniser symbols for British English (decision 0028).
+voice: en-gb
+units: [eɪ, aɪ, ɔɪ, aʊ, əʊ, eə, ʊə, tʃ, dʒ]   # diphthongs and affricates are scored as one sound
+replace:
+  a: æ                # espeak's modern RP writes "cat" with /a/; the curriculum and the recogniser use /æ/
+  ɐ: ə                # weak "a"
+  ɛə: eə              # "square"
+  ɪə: iə              # "near": the recogniser's symbol
+  ɚ: ə

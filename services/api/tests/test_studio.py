@@ -1,5 +1,6 @@
 import math
 from datetime import UTC, datetime
+from typing import Any
 
 import httpx
 import numpy as np
@@ -67,7 +68,7 @@ async def test_shadow_scores_and_reviews_on_final_attempt(api) -> None:  # type:
     unconfigured = await api.client.post("/v1/studio/shadow", data=form, files=files, headers=api.bearer(token))
     assert unconfigured.status_code == 503
 
-    _attach(api, LexiconRecognizer(LexiconG2P(api.settings.content_root), line, "fr", swap={"p": "b"}))
+    _attach(api, LexiconRecognizer(LexiconG2P(api.settings.content_root), line, "fr", swap={"p": "b", "ɛ̃": "ɑ̃"}))
     first = await api.client.post("/v1/studio/shadow", data=form, files=files, headers=api.bearer(token))
     assert first.status_code == 200, first.text
     body = first.json()
@@ -158,3 +159,63 @@ async def test_reference_is_the_golden_self_when_the_learner_has_a_clone(api) ->
     assert response.status_code == 200
     assert converter.profiles == ["el-voice-1"]
     assert watermark.detect(wav_to_pcm(response.content), f"lingard:{user.id}")
+
+
+async def _say(api, token, text: str, drill: str, stage: int, swap: dict[str, str] | None = None):  # type: ignore[no-untyped-def]
+    _attach(api, LexiconRecognizer(LexiconG2P(api.settings.content_root), text, "fr", swap=swap))
+    form = {"line": text, "language": "fr", "drill": drill, "stage": str(stage)}
+    response = await api.client.post(
+        "/v1/studio/shadow", data=form, files={"audio": ("a.wav", _wav(), "audio/wav")}, headers=api.bearer(token)
+    )
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+async def test_a_drill_is_climbed_stage_by_stage_and_reviewed(api) -> None:  # type: ignore[no-untyped-def]
+    token = await api.admin_token("Founder", PIN)
+    await api.client.patch("/v1/me", json={"ui_locale": "en"}, headers=api.bearer(token))
+    key = "fr.pron.u_vs_ou"
+    gym = (await api.client.get("/v1/studio/gym", params={"language": "fr"}, headers=api.bearer(token))).json()
+    assert len(gym["drills"]) >= 20 and gym["workout"], "every sound of the language, and a workout to start with"
+    view = (await api.client.get(f"/v1/studio/gym/{key}", params={"language": "fr"}, headers=api.bearer(token))).json()
+    assert view["stage"] == 0 and [g["phoneme"] for g in view["guides"]] == ["y", "u"]
+    assert view["guides"][0]["how"]["steps"] and "u" in view["guides"][0]["confusions"]
+    rue = next(w for w in view["words"] if w["text"] == "rue")
+    assert rue["words"][0]["phonemes"] == ["ʁ", "y"] and rue["words"][0]["targets"] == [1], (
+        "the trained sound is marked"
+    )
+
+    async def step(stage: int, score: float | None = None) -> dict[str, Any]:
+        body = {"language": "fr", "stage": stage, "score": score}
+        answer: dict[str, Any] = (
+            await api.client.post(f"/v1/studio/gym/{key}/step", json=body, headers=api.bearer(token))
+        ).json()
+        return answer
+
+    assert (await step(0))["progress"]["stage"] == 1, "learned: on to listening"
+    assert not (await step(1, 0.5))["passed"], "half the pairs heard right is not enough"
+    assert (await step(1, 0.875))["progress"]["stage"] == 2
+
+    wrong = await _say(api, token, "rue", key, 2, swap={"y": "u"})
+    assert not wrong["good"] and wrong["progress"]["passed_items"] == []
+    [tip] = [t for t in wrong["tips"] if t["phoneme"] == "y"]
+    assert tip["heard_as"] == "u" and "tongue slid back" in tip["text"], "the fix for exactly what was heard"
+    for word in view["words"][:5]:
+        said = await _say(api, token, word["text"], key, 2)
+    assert said["progress"]["stage"] == 3, "five words said well: on to the pairs"
+    for a, b in view["pairs"][:3]:
+        said = await _say(api, token, f"{a} / {b}", key, 3)
+    assert said["progress"]["stage"] == 4
+    for phrase in view["phrases"][:3]:
+        said = await _say(api, token, phrase["text"], key, 4)
+    assert said["progress"]["stage"] == 5
+    said = await _say(api, token, view["sentence"]["text"], key, 5)
+    assert said["progress"]["mastered"]
+
+    gym = (await api.client.get("/v1/studio/gym", params={"language": "fr"}, headers=api.bearer(token))).json()
+    climbed = next(d for d in gym["drills"] if d["key"] == key)
+    assert climbed["mastered"] and climbed["due"] and not climbed["review_due"], "first review in a few days"
+    assert gym["sounds"]["y"] > 0
+    review = {"language": "fr", "held": False}
+    slipped = (await api.client.post(f"/v1/studio/gym/{key}/review", json=review, headers=api.bearer(token))).json()
+    assert slipped["stage"] == 2, "a sound that slipped is rebuilt from its words"

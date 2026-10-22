@@ -42,6 +42,8 @@ async def test_shadow_endpoint_scores_against_lexicon_and_flags_critical_target(
         body = response.json()
         assert body["heatmap"][0]["phoneme"] == "p" and body["heatmap"][0]["heard_as"] == "b"
         assert body["critical"] == ["fr.pron.p_vs_b"]
+        [word] = body["words"]
+        assert word["text"] == "pain" and [p["phoneme"] for p in word["phonemes"]] == ["p", "ɛ̃"]
         unknown = await client.post("/shadow", json={**payload, "text": "anticonstitutionnellement"})
         assert unknown.status_code == 422
         assert (
@@ -69,3 +71,8 @@ def test_studio_lines_are_in_the_lexicon_and_drill_real_nodes() -> None:
         for item in data["lines"]:
             assert item["node_key"] in keys, item
             assert g2p.phonemes(item["line"], language), item  # raises KeyError on any word missing from the lexicon
+
+
+def test_phrases_keep_liaison_and_their_word_boundaries() -> None:
+    g2p = LexiconG2P(ROOT / "content")
+    assert g2p.words("Les amis", "fr") == [("Les", ["l", "e", "z"]), ("amis", ["a", "m", "i"])]

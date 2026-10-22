@@ -1,0 +1,5 @@
+# How tools/content_cli/lexicon.py turns espeak-ng output into recogniser symbols for French (decision 0028).
+voice: fr
+units: []             # multi-symbol sounds kept whole; French has none (nasal vowels are one symbol with a tilde)
+replace:
+  ɥ: y                # "huit", "puis": the recogniser has no /ɥ/; /y/ is its nearest sound

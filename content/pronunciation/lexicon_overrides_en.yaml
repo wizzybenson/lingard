@@ -1,0 +1,10 @@
+# Hand transcriptions (SSBE, recogniser symbols) where espeak-ng runs function words together and loses the word
+# boundaries; tools/content_cli/lexicon.py takes these instead of espeak. Original for Lingard.
+a ship not a sheep: "ə | ʃ ɪ p | n ɒ t | ə | ʃ iː p"
+this one: "ð ɪ s | w ʌ n"
+sit in the seat: "s ɪ t | ɪ n | ð ə | s iː t"
+her first walk in the park was short: "h ɜː | f ɜː s t | w ɔː k | ɪ n | ð ə | p ɑː k | w ə z | ʃ ɔː t"
+on the phone: "ɒ n | ð ə | f əʊ n"
+we sing in the evening: "w iː | s ɪ ŋ | ɪ n | ð ɪ | iː v n ɪ ŋ"
+get out of it: "ɡ ɛ t | aʊ t | ə v | ɪ t"
+a: "ə"

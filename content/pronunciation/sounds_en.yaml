@@ -1,0 +1,1185 @@
+# Sound gym (Accent Studio, decision 0028): how each Southern British English sound is made, what to change when it
+# comes out as another sound, and the drills that train it. Original for Lingard. Explanations exist in each interface
+# language (en, fr); "heard_as" keys are recogniser symbols (content/pronunciation/recognizer_inventory.txt).
+# Articulation follows standard descriptions of SSBE (e.g. Cruttenden, Gimson's Pronunciation of English).
+source_url: https://www.internationalphoneticassociation.org/content/full-ipa-chart
+as_of: "2026-10-22"
+language: en
+
+phonemes:
+  θ:
+    example: "think"
+    en:
+      tongue: "The tip rests lightly between or just behind your upper front teeth."
+      voice: "Off."
+      air: "Flows continuously over the tongue; nothing stops it."
+      steps:
+        - "Put the tip of your tongue lightly against the bottom of your upper teeth; you can let it show a little."
+        - "Blow air over it without using your voice."
+      check: "In a mirror you should see the tip of your tongue. Touch your throat; no buzz."
+    fr:
+      tongue: "La pointe posée légèrement entre les dents du haut ou juste derrière."
+      voice: "Non."
+      air: "Passe en continu sur la langue, rien ne l'arrête."
+      steps:
+        - "Posez la pointe de la langue sous les dents du haut ; elle peut dépasser un peu."
+        - "Soufflez dessus sans la voix."
+      check: "Dans un miroir, on voit la pointe de la langue. Touchez la gorge : aucune vibration."
+    confusions:
+      s:
+        en: "Your tongue stayed behind your teeth, so it sounded like \"s\" (sink). Bring the tip forward to touch your upper teeth."
+        fr: "Votre langue est restée derrière les dents, on entend « s » (sink). Avancez la pointe jusqu'aux dents du haut."
+      t:
+        en: "Your tongue stopped the air, so it sounded like \"t\" (tree). Let the air keep flowing over the tongue."
+        fr: "Votre langue a bloqué l'air, on entend « t » (tree). Laissez l'air passer en continu sur la langue."
+      f:
+        en: "You used your lip, so it sounded like \"f\". Use the tongue against the teeth instead."
+        fr: "Vous avez utilisé la lèvre, on entend « f ». Utilisez la langue contre les dents."
+  ð:
+    example: "they"
+    en:
+      tongue: "The tip rests lightly between or just behind your upper front teeth."
+      voice: "On, a buzz."
+      air: "Flows continuously over the tongue."
+      steps:
+        - "Put the tip of your tongue against the bottom of your upper teeth."
+        - "Turn your voice on and let the air flow; the tip of your tongue tickles."
+      check: "Touch your throat. It buzzes, and you can see your tongue tip."
+    fr:
+      tongue: "La pointe posée légèrement entre les dents du haut ou juste derrière."
+      voice: "Oui, ça vibre."
+      air: "Passe en continu sur la langue."
+      steps:
+        - "Posez la pointe de la langue sous les dents du haut."
+        - "Ajoutez la voix et laissez passer l'air ; la pointe chatouille."
+      check: "Touchez la gorge : elle vibre, et on voit la pointe de la langue."
+    confusions:
+      d:
+        en: "Your tongue stopped the air, so it sounded like \"d\" (day). Let the air flow over the tongue."
+        fr: "Votre langue a bloqué l'air, on entend « d » (day). Laissez l'air passer sur la langue."
+      z:
+        en: "Your tongue stayed behind your teeth, so it sounded like \"z\". Bring the tip forward to the teeth."
+        fr: "Votre langue est restée derrière les dents, on entend « z ». Avancez la pointe jusqu'aux dents."
+      v:
+        en: "You used your lip, so it sounded like \"v\". Use the tongue against the teeth."
+        fr: "Vous avez utilisé la lèvre, on entend « v ». Utilisez la langue contre les dents."
+  p:
+    example: "pen"
+    en:
+      lips: "Pressed together, then opened."
+      voice: "Off."
+      air: "At the start of a word or a stressed syllable, a strong puff of air follows."
+      steps:
+        - "Close your lips and build up air behind them."
+        - "Open them with a puff; a paper in front of your mouth should jump."
+      check: "Hold your hand in front of your mouth for \"pen\"; you feel the air. For \"Ben\" you barely do."
+    fr:
+      lips: "Fermées, puis ouvertes."
+      voice: "Non."
+      air: "En début de mot ou de syllabe accentuée, un fort souffle suit."
+      steps:
+        - "Fermez les lèvres et accumulez l'air derrière."
+        - "Ouvrez avec un souffle ; une feuille devant la bouche doit bouger."
+      check: "Main devant la bouche pour « pen » : vous sentez l'air. Pour « Ben », presque pas."
+    confusions:
+      b:
+        en: "Your voice was on and there was no puff, so it sounded like \"b\" (Ben). Voice off, and release with a puff of air."
+        fr: "Votre voix était là sans souffle, on entend « b » (Ben). Sans la voix, et relâchez avec un souffle."
+  b:
+    example: "Ben"
+    en:
+      lips: "Pressed together, then opened."
+      voice: "On."
+      air: "No puff."
+      steps:
+        - "Close your lips and let your throat buzz."
+        - "Open them gently, with no burst of air."
+      check: "A paper in front of your mouth barely moves."
+    fr:
+      lips: "Fermées, puis ouvertes."
+      voice: "Oui."
+      air: "Pas de souffle."
+      steps:
+        - "Fermez les lèvres et faites vibrer la gorge."
+        - "Ouvrez doucement, sans souffle."
+      check: "Une feuille devant la bouche bouge à peine."
+    confusions:
+      p:
+        en: "There was a puff of air and no voice, so it sounded like \"p\" (pen). Hum, and open gently."
+        fr: "Il y avait un souffle sans voix, on entend « p » (pen). Faites vibrer, et ouvrez doucement."
+  t:
+    example: "tea"
+    en:
+      tongue: "The tip touches the ridge just behind your upper front teeth."
+      voice: "Off."
+      air: "At the start of a stressed syllable, a puff of air follows."
+      steps:
+        - "Touch the ridge behind your upper teeth with your tongue tip."
+        - "Release with a puff of air."
+      check: "Your tongue is on the ridge, not on the teeth."
+    fr:
+      tongue: "La pointe touche la bosse juste derrière les dents du haut."
+      voice: "Non."
+      air: "En début de syllabe accentuée, un souffle suit."
+      steps:
+        - "Touchez la bosse derrière les dents du haut avec la pointe."
+        - "Relâchez avec un souffle."
+      check: "La langue est sur la bosse, pas sur les dents."
+    confusions:
+      d:
+        en: "Your voice was on and there was no puff, so it sounded like \"d\". Voice off, with a puff of air."
+        fr: "La voix était là sans souffle, on entend « d ». Sans la voix, avec un souffle."
+  d:
+    example: "day"
+    en:
+      tongue: "The tip touches the ridge just behind your upper front teeth."
+      voice: "On."
+      steps:
+        - "Touch the ridge behind your upper teeth and let your throat buzz."
+        - "Release gently."
+      check: "At the end of a word (\"bed\"), keep the voice on; do not turn it into \"t\"."
+    fr:
+      tongue: "La pointe touche la bosse derrière les dents du haut."
+      voice: "Oui."
+      steps:
+        - "Touchez la bosse derrière les dents du haut et faites vibrer la gorge."
+        - "Relâchez doucement."
+      check: "En fin de mot (« bed »), gardez la voix ; ne le transformez pas en « t »."
+    confusions:
+      t:
+        en: "There was no voice, so it sounded like \"t\" (bet). Keep your throat buzzing."
+        fr: "Il n'y avait pas de voix, on entend « t » (bet). Gardez la vibration."
+  k:
+    example: "coat"
+    en:
+      tongue: "The back of the tongue presses against the soft palate."
+      voice: "Off."
+      air: "A puff of air at the start of a stressed syllable."
+      steps:
+        - "Close with the back of your tongue."
+        - "Release with a puff of air."
+      check: "Hand in front of your mouth for \"coat\"; you feel the air."
+    fr:
+      tongue: "Le dos de la langue appuie contre le palais mou."
+      voice: "Non."
+      air: "Un souffle en début de syllabe accentuée."
+      steps:
+        - "Fermez avec le dos de la langue."
+        - "Relâchez avec un souffle."
+      check: "Main devant la bouche pour « coat » : vous sentez l'air."
+    confusions:
+      ɡ:
+        en: "Your voice was on, so it sounded like \"g\" (goat). Voice off, with a puff."
+        fr: "La voix était là, on entend « g » (goat). Sans la voix, avec un souffle."
+  ɡ:
+    example: "goat"
+    en:
+      tongue: "The back of the tongue presses against the soft palate."
+      voice: "On."
+      steps:
+        - "Close with the back of your tongue and let your throat buzz."
+        - "Release gently."
+      check: "At the end of a word (\"bag\"), keep the voice; do not turn it into \"k\"."
+    fr:
+      tongue: "Le dos de la langue appuie contre le palais mou."
+      voice: "Oui."
+      steps:
+        - "Fermez avec le dos de la langue et faites vibrer la gorge."
+        - "Relâchez doucement."
+      check: "En fin de mot (« bag »), gardez la voix ; pas de « k »."
+    confusions:
+      k:
+        en: "There was no voice, so it sounded like \"k\" (back). Keep your throat buzzing."
+        fr: "Il n'y avait pas de voix, on entend « k » (back). Gardez la vibration."
+  f:
+    example: "fan"
+    en:
+      lips: "Your upper teeth rest lightly on your lower lip."
+      voice: "Off."
+      air: "Flows continuously between teeth and lip."
+      steps:
+        - "Rest your upper teeth on your lower lip."
+        - "Blow air through without your voice."
+      check: "Your lips never touch each other."
+    fr:
+      lips: "Les dents du haut posées légèrement sur la lèvre du bas."
+      voice: "Non."
+      air: "Passe en continu entre les dents et la lèvre."
+      steps:
+        - "Posez les dents du haut sur la lèvre du bas."
+        - "Soufflez sans la voix."
+      check: "Les lèvres ne se touchent jamais."
+    confusions:
+      v:
+        en: "Your voice was on, so it sounded like \"v\" (van). Voice off."
+        fr: "La voix était là, on entend « v » (van). Sans la voix."
+      p:
+        en: "Your lips closed, so it sounded like \"p\". Keep the air flowing between teeth and lip."
+        fr: "Les lèvres se sont fermées, on entend « p ». Laissez l'air passer entre les dents et la lèvre."
+  v:
+    example: "van"
+    en:
+      lips: "Your upper teeth rest lightly on your lower lip."
+      voice: "On, a buzz."
+      air: "Flows continuously between teeth and lip."
+      steps:
+        - "Rest your upper teeth on your lower lip."
+        - "Blow air through with your voice on; your lip tickles."
+      check: "Touch your throat. It buzzes, and your lips never touch each other."
+    fr:
+      lips: "Les dents du haut posées légèrement sur la lèvre du bas."
+      voice: "Oui, ça vibre."
+      air: "Passe en continu entre les dents et la lèvre."
+      steps:
+        - "Posez les dents du haut sur la lèvre du bas."
+        - "Soufflez avec la voix ; la lèvre chatouille."
+      check: "La gorge vibre, et les lèvres ne se touchent jamais."
+    confusions:
+      f:
+        en: "There was no voice, so it sounded like \"f\" (fan). Turn your voice on."
+        fr: "Il n'y avait pas de voix, on entend « f » (fan). Ajoutez la voix."
+      w:
+        en: "Your lips rounded and your teeth did not touch, so it sounded like \"w\" (wine). Rest your top teeth on your lower lip."
+        fr: "Les lèvres se sont arrondies sans les dents, on entend « w » (wine). Posez les dents du haut sur la lèvre du bas."
+      b:
+        en: "Your lips closed, so it sounded like \"b\". Use your teeth on your lower lip."
+        fr: "Les lèvres se sont fermées, on entend « b ». Utilisez les dents sur la lèvre du bas."
+  w:
+    example: "wine"
+    en:
+      lips: "Tightly rounded, then open quickly into the vowel."
+      tongue: "Back and high, as for \"oo\"."
+      voice: "On."
+      steps:
+        - "Round your lips as if to say \"oo\"."
+        - "Open them quickly into the next vowel. Your teeth never touch your lips."
+      check: "In a mirror, your lips start as a small circle."
+    fr:
+      lips: "Bien arrondies, puis qui s'ouvrent vite vers la voyelle."
+      tongue: "En arrière et haute, comme pour « ou »."
+      voice: "Oui."
+      steps:
+        - "Arrondissez les lèvres comme pour « ou »."
+        - "Ouvrez-les vite vers la voyelle suivante. Les dents ne touchent jamais les lèvres."
+      check: "Dans un miroir, les lèvres commencent en petit cercle."
+    confusions:
+      v:
+        en: "Your teeth touched your lip, so it sounded like \"v\" (vine). Use only rounded lips."
+        fr: "Les dents ont touché la lèvre, on entend « v » (vine). Utilisez seulement les lèvres arrondies."
+  s:
+    example: "bus"
+    en:
+      tongue: "The tip close to the ridge behind your upper teeth, a narrow groove down the middle."
+      voice: "Off."
+      air: "A thin, sharp hiss."
+      steps:
+        - "Bring your teeth almost together."
+        - "Blow a thin hiss over the tongue."
+      check: "Touch your throat; no buzz."
+    fr:
+      tongue: "La pointe près de la bosse derrière les dents du haut, un petit sillon au milieu."
+      voice: "Non."
+      air: "Un sifflement fin et aigu."
+      steps:
+        - "Rapprochez les dents."
+        - "Soufflez un sifflement fin sur la langue."
+      check: "Touchez la gorge : aucune vibration."
+    confusions:
+      z:
+        en: "Your voice was on, so it sounded like \"z\" (buzz). Voice off."
+        fr: "La voix était là, on entend « z » (buzz). Sans la voix."
+      θ:
+        en: "Your tongue touched your teeth, so it sounded like \"th\". Keep it just behind the teeth."
+        fr: "La langue a touché les dents, on entend « th ». Gardez-la juste derrière les dents."
+      ʃ:
+        en: "Your tongue went back and your lips rounded, so it sounded like \"sh\". Bring the tongue forward."
+        fr: "La langue a reculé et les lèvres se sont arrondies, on entend « sh ». Avancez la langue."
+  z:
+    example: "buzz"
+    en:
+      tongue: "Same as \"s\"."
+      voice: "On, a buzz like a bee."
+      steps:
+        - "Make an \"s\" hiss."
+        - "Turn your voice on without moving anything."
+      check: "The \"s\" at the end of \"dogs\", \"plays\" and \"is\" is this sound."
+    fr:
+      tongue: "Comme pour « s »."
+      voice: "Oui, comme une abeille."
+      steps:
+        - "Faites le sifflement du « s »."
+        - "Ajoutez la voix sans rien bouger."
+      check: "Le « s » final de « dogs », « plays » et « is » est ce son."
+    confusions:
+      s:
+        en: "There was no voice, so it sounded like \"s\" (bus). After a voiced sound (\"dog\", \"play\"), the ending \"s\" buzzes."
+        fr: "Il n'y avait pas de voix, on entend « s » (bus). Après un son voisé (« dog », « play »), le « s » final vibre."
+  ʃ:
+    example: "ship"
+    en:
+      lips: "Rounded and pushed forward."
+      tongue: "The tip raised just behind the ridge, further back than for \"s\"."
+      voice: "Off."
+      air: "A soft \"shh\"."
+      steps:
+        - "Push your lips forward."
+        - "Pull the tongue tip slightly back from \"s\" and blow."
+      check: "One smooth sound, with no \"t\" before it."
+    fr:
+      lips: "Arrondies et projetées."
+      tongue: "Pointe levée juste derrière la bosse, plus en arrière que pour « s »."
+      voice: "Non."
+      air: "Un « chhh » doux."
+      steps:
+        - "Projetez les lèvres."
+        - "Reculez un peu la langue par rapport au « s » et soufflez."
+      check: "Un seul son continu, sans « t » devant."
+    confusions:
+      tʃ:
+        en: "You started with a \"t\", so it sounded like \"ch\" (chip). Start smoothly, without stopping the air."
+        fr: "Vous avez commencé par un « t », on entend « ch » (chip). Commencez en douceur, sans bloquer l'air."
+      s:
+        en: "Your tongue was too far forward, so it sounded like \"s\". Round the lips and pull the tongue back."
+        fr: "La langue était trop en avant, on entend « s ». Arrondissez les lèvres et reculez la langue."
+  ʒ:
+    example: "measure"
+    en:
+      lips: "Rounded and pushed forward."
+      tongue: "Same as \"sh\"."
+      voice: "On."
+      steps:
+        - "Make \"shh\", then turn your voice on."
+      check: "The middle sound of \"measure\" and \"television\"."
+    fr:
+      lips: "Arrondies et projetées."
+      tongue: "Comme pour « sh »."
+      voice: "Oui."
+      steps:
+        - "Faites « chhh », puis ajoutez la voix."
+      check: "Le son du milieu de « measure » et « television »."
+    confusions:
+      ʃ:
+        en: "There was no voice. Turn your voice on."
+        fr: "Il n'y avait pas de voix. Ajoutez la voix."
+      dʒ:
+        en: "You started with a \"d\". Start smoothly, without a tongue tap."
+        fr: "Vous avez commencé par un « d ». Commencez en douceur."
+  tʃ:
+    example: "chip"
+    en:
+      lips: "Rounded and pushed forward."
+      tongue: "The tip presses on the ridge behind your upper teeth, then releases into \"sh\"."
+      voice: "Off."
+      steps:
+        - "Say \"t\" with the tongue a little further back than usual."
+        - "Release it straight into \"sh\": \"t-sh\", fast, as one sound."
+      check: "There is a clear stop before the hiss."
+    fr:
+      lips: "Arrondies et projetées."
+      tongue: "La pointe appuie sur la bosse, puis se relâche en « ch »."
+      voice: "Non."
+      steps:
+        - "Dites « t » avec la langue un peu plus en arrière."
+        - "Relâchez directement en « ch » : « tch », vite, comme un seul son."
+      check: "Il y a un arrêt net avant le souffle."
+    confusions:
+      ʃ:
+        en: "There was no stop at the start, so it sounded like \"sh\" (ship). Close your tongue first, then release."
+        fr: "Pas d'arrêt au début, on entend « sh » (ship). Fermez d'abord avec la langue, puis relâchez."
+      dʒ:
+        en: "Your voice was on, so it sounded like \"j\" (jeep). Voice off."
+        fr: "La voix était là, on entend « j » (jeep). Sans la voix."
+  dʒ:
+    example: "jeep"
+    en:
+      lips: "Rounded and pushed forward."
+      tongue: "Same as \"ch\"."
+      voice: "On."
+      steps:
+        - "Say \"ch\", then turn your voice on: \"d-zh\" as one sound."
+      check: "The \"j\" of \"jam\" and the \"dge\" of \"bridge\"."
+    fr:
+      lips: "Arrondies et projetées."
+      tongue: "Comme pour « ch »."
+      voice: "Oui."
+      steps:
+        - "Dites « tch », puis ajoutez la voix : « dj » en un seul son."
+      check: "Le « j » de « jam » et le « dge » de « bridge »."
+    confusions:
+      ʒ:
+        en: "There was no stop at the start, so it sounded like French \"j\". Close the tongue first, then release."
+        fr: "Pas d'arrêt au début, on entend le « j » français. Fermez d'abord avec la langue."
+      tʃ:
+        en: "There was no voice, so it sounded like \"ch\". Turn your voice on."
+        fr: "Il n'y avait pas de voix, on entend « ch ». Ajoutez la voix."
+  h:
+    example: "hat"
+    en:
+      tongue: "Relaxed, already in place for the next vowel."
+      voice: "Off."
+      air: "A soft breath from the throat, like fogging a mirror."
+      steps:
+        - "Breathe out gently as if to fog a mirror."
+        - "Go straight into the vowel."
+      check: "'\"Hat\" and \"at\" must sound different: the breath comes first.'"
+    fr:
+      tongue: "Détendue, déjà en place pour la voyelle suivante."
+      voice: "Non."
+      air: "Un souffle doux de la gorge, comme pour faire de la buée."
+      steps:
+        - "Soufflez doucement comme pour faire de la buée sur un miroir."
+        - "Enchaînez directement sur la voyelle."
+      check: "« Hat » et « at » sont différents : le souffle vient d'abord."
+    confusions:
+      x:
+        en: "The sound was rough, from the back of the mouth. Keep it a soft breath with nothing in the way."
+        fr: "Le son était rauque, au fond de la bouche. Gardez un souffle doux, sans obstacle."
+  m:
+    example: "man"
+    en:
+      lips: "Closed."
+      voice: "On."
+      air: "Through the nose."
+      steps:
+        - "Close your lips and hum."
+      check: "Your lips stay closed for the whole sound."
+    fr:
+      lips: "Fermées."
+      voice: "Oui."
+      air: "Par le nez."
+      steps:
+        - "Fermez les lèvres et fredonnez."
+      check: "Les lèvres restent fermées pendant tout le son."
+    confusions: {}
+  n:
+    example: "no"
+    en:
+      tongue: "The tip on the ridge behind your upper teeth."
+      voice: "On."
+      air: "Through the nose."
+      steps:
+        - "Touch the ridge with your tongue tip and hum through your nose."
+      check: "Pinch your nose; the sound stops."
+    fr:
+      tongue: "La pointe sur la bosse derrière les dents du haut."
+      voice: "Oui."
+      air: "Par le nez."
+      steps:
+        - "Touchez la bosse avec la pointe et fredonnez par le nez."
+      check: "Pincez le nez : le son s'arrête."
+    confusions:
+      ŋ:
+        en: "The back of your tongue closed, so it sounded like \"ng\". Use the tip of the tongue."
+        fr: "Le dos de la langue a fermé, on entend « ng ». Utilisez la pointe de la langue."
+  ŋ:
+    example: "sing"
+    en:
+      tongue: "The back of the tongue presses against the soft palate, as for \"k\"; the tip stays down."
+      voice: "On."
+      air: "Through the nose."
+      steps:
+        - "Raise the back of your tongue as if to say \"k\", but hum through your nose instead."
+        - "At the end of \"sing\", stop there; do not add a \"g\"."
+      check: "'\"Sing\" ends in a hum, not a \"g\" sound.'"
+    fr:
+      tongue: "Le dos de la langue appuie contre le palais mou, comme pour « k » ; la pointe reste en bas."
+      voice: "Oui."
+      air: "Par le nez."
+      steps:
+        - "Montez le dos de la langue comme pour « k », mais fredonnez par le nez."
+        - "À la fin de « sing », arrêtez-vous là, sans ajouter de « g »."
+      check: "« Sing » finit par un bourdonnement, pas par un « g »."
+    confusions:
+      n:
+        en: "Your tongue tip touched the ridge, so it sounded like \"n\" (sin). Use the back of the tongue."
+        fr: "La pointe a touché la bosse, on entend « n » (sin). Utilisez le dos de la langue."
+      ɡ:
+        en: "You added a \"g\" at the end. Stop at the hum."
+        fr: "Vous avez ajouté un « g » à la fin. Arrêtez-vous au bourdonnement."
+  l:
+    example: "light"
+    en:
+      tongue: "The tip on the ridge behind your upper teeth. Before a vowel (\"light\") the tongue is high and bright; after a vowel (\"feel\", \"milk\") the back of the tongue drops for a darker sound."
+      voice: "On."
+      steps:
+        - "Touch the ridge with your tongue tip and let the voice flow around the sides."
+        - "At the end of a word, let the back of the tongue sink a little."
+      check: "The tip touches the ridge every time, even at the end of \"feel\"."
+    fr:
+      tongue: "La pointe sur la bosse derrière les dents du haut. Avant une voyelle (« light ») la langue est haute et claire ; après une voyelle (« feel », « milk ») le dos de la langue descend pour un son plus sombre."
+      voice: "Oui."
+      steps:
+        - "Touchez la bosse avec la pointe et laissez la voix passer sur les côtés."
+        - "En fin de mot, laissez le dos de la langue descendre un peu."
+      check: "La pointe touche la bosse à chaque fois, même à la fin de « feel »."
+    confusions:
+      ɹ:
+        en: "Your tongue tip did not touch, so it sounded like \"r\" (right). Touch the ridge."
+        fr: "La pointe n'a pas touché, on entend « r » (right). Touchez la bosse."
+      w:
+        en: "Your tongue tip did not touch and the lips rounded. Touch the ridge with the tip."
+        fr: "La pointe n'a pas touché et les lèvres se sont arrondies. Touchez la bosse avec la pointe."
+  ɹ:
+    example: "red"
+    en:
+      lips: "Slightly rounded."
+      tongue: "The tip curls up toward the ridge but never touches anything."
+      voice: "On."
+      steps:
+        - "Round your lips a little and raise the tongue tip toward the ridge, without touching."
+        - "Glide into the vowel. No tap, no roll, no gargle."
+      check: "In British English an \"r\" is only said before a vowel; in \"car\" and \"park\" it is silent."
+    fr:
+      lips: "Légèrement arrondies."
+      tongue: "La pointe se relève vers la bosse mais ne touche rien."
+      voice: "Oui."
+      steps:
+        - "Arrondissez un peu les lèvres et levez la pointe vers la bosse, sans toucher."
+        - "Glissez vers la voyelle. Pas de frappe, pas de roulement, pas de gargarisme."
+      check: "En anglais britannique, le « r » ne se dit que devant une voyelle ; dans « car » et « park » il est muet."
+    confusions:
+      ʁ:
+        en: "That was a French \"r\" from the throat. Make it with the tongue tip, curled up and not touching."
+        fr: "C'était un « r » français, de la gorge. Faites-le avec la pointe de la langue, relevée sans toucher."
+      r:
+        en: "Your tongue tip rolled. Keep it still and not touching anything."
+        fr: "La pointe a roulé. Gardez-la immobile, sans rien toucher."
+      ɾ:
+        en: "Your tongue tip tapped the ridge. Keep it close but not touching."
+        fr: "La pointe a tapé la bosse. Approchez-la sans toucher."
+      l:
+        en: "Your tongue tip touched the ridge, so it sounded like \"l\" (light). Do not let it touch."
+        fr: "La pointe a touché la bosse, on entend « l » (light). Ne la laissez pas toucher."
+  j:
+    example: "yes"
+    en:
+      tongue: "The middle of the tongue rises close to the hard palate, as for a very short \"ee\"."
+      voice: "On."
+      steps:
+        - "Start from a quick \"ee\" and glide into the vowel."
+      check: "'\"Yet\" and \"jet\" differ: \"y\" is smooth, with no stop.'"
+    fr:
+      tongue: "Le milieu de la langue monte près du palais dur, comme un « i » très bref."
+      voice: "Oui."
+      steps:
+        - "Partez d'un « i » rapide et glissez vers la voyelle."
+      check: "« Yet » et « jet » sont différents : le « y » est doux, sans arrêt."
+    confusions:
+      dʒ:
+        en: "Your tongue closed first, so it sounded like \"j\" (jet). Glide smoothly from \"ee\"."
+        fr: "La langue a fermé d'abord, on entend « j » (jet). Glissez doucement depuis « i »."
+  ɪ:
+    example: "ship"
+    en:
+      lips: "Relaxed."
+      tongue: "High and forward, but lower and looser than for \"ee\"."
+      voice: "On."
+      steps:
+        - "Say \"ee\", then relax your tongue and lips and make it short."
+        - "It is a quick, lazy sound."
+      check: "'\"Ship\" is short and relaxed; \"sheep\" is long and tense.'"
+    fr:
+      lips: "Détendues."
+      tongue: "Haute et en avant, mais plus basse et plus relâchée que pour « i »."
+      voice: "Oui."
+      steps:
+        - "Dites « i », puis relâchez la langue et les lèvres, et faites-le court."
+        - "C'est un son bref et paresseux, qui n'existe pas en français."
+      check: "« Ship » est court et relâché ; « sheep » est long et tendu."
+    confusions:
+      iː:
+        en: "The vowel was long and tense, so it sounded like \"ee\" (sheep). Make it short and relaxed."
+        fr: "La voyelle était longue et tendue, on entend « sheep ». Faites-la courte et relâchée."
+      i:
+        en: "The vowel was tense, like French \"i\". Relax your tongue and lips."
+        fr: "La voyelle était tendue comme le « i » français. Relâchez la langue et les lèvres."
+      ɛ:
+        en: "Your jaw was too open, so it sounded like \"e\" (pet). Close it a little."
+        fr: "La mâchoire était trop ouverte, on entend « e » (pet). Fermez-la un peu."
+  iː:
+    example: "sheep"
+    en:
+      lips: "Spread, in a smile."
+      tongue: "High and forward, tense."
+      voice: "On."
+      steps:
+        - "Smile and say \"ee\"."
+        - "Hold it about twice as long as the vowel in \"ship\"."
+      check: "Feel the tension in your tongue."
+    fr:
+      lips: "Étirées, un sourire."
+      tongue: "Haute et en avant, tendue."
+      voice: "Oui."
+      steps:
+        - "Souriez et dites « i »."
+        - "Tenez-le environ deux fois plus longtemps que la voyelle de « ship »."
+      check: "La langue est tendue."
+    confusions:
+      ɪ:
+        en: "The vowel was short and relaxed, so it sounded like \"ship\". Smile, and hold it longer."
+        fr: "La voyelle était courte et relâchée, on entend « ship ». Souriez et tenez-la plus longtemps."
+  ʊ:
+    example: "full"
+    en:
+      lips: "Slightly rounded, relaxed."
+      tongue: "Back and high, but loose."
+      voice: "On."
+      steps:
+        - "Say \"oo\", then relax your lips and make it short."
+      check: "'\"Full\" is short and relaxed; \"fool\" is long with tight lips.'"
+    fr:
+      lips: "Légèrement arrondies, détendues."
+      tongue: "En arrière et haute, mais relâchée."
+      voice: "Oui."
+      steps:
+        - "Dites « ou », puis relâchez les lèvres et faites-le court."
+      check: "« Full » est court et relâché ; « fool » est long, lèvres serrées."
+    confusions:
+      uː:
+        en: "The vowel was long with tight lips, so it sounded like \"fool\". Make it short and loose."
+        fr: "La voyelle était longue, lèvres serrées : on entend « fool ». Faites-la courte et relâchée."
+      u:
+        en: "The vowel was tense, like French \"ou\". Relax your lips."
+        fr: "La voyelle était tendue comme le « ou » français. Relâchez les lèvres."
+  uː:
+    example: "fool"
+    en:
+      lips: "Tightly rounded and pushed forward."
+      tongue: "Back and high."
+      voice: "On."
+      steps:
+        - "Round your lips tightly and say \"oo\"."
+        - "Hold it long."
+      check: "About twice as long as the vowel in \"full\"."
+    fr:
+      lips: "Bien arrondies et projetées."
+      tongue: "En arrière et haute."
+      voice: "Oui."
+      steps:
+        - "Arrondissez bien les lèvres et dites « ou »."
+        - "Tenez-le longtemps."
+      check: "Environ deux fois plus long que la voyelle de « full »."
+    confusions:
+      ʊ:
+        en: "The vowel was short, so it sounded like \"full\". Hold it longer, with tight lips."
+        fr: "La voyelle était courte, on entend « full ». Tenez-la plus longtemps, lèvres serrées."
+  ɛ:
+    example: "pen"
+    en:
+      lips: "Relaxed, slightly spread."
+      tongue: "Forward, mid-height."
+      jaw: "Half open."
+      voice: "On."
+      steps:
+        - "Say \"e\" as in \"pen\", short."
+      check: "Between \"pin\" and \"pan\"."
+    fr:
+      lips: "Détendues, un peu étirées."
+      tongue: "En avant, à mi-hauteur."
+      jaw: "Mi-ouverte."
+      voice: "Oui."
+      steps:
+        - "Dites « è », court, comme dans « pen »."
+      check: "Entre « pin » et « pan »."
+    confusions:
+      æ:
+        en: "Your jaw was too open, so it sounded like \"pan\". Close it a little."
+        fr: "La mâchoire était trop ouverte, on entend « pan ». Fermez-la un peu."
+      ɪ:
+        en: "Your jaw was too closed, so it sounded like \"pin\". Open it a little."
+        fr: "La mâchoire était trop fermée, on entend « pin ». Ouvrez-la un peu."
+  æ:
+    example: "cat"
+    en:
+      lips: "Spread."
+      tongue: "Low and forward, the tip behind your lower teeth."
+      jaw: "Wide open."
+      voice: "On."
+      steps:
+        - "Open your jaw wide and keep your tongue forward and flat."
+        - "Say \"a\" as in \"cat\"."
+      check: "Your jaw drops more than for \"pen\"."
+    fr:
+      lips: "Étirées."
+      tongue: "Basse et en avant, la pointe derrière les dents du bas."
+      jaw: "Grande ouverte."
+      voice: "Oui."
+      steps:
+        - "Ouvrez grand la mâchoire, langue en avant et à plat."
+        - "Dites le « a » de « cat »."
+      check: "La mâchoire descend plus que pour « pen »."
+    confusions:
+      ʌ:
+        en: "Your tongue went back, so it sounded like \"cut\". Keep it forward and open wide."
+        fr: "La langue a reculé, on entend « cut ». Gardez-la en avant et ouvrez grand."
+      ɛ:
+        en: "Your jaw was not open enough, so it sounded like \"pen\". Drop your jaw."
+        fr: "La mâchoire n'était pas assez ouverte, on entend « pen ». Baissez la mâchoire."
+      ɑː:
+        en: "Your tongue went back and the vowel got long. Keep it short and forward."
+        fr: "La langue a reculé et la voyelle s'est allongée. Gardez-la courte et en avant."
+  ʌ:
+    example: "cut"
+    en:
+      lips: "Relaxed, neutral."
+      tongue: "Central and low-mid."
+      jaw: "Half open."
+      voice: "On."
+      steps:
+        - "Relax your mouth and say a short \"uh\"."
+      check: "'\"Cut\", \"bus\", \"love\", \"money\" all have this vowel.'"
+    fr:
+      lips: "Détendues, neutres."
+      tongue: "Au centre, assez basse."
+      jaw: "Mi-ouverte."
+      voice: "Oui."
+      steps:
+        - "Relâchez la bouche et dites un « a » court et sourd, entre « a » et « eu »."
+      check: "« Cut », « bus », « love », « money » ont tous cette voyelle."
+    confusions:
+      æ:
+        en: "Your tongue went forward and your jaw opened too far, so it sounded like \"cat\". Relax it back to the middle."
+        fr: "La langue est partie en avant et la mâchoire s'est trop ouverte, on entend « cat ». Ramenez-la au centre."
+      ɒ:
+        en: "Your lips rounded, so it sounded like \"cot\". Keep the lips relaxed."
+        fr: "Les lèvres se sont arrondies, on entend « cot ». Gardez-les détendues."
+      a:
+        en: "The vowel was too open and forward. Relax it toward the middle."
+        fr: "La voyelle était trop ouverte et en avant. Ramenez-la vers le centre."
+  ɒ:
+    example: "not"
+    en:
+      lips: "Slightly rounded."
+      tongue: "Back and low."
+      jaw: "Open."
+      voice: "On."
+      steps:
+        - "Open your jaw, round your lips a little and say a short \"o\"."
+      check: "'\"Not\" is short and open; \"note\" glides.'"
+    fr:
+      lips: "Légèrement arrondies."
+      tongue: "En arrière et basse."
+      jaw: "Ouverte."
+      voice: "Oui."
+      steps:
+        - "Ouvrez la mâchoire, arrondissez un peu les lèvres et dites un « o » court et ouvert."
+      check: "« Not » est court et ouvert ; « note » glisse."
+    confusions:
+      əʊ:
+        en: "The vowel glided, so it sounded like \"note\". Keep it short and still."
+        fr: "La voyelle a glissé, on entend « note ». Gardez-la courte et immobile."
+      ʌ:
+        en: "Your lips were unrounded, so it sounded like \"nut\". Round them a little."
+        fr: "Les lèvres n'étaient pas arrondies, on entend « nut ». Arrondissez-les un peu."
+      ɔ:
+        en: "The vowel was too closed. Open your jaw more."
+        fr: "La voyelle était trop fermée. Ouvrez davantage."
+  ɑː:
+    example: "car"
+    en:
+      lips: "Open and relaxed."
+      tongue: "Back and low."
+      jaw: "Wide open."
+      voice: "On."
+      steps:
+        - "Open wide, as at the doctor's, and say a long \"ah\"."
+        - "In British English there is no \"r\" at the end of \"car\"."
+      check: "Long and deep."
+    fr:
+      lips: "Ouvertes et détendues."
+      tongue: "En arrière et basse."
+      jaw: "Grande ouverte."
+      voice: "Oui."
+      steps:
+        - "Ouvrez grand, comme chez le médecin, et dites un long « a » grave."
+        - "En anglais britannique, pas de « r » à la fin de « car »."
+      check: "Long et profond."
+    confusions:
+      æ:
+        en: "Your tongue was too far forward, so it sounded like \"cat\". Pull it back and hold the vowel longer."
+        fr: "La langue était trop en avant, on entend « cat ». Reculez-la et tenez la voyelle plus longtemps."
+      ʌ:
+        en: "The vowel was too short. Hold it longer, with the jaw wide open."
+        fr: "La voyelle était trop courte. Tenez-la plus longtemps, mâchoire grande ouverte."
+  ɔː:
+    example: "door"
+    en:
+      lips: "Rounded and pushed forward."
+      tongue: "Back, mid-high."
+      voice: "On."
+      steps:
+        - "Round your lips firmly and say a long \"aw\"."
+      check: "'\"Door\", \"walk\", \"four\", \"saw\": long and round, no \"r\" at the end.'"
+    fr:
+      lips: "Arrondies et projetées."
+      tongue: "En arrière, mi-haute."
+      voice: "Oui."
+      steps:
+        - "Arrondissez fermement les lèvres et dites un long « o » ouvert."
+      check: "« Door », « walk », « four », « saw » : long et rond, sans « r » final."
+    confusions:
+      ɒ:
+        en: "The vowel was short, so it sounded like \"not\". Hold it longer with rounder lips."
+        fr: "La voyelle était courte, on entend « not ». Tenez-la plus longtemps, lèvres plus rondes."
+      ɜː:
+        en: "Your lips were not rounded, so it sounded like \"work\" instead of \"walk\". Round them."
+        fr: "Les lèvres n'étaient pas arrondies, on entend « work » au lieu de « walk ». Arrondissez-les."
+  ɜː:
+    example: "bird"
+    en:
+      lips: "Relaxed, neither rounded nor spread."
+      tongue: "In the middle of the mouth, mid-height."
+      voice: "On."
+      steps:
+        - "Relax everything and say a long \"er\"."
+        - "No \"r\" sound in British English: \"bird\", \"work\", \"her\"."
+      check: "It is close to French \"eu\" in \"peur\", but with unrounded lips."
+    fr:
+      lips: "Détendues, ni arrondies ni étirées."
+      tongue: "Au milieu de la bouche, à mi-hauteur."
+      voice: "Oui."
+      steps:
+        - "Relâchez tout et dites un long « eu » sans arrondir les lèvres."
+        - "Pas de « r » en anglais britannique : « bird », « work », « her »."
+      check: "Proche du « eu » de « peur », mais lèvres non arrondies."
+    confusions:
+      ɔː:
+        en: "Your lips rounded, so it sounded like \"walk\" instead of \"work\". Keep them relaxed."
+        fr: "Les lèvres se sont arrondies, on entend « walk » au lieu de « work ». Gardez-les détendues."
+      ɑː:
+        en: "Your jaw was too open, so it sounded like \"heart\" instead of \"hurt\". Close it a little."
+        fr: "La mâchoire était trop ouverte, on entend « heart » au lieu de « hurt ». Fermez-la un peu."
+      œ:
+        en: "Your lips rounded, like French \"eu\". Keep them neutral."
+        fr: "Les lèvres se sont arrondies, comme le « eu » français. Gardez-les neutres."
+  ə:
+    example: "about"
+    en:
+      lips: "Completely relaxed."
+      tongue: "Resting in the middle of the mouth."
+      voice: "On."
+      steps:
+        - "Relax your whole mouth and make a tiny, quick \"uh\"."
+        - "It is never stressed. Most unstressed syllables in English use it (\"a-bout\", \"ba-na-na\", \"doc-tor\")."
+      check: "'\"Banana\" is \"buh-NAH-nuh\": only the middle syllable is full.'"
+    fr:
+      lips: "Complètement détendues."
+      tongue: "Au repos, au milieu de la bouche."
+      voice: "Oui."
+      steps:
+        - "Relâchez toute la bouche et faites un « eu » minuscule et rapide."
+        - "Il n'est jamais accentué. La plupart des syllabes non accentuées en anglais l'utilisent (« a-bout », « ba-na-na »)."
+      check: "« Banana » se dit « beu-NA-neu » : seule la syllabe du milieu est pleine."
+    confusions:
+      ʌ:
+        en: "The syllable was too strong. Make it shorter and weaker."
+        fr: "La syllabe était trop forte. Rendez-la plus courte et plus faible."
+      a:
+        en: "You gave the syllable a full \"a\". Unstressed syllables shrink to a quick \"uh\"."
+        fr: "Vous avez prononcé un « a » plein. Les syllabes non accentuées se réduisent à un « eu » rapide."
+      æ:
+        en: "You gave the syllable a full vowel. Unstressed syllables shrink to a quick \"uh\"."
+        fr: "Vous avez prononcé une voyelle pleine. Les syllabes non accentuées se réduisent à un « eu » rapide."
+      ɒ:
+        en: "You gave the syllable a full \"o\". Unstressed syllables shrink to a quick \"uh\"."
+        fr: "Vous avez prononcé un « o » plein. Les syllabes non accentuées se réduisent à un « eu » rapide."
+  eɪ:
+    example: "day"
+    en:
+      lips: "Spread."
+      tongue: "Starts mid-front and glides up toward \"ee\"."
+      voice: "On."
+      steps:
+        - "Start with \"e\" (pen) and glide to \"ee\": \"e-ee\"."
+      check: "The vowel moves; French \"é\" does not."
+    fr:
+      lips: "Étirées."
+      tongue: "Part du milieu-avant et glisse vers « i »."
+      voice: "Oui."
+      steps:
+        - "Commencez par « è » et glissez vers « i » : « è-i »."
+      check: "La voyelle bouge ; le « é » français, non."
+    confusions:
+      e:
+        en: "The vowel stayed still, like French \"é\". Let it glide up toward \"ee\"."
+        fr: "La voyelle est restée immobile, comme le « é » français. Laissez-la glisser vers « i »."
+      ɛ:
+        en: "The vowel stayed still. Glide up toward \"ee\" at the end."
+        fr: "La voyelle est restée immobile. Glissez vers « i » à la fin."
+  aɪ:
+    example: "my"
+    en:
+      jaw: "Starts open and closes."
+      tongue: "Starts low and glides up toward \"ee\"."
+      voice: "On."
+      steps:
+        - "Start with an open \"a\" and glide to \"ee\": \"a-ee\"."
+      check: "'\"My\", \"time\", \"five\", \"light\".'"
+    fr:
+      jaw: "Part ouverte et se referme."
+      tongue: "Part basse et glisse vers « i »."
+      voice: "Oui."
+      steps:
+        - "Commencez par un « a » ouvert et glissez vers « i » : « a-i »."
+      check: "« My », « time », « five », « light »."
+    confusions:
+      a:
+        en: "The vowel did not glide. Finish it toward \"ee\"."
+        fr: "La voyelle n'a pas glissé. Terminez vers « i »."
+  ɔɪ:
+    example: "boy"
+    en:
+      lips: "Start rounded, end spread."
+      tongue: "Starts back and glides forward and up."
+      voice: "On."
+      steps:
+        - "Start with \"aw\" (door) and glide to \"ee\": \"aw-ee\"."
+      check: "'\"Boy\", \"coin\", \"noise\".'"
+    fr:
+      lips: "Rondes au début, étirées à la fin."
+      tongue: "Part en arrière et glisse vers l'avant et le haut."
+      voice: "Oui."
+      steps:
+        - "Commencez par le « o » ouvert de « door » et glissez vers « i »."
+      check: "« Boy », « coin », « noise »."
+    confusions: {}
+  aʊ:
+    example: "now"
+    en:
+      lips: "Start open, end rounded."
+      tongue: "Starts low and glides back and up."
+      voice: "On."
+      steps:
+        - "Start with an open \"a\" and glide to \"oo\": \"a-oo\"."
+      check: "'\"Now\", \"house\", \"out\".'"
+    fr:
+      lips: "Ouvertes au début, rondes à la fin."
+      tongue: "Part basse et glisse vers l'arrière et le haut."
+      voice: "Oui."
+      steps:
+        - "Commencez par un « a » ouvert et glissez vers « ou » : « a-ou »."
+      check: "« Now », « house », « out »."
+    confusions:
+      ɔː:
+        en: "The vowel started too round. Start with an open \"a\"."
+        fr: "La voyelle a commencé trop arrondie. Commencez par un « a » ouvert."
+  əʊ:
+    example: "note"
+    en:
+      lips: "Start relaxed, end rounded."
+      tongue: "Starts in the middle and glides back and up."
+      voice: "On."
+      steps:
+        - "Start with \"uh\" and glide to \"oo\": \"uh-oo\"."
+      check: "British \"no\" glides; French \"o\" does not."
+    fr:
+      lips: "Détendues au début, rondes à la fin."
+      tongue: "Part du centre et glisse vers l'arrière et le haut."
+      voice: "Oui."
+      steps:
+        - "Commencez par « eu » et glissez vers « ou » : « eu-ou »."
+      check: "Le « no » britannique glisse ; le « o » français, non."
+    confusions:
+      o:
+        en: "The vowel stayed still, like French \"o\". Start in the middle and glide to \"oo\"."
+        fr: "La voyelle est restée immobile, comme le « o » français. Partez du centre et glissez vers « ou »."
+      ɒ:
+        en: "The vowel was short and open, so it sounded like \"not\". Glide to \"oo\"."
+        fr: "La voyelle était courte et ouverte, on entend « not ». Glissez vers « ou »."
+      ɔː:
+        en: "The vowel stayed round and still. Start relaxed and glide to \"oo\"."
+        fr: "La voyelle est restée ronde et immobile. Partez détendu et glissez vers « ou »."
+
+features:
+  i: {kind: vowel, height: 0, back: 0, rounded: false}
+  iː: {kind: vowel, height: 0, back: 0, rounded: false}
+  ɪ: {kind: vowel, height: 0.6, back: 0.3, rounded: false}
+  u: {kind: vowel, height: 0, back: 2, rounded: true}
+  uː: {kind: vowel, height: 0, back: 2, rounded: true}
+  ʊ: {kind: vowel, height: 0.6, back: 1.7, rounded: true}
+  e: {kind: vowel, height: 1, back: 0, rounded: false}
+  ɛ: {kind: vowel, height: 1.8, back: 0, rounded: false}
+  æ: {kind: vowel, height: 2.6, back: 0, rounded: false}
+  a: {kind: vowel, height: 3, back: 0.3, rounded: false}
+  ʌ: {kind: vowel, height: 2.2, back: 1.4, rounded: false}
+  ə: {kind: vowel, height: 1.5, back: 1, rounded: false}
+  ɜː: {kind: vowel, height: 1.6, back: 1, rounded: false}
+  œ: {kind: vowel, height: 2, back: 0, rounded: true}
+  o: {kind: vowel, height: 1, back: 2, rounded: true}
+  ɔ: {kind: vowel, height: 2, back: 2, rounded: true}
+  ɔː: {kind: vowel, height: 1.6, back: 2, rounded: true}
+  ɒ: {kind: vowel, height: 3, back: 2, rounded: true}
+  ɑː: {kind: vowel, height: 3, back: 1.8, rounded: false}
+  eɪ: {kind: diphthong, from: ɛ, to: ɪ}
+  aɪ: {kind: diphthong, from: a, to: ɪ}
+  ɔɪ: {kind: diphthong, from: ɔ, to: ɪ}
+  aʊ: {kind: diphthong, from: a, to: ʊ}
+  əʊ: {kind: diphthong, from: ə, to: ʊ}
+  p: {kind: consonant, place: bilabial, manner: stop, voiced: false}
+  b: {kind: consonant, place: bilabial, manner: stop, voiced: true}
+  m: {kind: consonant, place: bilabial, manner: nasal, voiced: true}
+  w: {kind: consonant, place: labial-velar, manner: approximant, voiced: true}
+  f: {kind: consonant, place: labiodental, manner: fricative, voiced: false}
+  v: {kind: consonant, place: labiodental, manner: fricative, voiced: true}
+  θ: {kind: consonant, place: dental, manner: fricative, voiced: false}
+  ð: {kind: consonant, place: dental, manner: fricative, voiced: true}
+  t: {kind: consonant, place: alveolar, manner: stop, voiced: false}
+  d: {kind: consonant, place: alveolar, manner: stop, voiced: true}
+  n: {kind: consonant, place: alveolar, manner: nasal, voiced: true}
+  s: {kind: consonant, place: alveolar, manner: fricative, voiced: false}
+  z: {kind: consonant, place: alveolar, manner: fricative, voiced: true}
+  l: {kind: consonant, place: alveolar, manner: lateral, voiced: true}
+  ɹ: {kind: consonant, place: alveolar, manner: approximant, voiced: true}
+  r: {kind: consonant, place: alveolar, manner: trill, voiced: true}
+  ɾ: {kind: consonant, place: alveolar, manner: tap, voiced: true}
+  ʃ: {kind: consonant, place: postalveolar, manner: fricative, voiced: false}
+  ʒ: {kind: consonant, place: postalveolar, manner: fricative, voiced: true}
+  tʃ: {kind: consonant, place: postalveolar, manner: affricate, voiced: false}
+  dʒ: {kind: consonant, place: postalveolar, manner: affricate, voiced: true}
+  j: {kind: consonant, place: palatal, manner: approximant, voiced: true}
+  k: {kind: consonant, place: velar, manner: stop, voiced: false}
+  ɡ: {kind: consonant, place: velar, manner: stop, voiced: true}
+  ŋ: {kind: consonant, place: velar, manner: nasal, voiced: true}
+  x: {kind: consonant, place: velar, manner: fricative, voiced: false}
+  ʁ: {kind: consonant, place: uvular, manner: fricative, voiced: true}
+  h: {kind: consonant, place: glottal, manner: fricative, voiced: false}
+
+# The ladder for each drill (decision 0028): learn → hear the difference → words → pairs → phrases → sentence, then
+# spaced reviews. A drill's key is its curriculum node when it has one; pairs come from the node's minimal_pairs plus
+# these.
+drills:
+  - key: en.pron.th_sounds
+    sounds: [θ, ð]
+    words: [think, three, thank, bath, mouth, they, this, the, mother, brother]
+    phrases: [thank you, this one, the other three, with them]
+    sentence: "I think they thanked their mother."
+  - key: en.pron.short_long_vowels
+    sounds: [ɪ, iː, ʊ, uː]
+    words: [ship, sheep, sit, seat, fill, feel, full, fool, pull, pool]
+    pairs: [[sit, seat], [fill, feel], [pull, pool]]
+    phrases: [a cheap ship, sit in the seat, a full pool]
+    sentence: "A ship, not a sheep."
+  - key: en.pron.ae_vs_uh
+    sounds: [æ, ʌ]
+    words: [cat, cut, hat, hut, match, much, bag, bug, cap, cup]
+    phrases: [a black cat, a cup of tea, much better]
+    sentence: "That cat drank from my cup."
+  - key: en.gym.e_ae
+    sounds: [ɛ, æ]
+    words: [pen, pan, bed, bad, men, man, said, sad, head, had]
+    pairs: [[pen, pan], [bed, bad], [men, man], [said, sad]]
+    phrases: [a bad bed, ten men, my head]
+    sentence: "Ten men had a bad head."
+  - key: en.gym.long_vowels
+    sounds: [ɑː, ɔː, ɜː]
+    words: [car, park, father, door, walk, four, bird, work, her, first]
+    pairs: [[hurt, heart], [walk, work], [four, fur], [born, burn]]
+    phrases: [a long walk, the first bird, park the car]
+    sentence: "Her first walk in the park was short."
+  - key: en.gym.o_vowels
+    sounds: [ɒ, əʊ]
+    words: [not, note, hot, home, stop, go, coffee, phone, job, road]
+    pairs: [[not, note], [cost, coast], [want, won't]]
+    phrases: [a hot coffee, go home, on the phone]
+    sentence: "Don't stop, go home."
+  - key: en.gym.diphthongs
+    sounds: [eɪ, aɪ, ɔɪ, aʊ]
+    words: [day, rain, my, time, boy, coin, now, house, late, five]
+    phrases: [nice day, my house, five boys, right now]
+    sentence: "I'll stay at my house today."
+  - key: en.pron.schwa
+    sounds: [ə]
+    words: [about, banana, sofa, today, again, doctor, problem, support, collect, Canada]
+    phrases: [a cup of tea, fish and chips, at the station, from London]
+    sentence: "I'd like a cup of tea, please."
+  - key: en.pron.p_vs_b
+    sounds: [p, b]
+    words: [pen, ben, pack, back, pill, bill, pay, bay, paper, baby]
+    phrases: [pay the bill, a big pen, back pack]
+    sentence: "Pen, not Ben."
+  - key: en.gym.t_d
+    sounds: [t, d]
+    words: [time, tea, two, tie, die, bet, bed, ten, den, today]
+    pairs: [[tie, die], [bet, bed], [ten, den]]
+    phrases: [ten past two, a good day, at the door]
+    sentence: "It's ten to two today."
+  - key: en.gym.k_g
+    sounds: [k, ɡ]
+    words: [coat, goat, back, bag, cold, gold, cap, gap, came, game]
+    pairs: [[coat, goat], [back, bag], [cold, gold]]
+    phrases: [a big cake, a cold glass, get a cab]
+    sentence: "Can you get the big cake?"
+  - key: en.pron.v_vs_f
+    sounds: [v, f]
+    words: [van, fan, very, ferry, five, leave, have, "off", view, fine]
+    phrases: [five vans, very fine, have a view]
+    sentence: "Very, not ferry."
+  - key: en.pron.w_vs_v
+    sounds: [w, v]
+    words: [wine, vine, west, vest, wet, vet, water, way, very, we]
+    phrases: [we went west, a very wet vest, white wine]
+    sentence: "We visited a very wet village."
+  - key: en.pron.final_s_z
+    sounds: [s, z]
+    words: [bus, buzz, rice, rise, place, plays, price, prize, cats, dogs]
+    phrases: [two buses, she plays, the price is right]
+    sentence: "She buys rice and peas."
+  - key: en.gym.sh_ch_j
+    sounds: [ʃ, tʃ, dʒ]
+    words: [ship, chip, share, chair, cheap, jeep, wash, watch, choose, juice]
+    pairs: [[ship, chip], [share, chair], [cheap, jeep], [wash, watch]]
+    phrases: [fish and chips, a cheap chair, orange juice]
+    sentence: "She chose a cheap chair."
+  - key: en.gym.ng
+    sounds: [ŋ]
+    words: [sing, thing, long, ring, morning, singer, young, wrong, bring, evening]
+    pairs: [[sin, sing], [thin, thing], [ran, rang]]
+    phrases: [good morning, the wrong thing, bring it]
+    sentence: "We sing in the evening."
+  - key: en.gym.h
+    sounds: [h]
+    words: [hat, heat, hold, house, happy, hello, help, hungry, hotel, behind]
+    pairs: [[hat, at], [heat, eat], [hold, old]]
+    phrases: [hello Harry, help her, at home]
+    sentence: "Harry's hotel is behind the house."
+  - key: en.gym.r_l
+    sounds: [ɹ, l]
+    words: [red, right, light, road, load, very, sorry, lorry, rice, lice]
+    pairs: [[right, light], [road, load], [rice, lice], [pray, play]]
+    phrases: [turn right, a red light, a long road]
+    sentence: "Turn right at the red light."
+  - key: en.gym.y
+    sounds: [j]
+    words: ["yes", yellow, you, use, young, year, music, new, few, beautiful]
+    pairs: [[year, ear], [yet, jet]]
+    phrases: [yes you can, a yellow car, a new year]
+    sentence: "Yes, you can use my yellow pen."
+  - key: en.pron.ed_endings
+    sounds: []
+    words: [walked, played, wanted, stopped, called, needed, watched, lived, started, looked]
+    phrases: [I walked home, she played well, we wanted more]
+    sentence: "I walked, then played, then started again."
+  - key: en.pron.consonant_clusters
+    sounds: []
+    words: [street, spring, strong, months, texts, twelfth, asked, crisps, splash, school]
+    phrases: [six months, a strong street, she asked]
+    sentence: "She asked for six strong crisps."
+  - key: en.pron.connected_speech
+    sounds: []
+    phrases: [an apple, pick it up, turn it off, not at all, an hour ago, get out of it]
+    sentence: "Pick it up and turn it off."
+  - key: en.pron.word_stress
+    sounds: []
+    words: [photograph, photographer, important, information, comfortable, interesting, hotel, today, record, present]
+    sentence: "The photographer took an important photograph."
+    melody: true
+  - key: en.pron.sentence_stress
+    sounds: []
+    phrases: [I want to go, what do you want, I'd like a coffee]
+    sentence: "I'd like a large coffee, please."
+    melody: true
+  - key: en.pron.intonation
+    sounds: []
+    phrases: [are you coming, where are you going, really]
+    sentence: "Are you coming tonight?"
+    melody: true

@@ -11,6 +11,10 @@ import yaml
 
 
 class G2P(Protocol):
+    def words(self, text: str, language: str) -> list[tuple[str, list[str]]]:
+        """Each written word of ``text`` with its expected phonemes (in context, so liaison and linking count)."""
+        ...
+
     def phonemes(self, text: str, language: str) -> list[str]: ...
 
     def variants(self, language: str) -> dict[str, list[str]]:
@@ -18,18 +22,26 @@ class G2P(Protocol):
         ...
 
 
+WORD = re.compile(r"[\w'’-]+", flags=re.UNICODE)
+
+
 class LexiconG2P:
-    """Word → phoneme list from ``content/pronunciation/lexicon_<lang>.yaml``; unknown words raise, never guess."""
+    """Text → phonemes from ``content/pronunciation/lexicon_<lang>.yaml``; unknown words raise, never guess.
+
+    An entry is one word, or a whole phrase with ``|`` between its words' phonemes (generated with the words in
+    context, decision 0028). A text found whole is used as is; otherwise each of its words is looked up alone."""
 
     def __init__(self, content_root: Path) -> None:
         self._root = content_root
-        self._lexicons: dict[str, dict[str, list[str]]] = {}
+        self._lexicons: dict[str, dict[str, list[list[str]]]] = {}
 
-    def _lexicon(self, language: str) -> dict[str, list[str]]:
+    def _lexicon(self, language: str) -> dict[str, list[list[str]]]:
         if language not in self._lexicons:
             path = self._root / "pronunciation" / f"lexicon_{language}.yaml"
             raw = yaml.safe_load(path.read_text()) if path.is_file() else {}
-            self._lexicons[language] = {self._norm(k): list(v.split()) for k, v in (raw or {}).items()}
+            self._lexicons[language] = {
+                self._norm(str(k)): [group.split() for group in str(v).split("|")] for k, v in (raw or {}).items()
+            }
         return self._lexicons[language]
 
     def variants(self, language: str) -> dict[str, list[str]]:
@@ -38,15 +50,22 @@ class LexiconG2P:
         return {str(k): [str(v) for v in values] for k, values in (raw or {}).items()}
 
     @staticmethod
-    def _norm(word: str) -> str:
-        return unicodedata.normalize("NFC", word.casefold())
+    def _norm(text: str) -> str:
+        return " ".join(unicodedata.normalize("NFC", w.casefold()) for w in WORD.findall(text.replace("’", "'")))
+
+    def words(self, text: str, language: str) -> list[tuple[str, list[str]]]:
+        lexicon = self._lexicon(language)
+        written = WORD.findall(text)
+        whole = lexicon.get(self._norm(text))
+        if whole is not None and len(whole) == len(written):
+            return list(zip(written, whole, strict=True))
+        out: list[tuple[str, list[str]]] = []
+        for word in written:
+            entry = lexicon.get(self._norm(word))
+            if entry is None or len(entry) != 1:
+                raise KeyError(f"no pronunciation for {word!r} ({language}); add it to the lexicon")
+            out.append((word, entry[0]))
+        return out
 
     def phonemes(self, text: str, language: str) -> list[str]:
-        lexicon = self._lexicon(language)
-        out: list[str] = []
-        for word in re.findall(r"[\w'’-]+", text, flags=re.UNICODE):
-            key = self._norm(word.replace("’", "'"))
-            if key not in lexicon:
-                raise KeyError(f"no pronunciation for {word!r} ({language}); add it to the lexicon")
-            out += lexicon[key]
-        return out
+        return [p for _, phonemes in self.words(text, language) for p in phonemes]
