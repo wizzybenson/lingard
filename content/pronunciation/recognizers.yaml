@@ -1,0 +1,18 @@
+# Phoneme recogniser per language, chosen by phoneme error rate on native speech (decision 0028). Measured
+# 2026-10-22 on the sound gym's words (French 173, English 226) rendered by three OpenAI voices and the ElevenLabs
+# narrator; percentages are PER, lower is better.
+#   French:  facebook/wav2vec2-lv-60-espeak-cv-ft 40-53%, facebook/wav2vec2-xlsr-53-espeak-cv-ft 38-58%,
+#            Cnam-LMSSC/wav2vec2-french-phonemizer-v2 20-35%, bofenghuang/phonemizer-wav2vec2-ctc-french 15-25%.
+#   English: facebook/wav2vec2-lv-60-espeak-cv-ft 22-27%, facebook/wav2vec2-xlsr-53-espeak-cv-ft 23-29%,
+#            speech31/wav2vec2-large-english-phoneme-v2 34-66%.
+# All MIT or Apache-2.0. slplab's L2-English model (trained on learner speech) has no licence, so it is not used.
+fr:
+  model: bofenghuang/phonemizer-wav2vec2-ctc-french
+  source_url: https://huggingface.co/bofenghuang/phonemizer-wav2vec2-ctc-french
+  licence: MIT
+  as_of: "2026-10-22"
+en:
+  model: facebook/wav2vec2-lv-60-espeak-cv-ft
+  source_url: https://huggingface.co/facebook/wav2vec2-lv-60-espeak-cv-ft
+  licence: Apache-2.0
+  as_of: "2026-10-22"

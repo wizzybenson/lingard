@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 import base64
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 
+from lingard_pronunciation.accent import analyse
+from lingard_pronunciation.calibration import Calibration
 from lingard_pronunciation.g2p import G2P
 from lingard_pronunciation.golden_self import GoldenSelf
-from lingard_pronunciation.gop import score_phonemes
+from lingard_pronunciation.gop import PhonemeScore, score_phonemes
 from lingard_pronunciation.prosody import contour_similarity, semitone_contour, to_float, yin_f0
 from lingard_pronunciation.recognizer import PhonemeRecognizer
 from lingard_pronunciation.scoring import PronTarget, report
@@ -22,8 +24,15 @@ class Engines:
     g2p: G2P
     golden: GoldenSelf | None
     recognizer: PhonemeRecognizer | None
+    """The recogniser for any language without its own."""
     targets: dict[str, list[PronTarget]]
     """Pronunciation curriculum targets per language (from reviewed ``pron`` nodes)."""
+    recognizers: dict[str, PhonemeRecognizer] = field(default_factory=dict)
+    """Per language, the recogniser that hears it best (``content/pronunciation/recognizers.yaml``)."""
+    calibrations: dict[str, Calibration] = field(default_factory=dict)
+
+    def recognizer_for(self, language: str) -> PhonemeRecognizer | None:
+        return self.recognizers.get(language, self.recognizer)
 
 
 class GoldenRequest(BaseModel):
@@ -41,6 +50,8 @@ class ShadowRequest(BaseModel):
     learner_pcm_b64: str
     reference_pcm_b64: str | None = None
     """Golden-self (or native) render of the line. Without it, intonation isn't scored and no pitch overlay is drawn."""
+    partners: dict[str, list[str]] | None = None
+    """Per sound, the minimal-pair partners it is being trained against: those sounds get the two-way test."""
 
 
 def by_word(words: list[tuple[str, list[str]]], heatmap: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -51,6 +62,30 @@ def by_word(words: list[tuple[str, list[str]]], heatmap: list[dict[str, Any]]) -
         start += len(phonemes)
         score = round(sum(s["score"] for s in sounds) / len(sounds), 1) if sounds else None
         out.append({"text": text, "score": score, "phonemes": sounds})
+    return out
+
+
+def judged(
+    scores: list[PhonemeScore], partners: dict[str, list[str]], calibration: Calibration | None
+) -> list[PhonemeScore]:
+    """A trained sound is judged by the two-way test against its partners where that test is calibrated: it asks the
+    drill's own question (was this "u" or "ou"?). A contrast this recogniser can't separate reliably is marked
+    unchecked, to be compared by ear rather than scored as wrong."""
+    out = []
+    for s in scores:
+        verdicts = [
+            (v, partner)
+            for partner in partners.get(s.phoneme, [])
+            if calibration is not None
+            and s.contrast is not None
+            and (v := calibration.contrast_score(s.phoneme, partner, s.contrast)) is not None
+        ]
+        if not verdicts:
+            out.append(s)
+            continue
+        (score, reliable), partner = min(verdicts, key=lambda x: x[0][0])
+        heard = partner if score < 70 else None
+        out.append(replace(s, score=score, likely_substitute=heard or s.likely_substitute, checked=reliable))
     return out
 
 
@@ -76,22 +111,41 @@ def create_app(engines: Engines) -> FastAPI:
 
     @app.post("/shadow")
     async def shadow(body: ShadowRequest) -> dict[str, Any]:
-        if engines.recognizer is None:
+        recognizer = engines.recognizer_for(body.language)
+        if recognizer is None:
             raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "phoneme recogniser is not installed")
+        calibration = engines.calibrations.get(body.language)
         try:
             words = engines.g2p.words(body.text, body.language)
             expected = [p for _, phonemes in words for p in phonemes]
         except KeyError as exc:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
         learner = base64.b64decode(body.learner_pcm_b64)
-        scores = score_phonemes(
-            engines.recognizer.log_posteriors(learner),
-            expected,
-            engines.recognizer.inventory,
-            engines.g2p.variants(body.language),
-        )
+
+        def scored(pcm: bytes) -> list[PhonemeScore]:
+            assert recognizer is not None
+            return score_phonemes(
+                recognizer.log_posteriors(pcm),
+                expected,
+                recognizer.inventory,
+                engines.g2p.variants(body.language),
+                engines.g2p.competitors(body.language),
+                calibration.scale if calibration else None,
+                body.partners,
+            )
+
+        scores = judged(scored(learner), body.partners or {}, calibration)
+        reference_pcm = base64.b64decode(body.reference_pcm_b64) if body.reference_pcm_b64 else None
+        music = None
+        if reference_pcm is not None:
+            try:
+                music = analyse(
+                    learner, scores, reference_pcm, scored(reference_pcm), words, engines.g2p.vowels(body.language)
+                )
+            except ValueError:  # a reference too short to align: the sounds are still scored
+                music = None
         learner_f0 = yin_f0(to_float(learner))
-        reference_f0 = yin_f0(to_float(base64.b64decode(body.reference_pcm_b64))) if body.reference_pcm_b64 else None
+        reference_f0 = yin_f0(to_float(reference_pcm)) if reference_pcm is not None else None
         intonation = contour_similarity(learner_f0, reference_f0) if reference_f0 is not None else None
         result = report(scores, engines.targets.get(body.language, []), intonation=intonation)
         return {
@@ -100,8 +154,15 @@ def create_app(engines: Engines) -> FastAPI:
             "intonation": round(intonation, 1) if intonation is not None else None,
             "node_scores": result.node_scores,
             "critical": result.critical,
-            "heatmap": result.heatmap,
-            "words": by_word(words, result.heatmap),
+            "heatmap": [
+                {**entry, "checked": s.checked, "contrast": s.contrast}
+                for entry, s in zip(result.heatmap, scores, strict=True)
+            ],
+            "prosody": music,
+            "words": by_word(
+                words,
+                [{**e, "checked": s.checked} for e, s in zip(result.heatmap, scores, strict=True)],
+            ),
             "pitch": {
                 "learner": semitone_contour(learner_f0).round(2).tolist(),
                 "reference": semitone_contour(reference_f0).round(2).tolist() if reference_f0 is not None else [],

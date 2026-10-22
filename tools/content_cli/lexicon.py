@@ -1,11 +1,11 @@
 """Build the Accent Studio pronunciation lexicons from espeak-ng (decision 0028).
 
 Every text the studio scores (lines, drill words, pairs, phrases, sentences) needs its expected phonemes, in the
-recogniser's own symbols. espeak-ng is the phonemiser the recogniser's training labels came from, so its output, cut
-into ``content/pronunciation/recognizer_inventory.txt`` symbols with the per-language rules in ``g2p_<lang>.yaml``,
-matches what the recogniser can hear. A phrase keeps one phoneme group per written word (``|`` between them), so
-liaison and linking are scored and results can be shown word by word. ``lexicon_overrides_<lang>.yaml`` wins over
-espeak for any key.
+recogniser's own symbols. espeak-ng is the phonemiser the recognisers' training labels came from, so its output, cut
+into the symbols of the language's recogniser (``recognizer_inventory_<lang>.txt``) with the rules in
+``g2p_<lang>.yaml``, matches what the recognisers can hear. A phrase keeps one phoneme group per written word
+(``|`` between them), so liaison and linking are scored and results can be shown word by word.
+``lexicon_overrides_<lang>.yaml`` wins over espeak for any key.
 
     uv run python -m tools.content_cli.lexicon [fr en]      # free; needs espeak-ng (brew install espeak-ng)
 """
@@ -37,14 +37,21 @@ def key(text: str) -> str:
     return " ".join(unicodedata.normalize("NFC", w.casefold()) for w in words)
 
 
-def inventory() -> set[str]:
-    lines = (PRON / "recognizer_inventory.txt").read_text().splitlines()
+def inventory(language: str) -> set[str]:
+    """The symbols the language's recogniser writes (``recognizers.yaml``)."""
+    lines = (PRON / f"recognizer_inventory_{language}.txt").read_text().splitlines()
     return {line for line in lines if line and not line.startswith("#")}
 
 
-def symbols(ipa_word: str, units: list[str], replace: dict[str, str]) -> list[str]:
-    """One espeak word cut into sounds: each base letter with its attached marks, listed units merged, then replaced."""
-    clean = "".join(ch for ch in unicodedata.normalize("NFC", ipa_word) if ch not in DROPPED)
+def writable(sound: str, known: set[str]) -> bool:
+    """The recogniser can write the sound: as one symbol, or symbol by symbol (a nasal vowel as vowel + tilde)."""
+    return sound in known or all(ch in known for ch in sound)
+
+
+def symbols(ipa_word: str, units: list[str], replace: dict[str, str], strip: tuple[str, ...] = ()) -> list[str]:
+    """One espeak word cut into sounds: each base letter with its attached marks, listed units merged, then replaced.
+    ``strip``: marks the language doesn't contrast (French vowel length)."""
+    clean = "".join(ch for ch in unicodedata.normalize("NFC", ipa_word) if ch not in DROPPED and ch not in strip)
     pieces: list[str] = []
     for ch in clean:
         if pieces and (ch in ATTACHED or unicodedata.combining(ch)):
@@ -81,7 +88,7 @@ def texts(language: str) -> list[str]:
 
 def build(language: str) -> tuple[dict[str, str], list[str]]:
     rules = yaml.safe_load((PRON / f"g2p_{language}.yaml").read_text())
-    known = inventory()
+    known = inventory(language)
     overrides_path = PRON / f"lexicon_overrides_{language}.yaml"
     raw = (yaml.safe_load(overrides_path.read_text()) or {}) if overrides_path.exists() else {}
     overrides = {key(k): v for k, v in raw.items()}
@@ -97,8 +104,10 @@ def build(language: str) -> tuple[dict[str, str], list[str]]:
         if len(ipa) != len(words):
             problems.append(f"{text!r}: {len(words)} words but espeak gave {ipa}; add it to {overrides_path.name}")
             continue
-        groups = [symbols(w, rules.get("units", []), rules.get("replace", {})) for w in ipa]
-        unknown = sorted({s for g in groups for s in g if s not in known})
+        groups = [
+            symbols(w, rules.get("units", []), rules.get("replace", {}), tuple(rules.get("strip", []))) for w in ipa
+        ]
+        unknown = sorted({s for g in groups for s in g if not writable(s, known)})
         if unknown:
             problems.append(f"{text!r}: symbols the recogniser lacks {unknown}; map them in g2p_{language}.yaml")
             continue
@@ -108,7 +117,14 @@ def build(language: str) -> tuple[dict[str, str], list[str]]:
                 if word not in lexicon and word not in overrides:
                     w_ipa = espeak(word, rules["voice"])
                     if len(w_ipa) == 1:
-                        lexicon[word] = " ".join(symbols(w_ipa[0], rules.get("units", []), rules.get("replace", {})))
+                        lexicon[word] = " ".join(
+                            symbols(
+                                w_ipa[0],
+                                rules.get("units", []),
+                                rules.get("replace", {}),
+                                tuple(rules.get("strip", [])),
+                            )
+                        )
     for k, v in overrides.items():
         lexicon.setdefault(k, v)
     return dict(sorted(lexicon.items())), problems

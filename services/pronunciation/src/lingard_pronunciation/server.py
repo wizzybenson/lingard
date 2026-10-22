@@ -17,9 +17,10 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from lingard_pronunciation.app import Engines, create_app
+from lingard_pronunciation.calibration import load_calibration
 from lingard_pronunciation.g2p import LexiconG2P
 from lingard_pronunciation.golden_self import ElevenLabsSpeechToSpeech, GoldenSelf, MemoryCache
-from lingard_pronunciation.recognizer import PhonemeRecognizer, Wav2Vec2PhonemeRecognizer
+from lingard_pronunciation.recognizer import PhonemeRecognizer, load_recognizers
 from lingard_pronunciation.scoring import PronTarget
 
 logger = logging.getLogger(__name__)
@@ -36,14 +37,16 @@ def load_targets(content_root: Path) -> dict[str, list[PronTarget]]:
     return targets
 
 
-def _recognizer() -> PhonemeRecognizer | None:
+def _recognizers(root: Path) -> dict[str, PhonemeRecognizer]:
+    """Each language's recogniser (``content/pronunciation/recognizers.yaml``); none when scoring is switched off or the
+    models can't load."""
     if os.environ.get("LINGARD_PRON_RECOGNIZER", "auto") == "off":
-        return None
+        return {}
     try:
-        return Wav2Vec2PhonemeRecognizer(os.environ.get("LINGARD_PRON_MODEL", "facebook/wav2vec2-lv-60-espeak-cv-ft"))
+        return load_recognizers(root)
     except RuntimeError as exc:
         logger.warning("pronunciation scoring disabled: %s", exc)
-        return None
+        return {}
 
 
 def _golden() -> GoldenSelf | None:
@@ -57,6 +60,19 @@ def _golden() -> GoldenSelf | None:
 def build_app(content_root: Path | None = None) -> FastAPI:
     load_dotenv()
     root = content_root or Path(os.environ.get("LINGARD_CONTENT_ROOT", REPO_ROOT / "content"))
+    recognizers = _recognizers(root)
+    calibrations = {
+        language: calibration
+        for language, recognizer in recognizers.items()
+        if (calibration := load_calibration(root, language, getattr(recognizer, "model_name", ""))) is not None
+    }
     return create_app(
-        Engines(g2p=LexiconG2P(root), golden=_golden(), recognizer=_recognizer(), targets=load_targets(root))
+        Engines(
+            g2p=LexiconG2P(root),
+            golden=_golden(),
+            recognizer=None,
+            targets=load_targets(root),
+            recognizers=recognizers,
+            calibrations=calibrations,
+        )
     )

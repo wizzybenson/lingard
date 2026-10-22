@@ -16,15 +16,14 @@ def test_every_studio_text_is_in_the_lexicon_in_recogniser_symbols() -> None:
     """Lines, drill words, pairs, phrases and sentences all score; every phoneme is one the recogniser can emit."""
     import yaml
 
-    from tools.content_cli.lexicon import texts
+    from tools.content_cli.lexicon import inventory, texts, writable
 
-    lines = (ROOT / "content" / "pronunciation" / "recognizer_inventory.txt").read_text().splitlines()
-    known = {line for line in lines if line and not line.startswith("#")}
     g2p = LexiconG2P(ROOT / "content")
     for language in ("fr", "en"):
+        known = inventory(language)
         for text in texts(language):
             words = g2p.words(text, language)  # raises KeyError on anything missing
-            assert all(p in known for _, phonemes in words for p in phonemes), text
+            assert all(writable(p, known) for _, phonemes in words for p in phonemes), text
         gym = yaml.safe_load((ROOT / "content" / "pronunciation" / f"sounds_{language}.yaml").read_text())
         for drill in gym["drills"]:
             assert all(s in gym["phonemes"] for s in drill["sounds"]), drill["key"]

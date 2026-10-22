@@ -3,3 +3,4 @@ voice: fr
 units: []             # multi-symbol sounds kept whole; French has none (nasal vowels are one symbol with a tilde)
 replace:
   ɥ: y                # "huit", "puis": the recogniser has no /ɥ/; /y/ is its nearest sound
+strip: ["ː"]            # French vowel length is not contrastive ("sûr" is not a long /y/ to the learner)

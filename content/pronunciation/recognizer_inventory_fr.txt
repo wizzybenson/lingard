@@ -1,0 +1,52 @@
+# Symbols the French phoneme recogniser can emit (bofenghuang/phonemizer-wav2vec2-ctc-french, vocab.json), one per
+# line; a nasal vowel is written as the vowel then the tilde (U+0303).
+# source_url: https://huggingface.co/bofenghuang/phonemizer-wav2vec2-ctc-french/blob/main/vocab.json
+# as_of: 2026-10-22. Every lexicon sound must be writable with these (tests check it).
+a
+b
+d
+e
+f
+h
+i
+j
+k
+l
+m
+n
+o
+p
+r
+s
+t
+u
+v
+w
+x
+y
+z
+ð
+ø
+ŋ
+œ
+ɐ
+ɑ
+ɒ
+ɔ
+ə
+ɛ
+ɜ
+ɡ
+ɪ
+ɬ
+ɲ
+ɹ
+ʁ
+ʃ
+ʊ
+ʌ
+ʒ
+ʲ
+ː
+̃
+θ

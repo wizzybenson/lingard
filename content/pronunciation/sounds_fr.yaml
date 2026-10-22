@@ -1,6 +1,6 @@
 # Sound gym (Accent Studio, decision 0028): how each French sound is made, what to change when it comes out as another
 # sound, and the words that train it. Original for Lingard. Explanations exist in each interface language (en, fr);
-# "heard_as" keys are recogniser symbols (content/pronunciation/recognizer_inventory.txt).
+# "heard_as" keys are recogniser symbols (content/pronunciation/recognizer_inventory_<lang>.txt).
 # Articulation follows standard descriptions of Metropolitan French (e.g. Léon, Phonétisme et prononciations du
 # français); reviewed against the IPA chart.
 source_url: https://www.internationalphoneticassociation.org/content/full-ipa-chart
@@ -900,6 +900,7 @@ drills:
   - key: fr.pron.nasal_vowels
     sounds: [ɑ̃, ɔ̃, ɛ̃]
     words: [vent, vont, vin, lent, long, pain, temps, bon, maison, enfant]
+    pairs: [[vin, vent], [pain, pan], [teint, temps], [main, ment], [son, sans], [ton, temps]]
     phrases: [un bon vin, il fait du vent, mon enfant, en ce moment]
     sentence: "Je voudrais un pain, s'il vous plaît."
   - key: fr.pron.front_rounded_eu
@@ -921,12 +922,13 @@ drills:
   - key: fr.pron.open_closed_e
     sounds: [e, ɛ]
     words: [été, était, fée, fait, café, thé, mère, tête, fête, chez]
+    pairs: [[dé, dais], [poignée, poignet], [allez, allait], [mes, mais], [les, lait]]
     phrases: [un café au lait, chez ma mère, une belle fête]
     sentence: "J'ai été chez ma mère, c'était la fête."
   - key: fr.gym.o_open_closed
     sounds: [o, ɔ]
     words: [mot, beau, chose, rose, porte, homme, bol, sport, pomme, école]
-    pairs: [[paume, pomme], [côte, cote]]
+    pairs: [[paume, pomme], [côte, cote], [saule, sol], [rauque, roc], [nôtre, notre], [hausse, os]]
     phrases: [une belle pomme, à l'école, la porte jaune]
     sentence: "Cet homme a une belle pomme jaune."
   - key: fr.gym.a_clear

@@ -1,4 +1,4 @@
-# Symbols the phoneme recogniser can emit (facebook/wav2vec2-lv-60-espeak-cv-ft, vocab.json), one per line.
+# Symbols the English phoneme recogniser can emit (facebook/wav2vec2-lv-60-espeak-cv-ft, vocab.json), one per line.
 # source_url: https://huggingface.co/facebook/wav2vec2-lv-60-espeak-cv-ft/blob/main/vocab.json
 # as_of: 2026-10-22. Every lexicon phoneme must be one of these (tests check it).
 n

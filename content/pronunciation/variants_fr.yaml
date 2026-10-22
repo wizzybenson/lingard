@@ -1,3 +1,9 @@
 # Realisations native speakers use, scored as correct (phoneme: [variants]). Original for Lingard.
 # /œ̃/ ("un", "brun") has merged into /ɛ̃/ for most speakers in France; Quebec keeps it, and both are standard.
 œ̃: [ɛ̃]
+# A word-initial or final /ʁ/ is often devoiced in France ([χ], heard by the recogniser as χ or x): still the French r.
+# The learner's real mistakes (a rolled [r], a tapped [ɾ], an [l]) are not variants and stay wrong.
+ʁ: [χ, x]
+# The multilingual recogniser labels much native French /y/ as central [ʉ]; a learner's back [u] or spread [i] is
+# still caught as the mistake it is.
+y: [ʉ]

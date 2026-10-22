@@ -21,6 +21,10 @@ class G2P(Protocol):
         """Phoneme → other realisations native speakers use, all scored as correct."""
         ...
 
+    def competitors(self, language: str) -> set[str]: ...
+
+    def vowels(self, language: str) -> set[str]: ...
+
 
 WORD = re.compile(r"[\w'’-]+", flags=re.UNICODE)
 
@@ -69,3 +73,22 @@ class LexiconG2P:
 
     def phonemes(self, text: str, language: str) -> list[str]:
         return [p for _, phonemes in self.words(text, language) for p in phonemes]
+
+    def vowels(self, language: str) -> set[str]:
+        """The language's vowels (syllable nuclei), from the sound gym's features."""
+        path = self._root / "pronunciation" / f"sounds_{language}.yaml"
+        if not path.is_file():
+            return set()
+        features = yaml.safe_load(path.read_text())["features"]
+        return {str(p) for p, f in features.items() if f.get("kind") in ("vowel", "diphthong")}
+
+    def competitors(self, language: str) -> set[str]:
+        """What a sound is judged against: every sound of the language (its lexicon and native variants) and every
+        mistake learners make with them (the sound gym's confusions)."""
+        own = {p for entry in self._lexicon(language).values() for group in entry for p in group}
+        own |= {v for values in self.variants(language).values() for v in values}
+        path = self._root / "pronunciation" / f"sounds_{language}.yaml"
+        if path.is_file():
+            gym = yaml.safe_load(path.read_text())
+            own |= {str(heard) for sound in gym["phonemes"].values() for heard in (sound.get("confusions") or {})}
+        return own

@@ -1,0 +1,7 @@
+# Hand transcriptions (recogniser symbols) where espeak-ng makes an optional liaison: "pas un", "voudrais un" are
+# usually said without it, so it isn't required. Required liaisons (les amis, vous avez, deux heures) stay. Original.
+ce poisson n'est pas un poison: "s ə | p w a s ɔ̃ | n ɛ | p a | œ̃ | p w a z ɔ̃"
+je voudrais un grand café chaud s'il vous plaît: "ʒ ə | v u d ʁ ɛ | œ̃ | ɡ ʁ ɑ̃ | k a f e | ʃ o | s i l | v u | p l ɛ"
+je voudrais un pain s'il vous plaît: "ʒ ə | v u d ʁ ɛ | œ̃ | p ɛ̃ | s i l | v u | p l ɛ"
+un pain pas un bain: "œ̃ | p ɛ̃ | p a | œ̃ | b ɛ̃"
+une rue pas une roue: "y n | ʁ y | p a | y n | ʁ u"

@@ -3,7 +3,9 @@
 # edit lexicon_overrides_<lang>.yaml, not this.
 a: a
 aide: ɛ d
+allait: a l ɛ
 aller: a l e
+allez: a l e
 allons: a l ɔ̃
 ami: a m i
 amie: a m i
@@ -50,7 +52,7 @@ canada: k a n a d a
 car: k a ʁ
 ce: s ə
 ce petit cheval: s ə | p ə t i | ʃ ə v a l
-ce poisson n'est pas un poison: s ə | p w a s ɔ̃ | n ɛ | p a z | œ̃ | p w a z ɔ̃
+ce poisson n'est pas un poison: s ə | p w a s ɔ̃ | n ɛ | p a | œ̃ | p w a z ɔ̃
 ces: s e
 cet: s ɛ t
 cet homme a une belle pomme jaune: s ɛ t | ɔ m | a | y n | b ɛ l | p ɔ m | ʒ o n
@@ -71,7 +73,8 @@ chou: ʃ u
 comme: k ɔ m
 cote: k ɔ t
 cou: k u
-côte: k oː t
+côte: k o t
+dais: d ɛ
 dans: d ɑ̃
 dans le jardin: d ɑ̃ | l ə | ʒ a ʁ d ɛ̃
 de: d ə
@@ -132,6 +135,7 @@ gros: ɡ ʁ o
 guide: ɡ i d
 gâteau: ɡ a t o
 habite: a b i t
+hausse: o s
 heure: œ ʁ
 heures: œ ʁ
 homme: ɔ m
@@ -157,8 +161,8 @@ je cherche le chat: ʒ ə | ʃ ɛ ʁ ʃ | l ə | ʃ a
 je cherche un joli chapeau: ʒ ə | ʃ ɛ ʁ ʃ | œ̃ | ʒ o l i | ʃ a p o
 je le regarde: ʒ ə | l ə | ʁ ə ɡ a ʁ d
 je te le dis demain: ʒ ə | t ə | l ə | d i | d ə m ɛ̃
-je voudrais un grand café chaud s'il vous plaît: ʒ ə | v u d ʁ ɛ z | œ̃ | ɡ ʁ ɑ̃ | k a f e | ʃ o | s i l | v u | p l ɛ
-je voudrais un pain s'il vous plaît: ʒ ə | v u d ʁ ɛ z | œ̃ | p ɛ̃ | s i l | v u | p l ɛ
+je voudrais un grand café chaud s'il vous plaît: ʒ ə | v u d ʁ ɛ | œ̃ | ɡ ʁ ɑ̃ | k a f e | ʃ o | s i l | v u | p l ɛ
+je voudrais un pain s'il vous plaît: ʒ ə | v u d ʁ ɛ | œ̃ | p ɛ̃ | s i l | v u | p l ɛ
 jeudi: ʒ ø d i
 joli: ʒ o l i
 joue: ʒ u
@@ -188,12 +192,16 @@ ma sœur a peur: m a | s œ ʁ | a | p œ ʁ
 madame: m a d a m
 madame dupont: m a d a m | d y p ɔ̃
 madame voilà la gare du canada: m a d a m | v w a l a | l a | ɡ a ʁ | d y | k a n a d a
+main: m ɛ̃
+mais: m ɛ
 maison: m ɛ z ɔ̃
 manger: m ɑ̃ ʒ e
 manger un chou: m ɑ̃ ʒ e | œ̃ | ʃ u
 mardi: m a ʁ d i
 me: m ə
+ment: m ɑ̃
 merci: m ɛ ʁ s i
+mes: m e
 moi: m w a
 moi aussi: m w a | o s i
 moment: m o m ɑ̃
@@ -205,18 +213,21 @@ mon frère arrive à paris mardi: m ɔ̃ | f ʁ ɛ ʁ | a ʁ i v | a | p a ʁ i 
 montagne: m ɔ̃ t a ɲ
 mot: m o
 mère: m ɛ ʁ
-n'est: n ɛ
 neuf: n œ f
+notre: n o t ʁ
 nous: n u
 nous allons: n u z | a l ɔ̃
 nous allons voir les amis à deux heures: n u z | a l ɔ̃ | v w a ʁ | l e z | a m i | a | d ø z | œ ʁ
+nôtre: n o t ʁ
 'on': ɔ̃
 on va gagner la montagne en espagne: ɔ̃ | v a | ɡ a n j e | l a | m ɔ̃ t a ɲ | ɑ̃ n | ɛ s p a ɲ
 ont: ɔ̃
+os: ɔ s
 ou: u
 oui: w i
 oui ma fille travaille au soleil: w i | m a | f i j | t ʁ a v a j | o | s o l ɛ j
 pain: p ɛ̃
+pan: p ɑ̃
 papa: p a p a
 paris: p a ʁ i
 pas: p a
@@ -229,7 +240,8 @@ petit: p ə t i
 peu: p ø
 peur: p œ ʁ
 pied: p j e
-plaît: p l ɛ
+poignet: p w a n j ɛ
+poignée: p w a n j e
 poire: p w a ʁ
 poison: p w a z ɔ̃
 poisson: p w a s ɔ̃
@@ -243,27 +255,31 @@ quatre: k a t ʁ
 quatre roues: k a t ʁ | ʁ w
 quel: k ɛ l
 quel lundi: k ɛ l | l œ̃ d i
-quel âge: k ɛ l | aː ʒ
+quel âge: k ɛ l | a ʒ
 rare: ʁ a ʁ
 rat: ʁ a
+rauque: ʁ o k
 regarde: ʁ ə ɡ a ʁ d
 regarder: ʁ ə ɡ a ʁ d e
 rit: ʁ i
 riz: ʁ i
+roc: ʁ ɔ k
 rose: ʁ ɔ z
 roue: ʁ u
 roues: ʁ w
 rouge: ʁ u ʒ
 rue: ʁ y
 rue de paris: ʁ y | d ə | p a ʁ i
-s'il: s i l
 sans: s ɑ̃
+saule: s o l
 sel: s ɛ l
 si: s i
 signe: s i ɲ
 six: s i s
 soir: s w a ʁ
+sol: s ɔ l
 soleil: s o l ɛ j
+son: s ɔ̃
 sont: s ɔ̃
 sous: s u
 sous la rue: s u | l a | ʁ y
@@ -272,11 +288,12 @@ su: s y
 sucre: s y k ʁ
 suite: s y i t
 sur: s y ʁ
-sûr: s yː ʁ
+sûr: s y ʁ
 sœur: s œ ʁ
 table: t a b l
 tard: t a ʁ
 te: t ə
+teint: t ɛ̃
 temps: t ɑ̃
 tes: t e
 thé: t e
@@ -294,7 +311,7 @@ très intéressant: t ʁ ɛ z | ɛ̃ t e ʁ ɛ s ɑ̃
 très rare: t ʁ ɛ | ʁ a ʁ
 tu: t y
 tu dis tout de suite ton idée: t y | d i | t u | d ə | s y i t | t ɔ̃ n | i d e
-tu es sûr: t y | ɛ | s yː ʁ
+tu es sûr: t y | ɛ | s y ʁ
 tête: t ɛ t
 un: œ̃
 un beau pont: œ̃ | b o | p ɔ̃
@@ -305,7 +322,7 @@ un café avec du sucre: œ̃ | k a f e | a v ɛ k | d y | s y k ʁ
 un enfant: œ̃ n | ɑ̃ f ɑ̃
 un grand café: œ̃ | ɡ ʁ ɑ̃ | k a f e
 un grand café chaud: œ̃ | ɡ ʁ ɑ̃ | k a f e | ʃ o
-un pain pas un bain: œ̃ | p ɛ̃ | p a z | œ̃ | b ɛ̃
+un pain pas un bain: œ̃ | p ɛ̃ | p a | œ̃ | b ɛ̃
 un peu de bleu: œ̃ | p ø | d ə | b l ø
 un verre de vin: œ̃ | v ɛ ʁ | d ə | v ɛ̃
 une: y n
@@ -313,7 +330,7 @@ une amie: y n | a m i
 une belle fête: y n | b ɛ l | f ɛ t
 une belle pomme: y n | b ɛ l | p ɔ m
 une bonne idée: y n | b ɔ n | i d e
-une rue pas une roue: y n | ʁ y | p a z | y n | ʁ u
+une rue pas une roue: y n | ʁ y | p a | y n | ʁ u
 une vie: y n | v i
 va: v a
 venez: v ə n e
@@ -328,7 +345,6 @@ voilà: v w a l a
 voir: v w a ʁ
 voiture: v w a t y ʁ
 vont: v ɔ̃
-voudrais: v u d ʁ ɛ
 voulez: v u l e
 vous: v u
 vous avez: v u z | a v e
@@ -348,7 +364,7 @@ zéro: z e ʁ o
 à la montagne: a | l a | m ɔ̃ t a ɲ
 à neuf heures: a | n œ v | œ ʁ
 à vélo: a | v e l o
-âge: aː ʒ
+âge: a ʒ
 école: e k ɔ l
 était: e t ɛ
 été: e t e

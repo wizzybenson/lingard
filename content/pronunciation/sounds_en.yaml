@@ -1,6 +1,6 @@
 # Sound gym (Accent Studio, decision 0028): how each Southern British English sound is made, what to change when it
 # comes out as another sound, and the drills that train it. Original for Lingard. Explanations exist in each interface
-# language (en, fr); "heard_as" keys are recogniser symbols (content/pronunciation/recognizer_inventory.txt).
+# language (en, fr); "heard_as" keys are recogniser symbols (content/pronunciation/recognizer_inventory_<lang>.txt).
 # Articulation follows standard descriptions of SSBE (e.g. Cruttenden, Gimson's Pronunciation of English).
 source_url: https://www.internationalphoneticassociation.org/content/full-ipa-chart
 as_of: "2026-10-22"
@@ -1051,6 +1051,7 @@ drills:
   - key: en.pron.th_sounds
     sounds: [θ, ð]
     words: [think, three, thank, bath, mouth, they, this, the, mother, brother]
+    pairs: [[thick, sick], [thing, sing], [mouth, mouse], [path, pass], [thin, tin], [thank, tank], [both, boat], [then, den], [those, doze], [breathe, breed]]
     phrases: [thank you, this one, the other three, with them]
     sentence: "I think they thanked their mother."
   - key: en.pron.short_long_vowels
