@@ -25,9 +25,11 @@ class LanguageConfig(BaseModel):
     clarify: list[str]
     unsure: list[str]
     """The NPC's reply when the Guard withheld every sentence of it as an unsupported claim."""
+    stalled: list[str]
+    """The NPC's reply when no model could answer: it must not sound as if the learner was not understood."""
     backchannels: list[str]
     fillers: list[str]
-    """Hesitations the NPC says when its first sentence is still held by the claim check."""
+    """Hesitations the NPC says while its first sentence is late or still held by the claim check."""
     question_marks: list[str]
     continuation_words: list[str]
     """Words an utterance can't end on ("et", "parce", "de"): after one the learner is still mid-sentence."""

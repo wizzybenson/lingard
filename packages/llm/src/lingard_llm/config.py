@@ -62,6 +62,9 @@ class TierConfig(BaseModel):
 
     models: list[ModelSpec] = Field(min_length=1)
     retries: int = Field(default=1, ge=0, le=5)
+    hedge_s: float | None = Field(default=None, gt=0)
+    """When set, a model that has not answered (streamed its first text, or finished a call) this long after it was
+    asked is raced by the next one, and the first to answer is used. ``None`` falls back only on an error."""
 
 
 class CatalogEntry(BaseModel):
@@ -82,6 +85,7 @@ class TierDefaults(BaseModel):
     max_tokens: int = Field(default=4096, gt=0)
     timeout_s: float = Field(default=60, gt=0)
     retries: int = Field(default=1, ge=0, le=5)
+    hedge_s: float | None = Field(default=None, gt=0)
 
 
 class ConfigFile(BaseModel):
@@ -133,7 +137,9 @@ class LLMConfig(BaseModel):
                 }
                 for name in models
             ]
-            tiers[tier] = TierConfig.model_validate({"models": specs, "retries": defaults.retries})
+            tiers[tier] = TierConfig.model_validate(
+                {"models": specs, "retries": defaults.retries, "hedge_s": defaults.hedge_s}
+            )
         return cls(tiers=tiers)
 
     def tier(self, tier: Tier) -> TierConfig:

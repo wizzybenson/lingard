@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import pytest
@@ -15,13 +16,14 @@ ROOT = Path(__file__).resolve().parents[3]
 PROMPT = Prompt(name="test", version=1, template="hi $name")
 
 
-def config(*models: str, retries: int = 0) -> LLMConfig:
+def config(*models: str, retries: int = 0, hedge_s: float | None = None) -> LLMConfig:
     price = {"input": 1.0, "output": 2.0, "cache_read": 0.1, "source_url": "x", "as_of": "2026-10-14"}
     return LLMConfig.model_validate(
         {
             "tiers": {
                 "fast": {
                     "retries": retries,
+                    "hedge_s": hedge_s,
                     "models": [{"provider": "scripted", "model": m, "price": price} for m in models],
                 }
             }
@@ -44,7 +46,10 @@ async def test_shipped_config_tier_order() -> None:
     assert cfg.tier("mid").models[0].model == "gpt-6.1-sol"  # OpenAI first (founder, 2026-10-18)
     assert cfg.tier("compile").models[0].model == "gpt-6.1-sol" and cfg.tier("compile").models[0].effort == "medium"
     assert cfg.tier("frontier").models[0].model == "gpt-6.1-sol"
-    assert "openai" not in {s.provider for s in cfg.tier("fast").models}, "NPCs run on Haiku, never gpt-6-luna"
+    fast = [s.model for s in cfg.tier("fast").models]
+    assert fast[:2] == ["claude-haiku-5-5", "claude-sonnet-5-5"] and "gpt-6-luna" not in fast, "NPCs run on Haiku"
+    assert "openai" in {s.provider for s in cfg.tier("fast").models}, "another provider covers an Anthropic outage"
+    assert cfg.tier("fast").hedge_s and cfg.tier("guard").hedge_s
     assert not {s.model for t in cfg.tiers.values() for s in t.models} & {"claude-opus-5-5", "gpt-6-astra"}
     assert all(s.price and s.price.source_url and s.price.as_of for t in cfg.tiers.values() for s in t.models)
 
@@ -93,6 +98,40 @@ async def test_stream_yields_pieces() -> None:
     assert "".join(pieces) == "Bonjour. Vous allez bien ?"
     assert len(pieces) > 1
     assert sink.records and sink.records[0].output_tokens > 0
+
+
+async def test_a_slow_model_is_raced_by_the_next_and_the_first_to_speak_wins() -> None:
+    slow = ScriptedChatModel(queue=["Bonjour lent."], first_token_delay_s=5, model_name="a")
+    quick = ScriptedChatModel(queue=["Bonjour vite."], model_name="b")
+    router, _ = router_with({"a": slow, "b": quick}, config("a", "b", hedge_s=0.05))
+    started = asyncio.get_running_loop().time()
+    pieces = [p async for p in router.stream("fast", PROMPT, [HumanMessage(content="x")])]
+    assert "".join(pieces) == "Bonjour vite."
+    assert asyncio.get_running_loop().time() - started < 1, "the stalled model is not waited for"
+
+
+async def test_a_model_that_answers_within_the_hedge_is_never_raced() -> None:
+    primary = ScriptedChatModel(queue=["Oui."], first_token_delay_s=0.01, model_name="a")
+    backup = ScriptedChatModel(queue=["Non."], model_name="b")
+    router, _ = router_with({"a": primary, "b": backup}, config("a", "b", hedge_s=0.5))
+    assert "".join([p async for p in router.stream("fast", PROMPT, [HumanMessage(content="x")])]) == "Oui."
+    assert backup.calls == []
+
+
+async def test_a_failure_moves_on_at_once_and_text_hedges_too() -> None:
+    broken = ScriptedChatModel(queue=["never"], fail_times=1, model_name="a")
+    slow = ScriptedChatModel(queue=["lent"], first_token_delay_s=5, model_name="b")
+    quick = ScriptedChatModel(queue=["vite"], model_name="c")
+    router, _ = router_with({"a": broken, "b": slow, "c": quick}, config("a", "b", "c", hedge_s=0.05))
+    assert await router.text("fast", PROMPT, [HumanMessage(content="x")]) == "vite"
+
+
+async def test_hedged_attempts_all_failing_raise_the_last_error() -> None:
+    a = ScriptedChatModel(queue=["x"], fail_times=1, model_name="a")
+    b = ScriptedChatModel(queue=["y"], fail_times=1, model_name="b")
+    router, _ = router_with({"a": a, "b": b}, config("a", "b", hedge_s=0.05))
+    with pytest.raises(RuntimeError, match="scripted failure"):
+        [p async for p in router.stream("fast", PROMPT, [HumanMessage(content="x")])]
 
 
 class Verdict(BaseModel):

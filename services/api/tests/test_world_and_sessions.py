@@ -196,6 +196,19 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     again = (await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))).json()
     assert again == done and (await api.client.get("/v1/wallet", headers=api.bearer(token))).json()["coins"] == after
 
+    # Stuck mid-scene: three lines to say next, with their meaning in the interface language.
+    lines = [{"text": "Je refuse.", "meaning": "I refuse.", "step": 0}, {"text": "Merci.", "meaning": "Thanks."}]
+    helper = ScriptedChatModel(responder=lambda _: _json.dumps({"suggestions": lines}))
+    tiers = {"fast": {"retries": 0, "models": [{"provider": "scripted", "model": "helper"}]}}
+    api.state.graph_deps.router = LLMRouter(LLMConfig.model_validate({"tiers": tiers}), factory=lambda _spec: helper)
+    asked = await api.client.post(
+        f"/v1/scenes/{contract.scene_id}/say-next",
+        json={"lines": [{"speaker": "npc", "text": "Je garde le dépôt."}]},
+        headers=api.bearer(token),
+    )
+    assert asked.status_code == 200 and [s["text"] for s in asked.json()] == ["Je refuse.", "Merci."]
+    assert "Je garde le dépôt." in str(helper.calls[-1][-2].content)
+
     other = await api.client.post("/v1/admin/users", json={"display_name": "Lina"}, headers=api.bearer(token))
     lina = (await api.sign_in("Lina", other.json()["one_time_pin"])).json()
     await api.client.post(
@@ -221,6 +234,8 @@ async def test_session_plan_scene_view_hides_targets_and_live_dispatch(api, monk
     assert prep.json() == []
     refused = await api.client.post(f"/v1/scenes/{contract.scene_id}/debrief", headers=api.bearer(token))
     assert refused.status_code == 409
+    no_help = await api.client.post(f"/v1/scenes/{contract.scene_id}/say-next", json={}, headers=api.bearer(token))
+    assert no_help.status_code == 409
 
 
 async def test_city_catalogue_comes_from_content(api) -> None:  # type: ignore[no-untyped-def]

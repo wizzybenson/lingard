@@ -40,18 +40,20 @@ catalog:
 
 tiers:
   fast:                   # NPC actor, live plane
-    models: [claude-haiku-5-5, claude-sonnet-5-5, gemini-3.1-flash-lite]
+    models: [claude-haiku-5-5, claude-sonnet-5-5, gpt-6.1-sol, gemini-3.1-flash-lite]  # OpenAI: an outage is per provider
     effort: low           # Google models ignore effort
     max_tokens: 1024
     timeout_s: 8
     retries: 0            # a retry costs more latency than a fallback
+    hedge_s: 1.8          # no first word after 1.8 s: race the next model (decision 0026: Anthropic stalled, turns took 17-23 s)
   guard:                  # Contract Guard claim check: one short answer per NPC sentence, live plane (decision 0012)
-    models: [claude-haiku-5-5, gemini-3.1-flash-lite]
+    models: [claude-haiku-5-5, gpt-6.1-sol, gemini-3.1-flash-lite]
     effort: low
     thinking: false        # with thinking on, Haiku spent the budget reasoning and often returned no answer
     max_tokens: 200
     timeout_s: 5           # the claim checker's own deadline (CLAIM_CHECK_DEADLINE_S) is what binds
     retries: 0
+    hedge_s: 1.0           # inside that deadline, so a stalled provider is raced before the sentence is withheld
   mid:                    # assessment, planning, lessons
     models: [gpt-6.1-sol, claude-sonnet-5-5, gemini-3.8-flash]  # OpenAI first (founder, 2026-10-18)
     effort: medium

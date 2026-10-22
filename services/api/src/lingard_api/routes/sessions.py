@@ -8,7 +8,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from lingard_api.deps import Db, Principal, State
@@ -18,11 +18,12 @@ from lingard_api.routes.economy import flat_decor
 from lingard_api.routes.key_points import PLACE_OFFER, KeyPoint, describe, key_points
 from lingard_api.routes.speech import require_providers
 from lingard_contracts.assessment import ErrorTag
-from lingard_contracts.common import CITY_LANGUAGE, CityKey
+from lingard_contracts.common import CITY_LANGUAGE, LANGUAGE_NAME, CityKey
 from lingard_contracts.scene import SceneContract
 from lingard_db.models import Assessment, LearnerProfile, Scene, Session, Turn, User
 from lingard_economy.rewards import COINS, LedgerEntry
 from lingard_graphs.agents.debrief import debrief
+from lingard_graphs.agents.say_next import Line, Suggestion, say_next
 from lingard_graphs.pedagogy.key_points import KINDS
 from lingard_llm.config import any_llm_configured
 from lingard_world import load_city
@@ -388,3 +389,36 @@ async def scene_debrief(scene_id: uuid.UUID, principal: Principal, state: State,
     row.status = "done"
     await db.commit()
     return view
+
+
+class SayNextBody(BaseModel):
+    lines: list[Line] = Field(default_factory=list, max_length=40)
+    """The conversation as the app captioned it, oldest first."""
+
+
+@router.post("/scenes/{scene_id}/say-next", response_model=list[Suggestion])
+async def scene_say_next(
+    scene_id: uuid.UUID, body: SayNextBody, principal: Principal, state: State, db: Db
+) -> list[Suggestion]:
+    """Three things the learner could say next, with their meaning, when they are stuck mid-scene. Not in an exam."""
+    row = await db.get(Scene, scene_id)
+    if row is None or row.user_id != principal.user_id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "No such scene")
+    if await _is_exam(db, row):
+        raise HTTPException(status.HTTP_409_CONFLICT, "No help during a mock exam")
+    require_providers(state, llm=True)
+    contract = SceneContract.model_validate(row.contract)
+    user = await db.get_one(User, principal.user_id)
+    profile = (await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == user.id))).scalar_one()
+    band = int(profile.settings.get("language_bands", {}).get(CITY_LANGUAGE[contract.city], 5))
+    npc = load_city(state.settings.content_root, contract.city).npc(contract.cast[0].npc_key)
+    return await say_next(
+        contract,
+        body.lines,
+        npc_name=npc.name,
+        npc_role=npc.role,
+        band=band,
+        explain_language=LANGUAGE_NAME[user.ui_locale or "en"],
+        router=state.graph_deps.router,
+        prompts=state.graph_deps.prompts,
+    )

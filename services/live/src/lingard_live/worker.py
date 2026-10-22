@@ -102,6 +102,7 @@ async def run_job(job: LiveJob, settings: LiveSettings, redis: Redis) -> None:
         publisher=bus,
         hints=bus,
         filler_after_ms=settings.filler_after_ms,
+        stall_filler_after_ms=settings.stall_filler_after_ms,
         streaming_stt=build_streaming_stt(settings),
         second_ear=build_second_ear(settings),
     )

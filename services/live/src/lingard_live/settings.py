@@ -66,6 +66,9 @@ class LiveSettings(BaseSettings):
     """Sentences up to this many words (or questions) made only of grounded words skip the check."""
     filler_after_ms: float | None = 150
     """Say a hesitation if the first sentence is still being checked this long after it is ready; empty = never."""
+    stall_filler_after_ms: float | None = 1800
+    """Say a hesitation if a reply has no first sentence this long after preparation began (normally ≈1.3 s); empty =
+    never. Preparation starts inside the end-of-turn wait, so this rarely adds to what the learner hears."""
     stt_streaming: bool = True
     """Transcribe while the learner speaks (ElevenLabs Scribe Realtime, when its key is set); batch is the fallback."""
     elevenlabs_realtime_stt_model: str = "scribe_v2_realtime"

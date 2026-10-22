@@ -105,6 +105,8 @@ class Prepared:
     guard_results: list[GuardResult] = field(default_factory=list)
     producer: asyncio.Task[None] | None = None
     hint: str | None = None
+    failed: bool = False
+    """No model produced the reply (provider errors or timeouts on every model of the tier)."""
 
 
 Spoken = tuple[str, AsyncIterator[AudioChunk]]
@@ -152,11 +154,13 @@ class LiveLoop:
         hints: HintSource,
         gate: GatePolicy | None = None,
         filler_after_ms: float | None = None,
+        stall_filler_after_ms: float | None = None,
         streaming_stt: StreamingStt | None = None,
         second_ear: SttProvider | None = None,
     ) -> None:
         """``filler_after_ms``: if a reply's first sentence is still held by the claim check this long after it was
-        screened, the NPC says a hesitation (``LanguageConfig.fillers``) first; ``None`` never does."""
+        screened, the NPC says a hesitation (``LanguageConfig.fillers``) first; ``None`` never does.
+        ``stall_filler_after_ms``: the same when a reply has no first sentence this long after preparation began."""
         self.session = session
         self.state = state
         self.identity = identity
@@ -171,6 +175,7 @@ class LiveLoop:
         self.hints = hints
         self.gate = gate or GatePolicy()
         self.filler_after_ms = filler_after_ms
+        self.stall_filler_after_ms = stall_filler_after_ms
         self.streaming_stt = streaming_stt
         self.second_ear = second_ear or stt
         self._stream: tuple[int, SttStream] | None = None
@@ -197,7 +202,7 @@ class LiveLoop:
         """Synthesise the stock lines (hesitations, "not sure", "pardon?") in this NPC's voice, so a caching TTS
         can play them without a provider round trip when they are needed."""
         language = self.language
-        for line in dict.fromkeys([*language.fillers, *language.unsure, *language.clarify]):
+        for line in dict.fromkeys([*language.fillers, *language.unsure, *language.clarify, *language.stalled]):
             async for _ in self.tts.stream(line, self.voice):
                 pass
 
@@ -388,20 +393,42 @@ class LiveLoop:
                         tasks.append(prefetch)
                     tasks.append(confirm)
                     await pending.put((screened, confirm, prefetch))
+            except Exception as exc:  # every model failed: the fallback line covers it, the scene goes on
+                prepared.failed = True
+                logger.warning("no model produced the reply: %s", exc)
             finally:
                 await pending.put(None)
+
+        def hesitate(before: str | None = None) -> Spoken:
+            timing.filler = True
+            fillers = hesitations_for(before, self.language.fillers) if before else self.language.fillers
+            filler = self.language.pick(fillers)
+            return filler, self.tts.stream(filler, self.voice)
 
         async def guarded() -> AsyncIterator[Spoken]:
             # A hesitation covers the wait for an answer; the opening line answers nobody ("So… Hiya" was heard live).
             first = prepared.decision.reason != "opening"
-            while (item := await pending.get()) is not None:
-                screened, confirm, prefetch = item
-                if first and prefetch is not None and self.filler_after_ms is not None:
+            head = asyncio.ensure_future(pending.get())
+            if first and self.stall_filler_after_ms is not None:
+                waited_ms = (time.perf_counter() - started) * 1000
+                ready, _ = await asyncio.wait({head}, timeout=max(self.stall_filler_after_ms - waited_ms, 0) / 1000)
+                if not ready:
+                    yield hesitate()  # the model is slow: a silence would read as the line having dropped
+
+            async def items() -> AsyncIterator[tuple[GuardResult, asyncio.Task[GuardResult], Prefetch | None]]:
+                try:
+                    item = await head
+                    while item is not None:
+                        yield item
+                        item = await pending.get()
+                finally:
+                    head.cancel()
+
+            async for screened, confirm, prefetch in items():
+                if first and not timing.filler and prefetch is not None and self.filler_after_ms is not None:
                     done, _ = await asyncio.wait({confirm}, timeout=self.filler_after_ms / 1000)
                     if not done:
-                        filler = self.language.pick(hesitations_for(screened.text, self.language.fillers))
-                        timing.filler = True
-                        yield filler, self.tts.stream(filler, self.voice)
+                        yield hesitate(screened.text)
                 first = False
                 result = await confirm
                 prepared.guard_results.append(result)
@@ -427,6 +454,8 @@ class LiveLoop:
             await asyncio.gather(splitter, return_exceptions=True)
 
     def _fallback(self, prepared: Prepared) -> str:
+        if prepared.failed:
+            return self.language.pick(self.language.stalled)
         withheld_claim = any(
             r.verdict is Verdict.BLOCK and {"unsupported_claim", "claim_check_timeout"} & set(r.reasons)
             for r in prepared.guard_results
@@ -442,7 +471,7 @@ class LiveLoop:
                 await prepared.audio.put(sentence)
                 async for chunk in audio:
                     await prepared.audio.put(chunk)
-            if not prepared.sentences and fallback:
+            if fallback and all(s in self.language.fillers for s in prepared.sentences):
                 line = fallback()
                 prepared.sentences.append(line)
                 await prepared.audio.put(line)

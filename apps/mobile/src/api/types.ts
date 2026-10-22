@@ -34,6 +34,13 @@ export interface SceneView {
   mission: MissionBrief | null;
 }
 
+/** Something a stuck learner could say next in a live scene, with its meaning (``/v1/scenes/{id}/say-next``). */
+export interface Suggestion {
+  text: string;
+  meaning: string;
+  step: number | null;
+}
+
 /** A scene as a mission: objectives, what can be won, and the coins it pays (never the hidden targets). */
 export interface MissionBrief {
   objectives: string[];

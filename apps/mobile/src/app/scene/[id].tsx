@@ -11,6 +11,7 @@ import { MissionBriefCard, MissionDebriefCard } from "@/missions/Mission";
 import { MissionRule } from "@/missions/RuleCard";
 import { KeyPointStrip } from "@/school/KeyPointStrip";
 import { captionOpacity } from "@/live/captions";
+import { MissionSteps, SayNextCard, useSayNext } from "@/live/SayNext";
 import { useLiveScene, type LiveError } from "@/live/useLiveScene";
 import { useApi } from "@/state/auth";
 import { useResource } from "@/state/resource";
@@ -83,6 +84,7 @@ export default function Scene() {
   }>();
   const scene = useResource(() => api.get<SceneView>(`/v1/scenes/${id}`), [id]);
   const live = useLiveScene();
+  const help = useSayNext(id, live.captions);
   const [showCaptions, setShowCaptions] = useState(true);
   const [moving, setMoving] = useState(false);
   const [moveError, setMoveError] = useState<string | null>(null);
@@ -208,13 +210,14 @@ export default function Scene() {
           <Text style={styles.talkText}>{t("scene.pushToTalk")}</Text>
         </Pressable>
       )}
+      {live.openMic && <Button label={t("scene.pause")} kind="secondary" icon="pause" onPress={() => void live.setOpenMic(false)} />}
       <View style={{ flexDirection: "row", gap: space(1) }}>
-        {live.openMic && (
-          <View style={{ flex: 1 }}>
-            <Button label={t("scene.pause")} kind="secondary" icon="pause" onPress={() => void live.setOpenMic(false)} />
+        {mission && (
+          <View style={{ flex: 3 }}>
+            <Button label={t("scene.sayNext")} kind="secondary" icon="bulb-outline" busy={help.busy} onPress={help.ask} />
           </View>
         )}
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 2 }}>
           <Button label={t("scene.end")} kind="tinted" icon="exit-outline" onPress={() => void live.leave()} />
         </View>
       </View>
@@ -237,6 +240,7 @@ export default function Scene() {
                 {scene.data.learner_goal}
               </Text>
             </View>
+            {live.status === "live" && <MissionSteps objectives={mission?.objectives ?? []} />}
           </View>
         </Card>
       )}
@@ -334,6 +338,7 @@ export default function Scene() {
               })}
             </View>
           )}
+          {mission && <SayNextCard help={help} />}
         </>
       )}
       {judged && <MissionDebriefCard debrief={debrief.data} error={debrief.error} />}

@@ -28,3 +28,13 @@ appId: app.lingard
 - waitForAnimationToEnd:
     timeout: 15000
 - takeScreenshot: 14-scene-after
+# Stuck: the mission's steps are in view, and three things to say next appear on request.
+- assertVisible: "Mission steps"
+- tapOn: "What can I say.*"
+- extendedWaitUntil:
+    visible: "You could say"
+    timeout: 20000
+- assertVisible:
+    id: "say-next-idea"
+- takeScreenshot: 15-say-next
+- tapOn: "Leave"

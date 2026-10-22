@@ -100,6 +100,19 @@ class ScriptedChatModel(BaseChatModel):
                 )
             )
 
+    async def _agenerate(
+        self,
+        messages: list[BaseMessage],
+        stop: list[str] | None = None,
+        run_manager: AsyncCallbackManagerForLLMRun | None = None,
+        **kwargs: Any,
+    ) -> ChatResult:
+        import asyncio
+
+        if self.first_token_delay_s:
+            await asyncio.sleep(self.first_token_delay_s)
+        return self._generate(messages, stop, None, **kwargs)
+
     async def _astream(
         self,
         messages: list[BaseMessage],

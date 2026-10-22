@@ -43,6 +43,7 @@ async def build(
     tts_delay_ms: int = 0,
     claims: ClaimChecker | None = None,
     filler_after_ms: float | None = None,
+    stall_filler_after_ms: float | None = None,
 ) -> tuple[LiveLoop, LoopbackSession, MemoryBus, ScriptedChatModel, ScriptedTts]:
     model = ScriptedChatModel(responder=responder, first_token_delay_s=llm_first_token_s, token_delay_s=0.005)
     config = LLMConfig.model_validate(
@@ -81,6 +82,7 @@ async def build(
         publisher=bus,
         hints=bus,
         filler_after_ms=filler_after_ms,
+        stall_filler_after_ms=stall_filler_after_ms,
     )
     return loop, session, bus, model, tts
 
@@ -292,6 +294,37 @@ async def test_a_slow_first_check_is_covered_by_a_hesitation(runtime: SceneRunti
     assert not loop.outcomes[-1].timing.filler, "a fast check needs no hesitation"
 
 
+async def test_a_slow_model_is_covered_by_a_hesitation_instead_of_silence(runtime: SceneRuntime) -> None:
+    loop, session, _bus, _model, _tts = await build(
+        runtime,
+        lambda m: "Le plombier passera demain matin.",
+        ["Bonjour."],
+        llm_first_token_s=0.3,
+        stall_filler_after_ms=100,
+    )
+    await loop.handle_turn(turn())
+    [npc] = [text for speaker, text in session.captions if speaker == "npc"]
+    hesitation, _, rest = npc.partition(" ")
+    assert hesitation in runtime.language.fillers and rest == "Le plombier passera demain matin."
+    timing = loop.outcomes[-1].timing
+    assert timing.filler and timing.first_audio_ms is not None and timing.first_audio_ms < 250
+
+
+async def test_when_no_model_answers_the_npc_never_says_it_did_not_understand(runtime: SceneRuntime) -> None:
+    """2026-10-22: every model of the tier timed out and the NPC said "je n'ai pas bien compris" to good French."""
+
+    def down(_: list[BaseMessage]) -> str:
+        raise RuntimeError("provider down")
+
+    loop, session, _bus, _model, _tts = await build(
+        runtime, down, ["Bonjour, je cherche la mairie."], stall_filler_after_ms=50
+    )
+    await loop.handle_turn(turn())
+    npc = " ".join(text for speaker, text in session.captions if speaker == "npc")
+    assert any(npc.endswith(line) for line in runtime.language.stalled), npc
+    assert not any(line in npc for line in runtime.language.clarify)
+
+
 async def test_the_opening_line_starts_without_a_hesitation(runtime: SceneRuntime) -> None:
     """Nobody is waiting on an answer when the scene opens: "So… Hiya" sounded wrong live."""
     claims = ScriptedClaimChecker(delay_ms=400)
@@ -309,7 +342,7 @@ async def test_prewarm_puts_stock_lines_in_the_tts_cache(runtime: SceneRuntime) 
     loop.tts = caching
     await loop.prewarm()
     language = runtime.language
-    assert set(tts.spoken) == {*language.fillers, *language.unsure, *language.clarify}
+    assert set(tts.spoken) == {*language.fillers, *language.unsure, *language.clarify, *language.stalled}
     async for _ in caching.stream(language.fillers[0], loop.voice):
         pass
     assert caching.hits == 1

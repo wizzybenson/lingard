@@ -11,6 +11,9 @@ clarify:
 unsure:  # said when the Guard withholds an NPC's whole reply as unsupported (decision 0012)
   - "Ça, je ne sais pas, il faudrait que je vérifie."
   - "Bonne question. Je ne suis pas sûr, je vais me renseigner."
+stalled:  # said when no model could answer in time: the fault is never the learner's (decision 0026)
+  - "Oh, pardon, j'étais ailleurs une seconde… Vous disiez ?"
+  - "Excusez-moi, on m'a distrait. Vous pouvez reprendre ?"
 continuation_words: [et, ou, mais, donc, parce, que, qui, quand, si, comme, de, du, des, à, au, aux, pour, avec, sans, dans, sur, chez, le, la, les, un, une, mon, ma, mes, ce, cette, je, tu, il, elle, "on", nous, vous, est, suis, euh, alors]  # an utterance ending on one is unfinished (semantic end of turn)
 question_marks: ["?"]  # a sentence ending in one is a question (claim-check pre-filter)
 fillers: ["Mm…", "Alors…", "Bon…", "Voyons…", "Euh…"]  # said while the first sentence of a reply is still being checked (decision 0012)

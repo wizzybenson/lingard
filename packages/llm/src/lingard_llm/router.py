@@ -6,9 +6,11 @@ construction, structured output, usage capture). Tiers, fallback chains, prompt 
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import json
 import re
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from typing import Any, TypeVar
 
 from langchain_core.language_models import BaseChatModel
@@ -93,6 +95,7 @@ class LLMRouter:
         self.sink: UsageSink = sink or MemoryUsageSink()
         self._factory = factory
         self._models: dict[Tier, Runnable[Any, BaseMessage]] = {}
+        self._chains: dict[Tier, list[Runnable[Any, BaseMessage]]] = {}
         prices = {spec.model: spec.price for tier in config.tiers.values() for spec in tier.models}
         self._callback = UsageCallback(self.sink, prices)
 
@@ -107,16 +110,22 @@ class LLMRouter:
     def primary_provider(self, tier: Tier) -> str:
         return self.specs(tier)[0].provider
 
-    def runnable(self, tier: Tier) -> Runnable[Any, BaseMessage]:
-        if tier not in self._models:
-            tier_config = self.config.tier(tier)
+    def _attempts(self, tier: Tier) -> list[Runnable[Any, BaseMessage]]:
+        """One runnable per available model, each with the tier's retries."""
+        if tier not in self._chains:
+            retries = self.config.tier(tier).retries
             chain: list[Runnable[Any, BaseMessage]] = []
             for spec in self.specs(tier):
                 model: Runnable[Any, BaseMessage] = self._factory(spec)
-                if tier_config.retries:
-                    model = model.with_retry(stop_after_attempt=tier_config.retries + 1, wait_exponential_jitter=True)
+                if retries:
+                    model = model.with_retry(stop_after_attempt=retries + 1, wait_exponential_jitter=True)
                 chain.append(model)
-            primary, *fallbacks = chain
+            self._chains[tier] = chain
+        return self._chains[tier]
+
+    def runnable(self, tier: Tier) -> Runnable[Any, BaseMessage]:
+        if tier not in self._models:
+            primary, *fallbacks = self._attempts(tier)
             self._models[tier] = primary.with_fallbacks(fallbacks) if fallbacks else primary
         return self._models[tier]
 
@@ -135,16 +144,81 @@ class LLMRouter:
     async def text(
         self, tier: Tier, prompt: Prompt, messages: list[BaseMessage], *, trace_id: str | None = None
     ) -> str:
-        result = await self.runnable(tier).ainvoke(messages, config=self._config(tier, prompt, trace_id))
-        return message_text(result)
+        config = self._config(tier, prompt, trace_id)
+        if self.config.tier(tier).hedge_s is None:
+            return message_text(await self.runnable(tier).ainvoke(messages, config=config))
+
+        def asker(model: Runnable[Any, BaseMessage]) -> Callable[[], Awaitable[str]]:
+            async def ask() -> str:
+                return message_text(await model.ainvoke(messages, config=config))
+
+            return ask
+
+        text, _ = await self._race(tier, [asker(m) for m in self._attempts(tier)])
+        return text
 
     async def stream(
         self, tier: Tier, prompt: Prompt, messages: list[BaseMessage], *, trace_id: str | None = None
     ) -> AsyncIterator[str]:
-        async for chunk in self.runnable(tier).astream(messages, config=self._config(tier, prompt, trace_id)):
-            text = message_text(chunk)
-            if text:
+        config = self._config(tier, prompt, trace_id)
+        if self.config.tier(tier).hedge_s is None:
+            async for chunk in self.runnable(tier).astream(messages, config=config):
+                if text := message_text(chunk):
+                    yield text
+            return
+        streams: list[AsyncIterator[BaseMessage]] = []
+
+        def opener(model: Runnable[Any, BaseMessage]) -> Callable[[], Awaitable[str]]:
+            def start() -> Awaitable[str]:
+                stream = aiter(model.astream(messages, config=config))
+                streams.append(stream)
+                return _first_text(stream)
+
+            return start
+
+        first, index = await self._race(tier, [opener(m) for m in self._attempts(tier)])
+        winner = streams[index]
+        for stream in streams:
+            if stream is not winner:
+                with contextlib.suppress(Exception):
+                    await stream.aclose()  # type: ignore[attr-defined]
+        yield first
+        async for chunk in winner:
+            if text := message_text(chunk):
                 yield text
+
+    async def _race(self, tier: Tier, attempts: list[Callable[[], Awaitable[str]]]) -> tuple[str, int]:
+        """Starts the first attempt, and the next whenever every running one has gone ``hedge_s`` without answering
+        or has failed. Returns the first answer and its attempt's index; raises the last error if all fail."""
+        hedge_s = self.config.tier(tier).hedge_s
+        running: dict[asyncio.Task[str], int] = {}
+        launched = 0
+        error: BaseException | None = None
+
+        def launch() -> None:
+            nonlocal launched
+            running[asyncio.ensure_future(attempts[launched]())] = launched
+            launched += 1
+
+        launch()
+        try:
+            while running:
+                more = launched < len(attempts)
+                done, _ = await asyncio.wait(
+                    running, timeout=hedge_s if more else None, return_when=asyncio.FIRST_COMPLETED
+                )
+                for task in done:
+                    index = running.pop(task)
+                    if task.exception() is None:
+                        return task.result(), index
+                    error = task.exception()
+                if more:  # every finished attempt failed, or none answered in time
+                    launch()
+            raise error if error else RuntimeError(f"no {tier} model answered")
+        finally:
+            for task in running:
+                task.cancel()
+            await asyncio.gather(*running, return_exceptions=True)
 
     async def structured(
         self,
@@ -173,6 +247,14 @@ class LLMRouter:
                 last_error = str(exc)[:800]
                 convo = [*convo, HumanMessage(content=f"That was invalid: {last_error}\nReturn corrected JSON only.")]
         raise StructuredOutputError(f"{prompt.ref}: no valid {schema.__name__} after {attempts} attempts: {last_error}")
+
+
+async def _first_text(stream: AsyncIterator[BaseMessage]) -> str:
+    """The stream's first non-empty text; an answer with no text at all counts as a failure."""
+    async for chunk in stream:
+        if text := message_text(chunk):
+            return text
+    raise RuntimeError("the model answered with no text")
 
 
 def _extract_json(raw: str) -> str:
