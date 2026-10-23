@@ -133,6 +133,7 @@ export const STAGE_NAMES = ["learn", "hear", "words", "pairs", "phrases", "sente
 export const GOOD = 70;
 
 /** Where a drill text's model recording is fetched. The edition changes when models are re-recorded, so a device
- * never keeps playing an old one from its cache (2026-10-23: "rue" with a stray sound before it). */
-export const MODEL_EDITION = 2;
+ * never keeps playing an old one from its cache (2026-10-23: "rue" with a stray sound before it). 3: a phone that
+ * fetched edition 2 before the server stopped allowing day-long caching still played the old "rue". */
+export const MODEL_EDITION = 3;
 export const modelPath = (language: string) => `/v1/studio/reference?v=${MODEL_EDITION}&language=${language}`;
