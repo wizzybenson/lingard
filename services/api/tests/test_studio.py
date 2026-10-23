@@ -21,8 +21,16 @@ PIN = "613470"
 class LexiconRecognizer:
     """Hears exactly the expected phonemes, except one swap (to simulate an accent)."""
 
-    def __init__(self, g2p: LexiconG2P, line: str, language: str, swap: dict[str, str] | None = None) -> None:
-        self.expected = g2p.phonemes(line, language)
+    def __init__(
+        self,
+        g2p: LexiconG2P,
+        line: str,
+        language: str,
+        swap: dict[str, str] | None = None,
+        before: list[str] | None = None,
+    ) -> None:
+        """``before``: sounds heard ahead of the line (a recording that starts with an "euh")."""
+        self.expected = [*(before or []), *g2p.phonemes(line, language)]
         self.swap = swap or {}
         self.inventory = ["<b>", *sorted(set(self.expected) | set(self.swap.values()))]
 
@@ -229,6 +237,9 @@ async def test_a_model_the_scorer_would_fail_is_left_out_of_its_drill(api) -> No
     g2p = LexiconG2P(api.settings.content_root)
     _attach(api, LexiconRecognizer(g2p, "roue", "fr"))
     assert await check_model(api.state, "roue", "fr") == "narrator", "a model the scorer passes is the narrator's"
+    _attach(api, LexiconRecognizer(g2p, "vous", "fr", before=["ə"]))
+    assert await check_model(api.state, "vous", "fr") == "none", "an “euh” before the word: every take refused"
+    assert len(api.state.tts.spoken) == 1 + 3, "a fresh narrator take each time, before giving up on the text"
     _attach(api, LexiconRecognizer(g2p, "rue", "fr", swap={"y": "u"}))
     assert await check_model(api.state, "rue", "fr") == "none", "heard as roue, and no other native voice to try here"
     CHECKED.clear()  # read back from the object store, as a fresh process would
@@ -238,3 +249,15 @@ async def test_a_model_the_scorer_would_fail_is_left_out_of_its_drill(api) -> No
     words = [w["text"] for w in view["words"]]
     assert "rue" not in words and "roue" in words, "never taught with a model that would teach the mistake"
     CHECKED.clear()
+
+
+async def test_a_model_can_be_replaced_without_the_device_keeping_the_old_one(api) -> None:  # type: ignore[no-untyped-def]
+    token = await api.admin_token("Founder", PIN)
+    api.state.tts = ScriptedTts()
+    params = {"line": "Un pain, pas un bain.", "language": "fr"}
+    first = await api.client.get("/v1/studio/reference", params=params, headers=api.bearer(token))
+    assert first.headers["cache-control"] == "private, no-cache" and first.headers["etag"]
+    again = await api.client.get(
+        "/v1/studio/reference", params=params, headers={**api.bearer(token), "If-None-Match": first.headers["etag"]}
+    )
+    assert again.status_code == 304, "the same recording: not sent again"

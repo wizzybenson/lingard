@@ -76,3 +76,28 @@ def test_studio_lines_are_in_the_lexicon_and_drill_real_nodes() -> None:
 def test_phrases_keep_liaison_and_their_word_boundaries() -> None:
     g2p = LexiconG2P(ROOT / "content")
     assert g2p.words("Les amis", "fr") == [("Les", ["l", "e", "z"]), ("amis", ["a", "m", "i"])]
+
+
+def test_sounds_heard_beyond_the_words_own_are_extra_and_a_misheard_one_is_not() -> None:
+    from lingard_pronunciation.app import extra_sounds, spelled
+    from lingard_pronunciation.recognizer import Heard
+
+    def heard(*phonemes: str) -> list[Heard]:
+        return [Heard(p, i * 0.1, i * 0.1 + 0.08) for i, p in enumerate(phonemes)]
+
+    filler = extra_sounds(heard("a", "ʁ", "y"), ["ʁ", "y"])
+    assert filler["before"] == ["a"] and filler["after"] == [] and filler["start"] == 0.1, "a filler ahead of rue"
+    tail = extra_sounds(heard("ʁ", "u", "ə"), ["ʁ", "u"])
+    assert tail["after"] == ["ə"], "a sound trailing after the word"
+    assert extra_sounds(heard("ʁ", "w", "e"), ["ʁ", "u"])["after"] == ["e"], "in a tie, extra rather than misheard"
+    assert extra_sounds(heard("ə", "ʁ", "y", "a"), ["ʁ", "y"])["before"] == ["ə"], "both ends at once"
+    assert extra_sounds([], ["ʁ", "y"])["start"] is None
+    tilde = "\u0303"
+    bain = spelled(["b", f"ɛ{tilde}"], ["<b>", "b", "ɛ", tilde, "n"])
+    assert bain == ["b", "ɛ", tilde], "a nasal vowel written as the recogniser writes it: vowel + tilde"
+    assert extra_sounds(heard("b", "ɛ", tilde), bain)["after"] == []
+    assert extra_sounds(heard("b", "ɛ", "ɛ", "n"), bain)["after"] == [], "its nasality heard as an n is the vowel"
+    assert extra_sounds(heard("b", "ɛ", tilde, "n", "a"), bain)["after"] == ["a"], "a syllable beyond it is not"
+    assert extra_sounds(heard("s", "u"), ["s", "y"]) == {"before": [], "after": [], "start": 0.0, "end": 0.18}, (
+        "su heard as sou is a mispronunciation for the scorer to judge, not an extra sound"
+    )

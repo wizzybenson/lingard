@@ -44,8 +44,10 @@ async def warm_studio(settings: Settings) -> dict[str, list[str]]:
     """Renders and verifies every drill model ahead of time and reports the texts left without one:
     - melody models must carry their rise or fall (a learner's first take would otherwise wait for up to three
       renders, 10 s on 2026-10-22);
-    - every other model must pass the scorer the way a learner's take would, since learners imitate it (4% of
-      narrator renders didn't on 2026-10-22); another native render replaces one that doesn't.
+    - every model must have no sounds beyond its text's own (a breath or an "euh" before a short word) and, other
+      than melody models, pass the scorer the way a learner's take would, since learners imitate it; fresh takes
+      replace one that doesn't.
+    Each text is otherwise checked the first time a learner asks for it.
     Needs the pronunciation service and an OpenAI key; paid only for texts not checked before."""
     from lingard_api.routes.studio import _gym, _melody_model, check_model
 

@@ -13,7 +13,7 @@ import { PlayButton } from "@/live/PlayButton";
 import { UpNext } from "@/home/UpNext";
 import { MouthMap } from "@/studio/MouthMap";
 import { Practice, SpeedPicker, type Speed } from "@/studio/Practice";
-import { STAGE, STAGE_NAMES, type Attempt, type DrillView, type GymText, type SoundGuide } from "@/studio/types";
+import { modelPath, STAGE, STAGE_NAMES, type Attempt, type DrillView, type GymText, type SoundGuide } from "@/studio/types";
 import { useApi } from "@/state/auth";
 import { useFocus } from "@/state/focus";
 import { useResource } from "@/state/resource";
@@ -82,7 +82,7 @@ function Guide({ guide, drill, speed, language }: { guide: SoundGuide; drill: Dr
           <Text style={type.headline}>{t("gym.asIn", { word: guide.example })}</Text>
         </View>
       </View>
-      <PlayButton api={api} path={`/v1/studio/reference?language=${language}&line=${encodeURIComponent(guide.example)}`} rate={speed} label={t("gym.hearIt")} />
+      <PlayButton api={api} path={`${modelPath(language)}&line=${encodeURIComponent(guide.example)}`} rate={speed} label={t("gym.hearIt")} />
       <MouthMap phoneme={guide.phoneme} features={guide.features} all={drill.features} />
       <View style={{ gap: space(1) }}>
         <Row icon="happy-outline" label={t("gym.lips")} text={how.lips} />
@@ -143,7 +143,7 @@ function Quiz({ drill, speed, language, onDone }: { drill: DrillView; speed: Spe
     <Card style={{ gap: space(1.5) }}>
       <Text style={type.caption}>{t("gym.round", { n: round + 1, total: rounds.length })}</Text>
       <Text style={type.headline}>{t("gym.whichDidYouHear")}</Text>
-      <PlayButton key={round} api={api} path={`/v1/studio/reference?language=${language}&line=${encodeURIComponent(word)}`} rate={speed} label={t("gym.playWord")} />
+      <PlayButton key={round} api={api} path={`${modelPath(language)}&line=${encodeURIComponent(word)}`} rate={speed} label={t("gym.playWord")} />
       <View style={{ flexDirection: "row", gap: space(1) }}>
         {current.pair.map((w, i) => {
           const state = picked === null ? "idle" : i === current.answer ? "right" : i === picked ? "wrong" : "idle";

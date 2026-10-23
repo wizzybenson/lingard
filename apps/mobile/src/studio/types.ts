@@ -131,3 +131,8 @@ export interface Attempt {
 export const STAGE = { learn: 0, hear: 1, words: 2, pairs: 3, phrases: 4, sentence: 5, mastered: 6 } as const;
 export const STAGE_NAMES = ["learn", "hear", "words", "pairs", "phrases", "sentence"] as const;
 export const GOOD = 70;
+
+/** Where a drill text's model recording is fetched. The edition changes when models are re-recorded, so a device
+ * never keeps playing an old one from its cache (2026-10-23: "rue" with a stray sound before it). */
+export const MODEL_EDITION = 2;
+export const modelPath = (language: string) => `/v1/studio/reference?v=${MODEL_EDITION}&language=${language}`;

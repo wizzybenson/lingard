@@ -15,7 +15,7 @@ from lingard_pronunciation.g2p import G2P
 from lingard_pronunciation.golden_self import GoldenSelf
 from lingard_pronunciation.gop import PhonemeScore, score_phonemes
 from lingard_pronunciation.prosody import contour_similarity, semitone_contour, to_float, yin_f0
-from lingard_pronunciation.recognizer import PhonemeRecognizer
+from lingard_pronunciation.recognizer import Heard, PhonemeRecognizer, heard
 from lingard_pronunciation.scoring import PronTarget, report
 
 
@@ -52,6 +52,72 @@ class ShadowRequest(BaseModel):
     """Golden-self (or native) render of the line. Without it, intonation isn't scored and no pitch overlay is drawn."""
     partners: dict[str, list[str]] | None = None
     """Per sound, the minimal-pair partners it is being trained against: those sounds get the two-way test."""
+
+
+class HeardRequest(BaseModel):
+    text: str
+    language: str
+    pcm_b64: str
+
+
+def _beyond_nasality(extra: list[str], count: int) -> int:
+    """Extra sounds at an edge next to a nasal vowel, without a nasal consonant heard right against it (``extra``
+    runs outward from the vowel)."""
+    return count - 1 if extra and extra[0] in NASAL_CONSONANTS else count
+
+
+def _extra_at_end(said: list[str], expected: list[str]) -> int:
+    """How many of the last sounds heard are beyond the text's own, by edit-distance alignment; where it is a tie
+    between a sound heard differently and one heard extra, it counts as extra (a stray "e" after "roue" is likelier
+    than the "u" heard as "e", and a model is only refused, never a learner)."""
+    n, m = len(said), len(expected)
+    cost = [[i + j if i == 0 or j == 0 else 0 for j in range(m + 1)] for i in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            same = 0 if said[i - 1] == expected[j - 1] else 1
+            cost[i][j] = min(cost[i - 1][j] + 1, cost[i][j - 1] + 1, cost[i - 1][j - 1] + same)
+    extra, i, j = 0, n, m
+    while i > 0 and j > 0:
+        if cost[i][j] == cost[i - 1][j] + 1:
+            extra, i = extra + 1, i - 1
+            continue
+        return extra
+    return extra + i
+
+
+NASAL_MARK = "\u0303"
+NASAL_CONSONANTS = frozenset({"n", "m", "ŋ", "ɲ"})
+"""Recognisers often hear a nasal vowel's nasality as a nasal consonant beside it ("bain" heard as "b ɛ n"): one of
+these next to a nasal vowel is the vowel, not an extra sound."""
+
+
+def spelled(expected: list[str], inventory: list[str]) -> list[str]:
+    """The text's sounds as the recogniser writes them: one symbol, or a few for a sound it writes as several (a
+    nasal vowel as vowel + tilde), as the scorer reads them."""
+    known = set(inventory)
+    return [part for p in expected for part in ([p] if p in known else list(p))]
+
+
+def extra_sounds(heard: list[Heard], expected: list[str]) -> dict[str, Any]:
+    """Sounds heard before and after the text's own: a recording of "rue" that starts with a breath or an "euh" has
+    something heard ahead of its "ʁ y". A sound heard differently inside the text is a substitution for the scorer
+    to judge, not an extra; only what is heard beyond either end counts."""
+    said = [h.phoneme for h in heard]
+    after = _extra_at_end(said, expected)
+    if expected and NASAL_MARK in expected[-1]:
+        after = _beyond_nasality(said[len(said) - after :], after)
+    before = _extra_at_end(said[: len(said) - after][::-1], expected[::-1])
+    if expected and NASAL_MARK in expected[0]:
+        before = _beyond_nasality(said[:before][::-1], before)
+    first, last = before, len(said) - after - 1
+    if first > last:
+        return {"before": said, "after": [], "start": None, "end": None}
+    return {
+        "before": said[:first],
+        "after": said[last + 1 :],
+        "start": heard[first].start,
+        "end": heard[last].end,
+    }
 
 
 def by_word(words: list[tuple[str, list[str]]], heatmap: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -154,6 +220,21 @@ def create_app(engines: Engines) -> FastAPI:
             "cache_key": render.cache_key,
             "cached": render.cached,
         }
+
+    @app.post("/heard")
+    async def heard_in(body: HeardRequest) -> dict[str, Any]:
+        """What is heard in a recording beyond the text's own sounds, and where the text's sounds start and end: the
+        studio checks its model recordings with it before learners imitate them."""
+        recognizer = engines.recognizer_for(body.language)
+        if recognizer is None:
+            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "phoneme recogniser is not installed")
+        try:
+            expected = engines.g2p.phonemes(body.text, body.language)
+        except KeyError as exc:
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from exc
+        found = heard(recognizer, base64.b64decode(body.pcm_b64))
+        written = spelled(expected, recognizer.inventory)
+        return {"heard": [h.phoneme for h in found], "expected": written, **extra_sounds(found, written)}
 
     @app.post("/shadow")
     async def shadow(body: ShadowRequest) -> dict[str, Any]:

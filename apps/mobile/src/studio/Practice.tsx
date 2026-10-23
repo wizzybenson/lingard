@@ -15,7 +15,7 @@ import { colors, fonts, radius, space, type } from "@/ui/theme";
 
 import { MouthMap } from "./MouthMap";
 import { Music } from "./Music";
-import { GOOD, type Attempt, type Features, type GymText, type MusicPart, type ScoredWord, type Tip } from "./types";
+import { GOOD, modelPath, type Attempt, type Features, type GymText, type MusicPart, type ScoredWord, type Tip } from "./types";
 
 export const SPEEDS = [0.5, 0.75, 1] as const;
 export type Speed = (typeof SPEEDS)[number];
@@ -170,7 +170,7 @@ export function Practice({
 }) {
   const { t } = useTranslation();
   const [attempt, setAttempt] = useState<Attempt | null>(null);
-  const reference = `/v1/studio/reference?language=${language}&line=${encodeURIComponent(text.text)}`;
+  const reference = `${modelPath(language)}&line=${encodeURIComponent(text.text)}`;
   return (
     <Card style={{ gap: space(1.5) }}>
       {attempt ? <ScoredText key={attempt.uri + attempt.intelligibility} words={attempt.words} all={all} /> : <MarkedText text={text} />}

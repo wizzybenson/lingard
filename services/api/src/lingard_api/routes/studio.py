@@ -121,7 +121,6 @@ async def _reference(
     try:
         model = await _melody_model(state, line, language) or await _checked_model(state, line, language)
         native = model if model is not None else await narrate(state, line, language)
-        _check_soon(state, line, language)
     except (RuntimeError, httpx.HTTPError):
         return None
     profile_id = await _golden_profile(db, user_id)
@@ -173,7 +172,7 @@ async def _melody_model(state: AppState, text: str, language: Language) -> bytes
         }
         measured = (await state.pronunciation.post("/shadow", json=payload)).json()
         found = ((measured.get("prosody") or {}).get("intonation") or {}).get("final", {}).get("yours")
-        if found == want:
+        if found == want and await _clean(state, text, language, pcm):
             await state.objects.put(AUDIO_BUCKET, key, pcm, "audio/L16")
             return pcm
     return None
@@ -191,14 +190,23 @@ async def _with_melody(state: AppState, drill: Drill, texts: tuple[str, ...], la
     return kept or list(texts)
 
 
-MODEL_TRIES = 3
-"""Native renders tried for a drill text whose narrator model the scorer doesn't pass."""
+NARRATOR_TAKES = 3
+OTHER_TAKES = 3
+"""Renders tried for a drill text's model: the narrator's first, then another native voice. Every engine sometimes
+adds stray sounds to a short word (a breath or an "euh" before "rue", an "e" after "roue": 1 word in 6 to 12 on
+2026-10-22, at random), so each take is checked and the first clean one kept."""
+CHECK_EDITION = 4
+"""4: a model must also have no sounds beyond the text's own, a tie at either end counting as extra and a nasal
+vowel's nasality heard as an "n" not (1 only checked the scorer passed it)."""
 CHECKED: dict[str, str] = {}
 """Verdicts on model recordings already read from the object store: "narrator", "other" or "none"."""
+CHECKS: dict[str, asyncio.Future[str]] = {}
+"""Checks running now, so a burst of requests for one text (iOS fetches audio in byte ranges) checks it once."""
 
 
 def _check_key(language: str, text: str) -> str:
-    return f"cache/model-check/{hashlib.sha256(f'{NARRATION_EDITION}|{language}|{text}'.encode()).hexdigest()}"
+    recipe = f"{CHECK_EDITION}|{NARRATION_EDITION}|{language}|{text}"
+    return f"cache/model-check/{hashlib.sha256(recipe.encode()).hexdigest()}"
 
 
 def _first_stage(gym: Gym, text: str) -> tuple[Drill, Stage] | None:
@@ -210,21 +218,37 @@ def _first_stage(gym: Gym, text: str) -> tuple[Drill, Stage] | None:
     return None
 
 
+async def _clean(state: AppState, text: str, language: Language, pcm: bytes) -> bool:
+    """Nothing heard beyond the text's own sounds: no breath, "euh" or stray syllable before or after it."""
+    if state.pronunciation is None:
+        raise RuntimeError("model checks need the pronunciation service")
+    asked = {"text": text, "language": language, "pcm_b64": base64.b64encode(pcm).decode()}
+    heard = (await state.pronunciation.post("/heard", json=asked)).json()
+    if heard.get("before") or heard.get("after"):
+        log.info("model of %r has stray sounds: heard %s", text, heard.get("heard"))
+        return False
+    return True
+
+
 async def _passes(state: AppState, gym: Gym, text: str, language: Language, pcm: bytes) -> bool:
-    """Whether the scorer passes a recording of a drill text as it would pass a learner saying it (a contrast that is
-    compared by ear passes: the machine doesn't judge it)."""
+    """Whether a recording of a drill text can be a model: nothing heard beyond the text's own sounds, and the scorer
+    passing it as it would pass a learner saying it (a contrast compared by ear passes: the machine doesn't judge
+    it)."""
     found = _first_stage(gym, text)
     if state.pronunciation is None:
         raise RuntimeError("model checks need the pronunciation service")
     if found is None:
         return True
+    if not await _clean(state, text, language, pcm):
+        return False
+    audio = base64.b64encode(pcm).decode()
     drill, stage = found
     g2p = _g2p(state.settings.content_root)
     payload = {
         "text": text,
         "language": language,
-        "learner_pcm_b64": base64.b64encode(pcm).decode(),
-        "reference_pcm_b64": base64.b64encode(pcm).decode(),
+        "learner_pcm_b64": audio,
+        "reference_pcm_b64": audio,
         "partners": partners(drill, lambda t: g2p.phonemes(t, language)),
     }
     result = _expected_melody((await state.pronunciation.post("/shadow", json=payload)).json(), text, drill)
@@ -234,58 +258,58 @@ async def _passes(state: AppState, gym: Gym, text: str, language: Language, pcm:
 
 
 async def check_model(state: AppState, text: str, language: Language) -> str:
-    """Verifies a drill text's model ahead of time (``cli warm-studio``), since a learner imitates it and is scored
-    against it: the narrator's render if the scorer passes it, else the first of a few other native renders that
-    passes (kept), else "none", and the text is left out of its drill rather than taught with a doubtful model."""
+    """Verifies a drill text's model before learners hear it, since they imitate it and are scored against it: the
+    narrator's render if it is clean and the scorer passes it, else a fresh narrator take, else another native voice
+    (the kept take is stored), else "none" and the text is left out of its drill rather than taught with a doubtful
+    model. Run once per text, the first time it is asked for (or by ``cli warm-studio``)."""
     key = _check_key(language, text)
-    with contextlib.suppress(Exception):  # checked before
-        return (await state.objects.get(AUDIO_BUCKET, f"{key}.verdict")).decode()
+    if (known := await _verdict(state, text, language)) is not None:
+        return known
+    if (running := CHECKS.get(key)) is not None:
+        return await asyncio.shield(running)
+    done: asyncio.Future[str] = asyncio.get_running_loop().create_future()
+    done.add_done_callback(lambda f: f.cancelled() or f.exception())  # an error nobody awaited is not "unretrieved"
+    CHECKS[key] = done
+    try:
+        verdict = await _find_model(state, key, text, language)
+    except BaseException as exc:
+        done.set_exception(exc)
+        raise
+    else:
+        done.set_result(verdict)
+    finally:
+        CHECKS.pop(key, None)
+    return verdict
+
+
+async def _find_model(state: AppState, key: str, text: str, language: Language) -> str:
     gym = _gym(state, language)
-    verdict = "narrator" if await _passes(state, gym, text, language, await narrate(state, text, language)) else "none"
+    verdict, kept = "none", None
+    for take in range(NARRATOR_TAKES):
+        pcm = await narrate(state, text, language, take)
+        if await _passes(state, gym, text, language, pcm):
+            verdict, kept = ("narrator", None) if take == 0 else ("other", pcm)
+            break
     live = _live_settings(state)
     if verdict == "none" and live.openai_api_key:
         tts = OpenAITts(live.openai_api_key.get_secret_value(), model=live.openai_tts_model)
         narrator = load_language(state.settings.content_root, language).narrator_voice
-        for _ in range(MODEL_TRIES):
-            style = gym.melody_model.get("question" if ending(text) == "rise" else "statement", "")
+        style = gym.melody_model.get("question" if ending(text) == "rise" else "statement", "")
+        for _ in range(OTHER_TAKES):
             spec = VoiceSpec(voice_id=narrator, language=language, style=style)
             pcm = b"".join([chunk.pcm async for chunk in tts.stream(text, spec)])
             if await _passes(state, gym, text, language, pcm):
-                await state.objects.put(AUDIO_BUCKET, f"{key}.pcm", pcm, "audio/L16")
-                verdict = "other"
+                verdict, kept = "other", pcm
                 break
+    if kept is not None:
+        await state.objects.put(AUDIO_BUCKET, f"{key}.pcm", kept, "audio/L16")
     await state.objects.put(AUDIO_BUCKET, f"{key}.verdict", verdict.encode(), "text/plain")
     CHECKED[key] = verdict
     return verdict
 
 
-CHECKING: set[asyncio.Task[None]] = set()
-"""Model checks running in the background, kept so they finish."""
-
-
-async def _check_quietly(state: AppState, text: str, language: Language) -> None:
-    try:
-        await check_model(state, text, language)
-    except Exception:  # unchecked models are served as before; the next hearing tries again
-        log.warning("model check failed for %r", text, exc_info=True)
-
-
-def _check_soon(state: AppState, text: str, language: Language) -> None:
-    """Checks a drill text's model in the background the first time it is heard, when its narrator render already
-    exists, so checking costs no extra narration; the drill leaves the text out from then on if no model passes."""
-    key = _check_key(language, text)
-    gym = _gym(state, language)
-    if key in CHECKED or text in gym.melody_texts() or _first_stage(gym, text) is None or state.pronunciation is None:
-        return
-    if any(task.get_name() == key for task in CHECKING):
-        return
-    task = asyncio.create_task(_check_quietly(state, text, language), name=key)
-    CHECKING.add(task)
-    task.add_done_callback(CHECKING.discard)
-
-
 async def _verdict(state: AppState, text: str, language: Language) -> str | None:
-    """A text's checked verdict, ``None`` when not checked yet (it is then served as before)."""
+    """A text's checked verdict, ``None`` when not checked yet."""
     key = _check_key(language, text)
     if key not in CHECKED:
         try:
@@ -296,8 +320,17 @@ async def _verdict(state: AppState, text: str, language: Language) -> str | None
 
 
 async def _checked_model(state: AppState, text: str, language: Language) -> bytes | None:
-    """The other native render kept for a text whose narrator model didn't pass, if any."""
-    if await _verdict(state, text, language) != "other":
+    """The model of a drill text, checked first if it hasn't been: the kept take when the narrator's first render
+    wasn't clean; ``None`` to use the narrator's render (it passed, the text isn't a drill text, or no take passed)."""
+    gym = _gym(state, language)
+    if text in gym.melody_texts() or _first_stage(gym, text) is None or state.pronunciation is None:
+        return None
+    try:
+        verdict = await check_model(state, text, language)
+    except Exception:  # the pronunciation service or TTS is unreachable: the narrator's render, checked next time
+        log.warning("model check failed for %r", text, exc_info=True)
+        return None
+    if verdict != "other":
         return None
     try:
         return await state.objects.get(AUDIO_BUCKET, f"{_check_key(language, text)}.pcm")
@@ -335,7 +368,7 @@ async def reference(
     pcm = await _reference(state, db, principal.user_id, line, language)
     if pcm is None:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "no TTS provider available")
-    return wav_response(pcm, request)
+    return wav_response(pcm, request, revalidate=True)
 
 
 @router.post("/shadow")

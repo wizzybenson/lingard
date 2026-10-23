@@ -140,3 +140,36 @@ scoring as if a learner had said it (`--texts` limits it to a few texts, since e
   points at the SeaweedFS in compose. The API tests now set `object_store_url=None` and `openai_api_key=None`, because
   importing the API loads `.env`.
 
+## Stray sounds in model recordings (2026-10-23)
+
+The founder heard "rue" with something before it.
+
+**What was wrong:**
+- The narrator's "rue" had about 0.3 s of sound before the word. The checks passed it because the scorer only
+  measures how well the expected sounds match, so it can't hear what is extra.
+- Every engine adds stray sounds to short words at random: a breath or "euh" before, an "e" after. On 24 single
+  French words, about 1 in 6 to 1 in 12 had them, whether rendered by ElevenLabs flash, flash with surrounding context
+  (`previous_text`), multilingual_v2 or OpenAI.
+- OpenAI transcription can't serve as the judge: on known-good isolated words it was right 2 to 5 times in 12.
+
+**The check:**
+- The recogniser is decoded with no text to expect (`recognizer.heard`, greedy CTC). `/heard` aligns what it heard
+  with the text by edit distance and reports sounds beyond either end.
+  - A sound heard differently inside the word is left to the scorer.
+  - A tie at an edge counts as extra.
+  - The expected sounds are written as the recogniser writes them (a nasal vowel as vowel + tilde).
+  - An n, m, ŋ or ɲ heard against a nasal vowel is its nasality, not an extra.
+- The decoder and the transcriber independently heard extras in "rue", "roue" and "tu", and none in "vue" or "su".
+
+**The fix:**
+- A drill text's model is checked **before anyone hears it** (once per text, then cached):
+  1. it must be clean of extras and pass the scorer;
+  2. otherwise up to 3 narrator takes (`narrate(..., take=n)`), then up to 3 OpenAI takes, keeping the first that
+     passes;
+  3. otherwise the text is left out of its drill.
+- Melody models must be clean too. `CHECK_EDITION` 4 re-checks everything checked before.
+- On the Simulator: 17 French and English words, nasal ones included, all came back clean. "rue" needed retakes
+  (13 s the first time, once).
+- Studio audio is now served with an ETag and `no-cache`, so a re-recorded model reaches devices at once. The app's
+  model URLs carry an edition (`MODEL_EDITION` 2), so a device doesn't keep the old "rue" it cached for a day.
+

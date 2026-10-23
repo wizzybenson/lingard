@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
 
@@ -11,6 +12,36 @@ import yaml
 from numpy.typing import NDArray
 
 PAD_S = 0.3
+SAMPLE_RATE = 16_000
+
+
+@dataclass(frozen=True)
+class Heard:
+    phoneme: str
+    start: float
+    end: float
+    """Seconds into the recording (the silence the recogniser pads it with is taken off)."""
+
+
+def heard(recognizer: PhonemeRecognizer, pcm: bytes) -> list[Heard]:
+    """What the recogniser hears with no text to expect: the most likely sound at each frame, repeats merged and
+    blanks dropped (greedy CTC decoding), each with when it was heard."""
+    logp = recognizer.log_posteriors(pcm)
+    if not len(logp):
+        return []
+    seconds = len(pcm) / 2 / SAMPLE_RATE
+    frame = (seconds + 2 * PAD_S) / len(logp)
+    best = logp.argmax(axis=1)
+    out: list[Heard] = []
+    previous = 0
+    for i, column in enumerate(best):
+        at = round(i * frame - PAD_S, 3)
+        if column != 0 and column != previous:
+            out.append(Heard(recognizer.inventory[int(column)], at, round(at + frame, 3)))
+        elif column != 0 and out:
+            out[-1] = Heard(out[-1].phoneme, out[-1].start, round(at + frame, 3))
+        previous = int(column)
+    return out
 
 
 class PhonemeRecognizer(Protocol):

@@ -171,14 +171,17 @@ async def _render(tts: TtsProvider, text: str, language: Language, narrator: str
     return TURN_GAP.join(pieces)
 
 
-async def narrate(state: AppState, text: str, language: Language) -> bytes:
+async def narrate(state: AppState, text: str, language: Language, take: int = 0) -> bytes:
     """16 kHz PCM of ``text``, one voice per speaker. Rendered once per provider and text, then served from the
-    object store: replays cost nothing and start at once. Raises ``RuntimeError`` when no TTS is configured."""
+    object store: replays cost nothing and start at once. Raises ``RuntimeError`` when no TTS is configured.
+    ``take``: another rendering of the same text (a fresh take when one came out with stray sounds)."""
     if state.tts is None:
         state.tts = build_tts(_live_settings(state))
     narrator = load_language(state.settings.content_root, language).narrator_voice
     # The edition changes whenever the voices or pace change, so learners never get the old recording again.
     recipe = f"{NARRATION_EDITION}|{type(state.tts).__name__}|{language}|{narrator}|{text}"
+    if take:
+        recipe += f"|take {take}"
     digest = hashlib.sha256(recipe.encode()).hexdigest()
     key = f"cache/tts/{digest}.pcm"
     if (cached := await _cached(state, key)) is not None:
@@ -230,11 +233,17 @@ NARRATION_EDITION = 2
 """2: native voices per language and accent (config/voices.yaml), a slower pace, the fuller model (2026-10-21)."""
 
 
-def wav_response(pcm: bytes, request: Request) -> Response:
+def wav_response(pcm: bytes, request: Request, *, revalidate: bool = False) -> Response:
     """The audio as WAV, honouring a byte range: iOS's player asks for ranges before it plays, and stalled forever
-    ("buffering") when the whole file came back instead."""
+    ("buffering") when the whole file came back instead. ``revalidate``: for audio that can be replaced (a studio
+    model re-recorded because it had a stray sound), the device asks each time and gets "not modified" while it is
+    the same, instead of keeping the old one for a day."""
     wav = pcm_to_wav(pcm)
-    headers = {"Cache-Control": "private, max-age=86400", "Accept-Ranges": "bytes"}
+    tag = f'"{hashlib.sha256(wav).hexdigest()[:32]}"'
+    cache = "private, no-cache" if revalidate else "private, max-age=86400"
+    headers = {"Cache-Control": cache, "Accept-Ranges": "bytes", "ETag": tag}
+    if revalidate and request.headers.get("if-none-match") == tag:
+        return Response(status_code=304, headers=headers)
     asked = RANGE.match(request.headers.get("range", "").strip())
     if asked is None or asked.groups() == ("", ""):
         return Response(wav, media_type="audio/wav", headers=headers)
